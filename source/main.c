@@ -3,7 +3,7 @@
  *
  *
  * Author:		Simon
- * Date:		2018.6.7
+ * Date:			2018.6.7
  * Corporation:	RunZhang
  *
  * */
@@ -60,14 +60,14 @@ void FeedWatchDog(void)
 	TOOGLE_WATCHDOG = TRUE;
 }
 /**************************************************************
- *Name:						Run
+ *Name:						Start_main_loop
  *Function:					Business logic
  *Input:					none
  *Output:					none
  *Author:					Simon
  *Date:						2018.6.10
  **************************************************************/
-void Run(void)
+void Start_main_loop(void)
 {
 	/*tbd-----------------*/
 	FeedWatchDog();
@@ -81,7 +81,7 @@ void Run(void)
  *Author:					Simon
  *Date:						2018.6.10
  ****************************************************************/
-int main(void) {
+void main(void) {
 
 	/*system init*/
 	InitSysCtrl_M();
@@ -91,7 +91,7 @@ int main(void) {
 	Init_Interrupt();
 
 	while(1){
-		Run();
+		Start_main_loop();
 	}
 }
 
