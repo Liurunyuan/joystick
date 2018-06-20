@@ -2,9 +2,9 @@
  * main.c
  *
  *
- * Author:		Simon
- * Date:			2018.6.7
- * Corporation:	RunZhang
+ * Author:					Simon
+ * Date:					2018.6.7
+ * Corporation:				RunZhang
  *
  * */
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
@@ -76,7 +76,7 @@ void Start_main_loop(void)
 /***************************************************************
  *Name:						main
  *Function:
- *Input:					none
+ *Input:				    none
  *Output:					none
  *Author:					Simon
  *Date:						2018.6.10
@@ -90,7 +90,8 @@ void main(void) {
 	/*interrupt init*/
 	Init_Interrupt();
 
-	while(1){
+	while(1)
+    {
 		Start_main_loop();
 	}
 }

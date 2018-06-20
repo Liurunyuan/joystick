@@ -71,14 +71,14 @@ void InitOutputPin(void)
 	/*
 	 * GPIO30
 	 * Pin index:			1
-	 * Name in circuit:		AK1K
+	 * Name in circuit:		AD1K
 	 */
 	GpioCtrlRegs.GPAMUX2.bit.GPIO30	= GPIO;
 	GpioCtrlRegs.GPADIR.bit.GPIO30	= OUTPUT;
 	/*
 	 * GPIO29
 	 * Pin index:			2
-	 * Name in circuit:		AK2K
+	 * Name in circuit:		AD2K
 	 */
 	GpioCtrlRegs.GPAMUX2.bit.GPIO29	= GPIO;
 	GpioCtrlRegs.GPADIR.bit.GPIO29	= OUTPUT;

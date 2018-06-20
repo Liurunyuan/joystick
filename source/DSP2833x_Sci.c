@@ -158,31 +158,31 @@ void scib_loopback_init(void)
     // Note: Clocks were turned on to the SCIB peripheral
     // in the InitSysCtrl() function
 
- 	ScibRegs.SCICCR.all =0x0007;   // 1 stop bit,  No loopback
+ 	ScibRegs.SCICCR.all 			= 0x0007;   // 1 stop bit,  No loopback
                                    // No parity,8 char bits,
                                    // async mode, idle-line protocol
-	ScibRegs.SCICTL1.all =0x0003;  // enable TX, RX, internal SCICLK,
+	ScibRegs.SCICTL1.all 			= 0x0003;  // enable TX, RX, internal SCICLK,
                                    // Disable RX ERR, SLEEP, TXWAKE
-	ScibRegs.SCICTL2.all =0x0003;
-	ScibRegs.SCICTL2.bit.TXINTENA =1;
-	ScibRegs.SCICTL2.bit.RXBKINTENA =1;
-    ScibRegs.SCIHBAUD    =0x0001;//0x0001;
-    ScibRegs.SCILBAUD    =0x0086;//0x00e7;44
-	ScibRegs.SCICCR.bit.LOOPBKENA =0; // enable loop back
-	ScibRegs.SCICTL1.all =0x0023;     // Relinquish SCI from Reset
+	ScibRegs.SCICTL2.all 			= 0x0003;
+	ScibRegs.SCICTL2.bit.TXINTENA 	= 1;
+	ScibRegs.SCICTL2.bit.RXBKINTENA = 1;
+    ScibRegs.SCIHBAUD    			= 0x0001;//0x0001;
+    ScibRegs.SCILBAUD    			= 0x0086;//0x00e7;44
+	ScibRegs.SCICCR.bit.LOOPBKENA 	= 0; // enable loop back
+	ScibRegs.SCICTL1.all 			= 0x0023;     // Relinquish SCI from Reset
 }
 // Initalize the SCI FIFO
 void scib_fifo_init(void)
 {
-    ScibRegs.SCIFFTX.bit.TXFIFOXRESET=0;
-    ScibRegs.SCIFFRX.bit.RXFIFORESET=0;
+    ScibRegs.SCIFFTX.bit.TXFIFOXRESET	= 0;
+    ScibRegs.SCIFFRX.bit.RXFIFORESET	= 0;
 
-    ScibRegs.SCIFFTX.all=0xE030;
-    ScibRegs.SCIFFTX.bit.TXFFIENA=1;
-    ScibRegs.SCIFFTX.bit.TXFFINTCLR=1;
-    ScibRegs.SCIFFRX.all=0x2030;
-    ScibRegs.SCIFFRX.bit.RXFFIENA=1;
-    ScibRegs.SCIFFCT.all=0x0;
+    ScibRegs.SCIFFTX.all				= 0xE030;
+    ScibRegs.SCIFFTX.bit.TXFFIENA		= 1;
+    ScibRegs.SCIFFTX.bit.TXFFINTCLR		= 1;
+    ScibRegs.SCIFFRX.all				= 0x2030;
+    ScibRegs.SCIFFRX.bit.RXFFIENA		= 1;
+    ScibRegs.SCIFFCT.all				= 0x0;
 }
 
 void scic_loopback_init(void)
