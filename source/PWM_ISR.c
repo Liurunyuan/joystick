@@ -4,26 +4,29 @@
 #include "PWM_ISR.h"
 
 
+
 struct BIT_AUX2_AN bit_aux2_an = {0};
 Uint16 address   = 0;
+const Uint16 threshold[20] = {0};
 
-void Pwm_isr(void)
+
+
+void Pwm_ISR_Thread(void)
 {
 	static Uint16 count = 0;
 
 	count++;
 	if(count > WAIT_TIMES)
 	{
-		SwitchAnalogChannel();
 		ReadChannelAdcValue();
 		IsAdcValueNormal();
-
+		SwitchAnalogChannel();
 	}
 }
 
 void ReadChannelAdcValue(void)
 {
-	bit_aux2_an.X[address] = (AdcRegs.ADCRESULT15) >> 4;//A通道A相电流
+	bit_aux2_an.X[address] = CAL_ADCINB7;
 }
 /*switch analog channel, plus 1 every time*/
 void SwitchAnalogChannel(void)
@@ -35,13 +38,13 @@ void SwitchAnalogChannel(void)
 	 * GPIO39->AD4K
 	 *
 	 * */
-
-	GpioDataRegs.GPASET.bit.GPIO30			= address & 0x0001;
-	GpioDataRegs.GPASET.bit.GPIO29			= address & 0x0002;
-	GpioDataRegs.GPCSET.bit.GPIO85			= address & 0x0003;
-	GpioDataRegs.GPBSET.bit.GPIO39			= address & 0x0004;
+	SET_AD1K = address & 0x0001;
+	SET_AD2K = address & 0x0002;
+	SET_AD3K = address & 0x0003;
+    SET_AD4K = address & 0x0004;
 
 	address++;
+
 	if(address >= MAX_CHANNEL)
 	{
 		address = 0;
@@ -51,6 +54,10 @@ void SwitchAnalogChannel(void)
 
 int	 IsAdcValueNormal(void)
 {
-	/*tbd****************************************/
+	/*TODO realize this function****************************************/
+	if(bit_aux2_an.X[address] > threshold[address])
+	{
+		/*set error flag*/
+	}
 	return 0;
 }
