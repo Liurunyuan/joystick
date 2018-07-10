@@ -6,8 +6,8 @@
 
 
 struct BIT_AUX2_AN bit_aux2_an = {0};
-Uint16 address   = 0;
 const Uint16 threshold[20] = {0};
+Uint16 address = 0;
 
 
 
@@ -15,18 +15,21 @@ void Pwm_ISR_Thread(void)
 {
 	static Uint16 count = 0;
 
-	count++;
+	++count;
 	if(count > WAIT_TIMES)
 	{
-		ReadChannelAdcValue();
-		IsAdcValueNormal();
+		count = 0;
+
+		ReadChannelAdcValue(address);
+		IsAdcValueNormal(address);
 		SwitchAnalogChannel();
+
 	}
 }
 
-void ReadChannelAdcValue(void)
+void ReadChannelAdcValue(int index)
 {
-	bit_aux2_an.X[address] = CAL_ADCINB7;
+	bit_aux2_an.X[index] = CAL_ADCINB7;
 }
 /*switch analog channel, plus 1 every time*/
 void SwitchAnalogChannel(void)
@@ -52,10 +55,10 @@ void SwitchAnalogChannel(void)
 }
 
 
-int	 IsAdcValueNormal(void)
+int	 IsAdcValueNormal(int index)
 {
 	/*TODO realize this function****************************************/
-	if(bit_aux2_an.X[address] > threshold[address])
+	if(bit_aux2_an.X[index] > threshold[index])
 	{
 		/*set error flag*/
 	}

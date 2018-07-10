@@ -59,6 +59,13 @@ void FeedWatchDog(void)
 {
 	TOOGLE_WATCHDOG = TRUE;
 }
+
+
+int PowerOnBIT(void)
+{
+	//TODO   implement here, figure out what need to check, what to do if BIT fail.
+	return 0;
+}
 /**************************************************************
  *Name:						Start_main_loop
  *Function:					Business logic
@@ -90,6 +97,8 @@ void main(void) {
 	Init_Peripheral();
 	/*interrupt init*/
 	Init_Interrupt();
+
+	PowerOnBIT();
 
 	while(1)
     {

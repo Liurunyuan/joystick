@@ -14,6 +14,9 @@
 #define SET_AD3K		(GpioDataRegs.GPCSET.bit.GPIO85)
 #define SET_AD4K		(GpioDataRegs.GPBSET.bit.GPIO39)
 /********************************************************/
+
+
+/**/
 struct BIT_AUX2_AN
 {
 	Uint16 	index;
@@ -23,8 +26,8 @@ struct BIT_AUX2_AN
 /*Switch the analog channel, plus 1 every time*/
 void Pwm_ISR_Thread(void);
 void SwitchAnalogChannel(void);
-void ReadChannelAdcValue(void);
-int	 IsAdcValueNormal(void);
+void ReadChannelAdcValue(int index);
+int	 IsAdcValueNormal(int index);
 
 
 #endif
