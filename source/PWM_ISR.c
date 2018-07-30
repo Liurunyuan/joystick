@@ -7,32 +7,42 @@
 
 struct BIT_AUX2_AN bit_aux2_an = {0};
 const Uint16 threshold[20] = {0};
-Uint16 address = 0;
-
-
 
 void Pwm_ISR_Thread(void)
 {
+	//TODO
+	AnalogValueInspect();
+}
+
+int AdcConversionUnStable() {
 	static Uint16 count = 0;
-
 	++count;
-	if(count > WAIT_TIMES)
-	{
+	if (count > WAIT_TIMES) {
 		count = 0;
-
-		ReadChannelAdcValue(address);
-		IsAdcValueNormal(address);
-		SwitchAnalogChannel();
-
+		return 0;
 	}
+	else
+	{
+		return 1;
+	}
+}
+static int AnologChannelChange(int address)
+{
+
+	++address;
+	if (address >= MAX_CHANNEL) {
+		address = 0;
+	}
+	return address;
 }
 
 void ReadChannelAdcValue(int index)
 {
 	bit_aux2_an.X[index] = CAL_ADCINB7;
 }
+
 /*switch analog channel, plus 1 every time*/
-void SwitchAnalogChannel(void)
+void SwitchAnalogChannel(int address)
 {
 	/*
 	 * GPIO30->AD1K
@@ -45,14 +55,23 @@ void SwitchAnalogChannel(void)
 	SET_AD2K = address & 0x0002;
 	SET_AD3K = address & 0x0003;
     SET_AD4K = address & 0x0004;
-
-	address++;
-
-	if(address >= MAX_CHANNEL)
-	{
-		address = 0;
-	}
 }
+
+void AnalogValueInspect(void)
+{
+    static int address = 0;
+    if(AdcConversionUnStable())
+    {
+    	return;
+    }
+    ReadChannelAdcValue(address);
+	address = AnologChannelChange(address);
+    SwitchAnalogChannel(address);
+}
+
+
+
+
 
 
 int	 IsAdcValueNormal(int index)
