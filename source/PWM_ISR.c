@@ -5,10 +5,24 @@
 
 
 
-struct MultiAnalogValue gMultiAnalogValue = {0};
-
 struct AnalogAndDigitalInspect gAnalogAndDigitalInspect = {0};
+struct PowerBoardAnalogInput gPowerBoardAnalogInput = {0};
 
+
+void UpdatePowerBoardAnalogInput(void)
+{
+	gPowerBoardAnalogInput.forceValue 		= GET_FORCE_SGN;
+	gPowerBoardAnalogInput.busCurrentPos 	= GET_BUS_CURRENT_P;
+	gPowerBoardAnalogInput.power28V_M 		= GET_28V_M;
+	gPowerBoardAnalogInput.bridgeCurrentB 	= GET_B_BRIDGE_CURRENT;
+	gPowerBoardAnalogInput.busCurrentB 		= GET_B_BUS_CURRENT;
+	gPowerBoardAnalogInput.power28V 		= GET_28V;
+	gPowerBoardAnalogInput.bridgeCurrentA 	= GET_A_BRIDGE_CURRENT;
+	gPowerBoardAnalogInput.busCurrentA 		= GET_A_BUS_CURRENT;
+	gPowerBoardAnalogInput.displacementValue= GET_DISPLACEMENT_SGN;
+	gPowerBoardAnalogInput.bridgeCurrentC 	= GET_C_BRIDGE_CURRENT;
+	gPowerBoardAnalogInput.bridgeCurrentC 	= GET_C_BUS_CURRENT;
+}
 /**************************************************************
  *Name:						AdcConversionUnStable
  *Function:					判定模拟量多通道切换以及转换是否稳定
@@ -56,8 +70,8 @@ int AnologChannelChange(int address)
  **************************************************************/
 void ReadChannelAdcValue(int index)
 {
-	gMultiAnalogValue.controlBoardBIT[index] = CAL_ADCINB7;
-	gMultiAnalogValue.powerBoardBIT[index] = CAL_ADCINB1;
+	gAnalogAndDigitalInspect.MultiAnalogValue.controlBoardBIT[index] = GET_ADCINB7;
+	gAnalogAndDigitalInspect.MultiAnalogValue.powerBoardBIT[index] = GET_ADCINB1;
 }
 /**************************************************************
  *Name:						SwitchAnalogChannel
@@ -164,4 +178,5 @@ void Pwm_ISR_Thread(void)
 {
 	//TODO
 	AnalogValueInspect();
+	UpdatePowerBoardAnalogInput();
 }
