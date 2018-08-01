@@ -5,8 +5,7 @@
 
 
 
-struct BIT_AUX2_AN bit_aux2_an = {0};
-const Uint16 threshold[20] = {0};
+struct MultiAnalogValue gMultiAnalogValue = {0};
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -67,7 +66,8 @@ int AnologChannelChange(int address)
  **************************************************************/
 void ReadChannelAdcValue(int index)
 {
-	bit_aux2_an.X[index] = CAL_ADCINB7;
+	gMultiAnalogValue.controlBoardBIT[index] = CAL_ADCINB7;
+	gMultiAnalogValue.powerBoardBIT[index] = CAL_ADCINB1;
 }
 /**************************************************************
  *Name:						SwitchAnalogChannel
@@ -115,13 +115,50 @@ void AnalogValueInspect(void)
 
 
 
-
-int	 IsAdcValueNormal(int index)
+/**************************************************************
+ *Name:						DigitalValueInspect
+ *Function:					数字量多通道巡检函数
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.7.31
+ **************************************************************/
+void DigitalValueInspect(void)
 {
-	/*TODO realize this function****************************************/
-	if(bit_aux2_an.X[index] > threshold[index])
+	static int status = 1;
+	static int channel = 0;
+
+	switch(status)
 	{
-		/*set error flag*/
+		case REFRESH:
+			SET_DIGIT_SER_LOAD_LOW;
+			SET_DIGIT_SER_CLK_LOW;
+			count = LOCK;
+
+			break;
+		case LOCK:
+			SET_DIGIT_SER_LOAD_HIGH;
+			count = TRIGGER;
+			break;
+		case TRIGGER:
+			SET_DIGIT_SER_CLK_HIGH;
+			count = GETDATA;
+			break;
+		case GETDATA:
+			++channel;
+			//GET_DIGIT_SERIAL_N;
+			//GET_DIGIT_SERIAL_P;
+			SET_DIGIT_SER_CLK_LOW;
+			if(channel >= 9)
+			{
+				channel = 0;
+				count = REFRESH;
+			}
+			else
+				count = TRIGGER;
+			break;
 	}
-	return 0;
+
+
 }
+
