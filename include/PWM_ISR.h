@@ -45,7 +45,8 @@ struct MultiAnalogValue
 };
 /*Switch the analog channel, plus 1 every time*/
 void Pwm_ISR_Thread(void);
-void SwitchAnalogChannel(void);
+void SwitchAnalogChannel(int address);
+
 void ReadChannelAdcValue(int index);
 int	 IsAdcValueNormal(int index);
 

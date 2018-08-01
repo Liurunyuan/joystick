@@ -6,19 +6,7 @@
 
 
 struct MultiAnalogValue gMultiAnalogValue = {0};
-/**************************************************************
- *Name:						Pwm_ISR_Thread
- *Function:					PWM interrupt function
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.6.10
- **************************************************************/
-void Pwm_ISR_Thread(void)
-{
-	//TODO
-	AnalogValueInspect();
-}
+
 /**************************************************************
  *Name:						AdcConversionUnStable
  *Function:					判定模拟量多通道切换以及转换是否稳定
@@ -133,16 +121,16 @@ void DigitalValueInspect(void)
 		case REFRESH:
 			SET_DIGIT_SER_LOAD_LOW;
 			SET_DIGIT_SER_CLK_LOW;
-			count = LOCK;
+			status = LOCK;
 
 			break;
 		case LOCK:
 			SET_DIGIT_SER_LOAD_HIGH;
-			count = TRIGGER;
+			status = TRIGGER;
 			break;
 		case TRIGGER:
 			SET_DIGIT_SER_CLK_HIGH;
-			count = GETDATA;
+			status = GETDATA;
 			break;
 		case GETDATA:
 			++channel;
@@ -152,13 +140,25 @@ void DigitalValueInspect(void)
 			if(channel >= 9)
 			{
 				channel = 0;
-				count = REFRESH;
+				status = REFRESH;
 			}
 			else
-				count = TRIGGER;
+				status = TRIGGER;
 			break;
 	}
 
 
 }
-
+/**************************************************************
+ *Name:						Pwm_ISR_Thread
+ *Function:					PWM interrupt function
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.6.10
+ **************************************************************/
+void Pwm_ISR_Thread(void)
+{
+	//TODO
+	AnalogValueInspect();
+}
