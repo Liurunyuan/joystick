@@ -7,6 +7,8 @@
 
 struct MultiAnalogValue gMultiAnalogValue = {0};
 
+struct AnalogAndDigitalInspect gAnalogAndDigitalInspect = {0};
+
 /**************************************************************
  *Name:						AdcConversionUnStable
  *Function:					判定模拟量多通道切换以及转换是否稳定
@@ -121,8 +123,8 @@ void DigitalValueInspect(void)
 		case REFRESH:
 			SET_DIGIT_SER_LOAD_LOW;
 			SET_DIGIT_SER_CLK_LOW;
+			channel = 0;
 			status = LOCK;
-
 			break;
 		case LOCK:
 			SET_DIGIT_SER_LOAD_HIGH;
@@ -133,18 +135,19 @@ void DigitalValueInspect(void)
 			status = GETDATA;
 			break;
 		case GETDATA:
-			++channel;
-			//GET_DIGIT_SERIAL_N;
-			//GET_DIGIT_SERIAL_P;
+			gAnalogAndDigitalInspect.DigitalParaToSerial_N[channel] = GET_DIGIT_SERIAL_N;
+			gAnalogAndDigitalInspect.DigitalParaToSerial_P[channel] = GET_DIGIT_SERIAL_P;
 			SET_DIGIT_SER_CLK_LOW;
+			++channel;
 			if(channel >= 9)
 			{
-				channel = 0;
 				status = REFRESH;
 			}
 			else
 				status = TRIGGER;
 			break;
+		default:
+			status = REFRESH;
 	}
 
 

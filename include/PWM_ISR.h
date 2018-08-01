@@ -33,9 +33,6 @@
 #define GETDATA (4)
 
 
-
-
-
 struct MultiAnalogValue
 {
 	Uint16 	index;
@@ -43,6 +40,14 @@ struct MultiAnalogValue
 	int     powerBoardBIT[15];
 
 };
+struct AnalogAndDigitalInspect
+{
+	struct MultiAnalogValue gMultiAnalogValue;
+	int DigitalParaToSerial_N[9];
+	int DigitalParaToSerial_P[9];
+};
+
+
 /*Switch the analog channel, plus 1 every time*/
 void Pwm_ISR_Thread(void);
 void SwitchAnalogChannel(int address);
