@@ -138,6 +138,11 @@ struct SystemStatusPara
 };
 
 
+enum Bool{
+	False = 0,
+	True
+};
+
 
 
 
