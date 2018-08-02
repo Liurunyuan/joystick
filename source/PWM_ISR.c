@@ -11,6 +11,7 @@ struct PowerBoardAnalogInput gPowerBoardAnalogInput = {0};
 
 void UpdatePowerBoardAnalogInput(void)
 {
+	/*
 	gPowerBoardAnalogInput.forceValue 		= GET_FORCE_SGN;
 	gPowerBoardAnalogInput.busCurrentPos 	= GET_BUS_CURRENT_P;
 	gPowerBoardAnalogInput.power28V_M 		= GET_28V_M;
@@ -22,6 +23,7 @@ void UpdatePowerBoardAnalogInput(void)
 	gPowerBoardAnalogInput.displacementValue= GET_DISPLACEMENT_SGN;
 	gPowerBoardAnalogInput.bridgeCurrentC 	= GET_C_BRIDGE_CURRENT;
 	gPowerBoardAnalogInput.bridgeCurrentC 	= GET_C_BUS_CURRENT;
+	*/
 }
 /**************************************************************
  *Name:						AdcConversionUnStable
@@ -177,6 +179,8 @@ void DigitalValueInspect(void)
 void Pwm_ISR_Thread(void)
 {
 	//TODO
-	AnalogValueInspect();
 	UpdatePowerBoardAnalogInput();
+	AnalogValueInspect();
+	DigitalValueInspect();
+
 }
