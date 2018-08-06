@@ -40,15 +40,14 @@ void Pwm_ISR_Thread(void)
 
 }
 
-int32 forcebufProcess(int* force)
+int32 forcebufProcess()
 {
-
-	return 1;
+	return ((feedbackVarBuf.sumForce - feedbackVarBuf.maxForce - feedbackVarBuf.minForce) >> 3);
 }
 
-int32 displacebufProcess(int* displace)
+int32 displacebufProcess()
 {
-	return 1;
+	return ((feedbackVarBuf.sumDisplacement - feedbackVarBuf.maxDisplacement - feedbackVarBuf.minDisplacement) >> 3);
 }
 
 void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
@@ -84,12 +83,14 @@ void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
  **************************************************************/
 void VarProcess(void){
 	static int count = 0;
-	static int forcebuf[10] = {0};
-	static  int displacement[10] = {0};
 
 
 	feedbackVarBuf.forcebuf[count] = gSysMonitorVar.anolog.single.var[ForceValue].value;
 	feedbackVarBuf.displacementbuf[count] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+
+	feedbackVarBuf.sumForce = feedbackVarBuf.sumForce + gSysMonitorVar.anolog.single.var[ForceValue].value;
+	feedbackVarBuf.sumDisplacement = feedbackVarBuf.sumDisplacement + gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+
 
 	UpdateMaxAndMin(&feedbackVarBuf);
 	if(count > 10){
@@ -99,8 +100,8 @@ void VarProcess(void){
 			//TODO generate alarm;
 			return;
 		}
-		gKeyValue.displacement = displacebufProcess(forcebuf);
-		gKeyValue.force = forcebufProcess(displacement);
+		gKeyValue.displacement = displacebufProcess();
+		gKeyValue.force = forcebufProcess();
 		//update motor speed;
 		//update motor accel;
 		gKeyValue.lock = 0;
