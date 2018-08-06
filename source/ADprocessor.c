@@ -15,11 +15,11 @@ int updateDisplacementValue(void){return GET_DISPLACEMENT_SGN;}
 int updateBridgeCurrentC(void){return GET_C_BRIDGE_CURRENT;}
 int updateBusCurrentC(void){return GET_C_BUS_CURRENT;}
 
-struct AnalogAndDigitalInspect gAnalogAndDigitalInspect = {0};
+struct MULTCH multiCHInspect = {0};
 struct SingleAnalogVar gSingleAnalogVar[TotalChannel] = {
 
 													{0, MAX_FORCE, MIN_FORCE, updateForceValue},
-													{2, MAX_BUS_CURRENT_P, MIN_BUS_CURRENT_P, updateBusCurrentP},
+													{0, MAX_BUS_CURRENT_P, MIN_BUS_CURRENT_P, updateBusCurrentP},
 													{0, MAX_28V_M, MIN_28V_M, updatePower28V_M},
 													{0, MAX_B_BRIDGE_CURRENT, MIN_B_BRIDGE_CURRENT, updateBridgeCurrentB},
 													{0, MAX_B_BUS_CURRENT, MIN_B_BUS_CURRENT, updateBusCurrentB},
@@ -32,6 +32,9 @@ struct SingleAnalogVar gSingleAnalogVar[TotalChannel] = {
 
 												};
 
+
+
+SysMonitorVar gSysMonitorVar;
 /**************************************************************
  *Name:						UpdatePowerBoardAnalogInput
  *Function:					更新功率板输入模拟量
@@ -45,9 +48,9 @@ void UpdateSingleAnalogInput(void)
 	int index;
 	for(index = 0; index <= TotalChannel; ++index)
 	{
-		gSingleAnalogVar[index].value = gSingleAnalogVar[index].updateValue();
-
+		gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
 	}
+
 }
 /**************************************************************
  *Name:						IsSingleAnalogValueAbnormal
@@ -63,8 +66,8 @@ int IsSingleAnalogValueAbnormal(void)
 	int ret = 1;
 	for(index = 0; index <= TotalChannel; ++index)
 	{
-		if((gSingleAnalogVar[index].value > gSingleAnalogVar[index].max) ||
-				(gSingleAnalogVar[index].value < gSingleAnalogVar[index].min))
+		if((gSysMonitorVar.anolog.single.var[index].value > gSysMonitorVar.anolog.single.var[index].max) ||
+				(gSysMonitorVar.anolog.single.var[index].value < gSysMonitorVar.anolog.single.var[index].min))
 		{
 			ret = 0;
 		}
@@ -99,7 +102,7 @@ int AdcConversionUnStable() {
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-int AnologChannelChange(int address)
+int AnalogChannelChange(int address)
 {
 
 	++address;
@@ -118,8 +121,8 @@ int AnologChannelChange(int address)
  **************************************************************/
 void ReadChannelAdcValue(int index)
 {
-	gAnalogAndDigitalInspect.MultiAnalogValue.controlBoardBIT[index] = GET_ADCINB7;
-	gAnalogAndDigitalInspect.MultiAnalogValue.powerBoardBIT[index] = GET_ADCINB1;
+	gSysMonitorVar.anolog.multi[0].var[index].value = GET_ADCINB7;
+	gSysMonitorVar.anolog.multi[1].var[index].value = GET_ADCINB1;
 }
 /**************************************************************
  *Name:						SwitchAnalogChannel
@@ -158,15 +161,14 @@ void AnalogValueInspect(void)
     {
     	return;
     }
-    ReadChannelAdcValue(address);
-	address = AnologChannelChange(address);
-    SwitchAnalogChannel(address);
+    else
+    {
+        ReadChannelAdcValue(address);
+    	address = AnalogChannelChange(address);
+        SwitchAnalogChannel(address);
+    }
+
 }
-
-
-
-
-
 /**************************************************************
  *Name:						DigitalValueInspect
  *Function:					数字量多通道巡检函数
@@ -197,8 +199,9 @@ void DigitalValueInspect(void)
 			status = GETDATA;
 			break;
 		case GETDATA:
-			gAnalogAndDigitalInspect.DigitalParaToSerial_N[channel] = GET_DIGIT_SERIAL_N;
-			gAnalogAndDigitalInspect.DigitalParaToSerial_P[channel] = GET_DIGIT_SERIAL_P;
+			gSysMonitorVar.digit.multi.var[channel].valueP = GET_DIGIT_SERIAL_P;
+			gSysMonitorVar.digit.multi.var[channel].valueN = GET_DIGIT_SERIAL_N;
+
 			SET_DIGIT_SER_CLK_LOW;
 			++channel;
 			if(channel >= 9)
@@ -212,3 +215,70 @@ void DigitalValueInspect(void)
 			status = REFRESH;
 	}
 }
+/**************************************************************
+ *Name:						ReadAnalogValue
+ *Function:					更新系统模拟量的转换值
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.8.6
+ **************************************************************/
+void UpdateSingleDigitInput(void)
+{
+	int index;
+	for(index=0;index<12;++index)
+	{
+		gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
+	}
+
+}
+/**************************************************************
+ *Name:						ReadAnalogValue
+ *Function:					更新系统模拟量的转换值
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.8.6
+ **************************************************************/
+void ReadAnalogValue(void)
+{
+	UpdateSingleAnalogInput();
+	AnalogValueInspect();
+}
+/**************************************************************
+ *Name:						ReadDigitalValue
+ *Function:					更新系统数字量的转换值
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.8.6
+ **************************************************************/
+void ReadDigitalValue(void)
+{
+	DigitalValueInspect();
+	UpdateSingleDigitInput();
+	//read single digital channel value
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
