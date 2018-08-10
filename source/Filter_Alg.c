@@ -32,7 +32,7 @@ void calFuncPara()
 {
 	float temp,temp0,temp1,temp2;
 
-	temp = 10.0 * (sumPara.sum_Xpow2 * sumPara.sum_Xpow4 -sumPara.sum_Xpow3*sumPara.sum_Xpow3)
+	temp = 10 * (sumPara.sum_Xpow2 * sumPara.sum_Xpow4 -sumPara.sum_Xpow3*sumPara.sum_Xpow3)
 			-  sumPara.sum_X* (sumPara.sum_X * sumPara.sum_Xpow4 - sumPara.sum_Xpow2 * sumPara.sum_Xpow3);
 
 	temp0 = sumPara.sum_Y * (sumPara.sum_Xpow2 * sumPara.sum_Xpow4 - sumPara.sum_Xpow3*sumPara.sum_Xpow3)
@@ -51,10 +51,8 @@ void calFuncPara()
 	funcPara.a = temp2/temp;
 
 }
-void deal(int y)
+void CalFuncPara(int y,int count)
 {
-	static int count = 0;
-
 	if(count == 0)
 	{
 		clearSum();
@@ -64,9 +62,8 @@ void deal(int y)
 	sumPara.sum_Xpow2Y += count*count*y;
 	sumPara.sum_Y += y;
 
-	if(count ==9)
+	if(count >=9)
 	{
 		calFuncPara();
 	}
-	count++;
 }

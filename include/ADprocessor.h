@@ -260,6 +260,8 @@ typedef struct _SysMonitorVar{
 
 }SysMonitorVar;
 
+
+
 int IsSingleAnalogValueAbnormal(void);
 void UpdateSingleAnalogInput(void);
 void AnalogValueInspect(void);

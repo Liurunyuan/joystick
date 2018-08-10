@@ -3,9 +3,27 @@
 #include "public.h"
 #include "PWM_ISR.h"
 #include "ADprocessor.h"
+#include "Filter_Alg.h"
 
 KeyValue gKeyValue;
 FeedbackVarBuf feedbackVarBuf;
+void ForceAndDisplaceProcess(int count);
+
+void CalForceSpeedAccel() {
+	static int count = 0;
+
+	ForceAndDisplaceProcess(count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
+
+	count++;
+
+	if(count >= 10){
+		gKeyValue.motorSpeed = 2*funcPara.a*11 + funcPara.b;
+		gKeyValue.motorAccel = 2*funcPara.a;
+		count = 0;
+	}
+}
+
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -37,7 +55,7 @@ void Pwm_ISR_Thread(void)
 	{
 		//TODO
 	}
-
+	CalForceSpeedAccel();
 }
 
 int32 forcebufProcess()
@@ -81,9 +99,7 @@ void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
  *Author:					Simon
  *Date:						2018.6.10
  **************************************************************/
-void VarProcess(void){
-	static int count = 0;
-
+void ForceAndDisplaceProcess(int count){
 
 	feedbackVarBuf.forcebuf[count] = gSysMonitorVar.anolog.single.var[ForceValue].value;
 	feedbackVarBuf.displacementbuf[count] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
@@ -91,10 +107,8 @@ void VarProcess(void){
 	feedbackVarBuf.sumForce = feedbackVarBuf.sumForce + gSysMonitorVar.anolog.single.var[ForceValue].value;
 	feedbackVarBuf.sumDisplacement = feedbackVarBuf.sumDisplacement + gSysMonitorVar.anolog.single.var[DisplacementValue].value;
 
-
 	UpdateMaxAndMin(&feedbackVarBuf);
-	if(count > 10){
-		count = 0;
+	if(count >= 9){
 		if(gKeyValue.lock == 0)
 		{
 			//TODO generate alarm;
@@ -102,11 +116,8 @@ void VarProcess(void){
 		}
 		gKeyValue.displacement = displacebufProcess();
 		gKeyValue.force = forcebufProcess();
-		//update motor speed;
-		//update motor accel;
 		gKeyValue.lock = 0;
 	}
-	++count;
 }
 
 

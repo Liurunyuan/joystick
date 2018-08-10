@@ -19,4 +19,7 @@ typedef struct _FuncPara{
 }FuncPara;
 
 
+void CalFuncPara(int y,int count);
+
+extern FuncPara funcPara;
 #endif
