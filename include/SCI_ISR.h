@@ -9,7 +9,7 @@ typedef void (*functionMsgCodeUnpack)(int a, int b,int c);
 #define TAIL 0xAA
 
 typedef struct _RS422RXQUE{
-	int rxBuff[MAXQSIZE];
+	char rxBuff[MAXQSIZE];
 	int front;
 	int rear;
 }RS422RXQUE;
