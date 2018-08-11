@@ -56,8 +56,10 @@ void Pwm_ISR_Thread(void)
 	{
 		//TODO
 	}
-	CalForceSpeedAccel();
+	//TODO prepare output
 	ReadADBySpi();
+	CalForceSpeedAccel();
+
 }
 
 int32 forcebufProcess()
@@ -121,15 +123,4 @@ void ForceAndDisplaceProcess(int count){
 		gKeyValue.lock = 0;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
