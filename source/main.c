@@ -99,7 +99,6 @@ void main(void) {
 	Init_Interrupt();
 
 	PowerOnBIT();
-
 	while(1)
     {
 		Start_main_loop();

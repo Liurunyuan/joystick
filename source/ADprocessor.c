@@ -259,26 +259,3 @@ void ReadDigitalValue(void)
 	UpdateSingleDigitInput();
 	//read single digital channel value
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

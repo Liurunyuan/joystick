@@ -6,5 +6,10 @@ void rs422bPack();
 void rs422aTx();
 void rs422bTx();
 
+typedef struct _RS422TX{
+	char txBuff[MAXQSIZE];
+	int front;
+	int rear;
+}RS422TX;
 
 #endif
