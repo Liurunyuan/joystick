@@ -24,8 +24,9 @@ const functionMsgCodeUnpack msgInterface[] =
 };
 
 int EnQueue(int e){
-	if((gRS422RxQue.rear + 1)%MAXQSIZE == gRS422RxQue.front)
+	if((gRS422RxQue.rear + 1)%MAXQSIZE == gRS422RxQue.front){
 		return 0;
+	}
 
 	gRS422RxQue.rxBuff[gRS422RxQue.rear] = e;
 	gRS422RxQue.rear = (gRS422RxQue.rear + 1)%MAXQSIZE;
@@ -38,8 +39,9 @@ int EnQueue(int e){
 //tail:0xAA
 int DeQueue()
 {
-	if(gRS422RxQue.front == gRS422RxQue.rear)
+	if(gRS422RxQue.front == gRS422RxQue.rear){
 		return 0;
+	}
 
 	gRS422RxQue.front = (gRS422RxQue.front + 1)%MAXQSIZE;
 	return 1;
@@ -48,7 +50,7 @@ int DeQueue()
 void RS422A_receive(void)
 {
 	//当接收fifo不为空时
-	while(1){
+	while(1){//need to modify, should return when the rx fifo is empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
 			//TODO update error msg
 		}
