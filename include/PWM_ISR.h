@@ -28,16 +28,4 @@ typedef struct _FeedbackVarBuf{
 	int32 minDisplacement;
 	void (*updateMaxMin)(void);
 }FeedbackVarBuf;
-
-
-
-
-
-
-
-
-
-
-
-
 #endif
