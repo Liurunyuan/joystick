@@ -50,7 +50,7 @@ int DeQueue()
 void RS422A_receive(void)
 {
 	//当接收fifo不为空时
-	while(1){//need to modify, should return when the rx fifo is empty
+	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
 			//TODO update error msg
 		}
@@ -85,7 +85,7 @@ int CalCrc(int crc, const char *buf, int len)
 }
 
 
-void UnpackRS422A()
+void UnpackRS422A(void)
 {
 	static int status = FindHead;
 	switch (status)

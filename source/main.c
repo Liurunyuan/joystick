@@ -11,6 +11,7 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "main.h"
+#include "SCI_ISR.h"
 
 /*git test*/
 
@@ -78,6 +79,7 @@ void Start_main_loop(void)
 {
 	/*tbd-----------------*/
 	FeedWatchDog();
+	UnpackRS422A();
 	//TODO need to implement
 }
 
@@ -100,7 +102,7 @@ void main(void) {
 
 	PowerOnBIT();
 	while(1)
-    {
+	{
 		Start_main_loop();
 	}
 	//test

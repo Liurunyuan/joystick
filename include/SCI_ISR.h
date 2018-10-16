@@ -22,5 +22,6 @@ enum {
 	Unpack,
 	UpdateHead
 };
+void UnpackRS422A(void);
 
 #endif
