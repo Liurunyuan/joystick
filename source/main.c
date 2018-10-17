@@ -61,9 +61,9 @@ void FeedWatchDog(void)
 	TOOGLE_WATCHDOG = TRUE;
 }
 
-void delayfunction(){
-	long count;
-	for(count = 0; count < 1000; count++){
+void delayfunction(int sec){
+	int count;
+	for(count = 0; count < sec; count++){
 		++count;
 	}
 }
@@ -84,7 +84,7 @@ void Start_main_loop(void)
 {
 	/*tbd-----------------*/
 	FeedWatchDog();
-	UnpackRS422A();
+	//UnpackRS422A();
 	//TODO need to implement
 }
 
