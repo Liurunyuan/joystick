@@ -105,11 +105,12 @@ void Init_Interrupt(void)
 	    IER = 0x0000;
 	 	IFR = 0x0000;
 	 	InitPieVectTable();
-
+/*
 	    IER |= M_INT1;
 	    IER |= M_INT2;
 	    IER |= M_INT3;
 	    IER |= M_INT9;//SCIa//ECAN//scib
+	    */
 	    EnableInterrupts();
 	    EINT;   // Enable Global interrupt INTM
 	    ERTM;

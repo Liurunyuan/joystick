@@ -61,7 +61,12 @@ void FeedWatchDog(void)
 	TOOGLE_WATCHDOG = TRUE;
 }
 
-
+void delayfunction(){
+	long count;
+	for(count = 0; count < 1000; count++){
+		++count;
+	}
+}
 int PowerOnBIT(void)
 {
 	//TODO   implement here, figure out what need to check, what to do if BIT fail.
