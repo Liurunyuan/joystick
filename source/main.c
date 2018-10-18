@@ -87,8 +87,18 @@ void Start_main_loop(void)
 	//UnpackRS422A();
 	//TODO need to implement
 }
-void test_sci_tx(){
+void test_sci_tx(void){
 	ScicRegs.SCITXBUF = 0x85;
+}
+void test_spi_tx(void){
+	int retry = 0;
+	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1){
+		retry ++;
+		if(retry > 200){
+				//return 0;
+		}
+	}
+	SpiaRegs.SPITXBUF = 0x0001;
 }
 /***************************************************************
  *Name:						main
@@ -112,6 +122,7 @@ void main(void) {
 	{
 		Start_main_loop();
 		delayfunction(32000);
+		test_spi_tx();
 		//test_sci_tx();
 	}
 	//test
