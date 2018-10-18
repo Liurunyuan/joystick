@@ -167,7 +167,7 @@ void scib_loopback_init(void)
 	ScibRegs.SCICTL2.bit.TXINTENA 	= 1;
 	ScibRegs.SCICTL2.bit.RXBKINTENA = 1;
     ScibRegs.SCIHBAUD    			= 0x0001;//0x0001;
-    ScibRegs.SCILBAUD    			= 0x0086;//0x00e7;44
+    ScibRegs.SCILBAUD    			= 0x0086;//0x00e7;115200
 	ScibRegs.SCICCR.bit.LOOPBKENA 	= 0; // enable loop back
 	ScibRegs.SCICTL1.all 			= 0x0023;     // Relinquish SCI from Reset
 }

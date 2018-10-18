@@ -123,7 +123,7 @@ void main(void) {
 		Start_main_loop();
 		delayfunction(32000);
 		test_spi_tx();
-		//test_sci_tx();
+		test_sci_tx();
 	}
 	//test
 }
