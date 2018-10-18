@@ -23,5 +23,6 @@ enum {
 	UpdateHead
 };
 void UnpackRS422A(void);
+void RS422A_receive(void);
 
 #endif

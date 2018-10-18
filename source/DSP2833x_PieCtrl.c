@@ -80,10 +80,12 @@ void EnableInterrupts()
 	//PieCtrlRegs.PIEIER2.bit.INTx2= 1;//TZ_FAULTA触发//
 	//PieCtrlRegs.PIEIER2.bit.INTx3= 1;//IKA_BJ触发//
 	//PieCtrlRegs.PIEIER2.bit.INTx4= 1;//IKB_BJ触发//
-	PieCtrlRegs.PIEIER2.bit.INTx6= 1;//应急开关触发
+	PieCtrlRegs.PIEIER2.bit.INTx6 = 1;//应急开关触发
 	PieCtrlRegs.PIEIER3.bit.INTx1 = 1;//ePWM1中断
 	PieCtrlRegs.PIEIER9.bit.INTx3 = 1;//SCIB接收中断
 	PieCtrlRegs.PIEIER9.bit.INTx4 = 1;//SCIB发送中断
+	PieCtrlRegs.PIEIER8.bit.INTx5 = 1;//SCIC RX Interrupt
+	PieCtrlRegs.PIEIER8.bit.INTx6 = 1;//SCIC TX Interrupt
 
    // EINT;
 
@@ -105,17 +107,19 @@ void Init_Interrupt(void)
 	    IER = 0x0000;
 	 	IFR = 0x0000;
 	 	InitPieVectTable();
-/*
-	    IER |= M_INT1;
-	    IER |= M_INT2;
-	    IER |= M_INT3;
+
+	    //IER |= M_INT1;
+	    //IER |= M_INT2;
+	    //IER |= M_INT3;
+	 	IER |= M_INT8;//SCIc
 	    IER |= M_INT9;//SCIa//ECAN//scib
-	    */
+
 	    EnableInterrupts();
 	    EINT;   // Enable Global interrupt INTM
 	    ERTM;
 	    AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;//此句要有，否则进步了中断，应为在该行代码执行前，seq1中断标识已经被立起，此处需要清除
 	    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;//此句做用同上
+	    ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;
 	    EALLOW;
 	    EPwm1Regs.TZCLR.bit.CBC=1;//清除CBC时间标志位
 	    EPwm1Regs.TZCLR.bit.INT=1;//清除中断标识位

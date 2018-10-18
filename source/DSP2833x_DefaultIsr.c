@@ -24,6 +24,7 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
+#include "SCI_ISR.h"
 
 interrupt void  TINT0_ISR(void)
 {
@@ -873,9 +874,9 @@ interrupt void SCIRXINTC_ISR(void)     // SCI-C
 
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
-
+  RS422A_receive();
+  ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;
+  PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
 }
 
 // INT8.6

@@ -199,7 +199,7 @@ void scic_loopback_init(void)
 	ScicRegs.SCICTL2.bit.TXINTENA =1;
 	ScicRegs.SCICTL2.bit.RXBKINTENA =1;
     ScicRegs.SCIHBAUD    =0x0001;//0x0001;
-    ScicRegs.SCILBAUD    =0x0086;//0x00e7;44
+    ScicRegs.SCILBAUD    =0x0086;//0x00e7;115200
 	ScicRegs.SCICCR.bit.LOOPBKENA =0; // enable loop back
 	ScicRegs.SCICTL1.all =0x0023;     // Relinquish SCI from Reset
 }
@@ -209,10 +209,10 @@ void scic_fifo_init(void)
     ScicRegs.SCIFFTX.bit.TXFIFOXRESET=0;
     ScicRegs.SCIFFRX.bit.RXFIFORESET=0;
 
-    ScicRegs.SCIFFTX.all=0xE030;
+    ScicRegs.SCIFFTX.all=0xE020;
     ScicRegs.SCIFFTX.bit.TXFFIENA=1;
     ScicRegs.SCIFFTX.bit.TXFFINTCLR=1;
-    ScicRegs.SCIFFRX.all=0x2030;
+    ScicRegs.SCIFFRX.all=0x2028;
     ScicRegs.SCIFFRX.bit.RXFFIENA=1;
     ScicRegs.SCIFFCT.all=0x0;
 }

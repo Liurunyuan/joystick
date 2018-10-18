@@ -87,7 +87,9 @@ void Start_main_loop(void)
 	//UnpackRS422A();
 	//TODO need to implement
 }
-
+void test_sci_tx(){
+	ScicRegs.SCITXBUF = 0x85;
+}
 /***************************************************************
  *Name:						main
  *Function:
@@ -109,6 +111,8 @@ void main(void) {
 	while(1)
 	{
 		Start_main_loop();
+		delayfunction(32000);
+		//test_sci_tx();
 	}
 	//test
 }
