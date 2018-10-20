@@ -22,6 +22,7 @@ enum {
 	Unpack,
 	UpdateHead
 };
+extern RS422RXQUE gRS422RxQue;
 void UnpackRS422A(void);
 void RS422A_receive(void);
 

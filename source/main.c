@@ -12,6 +12,7 @@
 #include "public.h"
 #include "main.h"
 #include "SCI_ISR.h"
+#include <string.h>
 
 /*git test*/
 
@@ -101,6 +102,19 @@ void test_spi_tx(void){
 	SpiaRegs.SPITXBUF = 0x0001;
 }
 /***************************************************************
+ *Name:						GlobleVarInit
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.20
+ ****************************************************************/
+void GlobleVarInit(void){
+	gRS422RxQue.front = 0;
+	gRS422RxQue.rear = 0;
+	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
+}
+/***************************************************************
  *Name:						main
  *Function:
  *Input:				    none
@@ -116,11 +130,17 @@ void main(void) {
 	Init_Peripheral();
 	/*interrupt init*/
 	Init_Interrupt();
+	GlobleVarInit();
 
 	PowerOnBIT();
 	while(1)
 	{
 		Start_main_loop();
+		delayfunction(32000);
+		delayfunction(32000);
+		delayfunction(32000);
+		delayfunction(32000);
+		delayfunction(32000);
 		delayfunction(32000);
 		test_spi_tx();
 		test_sci_tx();

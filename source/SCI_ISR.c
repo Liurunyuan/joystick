@@ -101,6 +101,7 @@ void UnpackRS422A(void)
 	case CheckLength:
 		if((gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3) < gRS422RxQue.rear)//接收缓冲区内数据长度大于一整包的长度
 		//TODO need to discuss and modify, because it is a cycle loop
+		//if(the length of the buf is less than the value of length)
 		{
 			status = CheckTail;
 		}
