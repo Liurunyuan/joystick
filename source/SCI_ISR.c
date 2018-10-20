@@ -46,6 +46,19 @@ int DeQueue(void)
 	gRS422RxQue.front = (gRS422RxQue.front + 1) % MAXQSIZE;
 	return 1;
 }
+/***************************************************************
+ *Name:						main
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.6.10
+ ****************************************************************/
+int RS422RxQueLength(){
+	int length;
+	length = (gRS422RxQue.rear - gRS422RxQue.front + MAXQSIZE) % MAXQSIZE;
+	return length;
+}
 /*************************************/
 void RS422A_receive(void)
 {
@@ -99,9 +112,10 @@ void UnpackRS422A(void)
 		}
 		status = CheckLength;
 	case CheckLength:
-		if((gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3) < gRS422RxQue.rear)//接收缓冲区内数据长度大于一整包的长度
+		//if((gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3) < gRS422RxQue.rear)//接收缓冲区内数据长度大于一整包的长度
 		//TODO need to discuss and modify, because it is a cycle loop
 		//if(the length of the buf is less than the value of length)
+		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE] < RS422RxQueLength())
 		{
 			status = CheckTail;
 		}
@@ -110,25 +124,25 @@ void UnpackRS422A(void)
 			break;
 		}
 	case CheckTail:
-		if(gRS422RxQue.rxBuff[gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3] == TAIL)
+		//if(gRS422RxQue.rxBuff[gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3] == TAIL)
+		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE] == TAIL)
 		{
 			status = CheckCRC;
 		}
 		else
 		{
-			gRS422RxQue.front += 1;
+			gRS422RxQue.front = (gRS422RxQue.front + 1) % MAXQSIZE;
 			status = FindHead;
 			break;
 		}
 	case CheckCRC:
 		// TODO CRC校验
-		if(1){
-			if(CalCrc(0, (gRS422RxQue.rxBuff)+2, gRS422RxQue.rxBuff[gRS422RxQue.front + 2]) == 0)
+		if(CalCrc(0, (gRS422RxQue.rxBuff)+2, gRS422RxQue.rxBuff[gRS422RxQue.front + 2]) == 0){
 			status = Unpack;
 		}
 		else
 		{
-			gRS422RxQue.front += 1;
+			gRS422RxQue.front = (gRS422RxQue.front + 1) % MAXQSIZE;
 			status = FindHead;
 			break;
 		}
@@ -136,30 +150,11 @@ void UnpackRS422A(void)
 		//TODO
 		status = UpdateHead;
 	case UpdateHead:
-		gRS422RxQue.front = gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 4;
+		gRS422RxQue.front = (gRS422RxQue.front + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE;
 		status = FindHead;
 		break;
 	default:
 		status = FindHead;
 		break;
 	}
-	/*
-	while(gRS422RxQue.rxBuff[gRS422RxQue.front] != HEAD){
-		if(DeQueue() == 0){
-			//没有包可以解，接收缓冲区为空
-			return;
-		}
-	}
-
-	if((gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3) < gRS422RxQue.rear)//接收缓冲区内数据长度大于一整包的长度
-	{
-		if(gRS422RxQue.rxBuff[gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3] == TAIL){
-
-		}
-	}
-	else
-	{
-
-	}
-	*/
 }

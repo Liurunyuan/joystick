@@ -85,7 +85,6 @@ void Start_main_loop(void)
 {
 	/*tbd-----------------*/
 	FeedWatchDog();
-	//UnpackRS422A();
 	//TODO need to implement
 }
 void test_sci_tx(void){
@@ -144,6 +143,7 @@ void main(void) {
 		delayfunction(32000);
 		test_spi_tx();
 		test_sci_tx();
+		UnpackRS422A();
 	}
 	//test
 }
