@@ -14,6 +14,7 @@
 #include "SCI_ISR.h"
 #include <string.h>
 #include <stdio.h>
+#include "ADprocessor.h"
 
 #define UART_PRINTF
 
@@ -146,9 +147,18 @@ void test_spi_tx(void){
  *Date:						2018.10.20
  ****************************************************************/
 void GlobleVarInit(void){
+	int index;
 	gRS422RxQue.front = 0;
 	gRS422RxQue.rear = 0;
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
+
+	for(index = 0; index <= TotalChannel; ++index)
+	{
+		//gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
+		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
+	}
+	//gSysMonitorVar.anolog.single.var[0].updateValue = ;
+
 }
 /***************************************************************
  *Name:						main

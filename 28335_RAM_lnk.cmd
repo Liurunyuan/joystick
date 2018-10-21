@@ -84,7 +84,9 @@ PAGE 0 :
    /* BEGIN is used for the "boot to SARAM" bootloader mode      */
 
    BEGIN      : origin = 0x000000, length = 0x000002     /* Boot to M0 will go here                      */
+   BOOT_RSVD  : origin = 0x000002, length = 0x00004E     /* Part of M0, BOOT rom will use this for stack */
    RAMM0      : origin = 0x000050, length = 0x0003B0
+
    RAML0      : origin = 0x008000, length = 0x000100
    RAML1      : origin = 0x008100, length = 0x002e00
    RAML2      : origin = 0x00Af00, length = 0x000100
@@ -105,7 +107,7 @@ PAGE 1 :
    /* This section is only reserved to keep the BOOT ROM from    */
    /* corrupting this area during the debug process              */
 
-   BOOT_RSVD  : origin = 0x000002, length = 0x00004E     /* Part of M0, BOOT rom will use this for stack */
+
    RAMM1      : origin = 0x000400, length = 0x000400     /* on-chip RAM block M1 */
    RAML4      : origin = 0x00C000, length = 0x001000
    RAML5      : origin = 0x00D000, length = 0x001000

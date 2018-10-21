@@ -51,11 +51,13 @@ void Pwm_ISR_Thread(void)
 	 */
 	//StartGetADBySpi();
 	ReadAnalogValue();
-	ReadDigitalValue();
+	//ReadDigitalValue();
+	/*
 	if(IsSingleAnalogValueAbnormal() == True)
 	{
 		//TODO
 	}
+	*/
 	//TODO prepare output
 	//ReadADBySpi();
 	//CalForceSpeedAccel();

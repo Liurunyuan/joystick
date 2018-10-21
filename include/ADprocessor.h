@@ -272,4 +272,8 @@ extern struct SingleAnalogVar gSingleAnalogVar[TotalChannel];
 extern SysMonitorVar gSysMonitorVar;
 //extern struct MULTCH gAnalogAndDigitalInspect;
 
+extern const UV funcptr[];
+
+
+
 #endif

@@ -3,6 +3,10 @@
 #include "public.h"
 #include "ADprocessor.h"
 
+
+
+
+
 int updateForceValue(void){return GET_FORCE_SGN;}
 int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}
 int updatePower28V_M(void){return GET_28V_M;}
@@ -14,6 +18,21 @@ int updateBusCurrentA(void){return GET_A_BUS_CURRENT;}
 int updateDisplacementValue(void){return GET_DISPLACEMENT_SGN;}
 int updateBridgeCurrentC(void){return GET_C_BRIDGE_CURRENT;}
 int updateBusCurrentC(void){return GET_C_BUS_CURRENT;}
+
+
+const UV funcptr[] = {
+	updateForceValue,
+	updateBusCurrentP,
+	updatePower28V_M,
+	updateBridgeCurrentB,
+	updateBusCurrentB,
+	updatePower28V,
+	updateBridgeCurrentA,
+	updateBusCurrentA,
+	updateDisplacementValue,
+	updateBridgeCurrentC,
+	updateBusCurrentC
+};
 
 struct MULTCH multiCHInspect = {0};
 struct SingleAnalogVar gSingleAnalogVar[TotalChannel] = {
