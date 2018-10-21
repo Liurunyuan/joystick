@@ -173,7 +173,7 @@ void main(void) {
 	{
 		Start_main_loop();
 		int i;
-		for(i = 0; i < 500; ++i){
+		for(i = 0; i < 1000; ++i){
 			delayfunction(32000);
 		}
 

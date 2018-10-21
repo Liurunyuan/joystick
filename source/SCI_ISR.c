@@ -143,7 +143,6 @@ void UnpackRS422A(void)
 	int i;
 	int length;
 	int tail;
-	Uint16 crc;
 
 	printf("front = %d\r\n",gRS422RxQue.front);
 	printf("rear = %d\r\n",gRS422RxQue.rear);
@@ -160,14 +159,7 @@ void UnpackRS422A(void)
 
 		status = CheckLength;
 	case CheckLength:
-		//if((gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3) < gRS422RxQue.rear)//接收缓冲区内数据长度大于一整包的长度
-		//TODO need to discuss and modify, because it is a cycle loop
-		//if(the length of the buf is less than the value of length)
-		//printf("rx que length = %d \r\n", RS422RxQueLength());
-		//printf("received length value = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]);
-
 		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE] < RS422RxQueLength())
-		//if(length < RS422RxQueLength())
 		{
 			printf("check length ------------success \r\n");
 			length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE];
@@ -176,8 +168,6 @@ void UnpackRS422A(void)
 			}
 			tail = rs422rxPack[length - 1];
 			status = CheckTail;
-			printf("length = % d\r\n", length);
-			printf("tail   =  %d\r\n", tail);
 		}
 		else
 		{
@@ -186,9 +176,6 @@ void UnpackRS422A(void)
 			break;
 		}
 	case CheckTail:
-		//if(gRS422RxQue.rxBuff[gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3] == TAIL)
-		//printf("tail = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE]);
-		//if(gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE] == TAIL)
 		if(tail == TAIL)
 		{
 			printf("check tail --------------success \r\n");
@@ -204,7 +191,6 @@ void UnpackRS422A(void)
 	case CheckCRC:
 		// TODO CRC校验
 		if(CalCrc(0, rs422rxPack + 2, length - 3 ) == 0){
-		//if(CalCrc(0, (gRS422RxQue.rxBuff)+2, gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]) == 0){
 			printf("crc check ===============success \r\n");
 			status = Unpack;
 		}
@@ -221,7 +207,7 @@ void UnpackRS422A(void)
 		//TODO
 		status = UpdateHead;
 	case UpdateHead:
-		gRS422RxQue.front = (gRS422RxQue.front + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE;
+		gRS422RxQue.front = (gRS422RxQue.front  + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE;
 		status = FindHead;
 		printf("Success!!!, Got the profile data \r\n");
 		break;
