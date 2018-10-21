@@ -7,6 +7,7 @@
 /***********globle variable define here***************/
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
+char rs422rxPack[16];
 
 static void MsgStatusUnpack(int a, int b, int c)
 {
@@ -23,7 +24,14 @@ const functionMsgCodeUnpack msgInterface[] =
 		0,
 		0
 };
-
+/***************************************************************
+ *Name:						EnQueue
+ *Function:					insert the element in the queue
+ *Input:				    received data from SCIC
+ *Output:					1 or 0, 1 means insert success, 0 means the queue is full
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 int EnQueue(int e){
 	if((gRS422RxQue.rear + 1) % MAXQSIZE == gRS422RxQue.front){
 		printf("EnQueue FULL \r\n");
@@ -39,6 +47,14 @@ int EnQueue(int e){
 //data:.....
 //CRC:0xXX
 //tail:0xAA
+/***************************************************************
+ *Name:						DeQueue
+ *Function:					remove the element in the queue
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 int DeQueue(void)
 {
 	if(gRS422RxQue.front == gRS422RxQue.rear){
@@ -54,14 +70,21 @@ int DeQueue(void)
  *Input:				    none
  *Output:					none
  *Author:					Simon
- *Date:						2018.6.10
+ *Date:						2018.10.21
  ****************************************************************/
 int RS422RxQueLength(){
 	int length;
 	length = (gRS422RxQue.rear - gRS422RxQue.front + MAXQSIZE) % MAXQSIZE;
 	return length;
 }
-/*************************************/
+/***************************************************************
+ *Name:						RS422A_receive
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 void RS422A_receive(void)
 {
 	//当接收fifo不为空时
@@ -72,7 +95,14 @@ void RS422A_receive(void)
 		}
 	}
 }
-
+/***************************************************************
+ *Name:						CalCrc
+ *Function:
+ *Input:				    rs422 rx data
+ *Output:					int, should be zero
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 int CalCrc(int crc, const char *buf, int len)
 {
 	unsigned int byte;
@@ -99,11 +129,22 @@ int CalCrc(int crc, const char *buf, int len)
 	remainder = remainder^0x0000;
 	return remainder;
 }
-
-
+/***************************************************************
+ *Name:						UnpackRS422A
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 void UnpackRS422A(void)
 {
 	static int status = FindHead;
+	int i;
+	int length;
+	int tail;
+	Uint16 crc;
+
 	printf("front = %d\r\n",gRS422RxQue.front);
 	printf("rear = %d\r\n",gRS422RxQue.rear);
 	switch (status)
@@ -116,26 +157,39 @@ void UnpackRS422A(void)
 				return;
 			}
 		}
+
 		status = CheckLength;
 	case CheckLength:
 		//if((gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3) < gRS422RxQue.rear)//接收缓冲区内数据长度大于一整包的长度
 		//TODO need to discuss and modify, because it is a cycle loop
 		//if(the length of the buf is less than the value of length)
-		printf("rx que length = %d \r\n", RS422RxQueLength());
-		printf("received length value = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]);
+		//printf("rx que length = %d \r\n", RS422RxQueLength());
+		//printf("received length value = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]);
+
 		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE] < RS422RxQueLength())
+		//if(length < RS422RxQueLength())
 		{
-			printf("check length --------------success \r\n");
+			printf("check length ------------success \r\n");
+			length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE];
+			for(i = 0; i < length; ++i){
+				rs422rxPack[i] = gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE];
+			}
+			tail = rs422rxPack[length - 1];
 			status = CheckTail;
+			printf("length = % d\r\n", length);
+			printf("tail   =  %d\r\n", tail);
 		}
 		else
 		{
+			status = FindHead;
+			printf("check length ------------failed!!!!!!, waiting for the data \r\n");
 			break;
 		}
 	case CheckTail:
 		//if(gRS422RxQue.rxBuff[gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3] == TAIL)
-		printf("tail = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE]);
-		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE] == TAIL)
+		//printf("tail = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE]);
+		//if(gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE] == TAIL)
+		if(tail == TAIL)
 		{
 			printf("check tail --------------success \r\n");
 			status = CheckCRC;
@@ -144,28 +198,32 @@ void UnpackRS422A(void)
 		{
 			gRS422RxQue.front = (gRS422RxQue.front + 1) % MAXQSIZE;
 			status = FindHead;
+			printf("check tail ------------failed!!!!!!, move front to next one, continue find head...... \r\n");
 			break;
 		}
 	case CheckCRC:
 		// TODO CRC校验
-		/*
-		if(CalCrc(0, (gRS422RxQue.rxBuff)+2, gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]) == 0){
+		if(CalCrc(0, rs422rxPack + 2, length - 3 ) == 0){
+		//if(CalCrc(0, (gRS422RxQue.rxBuff)+2, gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]) == 0){
+			printf("crc check ===============success \r\n");
 			status = Unpack;
 		}
 		else
 		{
 			gRS422RxQue.front = (gRS422RxQue.front + 1) % MAXQSIZE;
 			status = FindHead;
+			printf("crc check ------------failed!!!!!!, move front to next one, continue find head...... \r\n");
 			break;
 		}
-		*/
+
 		status = Unpack;
 	case Unpack:
 		//TODO
 		status = UpdateHead;
 	case UpdateHead:
-		gRS422RxQue.front = (gRS422RxQue.front + 1 + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE;
+		gRS422RxQue.front = (gRS422RxQue.front + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE;
 		status = FindHead;
+		printf("Success!!!, Got the profile data \r\n");
 		break;
 	default:
 		status = FindHead;
