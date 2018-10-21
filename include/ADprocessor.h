@@ -268,7 +268,6 @@ void AnalogValueInspect(void);
 void DigitalValueInspect(void);
 void ReadAnalogValue(void);
 void ReadDigitalValue(void);
-extern struct SingleAnalogVar gSingleAnalogVar[TotalChannel];
 extern SysMonitorVar gSysMonitorVar;
 //extern struct MULTCH gAnalogAndDigitalInspect;
 

@@ -35,21 +35,6 @@ const UV funcptr[] = {
 };
 
 struct MULTCH multiCHInspect = {0};
-struct SingleAnalogVar gSingleAnalogVar[TotalChannel] = {
-
-													{0, MAX_FORCE, MIN_FORCE, updateForceValue},
-													{0, MAX_BUS_CURRENT_P, MIN_BUS_CURRENT_P, updateBusCurrentP},
-													{0, MAX_28V_M, MIN_28V_M, updatePower28V_M},
-													{0, MAX_B_BRIDGE_CURRENT, MIN_B_BRIDGE_CURRENT, updateBridgeCurrentB},
-													{0, MAX_B_BUS_CURRENT, MIN_B_BUS_CURRENT, updateBusCurrentB},
-													{0, MAX_28V, MIN_28V, updatePower28V},
-													{0, MAX_A_BRIDGE_CURRENT, MIN_A_BRIDGE_CURRENT, updateBridgeCurrentA},
-													{0, MAX_A_BUS_CURRENT, MIN_A_BUS_CURRENT, updateBusCurrentA},
-													{0, MAX_DISPLACEMENT, MIN_DISPLACEMENT, updateDisplacementValue},
-													{0, MAX_C_BRIDGE_CURRENT, MIN_C_BRIDGE_CURRENT, updateBridgeCurrentC},
-													{0, MAX_C_BUS_CURRENT, MIN_C_BUS_CURRENT, updateBusCurrentC}
-
-												};
 
 
 
