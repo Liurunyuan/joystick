@@ -25,6 +25,7 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "SCI_ISR.h"
+#include "PWM_ISR.h"
 
 interrupt void  TINT0_ISR(void)
 {
@@ -341,8 +342,9 @@ interrupt void EPWM1_TZINT_ISR(void)     // TZ_FAULTA´¥·¢ÖÐ¶Ï
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
 //
-	 asm ("      ESTOP0");
-	 for(;;);
+	  asm ("      ESTOP0");
+	  for(;;);
+
 }
 
 // INT2.2
@@ -438,8 +440,10 @@ interrupt void EPWM1_INT_ISR(void)     // EPWM-1
 
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
+	Pwm_ISR_Thread();
+	EPwm1Regs.ETCLR.bit.INT = 1;
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP3;
+
 }
 
 // INT3.2

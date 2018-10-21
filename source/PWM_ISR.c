@@ -49,7 +49,7 @@ void Pwm_ISR_Thread(void)
 	在PWM中断中，中断第10次准备刷新LW_BUFF时，检查LOCK，若LOCK=1，则复制数据，并将LOCK=0；若LOCK=0，则软件报警（LOCK 001）
 	在0.25ms中断中，进入中断判断LOCK，若LOCK=0，则复制数据（将全局变量以形参的形式调用函数，等于将全局变量压入堆栈，被调用的函数第一句话将全局变量的LOCK=1）；若LOCK=1，则报警（LOCK 002）
 	 */
-	StartGetADBySpi();
+	//StartGetADBySpi();
 	ReadAnalogValue();
 	ReadDigitalValue();
 	if(IsSingleAnalogValueAbnormal() == True)
@@ -57,8 +57,8 @@ void Pwm_ISR_Thread(void)
 		//TODO
 	}
 	//TODO prepare output
-	ReadADBySpi();
-	CalForceSpeedAccel();
+	//ReadADBySpi();
+	//CalForceSpeedAccel();
 
 }
 

@@ -110,7 +110,7 @@ void Init_Interrupt(void)
 
 	    //IER |= M_INT1;
 	    //IER |= M_INT2;
-	    //IER |= M_INT3;
+	    IER |= M_INT3;
 	 	IER |= M_INT8;//SCIc
 	    IER |= M_INT9;//SCIa//ECAN//scib
 
