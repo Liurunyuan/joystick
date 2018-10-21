@@ -13,6 +13,43 @@
 #include "main.h"
 #include "SCI_ISR.h"
 #include <string.h>
+#include <stdio.h>
+
+#define UART_PRINTF
+
+#ifdef UART_PRINTF
+
+int fputc(int _c, register FILE *_fp);
+int fputs(const char *_ptr, register FILE *_fp);
+
+#endif
+
+#ifdef UART_PRINTF
+
+int fputc(int _c, register FILE *_fp){
+	while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
+	}
+
+	ScicRegs.SCITXBUF = (unsigned char) _c;
+
+	return ((unsigned char) _c);
+}
+
+int fputs(const char *_ptr, register FILE *_fp){
+	unsigned int i, len;
+
+	len = strlen(_ptr);
+
+	for(i = 0; i < len; ++i){
+		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
+		}
+		ScicRegs.SCITXBUF =(unsigned char) _ptr[i];
+	}
+
+	return len;
+}
+
+#endif
 
 /*git test*/
 
@@ -135,14 +172,13 @@ void main(void) {
 	while(1)
 	{
 		Start_main_loop();
-		delayfunction(32000);
-		delayfunction(32000);
-		delayfunction(32000);
-		delayfunction(32000);
-		delayfunction(32000);
-		delayfunction(32000);
+		int i;
+		for(i = 0; i < 500; ++i){
+			delayfunction(32000);
+		}
+
 		test_spi_tx();
-		test_sci_tx();
+		//test_sci_tx();
 		UnpackRS422A();
 	}
 	//test

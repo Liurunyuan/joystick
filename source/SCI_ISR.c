@@ -1,6 +1,7 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "SCI_ISR.h"
+#include <stdio.h>
 
 
 /***********globle variable define here***************/
@@ -25,6 +26,7 @@ const functionMsgCodeUnpack msgInterface[] =
 
 int EnQueue(int e){
 	if((gRS422RxQue.rear + 1) % MAXQSIZE == gRS422RxQue.front){
+		printf("EnQueue FULL \r\n");
 		return 0;
 	}
 
@@ -65,6 +67,7 @@ void RS422A_receive(void)
 	//当接收fifo不为空时
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
+			printf("接收缓冲区FULL\r\n");
 			//TODO update error msg
 		}
 	}
@@ -101,11 +104,14 @@ int CalCrc(int crc, const char *buf, int len)
 void UnpackRS422A(void)
 {
 	static int status = FindHead;
+	printf("front = %d\r\n",gRS422RxQue.front);
+	printf("rear = %d\r\n",gRS422RxQue.rear);
 	switch (status)
 	{
 	case FindHead:
-		while(gRS422RxQue.rxBuff[gRS422RxQue.front] != HEAD){
+		while(gRS422RxQue.rxBuff[gRS422RxQue.front] != HEAD || gRS422RxQue.front == gRS422RxQue.rear){
 			if(DeQueue() == 0){
+				printf("接收缓冲区为空\r\n");
 				//没有包可以解，接收缓冲区为空
 				return;
 			}
@@ -115,8 +121,11 @@ void UnpackRS422A(void)
 		//if((gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3) < gRS422RxQue.rear)//接收缓冲区内数据长度大于一整包的长度
 		//TODO need to discuss and modify, because it is a cycle loop
 		//if(the length of the buf is less than the value of length)
+		printf("rx que length = %d \r\n", RS422RxQueLength());
+		printf("received length value = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]);
 		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE] < RS422RxQueLength())
 		{
+			printf("check length --------------success \r\n");
 			status = CheckTail;
 		}
 		else
@@ -125,8 +134,10 @@ void UnpackRS422A(void)
 		}
 	case CheckTail:
 		//if(gRS422RxQue.rxBuff[gRS422RxQue.front + gRS422RxQue.rxBuff[gRS422RxQue.front + 1] + 3] == TAIL)
-		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE] == TAIL)
+		printf("tail = %d \r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE]);
+		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + (gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE])) % MAXQSIZE] == TAIL)
 		{
+			printf("check tail --------------success \r\n");
 			status = CheckCRC;
 		}
 		else
@@ -137,7 +148,8 @@ void UnpackRS422A(void)
 		}
 	case CheckCRC:
 		// TODO CRC校验
-		if(CalCrc(0, (gRS422RxQue.rxBuff)+2, gRS422RxQue.rxBuff[gRS422RxQue.front + 2]) == 0){
+		/*
+		if(CalCrc(0, (gRS422RxQue.rxBuff)+2, gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]) == 0){
 			status = Unpack;
 		}
 		else
@@ -146,11 +158,13 @@ void UnpackRS422A(void)
 			status = FindHead;
 			break;
 		}
+		*/
+		status = Unpack;
 	case Unpack:
 		//TODO
 		status = UpdateHead;
 	case UpdateHead:
-		gRS422RxQue.front = (gRS422RxQue.front + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE;
+		gRS422RxQue.front = (gRS422RxQue.front + 1 + gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE]) % MAXQSIZE;
 		status = FindHead;
 		break;
 	default:
