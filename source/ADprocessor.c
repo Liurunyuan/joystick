@@ -146,12 +146,9 @@ void SwitchAnalogChannel(Uint16 address)
 	 *
 	 * */
 	SET_AD1K = address & 0x0001;
-	asm(" nop");
-
-
+	SET_AD3K = (address & 0x0004) >> 2;
+    SET_AD4K = (address & 0x0008) >> 3;
 	SET_AD2K = (address & 0x0002) >> 1;
-	//SET_AD3K = (address & 0x0004) >> 2;
-    //SET_AD4K = (address & 0x0008) >> 3;
 }
 /**************************************************************
  *Name:						AnalogValueInspect
