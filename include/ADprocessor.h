@@ -11,10 +11,10 @@
 #define GET_ADCINB1	    ((AdcRegs.ADCRESULT9) >> 4)
 
 /*****************模拟量多通道BIT检测地址位设置************/
-#define SET_AD1K		(GpioDataRegs.GPASET.bit.GPIO30)
-#define SET_AD2K		(GpioDataRegs.GPASET.bit.GPIO29)
-#define SET_AD3K		(GpioDataRegs.GPCSET.bit.GPIO85)
-#define SET_AD4K		(GpioDataRegs.GPBSET.bit.GPIO39)
+#define SET_AD1K		(GpioDataRegs.GPADAT.bit.GPIO30)
+#define SET_AD2K		(GpioDataRegs.GPADAT.bit.GPIO29)
+#define SET_AD3K		(GpioDataRegs.GPCDAT.bit.GPIO85)
+#define SET_AD4K		(GpioDataRegs.GPBDAT.bit.GPIO39)
 /*********************************************************/
 
 /*****************数字量多通道BIT检测设置******************/

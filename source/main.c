@@ -152,13 +152,15 @@ void GlobleVarInit(void){
 	gRS422RxQue.rear = 0;
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
 
-	for(index = 0; index <= TotalChannel; ++index)
+	for(index = 0; index < TotalChannel; ++index)
 	{
-		//gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
 		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
 	}
-	//gSysMonitorVar.anolog.single.var[0].updateValue = ;
 
+	for(index=0; index < 12; ++index)
+	{
+		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
+	}
 }
 /***************************************************************
  *Name:						main
@@ -183,6 +185,7 @@ void main(void) {
 	{
 		Start_main_loop();
 		int i;
+
 		for(i = 0; i < 1000; ++i){
 			delayfunction(32000);
 		}

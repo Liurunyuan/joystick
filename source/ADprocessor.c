@@ -5,7 +5,7 @@
 
 
 
-
+int test = 0;
 
 int updateForceValue(void){return GET_FORCE_SGN;}
 int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}
@@ -50,7 +50,7 @@ SysMonitorVar gSysMonitorVar;
 void UpdateSingleAnalogInput(void)
 {
 	int index;
-	for(index = 0; index <= TotalChannel; ++index)
+	for(index = 0; index < TotalChannel; ++index)
 	{
 		gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
 	}
@@ -106,7 +106,7 @@ int AdcConversionUnStable() {
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-int AnalogChannelChange(int address)
+Uint16 AnalogChannelChange(Uint16 address)
 {
 
 	++address;
@@ -123,7 +123,7 @@ int AnalogChannelChange(int address)
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-void ReadChannelAdcValue(int index)
+void ReadChannelAdcValue(Uint16 index)
 {
 	gSysMonitorVar.anolog.multi[0].var[index].value = GET_ADCINB7;
 	gSysMonitorVar.anolog.multi[1].var[index].value = GET_ADCINB1;
@@ -136,7 +136,7 @@ void ReadChannelAdcValue(int index)
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-void SwitchAnalogChannel(int address)
+void SwitchAnalogChannel(Uint16 address)
 {
 	/*
 	 * GPIO30->AD1K
@@ -146,9 +146,12 @@ void SwitchAnalogChannel(int address)
 	 *
 	 * */
 	SET_AD1K = address & 0x0001;
-	SET_AD2K = address & 0x0002;
-	SET_AD3K = address & 0x0003;
-    SET_AD4K = address & 0x0004;
+	asm(" nop");
+
+
+	SET_AD2K = (address & 0x0002) >> 1;
+	//SET_AD3K = (address & 0x0004) >> 2;
+    //SET_AD4K = (address & 0x0008) >> 3;
 }
 /**************************************************************
  *Name:						AnalogValueInspect
@@ -160,7 +163,7 @@ void SwitchAnalogChannel(int address)
  **************************************************************/
 void AnalogValueInspect(void)
 {
-    static int address = 0;
+    static Uint16 address = 0;
     if(AdcConversionUnStable())
     {
     	return;
