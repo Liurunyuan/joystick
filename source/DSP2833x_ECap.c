@@ -248,6 +248,30 @@ void InitECap6Gpio(void)
 }
 #endif // endif DSP28_ECAP6
 
+void ECap1Config(void){
+	 EALLOW;
+	 SysCtrlRegs.PCLKCR1.bit.ECAP1ENCLK = 1;
+	 EDIS;
+	 /* Initialize eCAP1/2/3 */
+	 ECap1Regs.ECEINT.all = 0x0000;             /* Disable all capture interrupts */
+	 ECap1Regs.ECCLR.all = 0xFFFF;              /* Clear all CAP interrupt flags  */
+	 ECap1Regs.ECCTL1.bit.CAPLDEN = 0;          /* disable CAP1-CAP4 register loads*/
+	 ECap1Regs.ECCTL2.bit.TSCTRSTOP = 0;        /* Make sure the counter is stopped*/
+
+	 /* Configure peripheral registers*/
+	 ECap1Regs.ECCTL2.bit.CONT_ONESHT = 0;
+
+	 ECap1Regs.ECCTL1.bit.CAP1POL = 0;
+	 ECap1Regs.ECCTL1.bit.CTRRST1 = 0;
+	 ECap1Regs.ECCTL2.bit.SYNCI_EN = 0;
+	 ECap1Regs.ECCTL2.bit.SYNCO_SEL = 3;
+	 ECap1Regs.ECCTL1.bit.PRESCALE =0;
+
+	 ECap1Regs.ECCTL2.bit.TSCTRSTOP = 1;        /* Start Counter*/
+	 ECap1Regs.ECCTL1.bit.CAPLDEN = 1;          // Enable CAP1-CAP4 register loads
+	 ECap1Regs.ECEINT.bit.CEVT1 = 1;            // 2 events = interrupt
+
+}
 
 void CAP_Config(void)
 {
