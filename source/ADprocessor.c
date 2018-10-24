@@ -34,6 +34,23 @@ const UV funcptr[] = {
 	updateBusCurrentC
 };
 
+const int anologMaxMinInit[][2] = {
+		{0,0},
+		{1,0},
+		{2,0},
+		{3,0},
+		{4,0},
+		{5,0},
+		{6,0},
+		{7,0},
+		{8,0},
+		{9,0},
+		{10,0}
+};
+
+
+
+
 struct MULTCH multiCHInspect = {0};
 
 
@@ -246,8 +263,14 @@ void UpdateSingleDigitInput(void)
  **************************************************************/
 void ReadAnalogValue(void)
 {
-	UpdateSingleAnalogInput();
-	AnalogValueInspect();
+    if((AdcRegs.ADCASEQSR.bit.SEQ_CNTR==0)&&
+              (AdcRegs.ADCST.bit.SEQ1_BSY==0)){
+    	UpdateSingleAnalogInput();
+    	AnalogValueInspect();
+    }
+    else{
+
+    }
 }
 /**************************************************************
  *Name:						ReadDigitalValue

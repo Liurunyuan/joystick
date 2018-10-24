@@ -36,10 +36,10 @@ void InitAdc(void)
 	// See the device data manual and/or the ADC Reference
 	// Manual for more information.
 
-	    EALLOW;
-	//	SysCtrlRegs.PCLKCR0.bit.ADCENCLK = 1;
-		ADC_cal();
-		EDIS;
+	EALLOW;
+	SysCtrlRegs.PCLKCR0.bit.ADCENCLK = 1;
+	ADC_cal();
+	EDIS;
 
 
 
@@ -54,23 +54,40 @@ void InitAdc(void)
 	// contain the correct CPU clock period in nanoseconds.
 
     //AdcRegs.ADCTRL3.all = 0x00E0;  // Power up bandgap/reference/ADC circuits
-	  AdcRegs.ADCTRL3.bit.ADCBGRFDN = 3;//  模数转换内部参考电压源电路上电
-  	  AdcRegs.ADCTRL3.bit.ADCPWDN = 1;//  模数转换核模拟电路加电
+	AdcRegs.ADCTRL3.bit.ADCBGRFDN = 3;//  模数转换内部参考电压源电路上电
+  	AdcRegs.ADCTRL3.bit.ADCPWDN = 1;//  模数转换核模拟电路加电
     //DELAY_US(20); // Delay at least 20us before converting ADC channels 	//  至少20us延时
-  	  DELAY_US(5000);
+  	DELAY_US(5000);
     //DELAY_US(ADC_usDELAY);         // Delay before converting ADC channels
 }
 
 void ADC_Config(void)
 {
-    AdcRegs.ADCTRL1.bit.ACQ_PS = 0x5;
-    AdcRegs.ADCTRL3.bit.ADCCLKPS = 0x5;//时钟预分频
-    AdcRegs.ADCTRL3.bit.SMODE_SEL=0;//顺序采样
-    AdcRegs.ADCTRL1.bit.SEQ_CASC = 1;//级联排序器模式
-    AdcRegs.ADCTRL1.bit.CONT_RUN=1;//连续运行
-    AdcRegs.ADCTRL1.bit.SEQ_OVRD=0;//装换完max通道后，排序器指针复位到初始状态
 
-    AdcRegs.ADCMAXCONV.bit.MAX_CONV1 =0xF;   // Set up ADC to perform 4 conversions for every SOC
+    AdcRegs.ADCTRL3.bit.ADCCLKPS = 0x5;//时钟预分频
+    AdcRegs.ADCTRL3.bit.SMODE_SEL = 1;//同步采样
+    AdcRegs.ADCTRL1.bit.ACQ_PS = 0x0;
+    AdcRegs.ADCTRL1.bit.SEQ_CASC = 1;//级联排序器模式
+    AdcRegs.ADCTRL1.bit.CONT_RUN = 0;//mode: start/stop
+    AdcRegs.ADCTRL1.bit.SEQ_OVRD = 0;//装换完max通道后，排序器指针复位到初始状态
+    AdcRegs.ADCTRL1.bit.SUSMOD = 2;
+    AdcRegs.ADCTRL2.bit.SOC_SEQ1 	= 1;
+    AdcRegs.ADCTRL2.bit.EPWM_SOCB_SEQ = 0;
+    AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0;
+    AdcRegs.ADCTRL2.bit.INT_MOD_SEQ1 = 0;
+    AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 0;
+    AdcRegs.ADCTRL2.bit.SOC_SEQ2= 0;
+    AdcRegs.ADCTRL2.bit.INT_ENA_SEQ2 = 0;
+    AdcRegs.ADCTRL2.bit.INT_MOD_SEQ2 = 0;
+    AdcRegs.ADCTRL2.bit.EPWM_SOCB_SEQ2 = 0;
+    AdcRegs.ADCMAXCONV.bit.MAX_CONV1 =0xF;   // max conversion channel
+    //AdcRegs.ADCMAXCONV.bit.MAX_CONV1= 0x5;
+    AdcRegs.ADCST.bit.INT_SEQ1_CLR = 1;
+    AdcRegs.ADCST.bit.INT_SEQ2_CLR = 1;
+    AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 1;
+    DELAY_US(ADC_usDELAY);
+
+
     AdcRegs.ADCCHSELSEQ1.bit.CONV00 = 0x0;
     AdcRegs.ADCCHSELSEQ1.bit.CONV01 = 0x1;
     AdcRegs.ADCCHSELSEQ1.bit.CONV02 = 0x2;
@@ -87,9 +104,22 @@ void ADC_Config(void)
     AdcRegs.ADCCHSELSEQ4.bit.CONV13 = 0xD;
     AdcRegs.ADCCHSELSEQ4.bit.CONV14 = 0xE;
     AdcRegs.ADCCHSELSEQ4.bit.CONV15 = 0xF;
+
+
+    AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 1;
+    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;
+    AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 1;
+    //new adc init
+/*
+    AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 1;//允许ePWM的触发信号启动SEQ1
+
     AdcRegs.ADCTRL2.bit.RST_SEQ1 = 0x1;			//复位排序器SEQ1到CONV00状态
     AdcRegs.ADCTRL2.bit.INT_MOD_SEQ1=0;			//每个SEQ1序列结束时，INT_SEQ1置位
-    AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x1;		//允许SEQ1中断
+    AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x0;		//禁止SEQ1中断
+
+    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;
+    AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 1;
+    */
 }
 /*
  * Initialize ADC, including GPIO and configuration

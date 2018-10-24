@@ -272,6 +272,7 @@ extern SysMonitorVar gSysMonitorVar;
 //extern struct MULTCH gAnalogAndDigitalInspect;
 
 extern const UV funcptr[];
+extern const int anologMaxMinInit[][2];
 
 
 

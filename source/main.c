@@ -154,7 +154,10 @@ void GlobleVarInit(void){
 
 	for(index = 0; index < TotalChannel; ++index)
 	{
+
 		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
+		gSysMonitorVar.anolog.single.var[index].max = anologMaxMinInit[index][0];
+		gSysMonitorVar.anolog.single.var[index].min = anologMaxMinInit[index][1];
 	}
 
 	for(index=0; index < 12; ++index)

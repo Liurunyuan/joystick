@@ -228,6 +228,10 @@ void InitEPwm1()
 	EPwm1Regs.ETSEL.bit.INTEN = 1;
 	EPwm1Regs.ETPS.bit.INTPRD = ET_1ST;
 
+	EPwm1Regs.ETSEL.bit.SOCAEN = 1;
+	EPwm1Regs.ETSEL.bit.SOCASEL = ET_CTR_PRD;
+	EPwm1Regs.ETPS.bit.SOCAPRD = 1;
+
 	EPwm1Regs.DBCTL.all = 0x7;
 	EPwm1Regs.DBRED = 180;
 	EPwm1Regs.DBFED = 180;
