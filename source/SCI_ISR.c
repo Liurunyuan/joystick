@@ -130,6 +130,44 @@ int CalCrc(int crc, const char *buf, int len)
 	return remainder;
 }
 /***************************************************************
+ *Name:						findhead
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
+int findhead(void){
+	char head1;
+	char head2;
+	while(1){
+		if(DeQueue() == 0){
+			printf("接收缓冲区为空\r\n");
+			return 0;
+		}
+
+		head1 = gRS422RxQue.rxBuff[gRS422RxQue.front];
+		head2 = gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE];
+
+		if(head1 == 0x55 && head2 == 0x5A){
+			return 1;
+		}
+	}
+}
+/***************************************************************
+ *Name:						findtail
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
+int findtail(void){
+	return 0;
+}
+
+
+/***************************************************************
  *Name:						UnpackRS422A
  *Function:
  *Input:				    none
