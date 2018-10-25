@@ -195,7 +195,8 @@ void main(void) {
 
 		test_spi_tx();
 		//test_sci_tx();
-		UnpackRS422A();
+		//UnpackRS422A();
+		UnpackRS422ANew();
 	}
 	//test
 }

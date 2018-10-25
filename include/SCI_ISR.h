@@ -25,5 +25,6 @@ enum {
 extern RS422RXQUE gRS422RxQue;
 void UnpackRS422A(void);
 void RS422A_receive(void);
+void UnpackRS422ANew(void);
 
 #endif
