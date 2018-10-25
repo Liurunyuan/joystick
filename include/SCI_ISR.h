@@ -5,8 +5,18 @@
 #define RXBUGLEN (16)
 typedef void (*functionMsgCodeUnpack)(int a, int b,int c);
 
+#define HEAD1 0x55
+#define HEAD2 0x5A
+#define TAIL1 0xAA
+#define TAIL2 0xBB
+
 #define HEAD 0x55
 #define TAIL 0xAA
+
+
+
+#define FAIL (0)
+#define SUCCESS (1)
 
 typedef struct _RS422RXQUE{
 	char rxBuff[MAXQSIZE];

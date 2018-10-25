@@ -105,29 +105,16 @@ void RS422A_receive(void)
  ****************************************************************/
 int CalCrc(int crc, const char *buf, int len)
 {
-	unsigned int byte;
-	unsigned char k;
-	unsigned short ACC, TOPBIT;
-	unsigned short remainder = crc;
-	TOPBIT = 0x8000;
-	for (byte = 0; byte < len; ++byte)
-	{
-		ACC = buf[byte];
-		remainder ^= (ACC <<8);
-		for(k = 8; k > 0; --k)
-		{
-			if (remainder & TOPBIT)
-			{
-				remainder = (remainder << 1) ^0x8005;
-			}
-			else
-			{
-				remainder = (remainder << 1);
-			}
-		}
+	int x;
+	int i;
+
+	for(i = 0; i < len; ++i){
+		x = ((crc >> 8) ^ buf[i]) & 0xff;
+		x ^= x >> 4;
+		crc = (crc << 8) ^ (x  << 12) ^ (x << 5) ^ 5;
+		crc &= 0xffff;
 	}
-	remainder = remainder^0x0000;
-	return remainder;
+	return crc;
 }
 
 
@@ -226,7 +213,7 @@ void UnpackRS422A(void)
  *Input:				    none
  *Output:					none
  *Author:					Simon
- *Date:						2018.10.21
+ *Date:						2018.10.25
  ****************************************************************/
 int findhead(void){
 	char head1;
@@ -236,13 +223,13 @@ int findhead(void){
 		head1 = gRS422RxQue.rxBuff[gRS422RxQue.front];
 		head2 = gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE];
 
-		if(head1 == 0x55 && head2 == 0x5A){
-			return 1;
+		if(head1 == HEAD1 && head2 == HEAD2){
+			return SUCCESS;
 		}
 
 		if(DeQueue() == 0){
 			//printf("接收缓冲区为空\r\n");
-			return 0;
+			return FAIL;
 		}
 
 	}
@@ -253,7 +240,7 @@ int findhead(void){
  *Input:				    none
  *Output:					none
  *Author:					Simon
- *Date:						2018.10.21
+ *Date:						2018.10.25
  ****************************************************************/
 int findtail(int len){
 	char tail1;
@@ -262,20 +249,20 @@ int findtail(int len){
 	tail1 = gRS422RxQue.rxBuff[(gRS422RxQue.front + len - 1) % MAXQSIZE];
 	tail2 = gRS422RxQue.rxBuff[(gRS422RxQue.front + len - 2) % MAXQSIZE];
 
-	if(tail1 == 0xaa && tail2 == 0xbb){
-		return 1;
+	if(tail1 == TAIL1 && tail2 == TAIL2){
+		return SUCCESS;
 	}
 	else{
-		return 0;
+		return FAIL;
 	}
 }
 int checklength(void){
 	if(gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] < RS422RxQueLength()){
-		return 1;
+		return SUCCESS;
 	}
 	else
 	{
-		return 0;
+		return FAIL;
 	}
 }
 
@@ -292,11 +279,11 @@ void unpack(){
 void updatehead(int len){
 	gRS422RxQue.front = (gRS422RxQue.front + len) % MAXQSIZE;
 }
+
 void UnpackRS422ANew(void){
 	int length;
-	printf("Entry in....................UnpackRS422ANew\r\n");
 
-	if(findhead() == 0){
+	if(findhead() == FAIL){
 		printf("接收缓冲区为空\r\n");
 		return;
 	}
@@ -304,7 +291,7 @@ void UnpackRS422ANew(void){
 		printf("成功找到包头\r\n");
 	}
 
-	if(checklength() == 0){
+	if(checklength() == FAIL){
 		printf("缓冲区长度不够， len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] );
 		printf("缓冲区长度不够， len calculate =%d\r\n",RS422RxQueLength());
 		return;
@@ -315,7 +302,7 @@ void UnpackRS422ANew(void){
 
 	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE];
 
-	if(findtail(length) == 0){
+	if(findtail(length) == FAIL){
 		printf("失败：包尾没有对应\r\n");
 		if(DeQueue() == 0){
 			printf("接收缓冲区为空\r\n");
@@ -327,14 +314,12 @@ void UnpackRS422ANew(void){
 		printf("成功找到包尾\r\n");
 	}
 
-
 	saveprofile(length);
 
 	if(CalCrc(0, rs422rxPack + 3, length - 5) != 0){
 		if(DeQueue() == 0){
 			printf("接收缓冲区为空\r\n");
 		}
-		//printf("crc value should = %x\r\n",CalCrc(0, rs422rxPack));
 		printf("失败：没有通过CRC校验\r\n");
 		return;
 	}
@@ -345,5 +330,4 @@ void UnpackRS422ANew(void){
 	unpack();
 	updatehead(length);
 	printf("update the front position----------------------------\r\n");
-
 }
