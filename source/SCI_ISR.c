@@ -111,15 +111,11 @@ int CalCrc(int crc, const char *buf, int len)
 	for(i = 0; i < len; ++i){
 		x = ((crc >> 8) ^ buf[i]) & 0xff;
 		x ^= x >> 4;
-		crc = (crc << 8) ^ (x  << 12) ^ (x << 5) ^ 5;
+		crc = (crc << 8) ^ (x  << 12) ^ (x << 5) ^ x;
 		crc &= 0xffff;
 	}
 	return crc;
 }
-
-
-
-
 /***************************************************************
  *Name:						UnpackRS422A
  *Function:
@@ -330,4 +326,62 @@ void UnpackRS422ANew(void){
 	unpack();
 	updatehead(length);
 	printf("update the front position----------------------------\r\n");
+}
+
+
+
+void testwithlabview(){
+
+	int i;
+	static int f = 0;
+	int crc;
+	static int data = 0;
+	char buf[19]={
+				0x55,
+				0x5a,
+				0x13,
+				0x01,
+				0x00,
+				0x00,
+				0x02,
+				0x00,
+				0x00,
+				0x03,
+				0x00,
+				0x00,
+				0x04,
+				0x00,
+				0x00,
+				0xd7,
+				0x32,
+				0xbb,
+				0xaa
+	};
+	buf[5] = (char)data;
+	buf[8] = (char)(100 - data);
+	if(f == 0){
+		++data;
+	}
+	else{
+		--data;
+	}
+
+	if(data == 100){
+		//data = 0;
+		f = 1;
+	}
+	if(data ==0){
+		f = 0;
+	}
+
+	crc = CalCrc(0, buf+3, 12);
+	buf[16] = (char)crc;
+	buf[15] = (char)(crc >> 8);
+	for(i = 0; i < 19; ++i){
+		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
+
+		}
+		ScicRegs.SCITXBUF = buf[i];
+
+	}
 }

@@ -167,38 +167,6 @@ void GlobleVarInit(void){
 	}
 }
 
-void testwithlabview(){
-
-	int i;
-	char buf[19]={
-				0x55,
-				0x5a,
-				0x13,
-				0x01,
-				0x00,
-				0x00,
-				0x02,
-				0x00,
-				0x00,
-				0x03,
-				0x00,
-				0x00,
-				0x04,
-				0x00,
-				0x00,
-				0xd7,
-				0x32,
-				0xbb,
-				0xaa
-	};
-	for(i = 0; i < 19; ++i){
-		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
-
-		}
-		ScicRegs.SCITXBUF = buf[i];
-
-	}
-}
 /***************************************************************
  *Name:						main
  *Function:
@@ -224,7 +192,8 @@ void main(void) {
 		int i;
 
 		for(i = 0; i < 1000; ++i){
-			delayfunction(32000);
+			//delayfunction(32000);
+			delayfunction(3200);
 		}
 
 		test_spi_tx();
