@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include "ADprocessor.h"
 
+
 #define UART_PRINTF
 
 #ifdef UART_PRINTF
@@ -165,6 +166,39 @@ void GlobleVarInit(void){
 		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
 }
+
+void testwithlabview(){
+
+	int i;
+	char buf[19]={
+				0x55,
+				0x5a,
+				0x13,
+				0x01,
+				0x00,
+				0x00,
+				0x02,
+				0x00,
+				0x00,
+				0x03,
+				0x00,
+				0x00,
+				0x04,
+				0x00,
+				0x00,
+				0xd7,
+				0x32,
+				0xbb,
+				0xaa
+	};
+	for(i = 0; i < 19; ++i){
+		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
+
+		}
+		ScicRegs.SCITXBUF = buf[i];
+
+	}
+}
 /***************************************************************
  *Name:						main
  *Function:
@@ -196,7 +230,8 @@ void main(void) {
 		test_spi_tx();
 		//test_sci_tx();
 		//UnpackRS422A();
-		UnpackRS422ANew();
+		//UnpackRS422ANew();
+		testwithlabview();
 	}
 	//test
 }
