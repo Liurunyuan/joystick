@@ -32,6 +32,15 @@ enum {
 	Unpack,
 	UpdateHead
 };
+
+enum{
+	ACTION_COMMAND,
+	DATA_FEEDBACK,
+	SPEED_TARGET,
+	RUNNING_TIME
+};
+
+
 extern RS422RXQUE gRS422RxQue;
 void UnpackRS422A(void);
 void RS422A_receive(void);

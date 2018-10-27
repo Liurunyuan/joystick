@@ -8,7 +8,14 @@
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 char rs422rxPack[16];
-
+/***************************************************************
+ *Name:						MsgStatusUnpack
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.25
+ ****************************************************************/
 static void MsgStatusUnpack(int a, int b, int c)
 {
 	//TODO just an example
@@ -252,6 +259,14 @@ int findtail(int len){
 		return FAIL;
 	}
 }
+/***************************************************************
+ *Name:						checklength
+ *Function:
+ *Input:				    none
+ *Output:					1 or 0, 1 means success, 0 means failed
+ *Author:					Simon
+ *Date:						2018.10.25
+ ****************************************************************/
 int checklength(void){
 	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7) < RS422RxQueLength()){
 		return SUCCESS;
@@ -261,7 +276,14 @@ int checklength(void){
 		return FAIL;
 	}
 }
-
+/***************************************************************
+ *Name:						saveprofile
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.27
+ ****************************************************************/
 void saveprofile(int len){
 	int i;
 
@@ -269,13 +291,36 @@ void saveprofile(int len){
 		rs422rxPack[i] = gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE];
 	}
 }
+/***************************************************************
+ *Name:						unpack
+ *Function:					unpack profile data
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.27
+ ****************************************************************/
 void unpack(){
 
 }
+/***************************************************************
+ *Name:						updatehead
+ *Function:					move the front head to another position
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.27
+ ****************************************************************/
 void updatehead(int len){
 	gRS422RxQue.front = (gRS422RxQue.front + len) % MAXQSIZE;
 }
-
+/***************************************************************
+ *Name:						UnpackRS422ANew
+ *Function:					unpack the hole data package
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.27
+ ****************************************************************/
 void UnpackRS422ANew(void){
 	int length;
 
@@ -327,9 +372,14 @@ void UnpackRS422ANew(void){
 	updatehead(length);
 	printf("update the front position----------------------------\r\n");
 }
-
-
-
+/***************************************************************
+ *Name:						testwithlabview
+ *Function:					just a test function to test with Labview
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.27
+ ****************************************************************/
 void testwithlabview(){
 
 	int i;
