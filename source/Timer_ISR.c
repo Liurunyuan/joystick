@@ -22,22 +22,17 @@ void Timer0_ISR_Thread(void){
 
 
 void Timer1_ISR_Thread(void){
-	//printf("tiemr0 interrupt function\r\n");
-	int i;
-	for(i = 0; i < 16; ++i){
+	while(gRS422TxQue.front != gRS422TxQue.rear){
+
+		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 
 		}
-		//ScicRegs.SCITXBUF = Rx4225TxBuf[i];
-		if(gRS422TxQue.front == gRS422TxQue.rear){
-			return;
-		}
-		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		if(RX422TXDeQueue() == 0){
 			printf("·¢ËÍ»º³åÇøÎª¿Õ\r\n");
 			return;
 		}
 
 	}
-
 }
+

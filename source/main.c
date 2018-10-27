@@ -104,6 +104,7 @@ void FeedWatchDog(void)
 
 void delayfunction(int sec){
 	int count;
+
 	for(count = 0; count < sec; count++){
 		++count;
 	}
@@ -158,7 +159,6 @@ void GlobleVarInit(void){
 
 	for(index = 0; index < TotalChannel; ++index)
 	{
-
 		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
 		gSysMonitorVar.anolog.single.var[index].max = anologMaxMinInit[index][0];
 		gSysMonitorVar.anolog.single.var[index].min = anologMaxMinInit[index][1];
@@ -168,6 +168,11 @@ void GlobleVarInit(void){
 	{
 		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
+	for(index = 0; index < 20; ++index){
+		gRx422TxVar[index].isTx = 1;
+		gRx422TxVar[index].index = index;
+	}
+
 
 }
 
@@ -185,9 +190,11 @@ void main(void) {
 	InitSysCtrl_M();
 	/*peripheral init*/
 	Init_Peripheral();
+
+	GlobleVarInit();
 	/*interrupt init*/
 	Init_Interrupt();
-	GlobleVarInit();
+
 
 	PowerOnBIT();
 	while(1)
@@ -201,8 +208,9 @@ void main(void) {
 		}
 
 		test_spi_tx();
-		gRx422TxVar[0].isTx = 1;
+
 		++gRx422TxVar[0].var.value;
+		++gRx422TxVar[19].var.value;
 		//test_sci_tx();
 		//UnpackRS422A();
 		//UnpackRS422ANew();

@@ -97,10 +97,10 @@ void Init_Interrupt(void)
 {
 	//≥ı ºªØCPU_T0
 		InitCpuTimers();
-		ConfigCpuTimer(&CpuTimer0, 120, 10000);
+		ConfigCpuTimer(&CpuTimer0, 120, 250);//t = freq * priod/150000000,0.2ms
 	    CpuTimer0Regs.TCR.bit.TIE= 1;
 	    CpuTimer0Regs.TCR.bit.TSS = 0;
-		ConfigCpuTimer(&CpuTimer1, 120, 100000);
+		ConfigCpuTimer(&CpuTimer1, 120, 12500);//10MS
 	    CpuTimer1Regs.TCR.bit.TIE= 1;
 	    CpuTimer1Regs.TCR.bit.TSS = 0;
 	    //÷–∂œ≈‰÷√

@@ -1,6 +1,6 @@
 #ifndef _SCI_TX_H
 #define _SCI_TX_H
-#define MAXQSIZE 128
+#define TXMAXQSIZE 900
 
 typedef void (*updatevalue)(int a, int b,int c);
 enum {
@@ -32,14 +32,14 @@ typedef struct _GRX422TX{
 
 
 typedef struct _RS422TXQUE{
-	char txBuf[MAXQSIZE];
+	char txBuf[TXMAXQSIZE];
 	int front;
 	int rear;
 }RS422TXQUE;
 
-extern GRX422TX gRx422TxVar[5];
+extern GRX422TX gRx422TxVar[20];
 void testrs422tx(void);
-extern char Rx4225TxBuf[128];
+extern char Rx4225TxBuf[900];
 extern RS422TXQUE gRS422TxQue;
 int RX422TXDeQueue(void);
 

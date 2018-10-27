@@ -3,21 +3,21 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-GRX422TX gRx422TxVar[5] = {0};
-char Rx4225TxBuf[128] = {0};
+GRX422TX gRx422TxVar[20] = {0};
+char Rx4225TxBuf[900] = {0};
 RS422TXQUE gRS422TxQue = {0};
-#define S (2)
+#define S (3)
 
 
 
-int RX422TXEnQueue(int e){
-	if((gRS422TxQue.rear + 1) % MAXQSIZE == gRS422TxQue.front){
+int RX422TXEnQueue(char e){
+	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
 		printf("EnQueue FULL \r\n");
 		return 0;
 	}
 
 	gRS422TxQue.txBuf[gRS422TxQue.rear] = e;
-	gRS422TxQue.rear = (gRS422TxQue.rear + 1) % MAXQSIZE;
+	gRS422TxQue.rear = (gRS422TxQue.rear + 1) % TXMAXQSIZE;
 	return 1;
 }
 int RX422TXDeQueue(void)
@@ -26,7 +26,7 @@ int RX422TXDeQueue(void)
 		return 0;
 	}
 
-	gRS422TxQue.front = (gRS422TxQue.front + 1) % MAXQSIZE;
+	gRS422TxQue.front = (gRS422TxQue.front + 1) % TXMAXQSIZE;
 	return 1;
 }
 /***************************************************************
@@ -53,66 +53,75 @@ int calCrc(int crc, const char *buf, int len)
 /***************************************************************/
 void testrs422tx(void){
 	int i;
+	char crcl;
+	char crch;
 	static unsigned char count = 0;
 	static int crc = 0;
-	static int txindex = 0;
+	char tmp[3] = {0};
+	int lenPosition = 0;
+	int total =0;
 
 	if(count == 0){
-		Rx4225TxBuf[txindex] = 0x5a;
-		Rx4225TxBuf[txindex + 1] = 0x5a;
-		Rx4225TxBuf[txindex + 2] = 0x05;
 		if(RX422TXEnQueue(0x5a) == 0){
 			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			return;
 		}
 		if(RX422TXEnQueue(0x5a) == 0){
 			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			return;
 		}
+		lenPosition = gRS422TxQue.rear;
 		if(RX422TXEnQueue(0x05) == 0){
 			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			return;
 		}
 	}
 
-	for(i = 0; i < 3; ++i){
+	for(i = 0; i < 20; ++i){
 		if(gRx422TxVar[i].isTx){
-
-			Rx4225TxBuf[txindex*3 + 3 + i] = gRx422TxVar[i].index;
-			Rx4225TxBuf[txindex*3 + 3 + i + 1] = gRx422TxVar[i].var.datahl.l;
-			Rx4225TxBuf[txindex*3 + 3 + i + 2] = gRx422TxVar[i].var.datahl.h;
+			++total;
+			tmp[0] = gRx422TxVar[i].index;
+			tmp[1] = gRx422TxVar[i].var.datahl.h;
+			tmp[2] = gRx422TxVar[i].var.datahl.l;
 			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
 				printf("·¢ËÍ»º³åÇøFULL\r\n");
+				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].var.datahl.h) == 0){
 				printf("·¢ËÍ»º³åÇøFULL\r\n");
+				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].var.datahl.l) == 0){
 				printf("·¢ËÍ»º³åÇøFULL\r\n");
+				return;
 			}
+			crc = calCrc(crc, tmp, 3);
 		}
 	}
-
-	crc = calCrc(crc, Rx4225TxBuf + txindex*3 + 3, 3);
+	gRS422TxQue.txBuf[lenPosition] = total;
 	++count;
-	++txindex;
+
 	if(count > S){
 
-		Rx4225TxBuf[3+3*count + 1] = (char)crc;
-		Rx4225TxBuf[3+3*count] = (char)(crc >> 8);
-		Rx4225TxBuf[3+3*count + 2] = 0xa5;
-		Rx4225TxBuf[3+3*count + 3] = 0xa5;
-		if(RX422TXEnQueue((char)crc) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
-		}
-		if(RX422TXEnQueue((char)(crc >> 8)) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
-		}
-		if(RX422TXEnQueue(0xa5) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
-		}
-		if(RX422TXEnQueue(0xa5) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
-		}
+		crcl = (char)crc;
+		crch = (char)(crc >> 8);
 		crc = 0;
 		count = 0;
-		txindex = 0;
+		if(RX422TXEnQueue(crch) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			return;
+		}
+		if(RX422TXEnQueue(crcl) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			return;
+		}
+		if(RX422TXEnQueue(0xa5) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			return;
+		}
+		if(RX422TXEnQueue(0xa5) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			return;
+		}
 	}
 }
