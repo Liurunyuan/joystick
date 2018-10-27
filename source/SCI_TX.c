@@ -5,8 +5,30 @@
 
 GRX422TX gRx422TxVar[5] = {0};
 char Rx4225TxBuf[128] = {0};
+RS422TXQUE gRS422TxQue = {0};
 #define S (2)
 
+
+
+int RX422TXEnQueue(int e){
+	if((gRS422TxQue.rear + 1) % MAXQSIZE == gRS422TxQue.front){
+		printf("EnQueue FULL \r\n");
+		return 0;
+	}
+
+	gRS422TxQue.txBuf[gRS422TxQue.rear] = e;
+	gRS422TxQue.rear = (gRS422TxQue.rear + 1) % MAXQSIZE;
+	return 1;
+}
+int RX422TXDeQueue(void)
+{
+	if(gRS422TxQue.front == gRS422TxQue.rear){
+		return 0;
+	}
+
+	gRS422TxQue.front = (gRS422TxQue.front + 1) % MAXQSIZE;
+	return 1;
+}
 /***************************************************************
  *Name:						CalCrc
  *Function:
@@ -39,6 +61,15 @@ void testrs422tx(void){
 		Rx4225TxBuf[txindex] = 0x5a;
 		Rx4225TxBuf[txindex + 1] = 0x5a;
 		Rx4225TxBuf[txindex + 2] = 0x05;
+		if(RX422TXEnQueue(0x5a) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+		}
+		if(RX422TXEnQueue(0x5a) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+		}
+		if(RX422TXEnQueue(0x05) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+		}
 	}
 
 	for(i = 0; i < 3; ++i){
@@ -47,6 +78,15 @@ void testrs422tx(void){
 			Rx4225TxBuf[txindex*3 + 3 + i] = gRx422TxVar[i].index;
 			Rx4225TxBuf[txindex*3 + 3 + i + 1] = gRx422TxVar[i].var.datahl.l;
 			Rx4225TxBuf[txindex*3 + 3 + i + 2] = gRx422TxVar[i].var.datahl.h;
+			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
+				printf("·¢ËÍ»º³åÇøFULL\r\n");
+			}
+			if(RX422TXEnQueue(gRx422TxVar[i].var.datahl.h) == 0){
+				printf("·¢ËÍ»º³åÇøFULL\r\n");
+			}
+			if(RX422TXEnQueue(gRx422TxVar[i].var.datahl.l) == 0){
+				printf("·¢ËÍ»º³åÇøFULL\r\n");
+			}
 		}
 	}
 
@@ -59,6 +99,18 @@ void testrs422tx(void){
 		Rx4225TxBuf[3+3*count] = (char)(crc >> 8);
 		Rx4225TxBuf[3+3*count + 2] = 0xa5;
 		Rx4225TxBuf[3+3*count + 3] = 0xa5;
+		if(RX422TXEnQueue((char)crc) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+		}
+		if(RX422TXEnQueue((char)(crc >> 8)) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+		}
+		if(RX422TXEnQueue(0xa5) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+		}
+		if(RX422TXEnQueue(0xa5) == 0){
+			printf("·¢ËÍ»º³åÇøFULL\r\n");
+		}
 		crc = 0;
 		count = 0;
 		txindex = 0;

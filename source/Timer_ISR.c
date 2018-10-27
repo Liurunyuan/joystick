@@ -28,7 +28,15 @@ void Timer1_ISR_Thread(void){
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 
 		}
-		ScicRegs.SCITXBUF = Rx4225TxBuf[i];
+		//ScicRegs.SCITXBUF = Rx4225TxBuf[i];
+		if(gRS422TxQue.front == gRS422TxQue.rear){
+			return;
+		}
+		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
+		if(RX422TXDeQueue() == 0){
+			printf("·¢ËÍ»º³åÇøÎª¿Õ\r\n");
+			return;
+		}
 
 	}
 
