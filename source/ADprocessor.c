@@ -5,7 +5,6 @@
 
 
 
-int test = 0;
 
 int updateForceValue(void){return GET_FORCE_SGN;}
 int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}

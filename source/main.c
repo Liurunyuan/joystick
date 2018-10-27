@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "ADprocessor.h"
+#include "SCI_TX.h"
 
 
 #define UART_PRINTF
@@ -152,6 +153,8 @@ void GlobleVarInit(void){
 	gRS422RxQue.front = 0;
 	gRS422RxQue.rear = 0;
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
+	memset(Rx4225TxBuf, 0, sizeof(Rx4225TxBuf));
+	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
 
 	for(index = 0; index < TotalChannel; ++index)
 	{
@@ -165,6 +168,7 @@ void GlobleVarInit(void){
 	{
 		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
+
 }
 
 /***************************************************************
@@ -197,6 +201,8 @@ void main(void) {
 		}
 
 		test_spi_tx();
+		gRx422TxVar[0].isTx = 1;
+		++gRx422TxVar[0].var.value;
 		//test_sci_tx();
 		//UnpackRS422A();
 		//UnpackRS422ANew();

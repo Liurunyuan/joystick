@@ -98,7 +98,7 @@ void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
 }
 
 /**************************************************************
- *Name:						Pwm_ISR_Thread
+ *Name:						ForceAndDisplaceProcess
  *Function:					PWM interrupt function
  *Input:					none
  *Output:					none
