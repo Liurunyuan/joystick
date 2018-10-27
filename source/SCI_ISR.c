@@ -253,7 +253,7 @@ int findtail(int len){
 	}
 }
 int checklength(void){
-	if(gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] < RS422RxQueLength()){
+	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7) < RS422RxQueLength()){
 		return SUCCESS;
 	}
 	else
@@ -296,7 +296,7 @@ void UnpackRS422ANew(void){
 		printf("成功：缓冲区长度满足解包条件\r\n");
 	}
 
-	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE];
+	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7;
 
 	if(findtail(length) == FAIL){
 		printf("失败：包尾没有对应\r\n");
@@ -339,7 +339,7 @@ void testwithlabview(){
 	char buf[19]={
 				0x55,
 				0x5a,
-				0x13,
+				0x04,
 				0x01,
 				0x00,
 				0x00,

@@ -12,4 +12,7 @@ typedef struct _RS422TX{
 	int rear;
 }RS422TX;
 
+typedef struct _RS422TXDATA{
+	int front;
+}RS422TXDATA;
 #endif
