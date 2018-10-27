@@ -86,7 +86,6 @@ void EnableInterrupts()
 	PieCtrlRegs.PIEIER9.bit.INTx4 = 1;//SCIB∑¢ÀÕ÷–∂œ
 	PieCtrlRegs.PIEIER8.bit.INTx5 = 1;//SCIC RX Interrupt
 	PieCtrlRegs.PIEIER8.bit.INTx6 = 1;//SCIC TX Interrupt
-
    // EINT;
 
 }
@@ -101,6 +100,9 @@ void Init_Interrupt(void)
 		ConfigCpuTimer(&CpuTimer0, 120, 10000);
 	    CpuTimer0Regs.TCR.bit.TIE= 1;
 	    CpuTimer0Regs.TCR.bit.TSS = 0;
+		ConfigCpuTimer(&CpuTimer1, 120, 10000);
+	    CpuTimer1Regs.TCR.bit.TIE= 1;
+	    CpuTimer1Regs.TCR.bit.TSS = 0;
 	    //÷–∂œ≈‰÷√
 	    DINT;
 	    InitPieCtrl();
@@ -108,11 +110,12 @@ void Init_Interrupt(void)
 	 	IFR = 0x0000;
 	 	InitPieVectTable();
 
-	    //IER |= M_INT1;
+	    IER |= M_INT1;
 	    //IER |= M_INT2;
 	    IER |= M_INT3;
 	 	IER |= M_INT8;//SCIc
 	    IER |= M_INT9;//SCIa//ECAN//scib
+	    IER |= M_INT13;//timer1
 
 	    EnableInterrupts();
 	    EINT;   // Enable Global interrupt INTM

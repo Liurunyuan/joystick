@@ -26,11 +26,14 @@
 #include "public.h"
 #include "SCI_ISR.h"
 #include "PWM_ISR.h"
+#include "Timer_ISR.h"
 
 interrupt void  TINT0_ISR(void)
 {
-	  asm ("      ESTOP0");
-	  for(;;);
+	Timer0_ISR_Thread();
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
+	//CpuTimer0Regs.TCR.bit.TIF = 1;
+	//CpuTimer0Regs.TCR.bit.TRB = 1;
 }
 // Connected to INT13 of CPU (use MINT13 mask):
 // Note CPU-Timer1 is reserved for TI use, however XINT13
@@ -41,8 +44,7 @@ interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
+  Timer1_ISR_Thread();
 }
 
 // Note CPU-Timer2 is reserved for TI use.

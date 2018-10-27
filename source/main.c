@@ -200,7 +200,7 @@ void main(void) {
 		//test_sci_tx();
 		//UnpackRS422A();
 		//UnpackRS422ANew();
-		testwithlabview();
+		//testwithlabview();
 	}
 	//test
 }
