@@ -196,8 +196,8 @@ void scic_loopback_init(void)
 	ScicRegs.SCICTL1.all =0x0003;  // enable TX, RX, internal SCICLK,
                                    // Disable RX ERR, SLEEP, TXWAKE
 	ScicRegs.SCICTL2.all =0x0003;
-	ScicRegs.SCICTL2.bit.TXINTENA =1;
-	ScicRegs.SCICTL2.bit.RXBKINTENA =1;
+	ScicRegs.SCICTL2.bit.TXINTENA = 1;
+	ScicRegs.SCICTL2.bit.RXBKINTENA = 1;
     ScicRegs.SCIHBAUD    =0x0001;//0x0001;
     ScicRegs.SCILBAUD    =0x0086;//0x00e7;115200
 	ScicRegs.SCICCR.bit.LOOPBKENA =0; // enable loop back

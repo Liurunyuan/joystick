@@ -24,10 +24,11 @@ void Timer0_ISR_Thread(void){
 void Timer1_ISR_Thread(void){
 	while(gRS422TxQue.front != gRS422TxQue.rear){
 
-		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 
 		}
+		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
+
 		if(RX422TXDeQueue() == 0){
 			printf("·¢ËÍ»º³åÇøÎª¿Õ\r\n");
 			return;
