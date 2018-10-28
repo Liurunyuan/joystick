@@ -15,7 +15,7 @@ void Timer0_ISR_Thread(void){
 	}
 	++count;
 	if(count > N){
-		//testrs422tx();
+		testrs422tx();
 		count = 0;
 	}
 }
@@ -27,6 +27,7 @@ void Timer1_ISR_Thread(void){
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 
 		}
+
 		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 
 		if(RX422TXDeQueue() == 0){

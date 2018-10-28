@@ -153,9 +153,13 @@ void GlobleVarInit(void){
 	int index;
 	gRS422RxQue.front = 0;
 	gRS422RxQue.rear = 0;
+	gRS422TxQue.front = 0;
+	gRS422TxQue.rear = 0;
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
+	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
 	memset(Rx4225TxBuf, 0, sizeof(Rx4225TxBuf));
 	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
+
 
 	for(index = 0; index < TotalChannel; ++index)
 	{
