@@ -94,8 +94,7 @@ void Init_Peripheral(void)
  *Author:					Simon
  *Date:						2018.6.10
  *************************************************************/
-void FeedWatchDog(void)
-{
+void FeedWatchDog(void){
 	TOOGLE_WATCHDOG = TRUE;
 }
 
@@ -106,8 +105,7 @@ void delayfunction(int sec){
 		++count;
 	}
 }
-int PowerOnBIT(void)
-{
+int PowerOnBIT(void){
 	//TODO   implement here, figure out what need to check, what to do if BIT fail.
 	return 0;
 }
@@ -119,8 +117,7 @@ int PowerOnBIT(void)
  *Author:					Simon
  *Date:						2018.6.10
  **************************************************************/
-void Start_main_loop(void)
-{
+void Start_main_loop(void){
 	/*tbd-----------------*/
 	FeedWatchDog();
 	//TODO need to implement
@@ -178,8 +175,6 @@ void GlobleVarInit(void){
 		gRx422TxVar[index].isTx = 1;
 		gRx422TxVar[index].index = index;
 	}
-
-
 }
 
 /***************************************************************
