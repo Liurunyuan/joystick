@@ -1,6 +1,7 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "SCI_ISR.h"
+#include "SCI_TX.h"
 #include <stdio.h>
 
 
@@ -8,6 +9,7 @@
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 char rs422rxPack[16];
+
 /***************************************************************
  *Name:						MsgStatusUnpack
  *Function:
@@ -16,9 +18,28 @@ char rs422rxPack[16];
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-static void MsgStatusUnpack(int a, int b, int c)
+static void MsgStatusUnpack(VAR16 a, int b, int c)
 {
 	//TODO just an example
+
+
+}
+
+static void WaveCommand(VAR16 a, int b, int c)
+{
+	//TODO just an example
+	int i;
+	for(i = 0; i < 16; ++i){
+		//unpack bit information
+		if((a.value & (0x0001 << i)) >> i){
+			//do something
+			gRx422TxVar[i].isTx = 1;
+		}
+		else{
+			//do something
+			gRx422TxVar[i].isTx = 0;
+		}
+	}
 
 }
 
@@ -26,7 +47,7 @@ const functionMsgCodeUnpack msgInterface[] =
 {
 		0,
 		MsgStatusUnpack,
-		0,
+		WaveCommand,
 		0,
 		0,
 		0
@@ -299,8 +320,28 @@ void saveprofile(int len){
  *Author:					Simon
  *Date:						2018.10.27
  ****************************************************************/
-void unpack(){
+void unpack(int len){
+	int i;
+	int msgCode;
+	VAR16 var16;
 
+
+	for(i = 0; i < len; ++i){
+		msgCode = rs422rxPack[3 + 3*i];
+		var16.datahl.h = rs422rxPack[3 + 3*i + 1];
+		var16.datahl.l = rs422rxPack[3 + 3*i + 2];
+
+		if(msgCode < (sizeof(msgInterface)/sizeof(msgInterface[0]))){
+			printf("msgCode = %d\r\n",msgCode);
+			if(msgInterface[msgCode]){
+				msgInterface[msgCode](var16,0,0);
+			}
+		}
+		else{
+			printf("unpack msg code is out of range\r\n");
+		}
+
+	}
 }
 /***************************************************************
  *Name:						updatehead
@@ -333,7 +374,7 @@ void UnpackRS422ANew(void){
 	}
 
 	if(checklength() == FAIL){
-		printf("缓冲区长度不够， len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] );
+		printf("缓冲区长度不够， len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7 );
 		printf("缓冲区长度不够， len calculate =%d\r\n",RS422RxQueLength());
 		return;
 	}
@@ -368,7 +409,7 @@ void UnpackRS422ANew(void){
 		printf("成功通过CRC校验\r\n");
 	}
 
-	unpack();
+	unpack(gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]);
 	updatehead(length);
 	printf("update the front position----------------------------\r\n");
 }

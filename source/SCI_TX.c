@@ -6,7 +6,7 @@
 GRX422TX gRx422TxVar[20] = {0};
 char Rx4225TxBuf[900] = {0};
 RS422TXQUE gRS422TxQue = {0};
-#define S (3)
+#define S (0)
 
 
 
@@ -77,7 +77,7 @@ void testrs422tx(void){
 		}
 	}
 
-	for(i = 0; i < 20; ++i){
+	for(i = 0; i < 3; ++i){
 		if(gRx422TxVar[i].isTx){
 			++total;
 			tmp[0] = gRx422TxVar[i].index;

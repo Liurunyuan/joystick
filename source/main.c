@@ -204,17 +204,15 @@ void main(void) {
 
 		for(i = 0; i < 1000; ++i){
 			//delayfunction(32000);
-			delayfunction(3200);
+			delayfunction(32000);
 		}
 
 		test_spi_tx();
 
-		++gRx422TxVar[0].var.value;
-		++gRx422TxVar[19].var.value;
 		//test_sci_tx();
-		//UnpackRS422A();
-		//UnpackRS422ANew();
+		UnpackRS422ANew();
 		//testwithlabview();
 	}
+	//test2
 	//test
 }

@@ -4,7 +4,7 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-#define N (3)
+#define N (10)
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
@@ -15,7 +15,7 @@ void Timer0_ISR_Thread(void){
 	}
 	++count;
 	if(count > N){
-		testrs422tx();
+		//testrs422tx();
 		count = 0;
 	}
 }

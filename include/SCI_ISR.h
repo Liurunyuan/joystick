@@ -3,12 +3,12 @@
 
 #define MAXQSIZE 128
 #define RXBUGLEN (16)
-typedef void (*functionMsgCodeUnpack)(int a, int b,int c);
 
-#define HEAD1 0x55
-#define HEAD2 0x5A
-#define TAIL1 0xAA
-#define TAIL2 0xBB
+
+#define HEAD1 0x5a
+#define HEAD2 0x5a
+#define TAIL1 0xa5
+#define TAIL2 0xa5
 
 #define HEAD 0x55
 #define TAIL 0xAA
@@ -40,7 +40,17 @@ enum{
 	RUNNING_TIME
 };
 
+typedef struct _DATA{
+	unsigned char l;
+	unsigned char h;
+}DATA;
 
+typedef union _VAR16{
+	DATA datahl;
+	Uint16 value;
+}VAR16;
+
+typedef void (*functionMsgCodeUnpack)(VAR16 a, int b,int c);
 extern RS422RXQUE gRS422RxQue;
 void UnpackRS422A(void);
 void RS422A_receive(void);
