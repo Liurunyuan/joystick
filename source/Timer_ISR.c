@@ -5,6 +5,17 @@
 #include <stdio.h>
 
 #define N (10)
+
+
+
+/***************************************************************
+ *Name:						Timer0_ISR_Thread
+ *Function:					period = 0.2ms, pack the data
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
@@ -15,12 +26,18 @@ void Timer0_ISR_Thread(void){
 	}
 	++count;
 	if(count > N){
-		testrs422tx();
+		//testrs422tx();
 		count = 0;
 	}
 }
-
-
+/***************************************************************
+ *Name:						Timer1_ISR_Thread
+ *Function:					priod = 10ms, transmit datat on rs422
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 void Timer1_ISR_Thread(void){
 	while(gRS422TxQue.front != gRS422TxQue.rear){
 
@@ -37,4 +54,3 @@ void Timer1_ISR_Thread(void){
 
 	}
 }
-

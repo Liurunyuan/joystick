@@ -6,6 +6,14 @@
 
 
 
+/***************************************************************
+ *Name:						StartGetADBySpi
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 void StartGetADBySpi(void)
 {
 	//TODO
@@ -28,8 +36,14 @@ void StartGetADBySpi(void)
 	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
 
 }
-
-
+/***************************************************************
+ *Name:						ReadADBySpi
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 void ReadADBySpi(void)
 {
 	//TODO

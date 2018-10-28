@@ -10,7 +10,15 @@ KeyValue gKeyValue;
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
-void CalForceSpeedAccel() {
+/**************************************************************
+ *Name:						CalForceSpeedAccel
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+void CalForceSpeedAccel(void) {
 	static int count = 0;
 
 	ForceAndDisplaceProcess(count);
@@ -24,7 +32,6 @@ void CalForceSpeedAccel() {
 		count = 0;
 	}
 }
-
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -63,17 +70,38 @@ void Pwm_ISR_Thread(void)
 	//CalForceSpeedAccel();
 
 }
-
-int32 forcebufProcess()
+/**************************************************************
+ *Name:						forcebufProcess
+ *Function:
+ *Input:					none
+ *Output:					force value
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+int32 forcebufProcess(void)
 {
 	return ((feedbackVarBuf.sumForce - feedbackVarBuf.maxForce - feedbackVarBuf.minForce) >> 3);
 }
-
-int32 displacebufProcess()
+/**************************************************************
+ *Name:						displacebufProcess
+ *Function:
+ *Input:					none
+ *Output:					displacement value
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+int32 displacebufProcess(void)
 {
 	return ((feedbackVarBuf.sumDisplacement - feedbackVarBuf.maxDisplacement - feedbackVarBuf.minDisplacement) >> 3);
 }
-
+/**************************************************************
+ *Name:						UpdateMaxAndMin
+ *Function:
+ *Input:					feedbackVarBuf
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
 void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
 	if (gSysMonitorVar.anolog.single.var[ForceValue].value
 			>= feedbackVarBuf->maxForce) {
@@ -96,11 +124,10 @@ void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
 				gSysMonitorVar.anolog.single.var[DisplacementValue].value;
 	}
 }
-
 /**************************************************************
  *Name:						ForceAndDisplaceProcess
  *Function:					PWM interrupt function
- *Input:					none
+ *Input:					int count
  *Output:					none
  *Author:					Simon
  *Date:						2018.6.10

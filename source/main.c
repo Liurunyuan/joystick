@@ -53,9 +53,6 @@ int fputs(const char *_ptr, register FILE *_fp){
 }
 
 #endif
-
-/*git test*/
-
 /************************************************************
  *Name:						Init_Peripheral
  *Function:					Initialize all the peripherals,
@@ -128,9 +125,14 @@ void Start_main_loop(void)
 	FeedWatchDog();
 	//TODO need to implement
 }
-void test_sci_tx(void){
-	ScicRegs.SCITXBUF = 0x85;
-}
+/**************************************************************
+ *Name:						test_spi_tx
+ *Function:					Business logic
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
 void test_spi_tx(void){
 	int retry = 0;
 	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1){
@@ -213,10 +215,6 @@ void main(void) {
 
 		test_spi_tx();
 
-		//test_sci_tx();
-		//UnpackRS422ANew();
-		//testwithlabview();
+		UnpackRS422ANew();
 	}
-	//test2
-	//test
 }

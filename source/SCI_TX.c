@@ -9,7 +9,14 @@ RS422TXQUE gRS422TxQue = {0};
 #define S (0)
 
 
-
+/***************************************************************
+ *Name:						RX422TXEnQueue
+ *Function:
+ *Input:				    char e, come from tx queue
+ *Output:					1 or 0, 1 means success, 0 means the queue is full already
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 int RX422TXEnQueue(char e){
 	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
 		printf("EnQueue FULL \r\n");
@@ -20,6 +27,14 @@ int RX422TXEnQueue(char e){
 	gRS422TxQue.rear = (gRS422TxQue.rear + 1) % TXMAXQSIZE;
 	return 1;
 }
+/***************************************************************
+ *Name:						RX422TXDeQueue
+ *Function:
+ *Input:				    none
+ *Output:					1 or 0, 1 means success, 0 means the queue is empty already
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 int RX422TXDeQueue(void)
 {
 	if(gRS422TxQue.front == gRS422TxQue.rear){
@@ -50,7 +65,14 @@ int calCrc(int crc, const char *buf, int len)
 	}
 	return crc;
 }
-/***************************************************************/
+/***************************************************************
+ *Name:						testrs422tx
+ *Function:					pack the data that need to be sent
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
 void testrs422tx(void){
 	int i;
 	char crcl;
