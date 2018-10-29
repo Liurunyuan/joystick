@@ -233,8 +233,8 @@ void InitEPwm1()
 	EPwm1Regs.ETPS.bit.SOCAPRD = 1;
 
 	EPwm1Regs.DBCTL.all = 0x7;
-	EPwm1Regs.DBRED = 180;
-	EPwm1Regs.DBFED = 180;
+	EPwm1Regs.DBRED = 60;//180==1.5us
+	EPwm1Regs.DBFED = 60;//180==1.5us
 }
 void InitEPwm2()
 {
@@ -269,8 +269,8 @@ void InitEPwm2()
 
 
 	EPwm2Regs.DBCTL.all = 0x7;
-	EPwm2Regs.DBRED = 180;
-	EPwm2Regs.DBFED = 180;
+	EPwm2Regs.DBRED = 60;
+	EPwm2Regs.DBFED = 60;
 }
 
 void InitEPwm3()
@@ -306,8 +306,8 @@ void InitEPwm3()
 
 
 	EPwm3Regs.DBCTL.all = 0x7;
-	EPwm3Regs.DBRED = 180;
-	EPwm3Regs.DBFED = 180;
+	EPwm3Regs.DBRED = 60;
+	EPwm3Regs.DBFED = 60;
 }
 
 void InitEPwm4()
