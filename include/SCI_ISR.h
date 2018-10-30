@@ -41,8 +41,8 @@ enum{
 };
 
 typedef struct _DATA{
-	unsigned char l;
-	unsigned char h;
+	Uint16 l;
+	Uint16 h;
 }DATA;
 
 typedef union _VAR16{

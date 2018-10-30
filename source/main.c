@@ -198,6 +198,7 @@ void main(void) {
 
 
 	PowerOnBIT();
+
 	while(1)
 	{
 		Start_main_loop();

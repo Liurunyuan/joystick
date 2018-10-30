@@ -20,18 +20,10 @@ enum{
 	RUNNING
 };
 
-typedef struct _DATAHL{
-	unsigned char l;
-	unsigned char h;
-}DATAHL;
 
-typedef union _VAR{
-	DATAHL datahl;
-	Uint16 value;
-}VAR;
 
 typedef struct _GRX422TX{
-	VAR var;
+	Uint16 value;
 	unsigned char index;
 	unsigned char isTx;
 	updatevalue updateValue;

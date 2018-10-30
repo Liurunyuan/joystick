@@ -82,7 +82,6 @@ void testrs422tx(void){
 	char tmp[3] = {0};
 	int lenPosition = 0;
 	int total =0;
-	Uint16 tmp1 = 0;
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
@@ -103,21 +102,20 @@ void testrs422tx(void){
 	for(i = 0; i < 4; ++i){
 		if(gRx422TxVar[i].isTx){
 			++total;
-
-			tmp1 = ((AdcRegs.ADCRESULT0) >> 4);
+			gRx422TxVar[i].value = ((AdcRegs.ADCRESULT0) >> 4);
 
 			tmp[0] = gRx422TxVar[i].index;
-			tmp[1] = tmp1 >> 8;
-			tmp[2] = tmp1;
+			tmp[1] = gRx422TxVar[i].value >> 8;
+			tmp[2] = gRx422TxVar[i].value;
 			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
 				printf("发送缓冲区FULL\r\n");
 				return;
 			}
-			if(RX422TXEnQueue(tmp[1]) == 0){
+			if(RX422TXEnQueue(gRx422TxVar[i].value >> 8) == 0){
 				printf("发送缓冲区FULL\r\n");
 				return;
 			}
-			if(RX422TXEnQueue(tmp[2]) == 0){
+			if(RX422TXEnQueue(gRx422TxVar[i].value) == 0){
 				printf("发送缓冲区FULL\r\n");
 				return;
 			}

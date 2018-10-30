@@ -249,9 +249,11 @@ void unpack(int len){
 
 
 	for(i = 0; i < len; ++i){
+
 		msgCode = rs422rxPack[3 + 3*i];
 		var16.datahl.h = rs422rxPack[3 + 3*i + 1];
 		var16.datahl.l = rs422rxPack[3 + 3*i + 2];
+		var16.value = var16.datahl.l + (var16.datahl.h << 8);
 
 		if(msgCode < (sizeof(msgInterface)/sizeof(msgInterface[0]))){
 			printf("msgCode = %d\r\n",msgCode);
