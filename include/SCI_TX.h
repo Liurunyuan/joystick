@@ -31,10 +31,11 @@ typedef union _VAR{
 }VAR;
 
 typedef struct _GRX422TX{
-	unsigned char index;
 	VAR var;
-	updatevalue updateValue;
+	unsigned char index;
 	unsigned char isTx;
+	updatevalue updateValue;
+
 
 }GRX422TX;
 

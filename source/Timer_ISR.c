@@ -26,7 +26,7 @@ void Timer0_ISR_Thread(void){
 	}
 	++count;
 	if(count > N){
-		//testrs422tx();
+		testrs422tx();
 		count = 0;
 	}
 }
@@ -48,7 +48,7 @@ void Timer1_ISR_Thread(void){
 		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 
 		if(RX422TXDeQueue() == 0){
-			printf("发送缓冲区为空\r\n");
+			//printf("发送缓冲区为空\r\n");
 			return;
 		}
 

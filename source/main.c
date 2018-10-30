@@ -205,11 +205,11 @@ void main(void) {
 
 		for(i = 0; i < 1000; ++i){
 			//delayfunction(32000);
-			delayfunction(32000);
+			delayfunction(3200);
 		}
 
 		test_spi_tx();
 
-		UnpackRS422ANew();
+		//UnpackRS422ANew();
 	}
 }
