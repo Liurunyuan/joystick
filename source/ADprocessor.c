@@ -236,7 +236,7 @@ void DigitalValueInspect(void)
 	}
 }
 /**************************************************************
- *Name:						ReadAnalogValue
+ *Name:						UpdateSingleDigitInput
  *Function:					更新系统模拟量的转换值
  *Input:					none
  *Output:					none
@@ -282,6 +282,6 @@ void ReadAnalogValue(void)
 void ReadDigitalValue(void)
 {
 	DigitalValueInspect();
-	UpdateSingleDigitInput();
+	//UpdateSingleDigitInput();
 	//read single digital channel value
 }
