@@ -51,6 +51,5 @@ void Timer1_ISR_Thread(void){
 			//printf("·¢ËÍ»º³åÇøÎª¿Õ\r\n");
 			return;
 		}
-
 	}
 }

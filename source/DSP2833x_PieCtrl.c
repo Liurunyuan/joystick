@@ -82,6 +82,12 @@ void EnableInterrupts()
 	//PieCtrlRegs.PIEIER2.bit.INTx4= 1;//IKB_BJ触发//
 	PieCtrlRegs.PIEIER2.bit.INTx6 = 1;//应急开关触发
 	PieCtrlRegs.PIEIER3.bit.INTx1 = 1;//ePWM1中断
+
+	PieCtrlRegs.PIEIER4.bit.INTx4 = 1;//ECAP4
+	PieCtrlRegs.PIEIER4.bit.INTx5 = 1;//ECAP5
+	PieCtrlRegs.PIEIER4.bit.INTx6 = 1;//ECAP6
+
+
 	PieCtrlRegs.PIEIER9.bit.INTx3 = 1;//SCIB接收中断
 	PieCtrlRegs.PIEIER9.bit.INTx4 = 1;//SCIB发送中断
 	PieCtrlRegs.PIEIER8.bit.INTx5 = 1;//SCIC RX Interrupt
@@ -113,6 +119,7 @@ void Init_Interrupt(void)
 	    IER |= M_INT1;
 	    //IER |= M_INT2;
 	    IER |= M_INT3;
+	    IER |= M_INT4;
 	 	IER |= M_INT8;//SCIc
 	    IER |= M_INT9;//SCIa//ECAN//scib
 	    IER |= M_INT13;//timer1

@@ -154,21 +154,19 @@ void GlobleVarInit(void){
 	gRS422RxQue.rear = 0;
 	gRS422TxQue.front = 0;
 	gRS422TxQue.rear = 0;
+
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
 	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
 	memset(Rx4225TxBuf, 0, sizeof(Rx4225TxBuf));
 	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
 
-
-	for(index = 0; index < TotalChannel; ++index)
-	{
+	for(index = 0; index < TotalChannel; ++index){
 		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
 		gSysMonitorVar.anolog.single.var[index].max = anologMaxMinInit[index][0];
 		gSysMonitorVar.anolog.single.var[index].min = anologMaxMinInit[index][1];
 	}
 
-	for(index=0; index < 12; ++index)
-	{
+	for(index=0; index < 12; ++index){
 		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
 	for(index = 0; index < 20; ++index){
@@ -195,7 +193,6 @@ void main(void) {
 	GlobleVarInit();
 	/*interrupt init*/
 	Init_Interrupt();
-
 
 	PowerOnBIT();
 

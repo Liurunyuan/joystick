@@ -123,7 +123,7 @@ typedef long double        float64;
 
 #if DSP28_28335
 
-#define DSP28_ECAP1  1
+#define DSP28_ECAP1  0
 #define DSP28_ECAP2  0
 #define DSP28_ECAP3  0
 #define DSP28_ECAP4  1
