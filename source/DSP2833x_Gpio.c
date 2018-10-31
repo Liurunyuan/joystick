@@ -73,6 +73,7 @@ void InitOutputPin(void)
 	 * Pin index:			1
 	 * Name in circuit:		AD1K
 	 */
+	EALLOW;
 	GpioCtrlRegs.GPAMUX2.bit.GPIO30	= GPIO;
 	GpioCtrlRegs.GPADIR.bit.GPIO30	= OUTPUT;
 	/*
@@ -154,6 +155,7 @@ void InitOutputPin(void)
 	 */
 	GpioCtrlRegs.GPAMUX2.bit.GPIO31	= GPIO;
 	GpioCtrlRegs.GPADIR.bit.GPIO31	= OUTPUT;
+	EDIS;
 
 
 

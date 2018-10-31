@@ -2,10 +2,10 @@
 //#define FLASH
 
 //以下是上电科项目中用到的宏定义，开始于2016.6.12，yjs
-#define EPWM1_TIMER_TBPRD 4286     //连续增减计数模式：6000--10k，3000--20k，4286--14K,120M/2/14K=4286
-#define EPWM2_TIMER_TBPRD 4286     //6000--10k，3000--20k，4286--14K
-#define EPWM1_TIMER_HALF_TBPRD  2143            //
-#define EPWM2_TIMER_HALF_TBPRD  2143
+#define EPWM1_TIMER_TBPRD 1500     //连续增减计数模式：6000--10k，3000--20k，4286--14K,120M/2/14K=4286
+#define EPWM2_TIMER_TBPRD 1500     //6000--10k，3000--20k，4286--14K
+#define EPWM1_TIMER_HALF_TBPRD  750            //
+#define EPWM2_TIMER_HALF_TBPRD  750
 //三种运行模式：上位机控制运行模式，独立运行模式，上位机控制调试模式
 #define PC_Control_Mode 0
 #define Independent_Run_Mode 1
@@ -137,6 +137,11 @@ struct SystemStatusPara
 	Uint16 Motro_PositionY;
 };
 
+
+enum Bool{
+	False = 0,
+	True
+};
 
 
 

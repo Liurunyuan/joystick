@@ -24,11 +24,16 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
+#include "SCI_ISR.h"
+#include "PWM_ISR.h"
+#include "Timer_ISR.h"
 
 interrupt void  TINT0_ISR(void)
 {
-	  asm ("      ESTOP0");
-	  for(;;);
+	Timer0_ISR_Thread();
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
+	//CpuTimer0Regs.TCR.bit.TIF = 1;
+	//CpuTimer0Regs.TCR.bit.TRB = 1;
 }
 // Connected to INT13 of CPU (use MINT13 mask):
 // Note CPU-Timer1 is reserved for TI use, however XINT13
@@ -39,8 +44,7 @@ interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
+  Timer1_ISR_Thread();
 }
 
 // Note CPU-Timer2 is reserved for TI use.
@@ -340,8 +344,9 @@ interrupt void EPWM1_TZINT_ISR(void)     // TZ_FAULTA´¥·¢ÖÐ¶Ï
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
 //
-	 asm ("      ESTOP0");
-	 for(;;);
+	  asm ("      ESTOP0");
+	  for(;;);
+
 }
 
 // INT2.2
@@ -437,8 +442,10 @@ interrupt void EPWM1_INT_ISR(void)     // EPWM-1
 
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
+	Pwm_ISR_Thread();
+	EPwm1Regs.ETCLR.bit.INT = 1;
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP3;
+
 }
 
 // INT3.2
@@ -873,9 +880,9 @@ interrupt void SCIRXINTC_ISR(void)     // SCI-C
 
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
-
+  RS422A_receive();
+  ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;
+  PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
 }
 
 // INT8.6

@@ -11,9 +11,48 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "main.h"
+#include "SCI_ISR.h"
+#include <string.h>
+#include <stdio.h>
+#include "ADprocessor.h"
+#include "SCI_TX.h"
 
-/*git test*/
 
+#define UART_PRINTF
+
+#ifdef UART_PRINTF
+
+int fputc(int _c, register FILE *_fp);
+int fputs(const char *_ptr, register FILE *_fp);
+
+#endif
+
+#ifdef UART_PRINTF
+
+int fputc(int _c, register FILE *_fp){
+	while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
+	}
+
+	ScicRegs.SCITXBUF = (unsigned char) _c;
+
+	return ((unsigned char) _c);
+}
+
+int fputs(const char *_ptr, register FILE *_fp){
+	unsigned int i, len;
+
+	len = strlen(_ptr);
+
+	for(i = 0; i < len; ++i){
+		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
+		}
+		ScicRegs.SCITXBUF =(unsigned char) _ptr[i];
+	}
+
+	return len;
+}
+
+#endif
 /************************************************************
  *Name:						Init_Peripheral
  *Function:					Initialize all the peripherals,
@@ -55,9 +94,20 @@ void Init_Peripheral(void)
  *Author:					Simon
  *Date:						2018.6.10
  *************************************************************/
-void FeedWatchDog(void)
-{
+void FeedWatchDog(void){
 	TOOGLE_WATCHDOG = TRUE;
+}
+
+void delayfunction(int sec){
+	int count;
+
+	for(count = 0; count < sec; count++){
+		++count;
+	}
+}
+int PowerOnBIT(void){
+	//TODO   implement here, figure out what need to check, what to do if BIT fail.
+	return 0;
 }
 /**************************************************************
  *Name:						Start_main_loop
@@ -67,11 +117,62 @@ void FeedWatchDog(void)
  *Author:					Simon
  *Date:						2018.6.10
  **************************************************************/
-void Start_main_loop(void)
-{
+void Start_main_loop(void){
 	/*tbd-----------------*/
 	FeedWatchDog();
 	//TODO need to implement
+}
+/**************************************************************
+ *Name:						test_spi_tx
+ *Function:					Business logic
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+void test_spi_tx(void){
+	int retry = 0;
+	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1){
+		retry ++;
+		if(retry > 200){
+				//return 0;
+		}
+	}
+	SpiaRegs.SPITXBUF = 0x0001;
+}
+/***************************************************************
+ *Name:						GlobleVarInit
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.20
+ ****************************************************************/
+void GlobleVarInit(void){
+	int index;
+	gRS422RxQue.front = 0;
+	gRS422RxQue.rear = 0;
+	gRS422TxQue.front = 0;
+	gRS422TxQue.rear = 0;
+
+	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
+	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
+	memset(Rx4225TxBuf, 0, sizeof(Rx4225TxBuf));
+	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
+
+	for(index = 0; index < TotalChannel; ++index){
+		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
+		gSysMonitorVar.anolog.single.var[index].max = anologMaxMinInit[index][0];
+		gSysMonitorVar.anolog.single.var[index].min = anologMaxMinInit[index][1];
+	}
+
+	for(index=0; index < 12; ++index){
+		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
+	}
+	for(index = 0; index < 20; ++index){
+		gRx422TxVar[index].isTx = 1;
+		gRx422TxVar[index].index = index;
+	}
 }
 
 /***************************************************************
@@ -88,23 +189,25 @@ void main(void) {
 	InitSysCtrl_M();
 	/*peripheral init*/
 	Init_Peripheral();
+
+	GlobleVarInit();
 	/*interrupt init*/
 	Init_Interrupt();
 
+	PowerOnBIT();
+
 	while(1)
-    {
+	{
 		Start_main_loop();
+		int i;
+
+		for(i = 0; i < 1000; ++i){
+			//delayfunction(32000);
+			delayfunction(3200);
+		}
+
+		test_spi_tx();
+
+		//UnpackRS422ANew();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
