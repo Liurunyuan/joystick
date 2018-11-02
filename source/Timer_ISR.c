@@ -4,7 +4,7 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-#define N (10)
+#define N (0)
 
 
 
@@ -20,15 +20,20 @@ void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
 
-	int i = 0;
-	for(i = 0; i < 100; ++i){
-		++i;
-	}
+
+	//GpioDataRegs.GPCTOGGLE.bit.GPIO82 = 1;
+	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+
 	++count;
 	if(count > N){
+
 		testrs422tx();
 		count = 0;
+
 	}
+	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+
+
 }
 /***************************************************************
  *Name:						Timer1_ISR_Thread
@@ -39,7 +44,12 @@ void Timer0_ISR_Thread(void){
  *Date:						2018.10.21
  ****************************************************************/
 void Timer1_ISR_Thread(void){
+	int i = 0;
+	//return;
 	while(gRS422TxQue.front != gRS422TxQue.rear){
+		while(1){
+			++i;
+		}
 
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 

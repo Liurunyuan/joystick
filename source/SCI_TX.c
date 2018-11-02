@@ -19,7 +19,7 @@ RS422TXQUE gRS422TxQue = {0};
  ****************************************************************/
 int RX422TXEnQueue(char e){
 	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
-		printf("EnQueue FULL \r\n");
+		//printf("EnQueue FULL \r\n");
 		return 0;
 	}
 
@@ -85,16 +85,16 @@ void testrs422tx(void){
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("·¢ËÍ»º³åÇøFULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(0x5a) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("·¢ËÍ»º³åÇøFULL\r\n");
 			return;
 		}
 		lenPosition = gRS422TxQue.rear;
 		if(RX422TXEnQueue(0x05) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("·¢ËÍ»º³åÇøFULL\r\n");
 			return;
 		}
 	}
@@ -108,20 +108,21 @@ void testrs422tx(void){
 			tmp[1] = gRx422TxVar[i].value >> 8;
 			tmp[2] = gRx422TxVar[i].value;
 			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
-				printf("·¢ËÍ»º³åÇøFULL\r\n");
+				//printf("·¢ËÍ»º³åÇøFULL\r\n");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value >> 8) == 0){
-				printf("·¢ËÍ»º³åÇøFULL\r\n");
+				//printf("·¢ËÍ»º³åÇøFULL\r\n");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value) == 0){
-				printf("·¢ËÍ»º³åÇøFULL\r\n");
+				//printf("·¢ËÍ»º³åÇøFULL\r\n");
 				return;
 			}
 			crc = calCrc(crc, tmp, 3);
 		}
 	}
+
 	gRS422TxQue.txBuf[lenPosition] = total;
 	++count;
 
@@ -132,19 +133,19 @@ void testrs422tx(void){
 		crc = 0;
 		count = 0;
 		if(RX422TXEnQueue(crch) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("·¢ËÍ»º³åÇøFULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(crcl) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("·¢ËÍ»º³åÇøFULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("·¢ËÍ»º³åÇøFULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("·¢ËÍ»º³åÇøFULL\r\n");
 			return;
 		}
 	}

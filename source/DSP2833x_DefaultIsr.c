@@ -42,9 +42,22 @@ interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 {
   // Insert ISR Code here
 
+
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  Timer1_ISR_Thread();
+	Uint16 TempPIEIER;
+	TempPIEIER = PieCtrlRegs.PIEIER1.all;
+	IER |= 0x001;
+	IER &= 0x001;
+	PieCtrlRegs.PIEIER1.all &= 0x0040;
+	PieCtrlRegs.PIEACK.all = 0xffff;
+	asm(" NOP");
+	EINT;
+	//TempPIEIER = PieCtrlRegs.PIEIER1.all.
+
+	Timer1_ISR_Thread();
+	DINT;
+	PieCtrlRegs.PIEIER1.all =TempPIEIER;
 }
 
 // Note CPU-Timer2 is reserved for TI use.
