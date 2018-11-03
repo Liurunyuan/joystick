@@ -45,6 +45,19 @@ int RX422TXDeQueue(void)
 	return 1;
 }
 /***************************************************************
+ *Name:						RS422RxQueLength
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
+int RS422TxQueLength(){
+	int length;
+	length = (gRS422TxQue.rear - gRS422TxQue.front + TXMAXQSIZE) % TXMAXQSIZE;
+	return length;
+}
+/***************************************************************
  *Name:						CalCrc
  *Function:
  *Input:				    rs422 rx data
@@ -85,21 +98,21 @@ void testrs422tx(void){
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
-			//printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(0x5a) == 0){
-			//printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 			return;
 		}
 		lenPosition = gRS422TxQue.rear;
 		if(RX422TXEnQueue(0x05) == 0){
-			//printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 			return;
 		}
 	}
 
-	for(i = 0; i < 4; ++i){
+	for(i = 0; i < 3; ++i){
 		if(gRx422TxVar[i].isTx){
 			++total;
 			gRx422TxVar[i].value = ((AdcRegs.ADCRESULT0) >> 4);
@@ -108,15 +121,15 @@ void testrs422tx(void){
 			tmp[1] = gRx422TxVar[i].value >> 8;
 			tmp[2] = gRx422TxVar[i].value;
 			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
-				//printf("·¢ËÍ»º³åÇøFULL\r\n");
+				//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value >> 8) == 0){
-				//printf("·¢ËÍ»º³åÇøFULL\r\n");
+				//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value) == 0){
-				//printf("·¢ËÍ»º³åÇøFULL\r\n");
+				//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 				return;
 			}
 			crc = calCrc(crc, tmp, 3);
@@ -133,20 +146,69 @@ void testrs422tx(void){
 		crc = 0;
 		count = 0;
 		if(RX422TXEnQueue(crch) == 0){
-			//printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(crcl) == 0){
-			//printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			//printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			//printf("·¢ËÍ»º³åÇøFULL\r\n");
+			//printf("ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½FULL\r\n");
 			return;
 		}
 	}
+}
+/***************************************************************
+ *Name:						rs422 tx interrupt isr
+ *Function:			  none
+ *Input:				  none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.11.3
+ ****************************************************************/
+void RS422A_Transmit(void){
+	int count;
+	//when tx queue is empty, that means nothing need to be sent.
+	//so disable the tx interrupt.
+	/*
+	if(RS422TxQueLength() == 0){
+
+		ScicRegs.SCIFFTX.bit.TXFFIENA = 0;//disable the tx interrupt when tx fifo empty
+		return;
+	}
+
+	for(count = 0; count < 16; ++count){
+		if(ScicRegs.SCIFFTX.bit.TXFFST == 16){
+			return;
+		}
+		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
+
+		if(RX422TXDeQueue() == 0){
+			//printf("rs422a tx queue is empty\r\n");
+			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
+			return;
+		}
+	}
+	*/
+	//if(RS422TxQueLength() == 0){
+	if(gRS422TxQue.front == gRS422TxQue.rear){
+
+		ScicRegs.SCIFFTX.bit.TXFFIENA = 0;//disable the tx interrupt when tx fifo empty
+		return;
+	}
+	while(ScicRegs.SCIFFTX.bit.TXFFST != 15){
+		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
+		if(RX422TXDeQueue() == 0){
+		//printf("rs422a tx queue is empty\r\n");
+			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
+			return;
+		}
+	}
+
+
 }
