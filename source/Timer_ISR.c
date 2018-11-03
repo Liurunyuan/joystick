@@ -21,7 +21,7 @@ void Timer0_ISR_Thread(void){
 	static unsigned char count = 0;
 
 
-	GpioDataRegs.GPCTOGGLE.bit.GPIO82 = 1;
+	//GpioDataRegs.GPCTOGGLE.bit.GPIO82 = 1;
 	//GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 
 	++count;
