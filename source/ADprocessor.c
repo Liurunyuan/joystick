@@ -3,9 +3,9 @@
 #include "public.h"
 #include "ADprocessor.h"
 
+SysMonitorVar gSysMonitorVar;
 
-
-
+/********update anolog variable value******************************/
 int updateForceValue(void){return GET_FORCE_SGN;}
 int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}
 int updatePower28V_M(void){return GET_28V_M;}
@@ -17,9 +17,10 @@ int updateBusCurrentA(void){return GET_A_BUS_CURRENT;}
 int updateDisplacementValue(void){return GET_DISPLACEMENT_SGN;}
 int updateBridgeCurrentC(void){return GET_C_BRIDGE_CURRENT;}
 int updateBusCurrentC(void){return GET_C_BUS_CURRENT;}
-
+/******************************************************************/
 
 const UV funcptr[] = {
+
 	updateForceValue,
 	updateBusCurrentP,
 	updatePower28V_M,
@@ -31,6 +32,7 @@ const UV funcptr[] = {
 	updateDisplacementValue,
 	updateBridgeCurrentC,
 	updateBusCurrentC
+
 };
 
 const int anologMaxMinInit[][2] = {
@@ -46,15 +48,6 @@ const int anologMaxMinInit[][2] = {
 		{9,0},
 		{10,0}
 };
-
-
-
-
-struct MULTCH multiCHInspect = {0};
-
-
-
-SysMonitorVar gSysMonitorVar;
 /**************************************************************
  *Name:						UpdatePowerBoardAnalogInput
  *Function:					更新功率板输入模拟量
