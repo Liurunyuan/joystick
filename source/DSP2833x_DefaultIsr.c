@@ -27,6 +27,7 @@
 #include "SCI_ISR.h"
 #include "PWM_ISR.h"
 #include "Timer_ISR.h"
+#include "SCI_TX.h"
 
 interrupt void  TINT0_ISR(void)
 {
@@ -42,9 +43,31 @@ interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 {
   // Insert ISR Code here
 
+
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  Timer1_ISR_Thread();
+	Uint16 TempPIEIER;
+	Uint16 TempPIEIER2;
+
+	TempPIEIER = PieCtrlRegs.PIEIER1.all;
+	IER |= 0x001;
+	IER &= 0x001;
+	PieCtrlRegs.PIEIER1.all &= 0x0040;
+	PieCtrlRegs.PIEACK.all = 0xffff;
+
+	TempPIEIER2 = PieCtrlRegs.PIEIER3.all;
+	IER |= 0x004;
+	IER &= 0x004;
+	PieCtrlRegs.PIEIER3.all &= 0x0001;
+	PieCtrlRegs.PIEACK.all = 0xffff;
+	asm(" NOP");
+	EINT;
+	//TempPIEIER = PieCtrlRegs.PIEIER1.all.
+
+	Timer1_ISR_Thread();
+	DINT;
+	PieCtrlRegs.PIEIER1.all =TempPIEIER;
+	PieCtrlRegs.PIEIER3.all =TempPIEIER2;
 }
 
 // Note CPU-Timer2 is reserved for TI use.
@@ -334,7 +357,7 @@ interrupt void  WAKEINT_ISR(void)    // WD, LOW Power
 // -----------------------------------------------------------
 
 // INT2.1
-interrupt void EPWM1_TZINT_ISR(void)     // TZ_FAULTA´¥·¢ÖÐ¶Ï
+interrupt void EPWM1_TZINT_ISR(void)     // TZ_FAULTAï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
 {
 
   // Insert ISR Code here
@@ -350,7 +373,7 @@ interrupt void EPWM1_TZINT_ISR(void)     // TZ_FAULTA´¥·¢ÖÐ¶Ï
 }
 
 // INT2.2
-interrupt void EPWM2_TZINT_ISR(void)     // TZ_FAULTA´¥·¢ÖÐ¶Ï
+interrupt void EPWM2_TZINT_ISR(void)     // TZ_FAULTAï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
 {
 
   // Insert ISR Code here
@@ -367,7 +390,7 @@ interrupt void EPWM2_TZINT_ISR(void)     // TZ_FAULTA´¥·¢ÖÐ¶Ï
 
 
 // INT2.3
-interrupt void EPWM3_TZINT_ISR(void)    // IKA_BJ´¥·¢ÖÐ¶Ï
+interrupt void EPWM3_TZINT_ISR(void)    // IKA_BJï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
 {
 
   // Insert ISR Code here
@@ -895,9 +918,9 @@ interrupt void SCITXINTC_ISR(void)     // SCI-C
 
   // Next two lines for debug only to halt the processor here
   // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
-
+	RS422A_Transmit();
+	ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
 }
 
 // INT8.7 - Reserved
@@ -1175,4 +1198,3 @@ interrupt void rsvd_ISR(void)      // For test
 //===========================================================================
 // End of file.
 //===========================================================================
-

@@ -5,9 +5,9 @@
 #define SUMX 45
 #define SUMXPOW2 285
 #define SUMXPOW3 2025
-#define SUMXPOW4 415333
-#define SUMXPOW5 415333
-#define SUMXPOW6 415333
+#define SUMXPOW4 15333
+#define SUMXPOW5 120825
+#define SUMXPOW6 978405
 
 SumPara sumPara = {
 	SUMX,
@@ -32,13 +32,15 @@ void calFuncPara(void){
 	float temp,temp0,temp1,temp2;
 
 	temp = 10 * (sumPara.sum_Xpow2 * sumPara.sum_Xpow4 -sumPara.sum_Xpow3*sumPara.sum_Xpow3)
-			-  sumPara.sum_X* (sumPara.sum_X * sumPara.sum_Xpow4 - sumPara.sum_Xpow2 * sumPara.sum_Xpow3);
+			-  sumPara.sum_X* (sumPara.sum_X * sumPara.sum_Xpow4 - sumPara.sum_Xpow2 * sumPara.sum_Xpow3)
+			+ sumPara.sum_Xpow2 * (sumPara.sum_X * sumPara.sum_Xpow3 - sumPara.sum_Xpow2 * sumPara.sum_Xpow2);
 
 	temp0 = sumPara.sum_Y * (sumPara.sum_Xpow2 * sumPara.sum_Xpow4 - sumPara.sum_Xpow3*sumPara.sum_Xpow3)
 			- sumPara.sum_XY*(sumPara.sum_X*sumPara.sum_Xpow4 - sumPara.sum_Xpow2*sumPara.sum_Xpow3)
 			+ sumPara.sum_Xpow2Y*(sumPara.sum_X*sumPara.sum_Xpow3 - sumPara.sum_Xpow2*sumPara.sum_Xpow2);
 
-	temp1 = 10 * (sumPara.sum_XY*SUMXPOW4 - sumPara.sum_Xpow2Y*SUMXPOW3) - SUMX*(sumPara.sum_Y*SUMXPOW4 - SUMXPOW2*sumPara.sum_Xpow2Y)
+	temp1 = 10 * (sumPara.sum_XY*SUMXPOW4 - sumPara.sum_Xpow2Y*SUMXPOW3)
+			- SUMX*(sumPara.sum_Y*SUMXPOW4 - SUMXPOW2*sumPara.sum_Xpow2Y)
 			+ SUMXPOW2*(sumPara.sum_Y*SUMXPOW3 - sumPara.sum_XY*SUMXPOW2);
 
 	temp2 = 10 * (SUMXPOW2*sumPara.sum_Xpow2Y - sumPara.sum_XY*SUMXPOW3)
@@ -51,9 +53,11 @@ void calFuncPara(void){
 
 }
 void CalFuncPara(int y,int count){
+	/*
 	if(count == 0){
 		clearSum();
 	}
+	*/
 
 	sumPara.sum_XY += count*y;
 	sumPara.sum_Xpow2Y += count*count*y;
@@ -61,5 +65,6 @@ void CalFuncPara(int y,int count){
 
 	if(count >=9){
 		calFuncPara();
+		clearSum();
 	}
 }

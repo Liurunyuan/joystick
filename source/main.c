@@ -7,15 +7,16 @@
  * Corporation:				RunZhang
  *
  * */
+#include <string.h>
+#include <stdio.h>
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "main.h"
 #include "SCI_ISR.h"
-#include <string.h>
-#include <stdio.h>
 #include "ADprocessor.h"
 #include "SCI_TX.h"
+#include "PWM_ISR.h"
 
 
 #define UART_PRINTF
@@ -157,8 +158,22 @@ void GlobleVarInit(void){
 
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
 	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
-	memset(Rx4225TxBuf, 0, sizeof(Rx4225TxBuf));
 	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
+
+
+	feedbackVarBuf.maxDisplacement = 0;
+	feedbackVarBuf.maxForce = 0;
+	feedbackVarBuf.minDisplacement = 0;
+	feedbackVarBuf.minForce = 0;
+	feedbackVarBuf.sumDisplacement = 0;
+	feedbackVarBuf.sumForce = 0;
+
+	memset(feedbackVarBuf.displacementbuf, 0, sizeof(feedbackVarBuf.displacementbuf));
+	memset(feedbackVarBuf.forcebuf, 0, sizeof(feedbackVarBuf.forcebuf));
+	for(index = 0; index < 10; ++index){
+		feedbackVarBuf.displacementbuf[index] = index*index + 3*index + 2;
+		feedbackVarBuf.forcebuf[index] = index;
+	}
 
 	for(index = 0; index < TotalChannel; ++index){
 		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];

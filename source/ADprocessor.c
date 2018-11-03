@@ -199,7 +199,7 @@ void AnalogValueInspect(void)
  **************************************************************/
 void DigitalValueInspect(void)
 {
-	static int status = 1;
+	static int status = REFRESH;
 	static int channel = 0;
 
 	switch(status)
@@ -223,13 +223,17 @@ void DigitalValueInspect(void)
 			gSysMonitorVar.digit.multi.var[channel].valueN = GET_DIGIT_SERIAL_N;
 
 			SET_DIGIT_SER_CLK_LOW;
-			++channel;
+
 			if(channel >= 9)
 			{
+				channel = 0;
 				status = REFRESH;
 			}
-			else
+			else{
 				status = TRIGGER;
+			}
+
+			++channel;
 			break;
 		default:
 			status = REFRESH;

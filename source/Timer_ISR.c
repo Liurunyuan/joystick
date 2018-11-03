@@ -19,16 +19,16 @@
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
+	//GpioDataRegs.GPCTOGGLE.bit.GPIO82 = 1;
+	//GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 
-	int i = 0;
-	for(i = 0; i < 100; ++i){
-		++i;
-	}
 	++count;
+
 	if(count > N){
 		testrs422tx();
 		count = 0;
 	}
+	//GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 }
 /***************************************************************
  *Name:						Timer1_ISR_Thread
@@ -39,17 +39,10 @@ void Timer0_ISR_Thread(void){
  *Date:						2018.10.21
  ****************************************************************/
 void Timer1_ISR_Thread(void){
-	while(gRS422TxQue.front != gRS422TxQue.rear){
 
-		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
-
-		}
-
-		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
-
-		if(RX422TXDeQueue() == 0){
-			//printf("·¢ËÍ»º³åÇøÎª¿Õ\r\n");
-			return;
-		}
+	if(gRS422TxQue.front != gRS422TxQue.rear
+			&& ScicRegs.SCIFFTX.bit.TXFFST == 0){
+		 ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
+		 ScicRegs.SCIFFTX.bit.TXFFIENA = 1;
 	}
 }

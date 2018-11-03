@@ -6,7 +6,7 @@
 #include "Filter_Alg.h"
 #include "SPIprocess.h"
 
-KeyValue gKeyValue;
+KeyValue gKeyValue = {0};
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
@@ -22,7 +22,9 @@ void CalForceSpeedAccel(void) {
 	static int count = 0;
 
 	ForceAndDisplaceProcess(count);
-	CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
+	//CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
+
+	CalFuncPara(feedbackVarBuf.displacementbuf[count], count);
 
 	count++;
 
@@ -32,6 +34,47 @@ void CalForceSpeedAccel(void) {
 		count = 0;
 	}
 }
+/**************************************************************
+ *Name:						ReadHallValue
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.31
+ **************************************************************/
+Uint16 ReadHallValue(void){
+
+	Uint16 temp;
+	Uint16 a;
+	Uint16 b;
+	Uint16 c;
+
+	c = GpioDataRegs.GPADAT.bit.GPIO27;
+	b = GpioDataRegs.GPBDAT.bit.GPIO48;
+	a = GpioDataRegs.GPBDAT.bit.GPIO49;
+
+	temp = ((c << 2) + (b << 1) + a)^0x07;
+
+	if(temp < 1 || temp >6){
+		//TODO if temp < 1 or >6 means program abnormal, need to do something
+	}
+
+
+	return temp;
+}
+/**************************************************************
+ *Name:						SwitchDirection
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.31
+ **************************************************************/
+void SwitchDirection(void){
+
+
+}
+
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -56,18 +99,21 @@ void Pwm_ISR_Thread(void)
 	在PWM中断中，中断第10次准备刷新LW_BUFF时，检查LOCK，若LOCK=1，则复制数据，并将LOCK=0；若LOCK=0，则软件报警（LOCK 001）
 	在0.25ms中断中，进入中断判断LOCK，若LOCK=0，则复制数据（将全局变量以形参的形式调用函数，等于将全局变量压入堆栈，被调用的函数第一句话将全局变量的LOCK=1）；若LOCK=1，则报警（LOCK 002）
 	 */
+
 	//StartGetADBySpi();
+	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+
 	ReadAnalogValue();
 	ReadDigitalValue();
-	/*
-	if(IsSingleAnalogValueAbnormal() == True)
-	{
+
+	if(IsSingleAnalogValueAbnormal() == True){
 		//TODO
 	}
-	*/
+
 	//TODO prepare output
 	//ReadADBySpi();
-	//CalForceSpeedAccel();
+	CalForceSpeedAccel();
+	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 
 }
 /**************************************************************
@@ -133,15 +179,17 @@ void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
  *Date:						2018.6.10
  **************************************************************/
 void ForceAndDisplaceProcess(int count){
-
+	/*
 	feedbackVarBuf.forcebuf[count] = gSysMonitorVar.anolog.single.var[ForceValue].value;
 	feedbackVarBuf.displacementbuf[count] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+	*/
 
-	feedbackVarBuf.sumForce = feedbackVarBuf.sumForce + gSysMonitorVar.anolog.single.var[ForceValue].value;
-	feedbackVarBuf.sumDisplacement = feedbackVarBuf.sumDisplacement + gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+	feedbackVarBuf.sumForce = feedbackVarBuf.sumForce + feedbackVarBuf.forcebuf[count];
+	feedbackVarBuf.sumDisplacement = feedbackVarBuf.sumDisplacement + feedbackVarBuf.displacementbuf[count];
 
-	UpdateMaxAndMin(&feedbackVarBuf);
+	//UpdateMaxAndMin(&feedbackVarBuf);
 	if(count >= 9){
+		gKeyValue.lock = 1;//need to remove after debug
 		if(gKeyValue.lock == 0)
 		{
 			//TODO generate alarm;
@@ -150,6 +198,8 @@ void ForceAndDisplaceProcess(int count){
 		gKeyValue.displacement = displacebufProcess();
 		gKeyValue.force = forcebufProcess();
 		gKeyValue.lock = 0;
+		feedbackVarBuf.sumForce = 0;
+		feedbackVarBuf.sumDisplacement =0;
 	}
 }
 

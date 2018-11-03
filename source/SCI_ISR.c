@@ -76,7 +76,7 @@ const functionMsgCodeUnpack msgInterface[] =
  ****************************************************************/
 int EnQueue(int e){
 	if((gRS422RxQue.rear + 1) % MAXQSIZE == gRS422RxQue.front){
-		printf("EnQueue FULL \r\n");
+		//printf("EnQueue FULL \r\n");
 		return 0;
 	}
 
@@ -127,7 +127,7 @@ void RS422A_receive(void)
 	//当接收fifo不为空时
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
-			printf("接收缓冲区FULL\r\n");
+			//printf("接收缓冲区FULL\r\n");
 			//TODO update error msg
 		}
 	}
@@ -256,13 +256,13 @@ void unpack(int len){
 		var16.value = var16.datahl.l + (var16.datahl.h << 8);
 
 		if(msgCode < (sizeof(msgInterface)/sizeof(msgInterface[0]))){
-			printf("msgCode = %d\r\n",msgCode);
+			//printf("msgCode = %d\r\n",msgCode);
 			if(msgInterface[msgCode]){
 				msgInterface[msgCode](var16,0,0);
 			}
 		}
 		else{
-			printf("unpack msg code is out of range\r\n");
+			//printf("unpack msg code is out of range\r\n");
 		}
 
 	}
@@ -335,7 +335,7 @@ void UnpackRS422ANew(void){
 
 	unpack(gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]);
 	updatehead(length);
-	printf("update the front position----------------------------\r\n");
+//	printf("update the front position----------------------------\r\n");
 }
 /***************************************************************
  *Name:						testwithlabview

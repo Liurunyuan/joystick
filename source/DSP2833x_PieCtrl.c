@@ -129,7 +129,7 @@ void Init_Interrupt(void)
 	    ERTM;
 	    AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;//此句要有，否则进步了中断，应为在该行代码执行前，seq1中断标识已经被立起，此处需要清除
 	    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;//此句做用同上
-	    //ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
+	    ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
 	    EALLOW;
 	    EPwm1Regs.TZCLR.bit.CBC=1;//清除CBC时间标志位
 	    EPwm1Regs.TZCLR.bit.INT=1;//清除中断标识位

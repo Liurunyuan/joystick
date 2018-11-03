@@ -155,7 +155,21 @@ void InitOutputPin(void)
 	 */
 	GpioCtrlRegs.GPAMUX2.bit.GPIO31	= GPIO;
 	GpioCtrlRegs.GPADIR.bit.GPIO31	= OUTPUT;
+
+
+	/*
+	 *GPIO82
+	 *Pin index:			165
+	 *Name in circuit:		GPIO82, just for test to calculate the function running time
+	 */
+	GpioCtrlRegs.GPCMUX2.bit.GPIO82	= GPIO;
+	GpioCtrlRegs.GPCDIR.bit.GPIO82	= OUTPUT;
+
+
+
+
 	EDIS;
+
 
 
 
