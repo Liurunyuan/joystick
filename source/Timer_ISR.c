@@ -21,8 +21,8 @@ void Timer0_ISR_Thread(void){
 	static unsigned char count = 0;
 
 
-	//GpioDataRegs.GPCTOGGLE.bit.GPIO82 = 1;
-	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+	GpioDataRegs.GPCTOGGLE.bit.GPIO82 = 1;
+	//GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 
 	++count;
 	if(count > N){
@@ -31,7 +31,7 @@ void Timer0_ISR_Thread(void){
 		count = 0;
 
 	}
-	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+	//GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 
 
 }
@@ -45,11 +45,8 @@ void Timer0_ISR_Thread(void){
  ****************************************************************/
 void Timer1_ISR_Thread(void){
 	int i = 0;
-	//return;
+
 	while(gRS422TxQue.front != gRS422TxQue.rear){
-		while(1){
-			++i;
-		}
 
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 

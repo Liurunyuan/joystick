@@ -100,16 +100,16 @@ void Pwm_ISR_Thread(void)
 	在0.25ms中断中，进入中断判断LOCK，若LOCK=0，则复制数据（将全局变量以形参的形式调用函数，等于将全局变量压入堆栈，被调用的函数第一句话将全局变量的LOCK=1）；若LOCK=1，则报警（LOCK 002）
 	 */
 	//StartGetADBySpi();
-	//ReadAnalogValue();
+	ReadAnalogValue();
 	ReadDigitalValue();
-/*
+
 	if(IsSingleAnalogValueAbnormal() == True){
 		//TODO
 	}
-*/
+
 	//TODO prepare output
 	//ReadADBySpi();
-	//CalForceSpeedAccel();
+	CalForceSpeedAccel();
 
 }
 /**************************************************************
