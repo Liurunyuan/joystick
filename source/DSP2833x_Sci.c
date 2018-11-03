@@ -14,34 +14,30 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 //---------------------------------------------------------------------------
-// InitSci: 
+// InitSci:
 //---------------------------------------------------------------------------
 // This function initializes the SCI(s) to a known state.
 //
 void InitSci(void)
 {
 	// Initialize SCI-A:
-
- 	
 	// Initialize SCI-B:
+  // Initialize SCI-C:
 
-  
-      // Initialize SCI-C:
-
-}	
+}
 
 //---------------------------------------------------------------------------
-// Example: InitSciGpio: 
+// Example: InitSciGpio:
 //---------------------------------------------------------------------------
 // This function initializes GPIO pins to function as SCI pins
 //
 // Each GPIO pin can be configured as a GPIO pin or up to 3 different
 // peripheral functional pins. By default all pins come up as GPIO
-// inputs after reset.  
-// 
-// Caution: 
+// inputs after reset.
+//
+// Caution:
 // Only one GPIO pin should be enabled for SCITXDA/B operation.
-// Only one GPIO pin shoudl be enabled for SCIRXDA/B operation. 
+// Only one GPIO pin shoudl be enabled for SCIRXDA/B operation.
 // Comment out other unwanted lines.
 
 void InitSciGpio(void)
@@ -57,14 +53,14 @@ void InitSciaGpio()
    EALLOW;
 
 
-// Pull-ups can be enabled or disabled disabled by the user.  
+// Pull-ups can be enabled or disabled disabled by the user.
 // This will enable the pullups for the specified pins.
 
 	GpioCtrlRegs.GPAPUD.bit.GPIO28 = 0;    // Enable pull-up for GPIO28 (SCIRXDA)
 	GpioCtrlRegs.GPAPUD.bit.GPIO29 = 0;	   // Enable pull-up for GPIO29 (SCITXDA)
 
 
-// Inputs are synchronized to SYSCLKOUT by default.  
+// Inputs are synchronized to SYSCLKOUT by default.
 // This will select asynch (no qualification) for the selected pins.
 
 	GpioCtrlRegs.GPAQSEL2.bit.GPIO28 = 3;  // Asynch input GPIO28 (SCIRXDA)
@@ -74,7 +70,7 @@ void InitSciaGpio()
 
 	GpioCtrlRegs.GPAMUX2.bit.GPIO28 = 1;   // Configure GPIO28 for SCIRXDA operation
 	GpioCtrlRegs.GPAMUX2.bit.GPIO29 = 1;   // Configure GPIO29 for SCITXDA operation
-	
+
     EDIS;
 }
 
@@ -82,9 +78,9 @@ void InitSciaGpio()
 void InitScibGpio()
 {
    EALLOW;
-	
+
 /* Enable internal pull-up for the selected pins */
-// Pull-ups can be enabled or disabled disabled by the user.  
+// Pull-ups can be enabled or disabled disabled by the user.
 // This will enable the pullups for the specified pins.
 // Comment out other unwanted lines.
 
@@ -93,7 +89,7 @@ void InitScibGpio()
 //	GpioCtrlRegs.GPAPUD.bit.GPIO18 = 0;	   // Enable pull-up for GPIO18 (SCITXDB)
   GpioCtrlRegs.GPAPUD.bit.GPIO22 = 0;    // Enable pull-up for GPIO22 (SCITXDB)
 
-	
+
 //  GpioCtrlRegs.GPAPUD.bit.GPIO11 = 0;    // Enable pull-up for GPIO11 (SCIRXDB)
 //  GpioCtrlRegs.GPAPUD.bit.GPIO15 = 0;    // Enable pull-up for GPIO15 (SCIRXDB)
 //    GpioCtrlRegs.GPAPUD.bit.GPIO19 = 0;	   // Enable pull-up for GPIO19 (SCIRXDB)
@@ -116,12 +112,12 @@ void InitScibGpio()
 //  GpioCtrlRegs.GPAMUX1.bit.GPIO14 = 2;   // Configure GPIO14 for SCITXDB operation
 //	GpioCtrlRegs.GPAMUX2.bit.GPIO18 = 2;   // Configure GPIO18 for SCITXDB operation
   GpioCtrlRegs.GPAMUX2.bit.GPIO22 = 3;   // Configure GPIO22 for SCITXDB operation
-	
+
 //  GpioCtrlRegs.GPAMUX1.bit.GPIO11 = 2;   // Configure GPIO11 for SCIRXDB operation
 //  GpioCtrlRegs.GPAMUX1.bit.GPIO15 = 2;   // Configure GPIO15 for SCIRXDB operation
 //    GpioCtrlRegs.GPAMUX2.bit.GPIO19 = 2;   // Configure GPIO19 for SCIRXDB operation
   GpioCtrlRegs.GPAMUX2.bit.GPIO23 = 3;   // Configure GPIO23 for SCIRXDB operation
-	
+
     EDIS;
 }
 
@@ -132,14 +128,14 @@ void InitScicGpio()
    EALLOW;
 
 
-// Pull-ups can be enabled or disabled disabled by the user.  
+// Pull-ups can be enabled or disabled disabled by the user.
 // This will enable the pullups for the specified pins.
 
 	GpioCtrlRegs.GPBPUD.bit.GPIO62 = 0;    // Enable pull-up for GPIO62 (SCIRXDC)
 	GpioCtrlRegs.GPBPUD.bit.GPIO63 = 0;	   // Enable pull-up for GPIO63 (SCITXDC)
 
 
-// Inputs are synchronized to SYSCLKOUT by default.  
+// Inputs are synchronized to SYSCLKOUT by default.
 // This will select asynch (no qualification) for the selected pins.
 
 	GpioCtrlRegs.GPBQSEL2.bit.GPIO62 = 3;  // Asynch input GPIO62 (SCIRXDC)
@@ -149,7 +145,7 @@ void InitScicGpio()
 
 	GpioCtrlRegs.GPBMUX2.bit.GPIO62 = 1;   // Configure GPIO62 for SCIRXDC operation
 	GpioCtrlRegs.GPBMUX2.bit.GPIO63 = 1;   // Configure GPIO63 for SCITXDC operation
-	
+
     EDIS;
 }
 
@@ -225,7 +221,7 @@ void Init_SCI(void)
 	InitSciGpio();
 	scib_loopback_init();
 	scib_fifo_init();
-  	scic_loopback_init();
+	scic_loopback_init();
 	scic_fifo_init();
 }
 //===========================================================================

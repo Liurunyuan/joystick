@@ -141,6 +141,96 @@ void test_spi_tx(void){
 	}
 	SpiaRegs.SPITXBUF = 0x0001;
 }
+/**************************************************************
+ *Name:						Init_gRS422RxQue
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+void Init_gRS422RxQue(void) {
+	gRS422RxQue.front = 0;
+	gRS422RxQue.rear = 0;
+	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
+}
+/**************************************************************
+ *Name:						Init_gRS422TxQue
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+void Init_gRS422TxQue(void) {
+	gRS422TxQue.front = 0;
+	gRS422TxQue.rear = 0;
+	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
+}
+/**************************************************************
+ *Name:						Init_gRx422TxVar
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+void Init_gRx422TxVar(void) {
+	int index;
+
+	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
+	for (index = 0; index < 20; ++index) {
+		gRx422TxVar[index].isTx = 1;
+		gRx422TxVar[index].index = index;
+	}
+}
+/**************************************************************
+ *Name:						Init_feedbackVarBuf
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+void Init_feedbackVarBuf(void) {
+	int index;
+
+	feedbackVarBuf.maxDisplacement = 0;
+	feedbackVarBuf.maxForce = 0;
+	feedbackVarBuf.minDisplacement = 0;
+	feedbackVarBuf.minForce = 0;
+	feedbackVarBuf.sumDisplacement = 0;
+	feedbackVarBuf.sumForce = 0;
+	memset(feedbackVarBuf.displacementbuf, 0,
+			sizeof(feedbackVarBuf.displacementbuf));
+	memset(feedbackVarBuf.forcebuf, 0, sizeof(feedbackVarBuf.forcebuf));
+	for (index = 0; index < 10; ++index) {
+		feedbackVarBuf.displacementbuf[index] = index * index + 3 * index + 2;
+		feedbackVarBuf.forcebuf[index] = index;
+	}
+}
+/**************************************************************
+ *Name:						Init_gSysMonitorVar
+ *Function:
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.28
+ **************************************************************/
+void Init_gSysMonitorVar() {
+	int index;
+	for (index = 0; index < TotalChannel; ++index) {
+		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
+		gSysMonitorVar.anolog.single.var[index].max =
+				anologMaxMinInit[index][0];
+		gSysMonitorVar.anolog.single.var[index].min =
+				anologMaxMinInit[index][1];
+	}
+	for (index = 0; index < 12; ++index) {
+		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
+	}
+}
+
 /***************************************************************
  *Name:						GlobleVarInit
  *Function:
@@ -149,45 +239,13 @@ void test_spi_tx(void){
  *Author:					Simon
  *Date:						2018.10.20
  ****************************************************************/
-void GlobleVarInit(void){
-	int index;
-	gRS422RxQue.front = 0;
-	gRS422RxQue.rear = 0;
-	gRS422TxQue.front = 0;
-	gRS422TxQue.rear = 0;
+void InitGlobleVar(void){
 
-	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
-	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
-	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
-
-
-	feedbackVarBuf.maxDisplacement = 0;
-	feedbackVarBuf.maxForce = 0;
-	feedbackVarBuf.minDisplacement = 0;
-	feedbackVarBuf.minForce = 0;
-	feedbackVarBuf.sumDisplacement = 0;
-	feedbackVarBuf.sumForce = 0;
-
-	memset(feedbackVarBuf.displacementbuf, 0, sizeof(feedbackVarBuf.displacementbuf));
-	memset(feedbackVarBuf.forcebuf, 0, sizeof(feedbackVarBuf.forcebuf));
-	for(index = 0; index < 10; ++index){
-		feedbackVarBuf.displacementbuf[index] = index*index + 3*index + 2;
-		feedbackVarBuf.forcebuf[index] = index;
-	}
-
-	for(index = 0; index < TotalChannel; ++index){
-		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
-		gSysMonitorVar.anolog.single.var[index].max = anologMaxMinInit[index][0];
-		gSysMonitorVar.anolog.single.var[index].min = anologMaxMinInit[index][1];
-	}
-
-	for(index=0; index < 12; ++index){
-		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
-	}
-	for(index = 0; index < 20; ++index){
-		gRx422TxVar[index].isTx = 1;
-		gRx422TxVar[index].index = index;
-	}
+	Init_gRS422RxQue();
+	Init_gRS422TxQue();
+	Init_gRx422TxVar();
+	Init_feedbackVarBuf();
+	Init_gSysMonitorVar();
 }
 
 /***************************************************************
@@ -205,7 +263,7 @@ void main(void) {
 	/*peripheral init*/
 	Init_Peripheral();
 
-	GlobleVarInit();
+	InitGlobleVar();
 	/*interrupt init*/
 	Init_Interrupt();
 

@@ -124,10 +124,10 @@ int RS422RxQueLength(){
  ****************************************************************/
 void RS422A_receive(void)
 {
-	//当接收fifo不为空时
+	//锟斤拷锟斤拷锟斤拷fifo锟斤拷为锟斤拷时
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
-			//printf("接收缓冲区FULL\r\n");
+			//printf("RS422 rx queue full\r\n");
 			//TODO update error msg
 		}
 	}
@@ -174,7 +174,7 @@ int findhead(void){
 		}
 
 		if(DeQueue() == 0){
-			//printf("接收缓冲区为空\r\n");
+			//printf("rs422 rx queue is empty\r\n");
 			return FAIL;
 		}
 
@@ -290,52 +290,52 @@ void UnpackRS422ANew(void){
 	int length;
 
 	if(findhead() == FAIL){
-		printf("接收缓冲区为空\r\n");
+		printf("find head failed\r\n");
 		return;
 	}
 	else{
-		printf("成功找到包头\r\n");
+		printf("find head succeed\r\n");
 	}
 
 	if(checklength() == FAIL){
-		printf("缓冲区长度不够， len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7 );
-		printf("缓冲区长度不够， len calculate =%d\r\n",RS422RxQueLength());
+		printf("len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7 );
+		printf("len calculate =%d\r\n",RS422RxQueLength());
 		return;
 	}
 	else{
-		printf("成功：缓冲区长度满足解包条件\r\n");
+		printf("data length is not enough, waiting for more data\r\n");
 	}
 
 	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7;
 
 	if(findtail(length) == FAIL){
-		printf("失败：包尾没有对应\r\n");
+		printf("find tail failed\r\n");
 		if(DeQueue() == 0){
-			printf("接收缓冲区为空\r\n");
+			printf("RS422 rx queue is empty\r\n");
 		}
 
 		return;
 	}
 	else{
-		printf("成功找到包尾\r\n");
+		printf("find tail succeed\r\n");
 	}
 
 	saveprofile(length);
 
 	if(CalCrc(0, rs422rxPack + 3, length - 5) != 0){
 		if(DeQueue() == 0){
-			printf("接收缓冲区为空\r\n");
+			printf("RS422 rx queue is empty\r\n");
 		}
-		printf("失败：没有通过CRC校验\r\n");
+		printf("CRC check failed\r\n");
 		return;
 	}
 	else{
-		printf("成功通过CRC校验\r\n");
+		printf("CRC check succeed\r\n");
 	}
 
 	unpack(gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]);
 	updatehead(length);
-//	printf("update the front position----------------------------\r\n");
+	printf("update the front position----------------------------\r\n");
 }
 /***************************************************************
  *Name:						testwithlabview
