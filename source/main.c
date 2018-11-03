@@ -7,13 +7,13 @@
  * Corporation:				RunZhang
  *
  * */
+#include <string.h>
+#include <stdio.h>
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "main.h"
 #include "SCI_ISR.h"
-#include <string.h>
-#include <stdio.h>
 #include "ADprocessor.h"
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
@@ -158,7 +158,6 @@ void GlobleVarInit(void){
 
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
 	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
-	memset(Rx4225TxBuf, 0, sizeof(Rx4225TxBuf));
 	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
 
 
