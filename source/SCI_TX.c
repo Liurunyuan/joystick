@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 GRX422TX gRx422TxVar[20] = {0};
-char Rx4225TxBuf[900] = {0};
 RS422TXQUE gRS422TxQue = {0};
 #define S (0)
 
@@ -19,7 +18,7 @@ RS422TXQUE gRS422TxQue = {0};
  ****************************************************************/
 int RX422TXEnQueue(char e){
 	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
-		//printf("EnQueue FULL \r\n");
+		asm ("      ESTOP0");
 		return 0;
 	}
 
@@ -98,16 +97,16 @@ void testrs422tx(void){
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
-			//printf("���ͻ�����FULL\r\n");
+			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0x5a) == 0){
-			//printf("���ͻ�����FULL\r\n");
+			asm ("      ESTOP0");
 			return;
 		}
 		lenPosition = gRS422TxQue.rear;
 		if(RX422TXEnQueue(0x05) == 0){
-			//printf("���ͻ�����FULL\r\n");
+			asm ("      ESTOP0");
 			return;
 		}
 	}
@@ -121,15 +120,15 @@ void testrs422tx(void){
 			tmp[1] = gRx422TxVar[i].value >> 8;
 			tmp[2] = gRx422TxVar[i].value;
 			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
-				//printf("���ͻ�����FULL\r\n");
+				asm ("      ESTOP0");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value >> 8) == 0){
-				//printf("���ͻ�����FULL\r\n");
+				asm ("      ESTOP0");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value) == 0){
-				//printf("���ͻ�����FULL\r\n");
+				asm ("      ESTOP0");
 				return;
 			}
 			crc = calCrc(crc, tmp, 3);
@@ -146,19 +145,19 @@ void testrs422tx(void){
 		crc = 0;
 		count = 0;
 		if(RX422TXEnQueue(crch) == 0){
-			//printf("���ͻ�����FULL\r\n");
+			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(crcl) == 0){
-			//printf("���ͻ�����FULL\r\n");
+			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			//printf("���ͻ�����FULL\r\n");
+			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			//printf("���ͻ�����FULL\r\n");
+			asm ("      ESTOP0");
 			return;
 		}
 	}
@@ -178,14 +177,12 @@ void RS422A_Transmit(void){
 		ScicRegs.SCIFFTX.bit.TXFFIENA = 0;//disable the tx interrupt when tx fifo empty
 		return;
 	}
+
 	while(ScicRegs.SCIFFTX.bit.TXFFST != 15){
 		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		if(RX422TXDeQueue() == 0){
-		//printf("rs422a tx queue is empty\r\n");
 			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
 			return;
 		}
 	}
-
-
 }

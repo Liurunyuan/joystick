@@ -1,6 +1,6 @@
 #ifndef _SCI_TX_H
 #define _SCI_TX_H
-#define TXMAXQSIZE 900
+#define TXMAXQSIZE 1800
 
 typedef void (*updatevalue)(int a, int b,int c);
 enum {
