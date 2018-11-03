@@ -4,7 +4,7 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-#define N (100)
+#define N (10)
 
 
 
