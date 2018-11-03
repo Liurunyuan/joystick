@@ -44,7 +44,6 @@ void Timer0_ISR_Thread(void){
  *Date:						2018.10.21
  ****************************************************************/
 void Timer1_ISR_Thread(void){
-	int i = 0;
 
 	while(gRS422TxQue.front != gRS422TxQue.rear){
 
