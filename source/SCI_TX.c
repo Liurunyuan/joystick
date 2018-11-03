@@ -172,30 +172,7 @@ void testrs422tx(void){
  *Date:						2018.11.3
  ****************************************************************/
 void RS422A_Transmit(void){
-	int count;
-	//when tx queue is empty, that means nothing need to be sent.
-	//so disable the tx interrupt.
-	/*
-	if(RS422TxQueLength() == 0){
 
-		ScicRegs.SCIFFTX.bit.TXFFIENA = 0;//disable the tx interrupt when tx fifo empty
-		return;
-	}
-
-	for(count = 0; count < 16; ++count){
-		if(ScicRegs.SCIFFTX.bit.TXFFST == 16){
-			return;
-		}
-		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
-
-		if(RX422TXDeQueue() == 0){
-			//printf("rs422a tx queue is empty\r\n");
-			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
-			return;
-		}
-	}
-	*/
-	//if(RS422TxQueLength() == 0){
 	if(gRS422TxQue.front == gRS422TxQue.rear){
 
 		ScicRegs.SCIFFTX.bit.TXFFIENA = 0;//disable the tx interrupt when tx fifo empty
