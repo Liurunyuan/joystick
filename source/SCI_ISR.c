@@ -124,7 +124,6 @@ int RS422RxQueLength(){
  ****************************************************************/
 void RS422A_receive(void)
 {
-	//������fifo��Ϊ��ʱ
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
 			//printf("RS422 rx queue full\r\n");
