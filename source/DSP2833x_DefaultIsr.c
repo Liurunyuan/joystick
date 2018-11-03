@@ -31,21 +31,26 @@
 
 interrupt void  TINT0_ISR(void)
 {
+#if TEST_TIME_TIMER0
+	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+#endif
 	Timer0_ISR_Thread();
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 	//CpuTimer0Regs.TCR.bit.TIF = 1;
 	//CpuTimer0Regs.TCR.bit.TRB = 1;
+#if TEST_TIME_TIMER0
+	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+#endif
 }
 // Connected to INT13 of CPU (use MINT13 mask):
 // Note CPU-Timer1 is reserved for TI use, however XINT13
 // ISR can be used by the user.
 interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 {
-  // Insert ISR Code here
+#if TEST_TIME_TIMER1
+		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+#endif
 
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
 	Uint16 TempPIEIER;
 	Uint16 TempPIEIER2;
 
@@ -62,12 +67,16 @@ interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 	PieCtrlRegs.PIEACK.all = 0xffff;
 	asm(" NOP");
 	EINT;
-	//TempPIEIER = PieCtrlRegs.PIEIER1.all.
 
 	Timer1_ISR_Thread();
+
 	DINT;
 	PieCtrlRegs.PIEIER1.all =TempPIEIER;
 	PieCtrlRegs.PIEIER3.all =TempPIEIER2;
+
+#if TEST_TIME_TIMER1
+		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+#endif
 }
 
 // Note CPU-Timer2 is reserved for TI use.
@@ -458,17 +467,17 @@ interrupt void EPWM6_TZINT_ISR(void)   // EPWM-6
 // INT 3.1
 interrupt void EPWM1_INT_ISR(void)     // EPWM-1
 {
-  // Insert ISR Code here
+#if TEST_TIME_EPWM1
+	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+#endif
 
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP3;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
 	Pwm_ISR_Thread();
 	EPwm1Regs.ETCLR.bit.INT = 1;
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP3;
 
+#if TEST_TIME_EPWM1
+		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+#endif
 }
 
 // INT3.2
@@ -896,31 +905,33 @@ interrupt void I2CINT2A_ISR(void)     // I2C-A
 // INT8.5
 interrupt void SCIRXINTC_ISR(void)     // SCI-C
 {
-  // Insert ISR Code here
+#if TEST_TIME_SCI_RX
+	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+#endif
 
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
   RS422A_receive();
   ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;
   PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
+
+#if TEST_TIME_SCI_RX
+	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+#endif
 }
 
 // INT8.6
 interrupt void SCITXINTC_ISR(void)     // SCI-C
 {
-  // Insert ISR Code here
+#if TEST_TIME_SCI_TX
+	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+#endif
 
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
 	RS422A_Transmit();
 	ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
+
+#if TEST_TIME_SCI_TX
+	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+#endif
 }
 
 // INT8.7 - Reserved
