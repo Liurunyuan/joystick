@@ -213,6 +213,10 @@ void main(void) {
 
 	while(1)
 	{
+#if TEST_TIME_MAIN_LOOP
+		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
+#endif
+
 		Start_main_loop();
 		int i;
 
@@ -224,5 +228,8 @@ void main(void) {
 		test_spi_tx();
 
 		//UnpackRS422ANew();
+#if TEST_TIME_MAIN_LOOP
+		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
+#endif
 	}
 }

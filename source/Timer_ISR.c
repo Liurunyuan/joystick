@@ -19,8 +19,6 @@
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
-	//GpioDataRegs.GPCTOGGLE.bit.GPIO82 = 1;
-	//GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 
 	++count;
 
@@ -28,7 +26,6 @@ void Timer0_ISR_Thread(void){
 		testrs422tx();
 		count = 0;
 	}
-	//GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 }
 /***************************************************************
  *Name:						Timer1_ISR_Thread

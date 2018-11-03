@@ -1,16 +1,28 @@
 /***************************************************/
 //#define FLASH
 
-//ÒÔÏÂÊÇÉÏµç¿ÆÏîÄ¿ÖÐÓÃµ½µÄºê¶¨Òå£¬¿ªÊ¼ÓÚ2016.6.12£¬yjs
-#define EPWM1_TIMER_TBPRD 1500     //Á¬ÐøÔö¼õ¼ÆÊýÄ£Ê½£º6000--10k£¬3000--20k£¬4286--14K,120M/2/14K=4286
-#define EPWM2_TIMER_TBPRD 1500     //6000--10k£¬3000--20k£¬4286--14K
+
+
+//define for calculating running time of function\
+
+#define TEST_TIME_EPWM1   (0)
+#define TEST_TIME_SCI_TX  (0)
+#define TEST_TIME_SCI_RX  (0)
+#define TEST_TIME_TIMER0  (1)
+#define TEST_TIME_TIMER1  (0)
+#define TEST_TIME_ECAP1   (0)
+#define TEST_TIME_MAIN_LOOP (0)
+
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Ãµï¿½ï¿½Äºê¶¨ï¿½å£¬ï¿½ï¿½Ê¼ï¿½ï¿½2016.6.12ï¿½ï¿½yjs
+#define EPWM1_TIMER_TBPRD 1500     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½6000--10kï¿½ï¿½3000--20kï¿½ï¿½4286--14K,120M/2/14K=4286
+#define EPWM2_TIMER_TBPRD 1500     //6000--10kï¿½ï¿½3000--20kï¿½ï¿½4286--14K
 #define EPWM1_TIMER_HALF_TBPRD  750            //
 #define EPWM2_TIMER_HALF_TBPRD  750
-//ÈýÖÖÔËÐÐÄ£Ê½£ºÉÏÎ»»ú¿ØÖÆÔËÐÐÄ£Ê½£¬¶ÀÁ¢ÔËÐÐÄ£Ê½£¬ÉÏÎ»»ú¿ØÖÆµ÷ÊÔÄ£Ê½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Ä£Ê½
 #define PC_Control_Mode 0
 #define Independent_Run_Mode 1
 #define PC_Debug_mode 2
-//ÎåÖÖÔËÐÐ×´Ì¬£ºÍ£»ú×´Ì¬¡¢±¨¾¯×´Ì¬¡¢³õÊ¼»¯×´Ì¬¡¢Õý×ªÔËÐÐ×´Ì¬¡¢·´×ªÔËÐÐ×´Ì¬
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½Í£ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½×´Ì¬
 #define Stop_State 0
 #define Alarm_State 1
 #define Initial_State 2
@@ -20,12 +32,12 @@
 #define RS422_CMD_Frun 3
 #define RS422_CMD_Rrun 4
 
-#define Tx_buf_len 10 /*Ã¿´Î×î´ó·¢ËÍÊý¾Ý°üÊýÁ¿*/
-#define Rx_buf_len 128 /*½ÓÊÕ»·ÐÎ»º³åÇø³¤¶È*/
+#define Tx_buf_len 10 /*Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½ï¿½ï¿½*/
+#define Rx_buf_len 128 /*ï¿½ï¿½ï¿½Õ»ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 
-#define OUT_LIM_max 2078  /*°ëÖÜÆÚ2143*0.97*/
-#define OUT_LIM_min  64  /*°ëÖÜÆÚ2143*0.03*/
-#define ADD_step 1  /*²ÎÊý»º±ä²½³¤*/
+#define OUT_LIM_max 2078  /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2143*0.97*/
+#define OUT_LIM_min  64  /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2143*0.03*/
+#define ADD_step 1  /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä²½ï¿½ï¿½*/
 
 
 #define TRUE 1
@@ -33,12 +45,12 @@
 
 #define Duty_change_max 5
 
-//ÒÔÉÏÊÇÉÏµç¿ÆÏîÄ¿ÖÐÓÃµ½µÄºê¶¨Òå£¬¿ªÊ¼ÓÚ2016.6.12£¬yjs
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Ãµï¿½ï¿½Äºê¶¨ï¿½å£¬ï¿½ï¿½Ê¼ï¿½ï¿½2016.6.12ï¿½ï¿½yjs
 
-#define PWM_MAX 5400 //   Ë«¼«ÐÔ100%
-#define PWM_MIN 0		//   Ë«¼«ÐÔ
+#define PWM_MAX 5400 //   Ë«ï¿½ï¿½ï¿½ï¿½100%
+#define PWM_MIN 0		//   Ë«ï¿½ï¿½ï¿½ï¿½
 
- 
+
 #define DEAD_TIME 360	//60---0.5uS,90--0.75uS,180--1.5uS,=DBFED*TTBCLK
 
 
@@ -52,7 +64,7 @@
 #define ANTICLOCKWISE 1
 #define DEASIL 0
 
-#define PWM_INTERVAL_TIME  200   //308--14k,  800--5k£¬571--7k£¬400--10k£¬308--13k£¬267--15k£¬235--17k£¬200--20k£¬PWMÖÜÆÚ(us),100us,10kHz, ÎªÁËÌá¸ß¾«¶È,½«ÆäÖÜÆÚ*4.
+#define PWM_INTERVAL_TIME  200   //308--14k,  800--5kï¿½ï¿½571--7kï¿½ï¿½400--10kï¿½ï¿½308--13kï¿½ï¿½267--15kï¿½ï¿½235--17kï¿½ï¿½200--20kï¿½ï¿½PWMï¿½ï¿½ï¿½ï¿½(us),100us,10kHz, Îªï¿½ï¿½ï¿½ï¿½ï¿½ß¾ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*4.
 
 #define SPEED_P_ERROR_MAX 30000
 #define SPEED_P_ERROR_MIN -30000
@@ -83,7 +95,7 @@
 
 #define BUS_VDC_MAX 3200     // 410V----3200  (390,    2014.05.13)
 #define BUS_VDC_MAX2 2580     //350V---2580   (330,     2014.05.13)
-#define BUS_VDC_MIN 10//2238     //(µç³Ø312V£¬µÍÓÚ270VÎªÇ·Ñ¹)
+#define BUS_VDC_MIN 10//2238     //(ï¿½ï¿½ï¿½ï¿½312Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½270VÎªÇ·Ñ¹)
 
 #define NBQ_START_VDC 1500     //   250V
 #define NBQ_STOP_VDC 150     // 120V
@@ -142,7 +154,3 @@ enum Bool{
 	False = 0,
 	True
 };
-
-
-
-
