@@ -101,8 +101,6 @@ void Pwm_ISR_Thread(void)
 	 */
 
 	//StartGetADBySpi();
-	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
-
 	ReadAnalogValue();
 	ReadDigitalValue();
 
@@ -113,8 +111,6 @@ void Pwm_ISR_Thread(void)
 	//TODO prepare output
 	//ReadADBySpi();
 	CalForceSpeedAccel();
-	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
-
 }
 /**************************************************************
  *Name:						forcebufProcess
