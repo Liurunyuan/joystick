@@ -136,7 +136,7 @@ void testrs422tx(void){
 	}
 
 	if(count == 0){
-		gRS422TxQue.txBuf[lenPosition] = total * S;
+		gRS422TxQue.txBuf[lenPosition] = total * S;//timer0 interrupt isr can not be interrupted by TX, so we can set length value here
 	}
 
 	++count;
