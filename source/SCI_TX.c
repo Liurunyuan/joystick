@@ -180,6 +180,8 @@ void RS422A_Transmit(void){
 
 	while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
 				&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+
+		ScibRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		if(RX422TXDeQueue() == 0){
 			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
