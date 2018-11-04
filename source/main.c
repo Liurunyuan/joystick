@@ -229,7 +229,18 @@ void Init_gSysMonitorVar() {
 		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
 }
-
+/**************************************************************
+ *Name:		   Init_gRS422Status
+ *Comment:
+ *Input:	   none
+ *Output:	   none
+ *Author:	   Simon
+ *Date:		   2018年11月4日下午1:16:11
+ **************************************************************/
+void Init_gRS422Status(void){
+	gRS422Status.rs422A = 1;
+	gRS422Status.rs422B = 1;
+}
 /***************************************************************
  *Name:						GlobleVarInit
  *Function:
@@ -245,6 +256,7 @@ void InitGlobleVar(void){
 	Init_gRx422TxVar();
 	Init_feedbackVarBuf();
 	Init_gSysMonitorVar();
+	Init_gRS422Status();
 }
 
 /***************************************************************

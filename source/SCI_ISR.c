@@ -9,6 +9,7 @@
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 char rs422rxPack[16];
+RS422STATUS gRS422Status = {0};
 
 /***************************************************************
  *Name:						MsgStatusUnpack
