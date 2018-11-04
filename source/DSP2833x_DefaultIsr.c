@@ -978,11 +978,6 @@ interrupt void SCITXINTA_ISR(void)     // SCI-A
 // INT9.3
 interrupt void SCIRXINTB_ISR(void)
 {
-	Uint16 index = 0;
-	++index;
-	if(index > 100){
-		index = 0;
-	}
 	RS422B_receive();
 	ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
