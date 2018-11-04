@@ -201,8 +201,7 @@ void Init_feedbackVarBuf(void) {
 	feedbackVarBuf.minForce = 0;
 	feedbackVarBuf.sumDisplacement = 0;
 	feedbackVarBuf.sumForce = 0;
-	memset(feedbackVarBuf.displacementbuf, 0,
-			sizeof(feedbackVarBuf.displacementbuf));
+	memset(feedbackVarBuf.displacementbuf, 0,sizeof(feedbackVarBuf.displacementbuf));
 	memset(feedbackVarBuf.forcebuf, 0, sizeof(feedbackVarBuf.forcebuf));
 	for (index = 0; index < 10; ++index) {
 		feedbackVarBuf.displacementbuf[index] = index * index + 3 * index + 2;

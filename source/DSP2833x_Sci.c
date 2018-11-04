@@ -172,8 +172,7 @@ void scib_fifo_init(void)
 {
     ScibRegs.SCIFFTX.bit.TXFIFOXRESET	= 0;
     ScibRegs.SCIFFRX.bit.RXFIFORESET	= 0;
-
-    ScibRegs.SCIFFTX.all				= 0xE030;
+    ScibRegs.SCIFFTX.all				= 0xE028;
     ScibRegs.SCIFFTX.bit.TXFFIENA		= 1;
     ScibRegs.SCIFFTX.bit.TXFFINTCLR		= 1;
     ScibRegs.SCIFFRX.all				= 0x2030;
@@ -186,31 +185,30 @@ void scic_loopback_init(void)
     // Note: Clocks were turned on to the SCIB peripheral
     // in the InitSysCtrl() function
 
- 	ScicRegs.SCICCR.all =0x0007;   // 1 stop bit,  No loopback
-                                   // No parity,8 char bits,
-                                   // async mode, idle-line protocol
-	ScicRegs.SCICTL1.all =0x0003;  // enable TX, RX, internal SCICLK,
-                                   // Disable RX ERR, SLEEP, TXWAKE
-	ScicRegs.SCICTL2.all =0x0003;
-	ScicRegs.SCICTL2.bit.TXINTENA = 1;
+ 	ScicRegs.SCICCR.all 				= 0x0007;	// 1 stop bit,  No loopback
+                                   	   	   	   	 	// No parity,8 char bits,
+                                   	   	   	   	 	// async mode, idle-line protocol
+	ScicRegs.SCICTL1.all 				= 0x0003;  	// enable TX, RX, internal SCICLK,
+                                   	   	   	       	// Disable RX ERR, SLEEP, TXWAKE
+	ScicRegs.SCICTL2.all 				= 0x0003;
+	ScicRegs.SCICTL2.bit.TXINTENA 		= 1;
 	ScicRegs.SCICTL2.bit.RXBKINTENA = 1;
-    ScicRegs.SCIHBAUD    =0x00;//0x00;-------------------------0x01
-    ScicRegs.SCILBAUD    =0x1f;//0x1f:115200-------------------0x86:9600
-	ScicRegs.SCICCR.bit.LOOPBKENA =0; // enable loop back
-	ScicRegs.SCICTL1.all =0x0023;     // Relinquish SCI from Reset
+    ScicRegs.SCIHBAUD    				= 0x00;		//0x00;-------------------------0x01
+    ScicRegs.SCILBAUD    				= 0x1f;		//0x1f:115200-------------------0x86:9600
+	ScicRegs.SCICCR.bit.LOOPBKENA		= 0; 		// enable loop back
+	ScicRegs.SCICTL1.all				= 0x0023;   // Relinquish SCI from Reset
 }
 // Initalize the SCI FIFO
 void scic_fifo_init(void)
 {
-    ScicRegs.SCIFFTX.bit.TXFIFOXRESET = 0;
-    ScicRegs.SCIFFRX.bit.RXFIFORESET = 0;
-
-    ScicRegs.SCIFFTX.all = 0xE028;
-    ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
-    ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
-    ScicRegs.SCIFFRX.all = 0x2028;
-    ScicRegs.SCIFFRX.bit.RXFFIENA = 1;
-    ScicRegs.SCIFFCT.all = 0x0;
+    ScicRegs.SCIFFTX.bit.TXFIFOXRESET	= 0;
+    ScicRegs.SCIFFRX.bit.RXFIFORESET 	= 0;
+    ScicRegs.SCIFFTX.all 				= 0xE028;
+    ScicRegs.SCIFFTX.bit.TXFFIENA 		= 0;
+    ScicRegs.SCIFFTX.bit.TXFFINTCLR 	= 1;
+    ScicRegs.SCIFFRX.all 				= 0x2028;
+    ScicRegs.SCIFFRX.bit.RXFFIENA	 	= 1;
+    ScicRegs.SCIFFCT.all 				= 0x0;
 }
 
 /*
