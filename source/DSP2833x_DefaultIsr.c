@@ -25,6 +25,7 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "SCI_ISR.h"
+#include "SCI_ISR_B.h"
 #include "PWM_ISR.h"
 #include "Timer_ISR.h"
 #include "SCI_TX.h"
@@ -982,6 +983,7 @@ interrupt void SCIRXINTB_ISR(void)
 	if(index > 100){
 		index = 0;
 	}
+	RS422B_receive();
 	ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
 }

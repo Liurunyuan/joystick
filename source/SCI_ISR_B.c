@@ -34,8 +34,7 @@ int EnQueue_B(int e){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int DeQueue_B(void)
-{
+int DeQueue_B(void){
 	if(gRS422RxQueB.front == gRS422RxQueB.rear){
 		return 0;
 	}
@@ -64,18 +63,14 @@ int RS422RxQueLengthB(){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-void RS422B_receive(void)
-{
-	while(ScibRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
+void RS422B_receive(void){
+	while(ScibRegs.SCIFFRX.bit.RXFFST != 0){// rs422b rx fifo is not empty
 		if(EnQueue_B(ScibRegs.SCIRXBUF.all) == 0){
-			//printf("RS422 rx queue full\r\n");
+			//printf("RS422B rx queue full\r\n");
 			//TODO update error msg
 		}
 	}
 }
-
-
-
 /***************************************************************
  *Name:						updatehead
  *Function:					move the front head to another position

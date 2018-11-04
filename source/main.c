@@ -14,6 +14,7 @@
 #include "public.h"
 #include "main.h"
 #include "SCI_ISR.h"
+#include "SCI_ISR_B.h"
 #include "ADprocessor.h"
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
@@ -235,7 +236,7 @@ void Init_gSysMonitorVar() {
  *Input:	   none
  *Output:	   none
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ4ÈÕÏÂÎç1:16:11
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:16:11
  **************************************************************/
 void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
