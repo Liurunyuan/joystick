@@ -93,7 +93,7 @@ void testrs422tx(void){
 	static int crc = 0;
 	char tmp[3] = {0};
 	int lenPosition = 0;
-	int total =0;
+	Uint16 total =0;
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
@@ -135,7 +135,10 @@ void testrs422tx(void){
 		}
 	}
 
-	gRS422TxQue.txBuf[lenPosition] = total;
+	if(count == 0){
+		gRS422TxQue.txBuf[lenPosition] = total * S;
+	}
+
 	++count;
 
 	if(count > S){
