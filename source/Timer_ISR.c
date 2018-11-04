@@ -1,10 +1,12 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "Timer_ISR.h"
+#include "SCI_ISR.h"
 #include "SCI_TX.h"
 #include <stdio.h>
 
 #define N (10)
+#define RS422STATUSCHECK (20)
 
 
 
@@ -36,6 +38,18 @@ void Timer0_ISR_Thread(void){
  *Date:						2018.10.21
  ****************************************************************/
 void Timer1_ISR_Thread(void){
+	static Uint16 count = 0;
+
+	if(count >= RS422STATUSCHECK){
+		count = 0;
+		if(gRS422Status.rs422A){
+			gRS422Status.rs422A = 0;
+		}
+		else{
+			//TODO need to switch rs422A to rs422b.
+		}
+	}
+	++count;
 
 	if(gRS422TxQue.front != gRS422TxQue.rear
 			&& ScicRegs.SCIFFTX.bit.TXFFST == 0){

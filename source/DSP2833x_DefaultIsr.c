@@ -25,6 +25,7 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "SCI_ISR.h"
+#include "SCI_ISR_B.h"
 #include "PWM_ISR.h"
 #include "Timer_ISR.h"
 #include "SCI_TX.h"
@@ -977,22 +978,27 @@ interrupt void SCITXINTA_ISR(void)     // SCI-A
 // INT9.3
 interrupt void SCIRXINTB_ISR(void)
 {
-	  asm ("      ESTOP0");
-	  for(;;);
+	Uint16 index = 0;
+	++index;
+	if(index > 100){
+		index = 0;
+	}
+	RS422B_receive();
+	ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
 }
+
+
 // INT9.4
 interrupt void SCITXINTB_ISR(void)     // SCI-B
 {
-  // Insert ISR Code here
-
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-   PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
-
+	Uint16 index = 0;
+	++index;
+	if(index > 100){
+		index = 0;
+	}
+	ScibRegs.SCIFFTX.bit.TXFFINTCLR = 1;
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
 }
 
 // INT9.5
