@@ -4,9 +4,9 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-#define UNIT_LEN (3) //0x00(index 1 byte) + 0x00(high 8 bit) + 0x00(low 8 bit)
-#define EXTRA_LEN  (7)//head(2 bytes) + length(1 byte) + crc(2 bytes) + tail(2 bytes)
-#define OFFSET (3) //head(2 bytes) + length(1 byte);
+#define UNIT_LEN (3) 			//0x00(index 1 byte) + 0x00(high 8 bit) + 0x00(low 8 bit)
+#define EXTRA_LEN  (7)          //head(2 bytes) + length(1 byte) + crc(2 bytes) + tail(2 bytes)
+#define OFFSET (3) 				//head(2 bytes) + length(1 byte);
 #define WAVE_AMOUNT (16)
 #define ENABLE_TX (1)
 #define DISABLE_TX (0)
@@ -19,7 +19,7 @@ RS422STATUS gRS422Status = {0};
 /***************************************************************
  *Name:						MsgStatusUnpack
  *Function:
- *Input:				    none
+ *Input:          VAR16,int, int
  *Output:					none
  *Author:					Simon
  *Date:						2018.10.25
@@ -104,14 +104,14 @@ int DeQueue(void)
 	return 1;
 }
 /***************************************************************
- *Name:						main
+ *Name:						RS422RxQueLength
  *Function:
- *Input:				    none
- *Output:					none
+ *Input:				  none
+ *Output:					rx queue length
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int RS422RxQueLength(){
+int RS422RxQueLength(void){
 	int length;
 	length = (gRS422RxQue.rear - gRS422RxQue.front + MAXQSIZE) % MAXQSIZE;
 	return length;
@@ -158,7 +158,7 @@ int CalCrc(int crc, const char *buf, int len)
  *Name:						findhead
  *Function:
  *Input:				    none
- *Output:					none
+ *Output:					1 or 0, 1 means find the head , 0 means failed
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
@@ -184,8 +184,8 @@ int findhead(void){
 /***************************************************************
  *Name:						findtail
  *Function:
- *Input:				    none
- *Output:					none
+ *Input:				    length
+ *Output:					1 or 0, 1 means find the head , 0 means failed
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
@@ -223,7 +223,7 @@ int checklength(void){
 /***************************************************************
  *Name:						saveprofile
  *Function:
- *Input:				    none
+ *Input:				    length
  *Output:					none
  *Author:					Simon
  *Date:						2018.10.27
@@ -238,7 +238,7 @@ void saveprofile(int len){
 /***************************************************************
  *Name:						unpack
  *Function:					unpack profile data
- *Input:				    none
+ *Input:				    length
  *Output:					none
  *Author:					Simon
  *Date:						2018.10.27
@@ -270,7 +270,7 @@ void unpack(int len){
 /***************************************************************
  *Name:						updatehead
  *Function:					move the front head to another position
- *Input:				    none
+ *Input:				    length
  *Output:					none
  *Author:					Simon
  *Date:						2018.10.27
