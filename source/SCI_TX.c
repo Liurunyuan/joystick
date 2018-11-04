@@ -93,7 +93,7 @@ void testrs422tx(void){
 	static int crc = 0;
 	char tmp[3] = {0};
 	int lenPosition = 0;
-	int total =0;
+	Uint16 total =0;
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
@@ -135,7 +135,10 @@ void testrs422tx(void){
 		}
 	}
 
-	gRS422TxQue.txBuf[lenPosition] = total;
+	if(count == 0){
+		gRS422TxQue.txBuf[lenPosition] = total * S;
+	}
+
 	++count;
 
 	if(count > S){
@@ -178,7 +181,10 @@ void RS422A_Transmit(void){
 		return;
 	}
 
-	while(ScicRegs.SCIFFTX.bit.TXFFST != 16){
+	while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
+				&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+
+		ScibRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		if(RX422TXDeQueue() == 0){
 			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;

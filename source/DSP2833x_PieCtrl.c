@@ -88,8 +88,8 @@ void EnableInterrupts()
 	PieCtrlRegs.PIEIER4.bit.INTx6 = 1;//ECAP6
 
 
-	PieCtrlRegs.PIEIER9.bit.INTx3 = 1;//SCIB接收中断
-	PieCtrlRegs.PIEIER9.bit.INTx4 = 1;//SCIB发送中断
+	PieCtrlRegs.PIEIER9.bit.INTx3 = 1;//SCIB RX interrupt
+	PieCtrlRegs.PIEIER9.bit.INTx4 = 1;//SCIB TX interrupt
 	PieCtrlRegs.PIEIER8.bit.INTx5 = 1;//SCIC RX Interrupt
 	PieCtrlRegs.PIEIER8.bit.INTx6 = 1;//SCIC TX Interrupt
    // EINT;
@@ -129,7 +129,12 @@ void Init_Interrupt(void)
 	    ERTM;
 	    AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;//此句要有，否则进步了中断，应为在该行代码执行前，seq1中断标识已经被立起，此处需要清除
 	    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;//此句做用同上
+	    //ScibRegs.SCIFFTX.bit.TXFFINTCLR = 1;
+
+	    ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;//此句做用同上
 	    ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
+
+
 	    EALLOW;
 	    EPwm1Regs.TZCLR.bit.CBC=1;//清除CBC时间标志位
 	    EPwm1Regs.TZCLR.bit.INT=1;//清除中断标识位

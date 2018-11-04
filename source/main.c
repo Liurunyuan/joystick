@@ -14,6 +14,7 @@
 #include "public.h"
 #include "main.h"
 #include "SCI_ISR.h"
+#include "SCI_ISR_B.h"
 #include "ADprocessor.h"
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
@@ -201,8 +202,7 @@ void Init_feedbackVarBuf(void) {
 	feedbackVarBuf.minForce = 0;
 	feedbackVarBuf.sumDisplacement = 0;
 	feedbackVarBuf.sumForce = 0;
-	memset(feedbackVarBuf.displacementbuf, 0,
-			sizeof(feedbackVarBuf.displacementbuf));
+	memset(feedbackVarBuf.displacementbuf, 0,sizeof(feedbackVarBuf.displacementbuf));
 	memset(feedbackVarBuf.forcebuf, 0, sizeof(feedbackVarBuf.forcebuf));
 	for (index = 0; index < 10; ++index) {
 		feedbackVarBuf.displacementbuf[index] = index * index + 3 * index + 2;
@@ -230,7 +230,18 @@ void Init_gSysMonitorVar() {
 		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
 }
-
+/**************************************************************
+ *Name:		   Init_gRS422Status
+ *Comment:
+ *Input:	   none
+ *Output:	   none
+ *Author:	   Simon
+ *Date:		   2018��11��4������1:16:11
+ **************************************************************/
+void Init_gRS422Status(void){
+	gRS422Status.rs422A = 1;
+	gRS422Status.rs422B = 1;
+}
 /***************************************************************
  *Name:						GlobleVarInit
  *Function:
@@ -246,6 +257,7 @@ void InitGlobleVar(void){
 	Init_gRx422TxVar();
 	Init_feedbackVarBuf();
 	Init_gSysMonitorVar();
+	Init_gRS422Status();
 }
 
 /***************************************************************
