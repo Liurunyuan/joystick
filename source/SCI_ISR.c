@@ -4,7 +4,12 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-
+#define UNIT_LEN (3) //0x00(index 1 byte) + 0x00(high 8 bit) + 0x00(low 8 bit)
+#define EXTRA_LEN  (7)//head(2 bytes) + length(1 byte) + crc(2 bytes) + tail(2 bytes)
+#define OFFSET (3) //head(2 bytes) + length(1 byte);
+#define WAVE_AMOUNT (16)
+#define ENABLE_TX (1)
+#define DISABLE_TX (0)
 /***********globle variable define here***************/
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
@@ -22,8 +27,6 @@ RS422STATUS gRS422Status = {0};
 static void MsgStatusUnpack(VAR16 a, int b, int c)
 {
 	//TODO just an example
-
-
 }
 /***************************************************************
  *Name:						WaveCommand
@@ -35,17 +38,15 @@ static void MsgStatusUnpack(VAR16 a, int b, int c)
  ****************************************************************/
 static void WaveCommand(VAR16 a, int b, int c)
 {
-	//TODO just an example
 	int i;
-	for(i = 0; i < 16; ++i){
+
+	for(i = 0; i < WAVE_AMOUNT; ++i){
 		//unpack bit information
 		if((a.value & (0x0001 << i)) >> i){
-			//do something
-			gRx422TxVar[i].isTx = 1;
+			gRx422TxVar[i].isTx = ENABLE_TX;
 		}
 		else{
-			//do something
-			gRx422TxVar[i].isTx = 0;
+			gRx422TxVar[i].isTx = DISABLE_TX;
 		}
 	}
 
@@ -211,7 +212,7 @@ int findtail(int len){
  *Date:						2018.10.25
  ****************************************************************/
 int checklength(void){
-	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7) < RS422RxQueLength()){
+	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
 		return SUCCESS;
 	}
 	else
@@ -247,18 +248,17 @@ void unpack(int len){
 	int msgCode;
 	VAR16 var16;
 
-
 	for(i = 0; i < len; ++i){
 
-		msgCode = rs422rxPack[3 + 3*i];
-		var16.datahl.h = rs422rxPack[3 + 3*i + 1];
-		var16.datahl.l = rs422rxPack[3 + 3*i + 2];
+		msgCode = rs422rxPack[OFFSET + UNIT_LEN*i];
+		var16.datahl.h = rs422rxPack[OFFSET + UNIT_LEN*i + 1];
+		var16.datahl.l = rs422rxPack[OFFSET + UNIT_LEN*i + 2];
 		var16.value = var16.datahl.l + (var16.datahl.h << 8);
 
-		if(msgCode < (sizeof(msgInterface)/sizeof(msgInterface[0]))){
+		if(msgCode < (sizeof(msgInterface) / sizeof(msgInterface[0]))){
 			//printf("msgCode = %d\r\n",msgCode);
 			if(msgInterface[msgCode]){
-				msgInterface[msgCode](var16,0,0);
+				msgInterface[msgCode](var16, 0, 0);
 			}
 		}
 		else{
@@ -298,7 +298,7 @@ void UnpackRS422ANew(void){
 	}
 
 	if(checklength() == FAIL){
-		printf("len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7 );
+		printf("len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
 		printf("len calculate =%d\r\n",RS422RxQueLength());
 		return;
 	}
@@ -306,7 +306,7 @@ void UnpackRS422ANew(void){
 		printf("data length is not enough, waiting for more data\r\n");
 	}
 
-	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * 3 + 7;
+	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
 
 	if(findtail(length) == FAIL){
 		printf("find tail failed\r\n");
@@ -322,7 +322,7 @@ void UnpackRS422ANew(void){
 
 	saveprofile(length);
 
-	if(CalCrc(0, rs422rxPack + 3, length - 5) != 0){
+	if(CalCrc(0, rs422rxPack + OFFSET, length - 5) != 0){
 		if(DeQueue() == 0){
 			printf("RS422 rx queue is empty\r\n");
 		}
@@ -389,7 +389,7 @@ void testwithlabview(){
 		f = 0;
 	}
 
-	crc = CalCrc(0, buf+3, 12);
+	crc = CalCrc(0, buf + OFFSET, 12);
 	buf[16] = (char)crc;
 	buf[15] = (char)(crc >> 8);
 	for(i = 0; i < 19; ++i){
