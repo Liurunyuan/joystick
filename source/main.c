@@ -19,7 +19,7 @@
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
 
-
+volatile Uint16 DMABuf1[160];
 #define UART_PRINTF
 
 #ifdef UART_PRINTF
@@ -87,12 +87,16 @@ void Init_Peripheral(void){
 	Init_PWM();
 
 
-	volatile Uint16 DMABuf1[160];
+
 
 	volatile Uint16 *DMADest;
 	volatile Uint16 *DMASource;
 	DMAInitialize();
-
+	int i;
+	 for (i=0; i<160; i++)
+	   {
+	     DMABuf1[i] = 0xffff;
+	   }
 	// Configure DMA Channel
 	DMADest   = &DMABuf1[0];              //Point DMA destination to the beginning of the array
 	DMASource = &AdcMirror.ADCRESULT0;    //Point DMA source to ADC result register base
@@ -100,7 +104,7 @@ void Init_Peripheral(void){
 	DMACH1BurstConfig(15,1,10);
 	DMACH1TransferConfig(9,-15,(-150 + 1));
 	DMACH1WrapConfig(100,100,100,100);	  //Don't use wrap function
-	DMACH1ModeConfig(DMA_SEQ1INT,PERINT_ENABLE,ONESHOT_DISABLE,CONT_DISABLE,SYNC_DISABLE,SYNC_SRC,
+	DMACH1ModeConfig(DMA_SEQ1INT,PERINT_ENABLE,ONESHOT_DISABLE,CONT_ENABLE,SYNC_DISABLE,SYNC_SRC,
 		                 OVRFLOW_DISABLE,SIXTEEN_BIT,CHINT_END,CHINT_ENABLE);
 
 	StartDMACH1();
