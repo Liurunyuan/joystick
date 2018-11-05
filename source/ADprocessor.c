@@ -77,7 +77,8 @@ void UpdateSingleAnalogInput(void)
 	int test;
 	for(index = 0; index < TotalChannel; ++index)
 	{
-		gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
+		//gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
+		gSysMonitorVar.anolog.single.var[index].value = DMABuf1[index];
 		//test = DMABuf1[0];
 	}
 
@@ -278,14 +279,17 @@ void UpdateSingleDigitInput(void)
  **************************************************************/
 void ReadAnalogValue(void)
 {
+	/*
     if((AdcRegs.ADCASEQSR.bit.SEQ_CNTR==0)&&
               (AdcRegs.ADCST.bit.SEQ1_BSY==0)){
-    	UpdateSingleAnalogInput();
-    	AnalogValueInspect();
+
     }
     else{
 
     }
+    */
+	UpdateSingleAnalogInput();
+	AnalogValueInspect();
 }
 /**************************************************************
  *Name:						ReadDigitalValue
