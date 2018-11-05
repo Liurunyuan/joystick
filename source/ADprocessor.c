@@ -6,17 +6,32 @@
 SysMonitorVar gSysMonitorVar;
 
 /********update anolog variable value******************************/
-int updateForceValue(void){return GET_FORCE_SGN;}
-int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}
-int updatePower28V_M(void){return GET_28V_M;}
-int updateBridgeCurrentB(void){return GET_B_BRIDGE_CURRENT;}
-int updateBusCurrentB(void){return GET_B_BUS_CURRENT;}
-int updatePower28V(void){return GET_28V;}
-int updateBridgeCurrentA(void){return GET_A_BRIDGE_CURRENT;}
-int updateBusCurrentA(void){return GET_A_BUS_CURRENT;}
-int updateDisplacementValue(void){return GET_DISPLACEMENT_SGN;}
-int updateBridgeCurrentC(void){return GET_C_BRIDGE_CURRENT;}
-int updateBusCurrentC(void){return GET_C_BUS_CURRENT;}
+//int updateForceValue(void){return GET_FORCE_SGN;}
+//int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}
+//int updatePower28V_M(void){return GET_28V_M;}
+//int updateBridgeCurrentB(void){return GET_B_BRIDGE_CURRENT;}
+//int updateBusCurrentB(void){return GET_B_BUS_CURRENT;}
+//int updatePower28V(void){return GET_28V;}
+//int updateBridgeCurrentA(void){return GET_A_BRIDGE_CURRENT;}
+//int updateBusCurrentA(void){return GET_A_BUS_CURRENT;}
+//int updateDisplacementValue(void){return GET_DISPLACEMENT_SGN;}
+//int updateBridgeCurrentC(void){return GET_C_BRIDGE_CURRENT;}
+//int updateBusCurrentC(void){return GET_C_BUS_CURRENT;}
+/******************************************************************/
+
+
+/********update anolog variable value******************************/
+int updateForceValue(void){return DMABuf1[0];}
+int updateBusCurrentP(void){return DMABuf1[1];}
+int updatePower28V_M(void){return DMABuf1[2];}
+int updateBridgeCurrentB(void){return DMABuf1[3];}
+int updateBusCurrentB(void){return DMABuf1[4];}
+int updatePower28V(void){return DMABuf1[5];}
+int updateBridgeCurrentA(void){return DMABuf1[6];}
+int updateBusCurrentA(void){return DMABuf1[7];}
+int updateDisplacementValue(void){return DMABuf1[8];}
+int updateBridgeCurrentC(void){return DMABuf1[9];}
+int updateBusCurrentC(void){return DMABuf1[10];}
 /******************************************************************/
 
 const UV funcptr[] = {
@@ -59,9 +74,11 @@ const int anologMaxMinInit[][2] = {
 void UpdateSingleAnalogInput(void)
 {
 	int index;
+	int test;
 	for(index = 0; index < TotalChannel; ++index)
 	{
 		gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
+		//test = DMABuf1[0];
 	}
 
 }
@@ -243,9 +260,11 @@ void DigitalValueInspect(void)
 void UpdateSingleDigitInput(void)
 {
 	int index;
+	int test;
 	for(index=0;index<12;++index)
 	{
-		gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
+		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
+		test = DMABuf1[0];
 	}
 
 }

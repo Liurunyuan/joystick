@@ -283,6 +283,8 @@ struct DMA_REGS {
 // External References & Function Declarations:
 //
 extern volatile struct DMA_REGS DmaRegs;
+void Init_DMA(void);
+extern volatile Uint16 DMABuf1[160];
 
 #ifdef __cplusplus
 }
