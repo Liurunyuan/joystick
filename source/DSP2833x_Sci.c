@@ -205,8 +205,10 @@ void scic_fifo_init(void)
     ScicRegs.SCIFFRX.bit.RXFIFORESET 	= 0;
     ScicRegs.SCIFFTX.all 				= 0xE028;
     ScicRegs.SCIFFTX.bit.TXFFIENA 		= 0;
+
     ScicRegs.SCIFFTX.bit.TXFFINTCLR 	= 1;
     ScicRegs.SCIFFRX.all 				= 0x2028;
+
     ScicRegs.SCIFFRX.bit.RXFFIENA	 	= 1;
     ScicRegs.SCIFFCT.all 				= 0x0;
 }

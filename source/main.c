@@ -85,6 +85,8 @@ void Init_Peripheral(void){
 	Init_QEP();
 	/*PWM IO init and config*/
 	Init_PWM();
+	/*DMA init and config*/
+	Init_DMA();
 }
 
 /*************************************************************

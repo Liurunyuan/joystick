@@ -74,7 +74,7 @@ void EnableInterrupts()
 	//配置TZ中断相关管脚
 
 	// Enable Interrupts at the CPU level 
-	PieCtrlRegs.PIEIER1.bit.INTx1 = 1;//ADC中断,16通道转换完成后来中断
+	//PieCtrlRegs.PIEIER1.bit.INTx1 = 1;//ADC中断,16通道转换完成后来中断
 	PieCtrlRegs.PIEIER1.bit.INTx7 = 1;//定时器0中断。
 	PieCtrlRegs.PIEIER2.bit.INTx1= 1;//TZ_FAULTB触发
 	//PieCtrlRegs.PIEIER2.bit.INTx2= 1;//TZ_FAULTA触发//
@@ -88,10 +88,13 @@ void EnableInterrupts()
 	PieCtrlRegs.PIEIER4.bit.INTx6 = 1;//ECAP6
 
 
-	PieCtrlRegs.PIEIER9.bit.INTx3 = 1;//SCIB RX interrupt
-	PieCtrlRegs.PIEIER9.bit.INTx4 = 1;//SCIB TX interrupt
+	//PieCtrlRegs.PIEIER7.bit.INTx1 = 1;//DMA interrupt enable
+
 	PieCtrlRegs.PIEIER8.bit.INTx5 = 1;//SCIC RX Interrupt
 	PieCtrlRegs.PIEIER8.bit.INTx6 = 1;//SCIC TX Interrupt
+	PieCtrlRegs.PIEIER9.bit.INTx3 = 1;//SCIB RX interrupt
+	PieCtrlRegs.PIEIER9.bit.INTx4 = 1;//SCIB TX interrupt
+
    // EINT;
 
 }
@@ -120,6 +123,7 @@ void Init_Interrupt(void)
 	    //IER |= M_INT2;
 	    IER |= M_INT3;
 	    IER |= M_INT4;
+	    IER |= M_INT7;
 	 	IER |= M_INT8;//SCIc
 	    IER |= M_INT9;//SCIa//ECAN//scib
 	    IER |= M_INT13;//timer1
