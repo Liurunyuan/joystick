@@ -24,8 +24,7 @@ RS422STATUS gRS422Status = {0};
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-static void MsgStatusUnpack(VAR16 a, int b, int c)
-{
+static void MsgStatusUnpack(VAR16 a, int b, int c) {
 	//TODO just an example
 }
 /***************************************************************
@@ -36,8 +35,7 @@ static void MsgStatusUnpack(VAR16 a, int b, int c)
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-static void WaveCommand(VAR16 a, int b, int c)
-{
+static void WaveCommand(VAR16 a, int b, int c) {
 	int i;
 
 	for(i = 0; i < WAVE_AMOUNT; ++i){
@@ -49,7 +47,6 @@ static void WaveCommand(VAR16 a, int b, int c)
 			gRx422TxVar[i].isTx = DISABLE_TX;
 		}
 	}
-
 }
 /***************************************************************
  *Name:						WaveCommand
@@ -59,8 +56,7 @@ static void WaveCommand(VAR16 a, int b, int c)
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-const functionMsgCodeUnpack msgInterface[] =
-{
+const functionMsgCodeUnpack msgInterface[] = {
 		0,
 		MsgStatusUnpack,
 		WaveCommand,
@@ -76,7 +72,7 @@ const functionMsgCodeUnpack msgInterface[] =
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int EnQueue(int e){
+inline int EnQueue(int e){
 	if((gRS422RxQue.rear + 1) % MAXQSIZE == gRS422RxQue.front){
 		//printf("EnQueue FULL \r\n");
 		return 0;
@@ -94,8 +90,7 @@ int EnQueue(int e){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int DeQueue(void)
-{
+inline int DeQueue(void){
 	if(gRS422RxQue.front == gRS422RxQue.rear){
 		return 0;
 	}
@@ -124,8 +119,8 @@ int RS422RxQueLength(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-void RS422A_receive(void)
-{
+void RS422A_receive(void){
+
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
 			//printf("RS422 rx queue full\r\n");
@@ -141,8 +136,7 @@ void RS422A_receive(void)
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int CalCrc(int crc, const char *buf, int len)
-{
+int CalCrc(int crc, const char *buf, int len){
 	int x;
 	int i;
 
@@ -178,7 +172,6 @@ int findhead(void){
 			//printf("rs422 rx queue is empty\r\n");
 			return FAIL;
 		}
-
 	}
 }
 /***************************************************************
@@ -215,8 +208,7 @@ int checklength(void){
 	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
 		return SUCCESS;
 	}
-	else
-	{
+	else{
 		return FAIL;
 	}
 }
@@ -297,8 +289,8 @@ void UnpackRS422ANew(void){
 	}
 
 	if(checklength() == FAIL){
-		printf("len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
-		printf("len calculate =%d\r\n",RS422RxQueLength());
+		printf("len received =%d\r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
+		printf("len calculate =%d\r\n", RS422RxQueLength());
 		return;
 	}
 	else{
@@ -312,7 +304,6 @@ void UnpackRS422ANew(void){
 		if(DeQueue() == 0){
 			printf("RS422 rx queue is empty\r\n");
 		}
-
 		return;
 	}
 	else{
