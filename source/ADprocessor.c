@@ -74,12 +74,12 @@ const int anologMaxMinInit[][2] = {
 void UpdateSingleAnalogInput(void)
 {
 	int index;
-	int test;
+
 	for(index = 0; index < TotalChannel; ++index)
 	{
 		//gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
 		gSysMonitorVar.anolog.single.var[index].value = DMABuf1[index];
-		//test = DMABuf1[0];
+
 	}
 
 }
@@ -261,11 +261,11 @@ void DigitalValueInspect(void)
 void UpdateSingleDigitInput(void)
 {
 	int index;
-	int test;
+
 	for(index=0;index<12;++index)
 	{
-		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
-		test = DMABuf1[0];
+		gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
+
 	}
 
 }
