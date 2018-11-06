@@ -181,9 +181,12 @@ void Init_gRx422TxVar(void) {
 	int index;
 
 	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
+	memset(gRx422TxEnableFlag, 0, sizeof(gRx422TxEnableFlag));
 	for (index = 0; index < 20; ++index) {
+
 		gRx422TxVar[index].isTx = 1;
 		gRx422TxVar[index].index = index;
+
 	}
 }
 /**************************************************************

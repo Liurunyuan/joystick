@@ -3,7 +3,8 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-GRX422TX gRx422TxVar[20] = {0};
+GRX422TX gRx422TxVar[TOTAL_TX_VAR] = {0};
+Uint16 gRx422TxEnableFlag[TOTAL_TX_VAR] = {0};
 RS422TXQUE gRS422TxQue = {0};
 #define S (5)
 
@@ -77,6 +78,22 @@ int calCrc(int crc, const char *buf, int len)
 	}
 	return crc;
 }
+/**************************************************************
+ *Name:		   updateTxEnableFlag
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月6日下午7:43:55
+ **************************************************************/
+void updateTxEnableFlag(void) {
+
+	int i;
+	for (i = 0; i < TOTAL_TX_VAR; ++i) {
+		gRx422TxVar[i].isTx = gRx422TxEnableFlag[i];
+	}
+}
+
 /***************************************************************
  *Name:						testrs422tx
  *Function:					pack the data that need to be sent
@@ -86,6 +103,8 @@ int calCrc(int crc, const char *buf, int len)
  *Date:						2018.10.21
  ****************************************************************/
 void testrs422tx(void){
+
+	//TODO need do some test, because we sync the tx enable flag here
 	int i;
 	char crcl;
 	char crch;
@@ -109,9 +128,11 @@ void testrs422tx(void){
 			asm ("      ESTOP0");
 			return;
 		}
+
+		updateTxEnableFlag();
 	}
 
-	for(i = 0; i < 3; ++i){
+	for(i = 0; i < TOTAL_TX_VAR; ++i){
 		if(gRx422TxVar[i].isTx){
 			++total;
 			gRx422TxVar[i].value = ((AdcRegs.ADCRESULT0) >> 4);
