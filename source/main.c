@@ -64,8 +64,7 @@ int fputs(const char *_ptr, register FILE *_fp){
  *Author:					Simon
  *Date:						2018.6.10
  ************************************************************/
-void Init_Peripheral(void)
-{
+void Init_Peripheral(void){
 	/*Init IO pin */
 	Init_GPIO();
 	/*Init and config ADC*/
@@ -86,6 +85,8 @@ void Init_Peripheral(void)
 	Init_QEP();
 	/*PWM IO init and config*/
 	Init_PWM();
+	/*DMA init and config*/
+	Init_DMA();
 }
 
 /*************************************************************

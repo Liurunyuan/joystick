@@ -73,7 +73,7 @@ void ADC_Config(void)
     AdcRegs.ADCTRL1.bit.SUSMOD = 2;
     AdcRegs.ADCTRL2.bit.SOC_SEQ1 	= 1;
     AdcRegs.ADCTRL2.bit.EPWM_SOCB_SEQ = 0;
-    AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0;
+    AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 1;
     AdcRegs.ADCTRL2.bit.INT_MOD_SEQ1 = 0;
     AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 0;
     AdcRegs.ADCTRL2.bit.SOC_SEQ2= 0;
