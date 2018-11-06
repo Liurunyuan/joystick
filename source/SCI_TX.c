@@ -103,6 +103,8 @@ void updateTxEnableFlag(void) {
  *Date:						2018.10.21
  ****************************************************************/
 void testrs422tx(void){
+
+	//TODO need do some test, because we sync the tx enable flag here
 	int i;
 	char crcl;
 	char crch;
