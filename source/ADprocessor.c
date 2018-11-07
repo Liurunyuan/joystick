@@ -71,12 +71,10 @@ const int anologMaxMinInit[][2] = {
  *Author:					Simon
  *Date:						2018.8.2
  **************************************************************/
-void UpdateSingleAnalogInput(void)
-{
+void UpdateSingleAnalogInput(void){
 	int index;
 
-	for(index = 0; index < TotalChannel; ++index)
-	{
+	for(index = 0; index < TotalChannel; ++index){
 		//gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
 		gSysMonitorVar.anolog.single.var[index].value = DMABuf1[index];
 
@@ -91,15 +89,12 @@ void UpdateSingleAnalogInput(void)
  *Author:					Simon
  *Date:						2018.8.2
  **************************************************************/
-int IsSingleAnalogValueAbnormal(void)
-{
+int IsSingleAnalogValueAbnormal(void){
 	int index;
 	int ret = 1;
-	for(index = 0; index <= TotalChannel; ++index)
-	{
+	for(index = 0; index <= TotalChannel; ++index){
 		if((gSysMonitorVar.anolog.single.var[index].value > gSysMonitorVar.anolog.single.var[index].max) ||
-				(gSysMonitorVar.anolog.single.var[index].value < gSysMonitorVar.anolog.single.var[index].min))
-		{
+				(gSysMonitorVar.anolog.single.var[index].value < gSysMonitorVar.anolog.single.var[index].min)) {
 			ret = 0;
 		}
 	}
@@ -133,8 +128,7 @@ int AdcConversionUnStable() {
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-Uint16 AnalogChannelChange(Uint16 address)
-{
+Uint16 AnalogChannelChange(Uint16 address){
 
 	++address;
 	if (address >= MAX_CHANNEL) {
@@ -150,8 +144,7 @@ Uint16 AnalogChannelChange(Uint16 address)
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-void ReadChannelAdcValue(Uint16 index)
-{
+void ReadChannelAdcValue(Uint16 index){
 	gSysMonitorVar.anolog.multi[0].var[index].value = GET_ADCINB7;
 	gSysMonitorVar.anolog.multi[1].var[index].value = GET_ADCINB1;
 }
@@ -163,8 +156,7 @@ void ReadChannelAdcValue(Uint16 index)
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-void SwitchAnalogChannel(Uint16 address)
-{
+void SwitchAnalogChannel(Uint16 address){
 	/*
 	 * GPIO30->AD1K
 	 * GPIO29->AD2K
@@ -185,15 +177,12 @@ void SwitchAnalogChannel(Uint16 address)
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
-void AnalogValueInspect(void)
-{
+void AnalogValueInspect(void){
     static Uint16 address = 0;
-    if(AdcConversionUnStable())
-    {
+    if(AdcConversionUnStable()){
     	return;
     }
-    else
-    {
+    else{
         ReadChannelAdcValue(address);
     	address = AnalogChannelChange(address);
         SwitchAnalogChannel(address);
@@ -208,8 +197,7 @@ void AnalogValueInspect(void)
  *Author:					Simon
  *Date:						2018.7.31
  **************************************************************/
-void DigitalValueInspect(void)
-{
+void DigitalValueInspect(void){
 	static int status = REFRESH;
 	static int channel = 0;
 
@@ -258,12 +246,10 @@ void DigitalValueInspect(void)
  *Author:					Simon
  *Date:						2018.8.6
  **************************************************************/
-void UpdateSingleDigitInput(void)
-{
+void UpdateSingleDigitInput(void){
 	int index;
 
-	for(index=0;index<12;++index)
-	{
+	for(index=0;index<12;++index){
 		gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 
 	}
@@ -277,8 +263,7 @@ void UpdateSingleDigitInput(void)
  *Author:					Simon
  *Date:						2018.8.6
  **************************************************************/
-void ReadAnalogValue(void)
-{
+void ReadAnalogValue(void){
 	/*
     if((AdcRegs.ADCASEQSR.bit.SEQ_CNTR==0)&&
               (AdcRegs.ADCST.bit.SEQ1_BSY==0)){
@@ -299,8 +284,7 @@ void ReadAnalogValue(void)
  *Author:					Simon
  *Date:						2018.8.6
  **************************************************************/
-void ReadDigitalValue(void)
-{
+void ReadDigitalValue(void){
 	DigitalValueInspect();
 	//UpdateSingleDigitInput();
 	//read single digital channel value
