@@ -12,7 +12,7 @@
 #define ENABLE_TX (1)
 #define DISABLE_TX (0)
 
-#define COMPARE_A_AND_B (1)
+#define COMPARE_A_AND_B (0)
 /***********globle variable define here***************/
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
