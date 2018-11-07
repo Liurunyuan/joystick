@@ -189,6 +189,7 @@ void Init_gRx422TxVar(void) {
 	for (index = 0; index < 20; ++index) {
 
 		gRx422TxVar[index].isTx = 1;
+		gRx422TxEnableFlag[index] = 1;
 		gRx422TxVar[index].index = index;
 
 	}
@@ -305,7 +306,7 @@ void main(void) {
 
 		test_spi_tx();
 
-		UnpackRS422ANew();
+		//UnpackRS422ANew();
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

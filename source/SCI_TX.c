@@ -129,7 +129,7 @@ void testrs422tx(void){
 			return;
 		}
 
-		//updateTxEnableFlag();
+		updateTxEnableFlag();
 	}
 
 	for(i = 0; i < TOTAL_TX_VAR; ++i){
