@@ -1,6 +1,7 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "SCI_ISR.h"
+#include "SCI_ISR_B.h"
 #include "SCI_TX.h"
 #include <stdio.h>
 
@@ -10,6 +11,8 @@
 #define WAVE_AMOUNT (16)
 #define ENABLE_TX (1)
 #define DISABLE_TX (0)
+
+#define COMPARE_A_AND_B (0)
 /***********globle variable define here***************/
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
@@ -24,8 +27,7 @@ RS422STATUS gRS422Status = {0};
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-static void MsgStatusUnpack(VAR16 a, int b, int c)
-{
+static void MsgStatusUnpack(VAR16 a, int b, int c) {
 	//TODO just an example
 }
 /***************************************************************
@@ -36,8 +38,7 @@ static void MsgStatusUnpack(VAR16 a, int b, int c)
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-static void WaveCommand(VAR16 a, int b, int c)
-{
+static void WaveCommand(VAR16 a, int b, int c) {
 	int i;
 
 	for(i = 0; i < WAVE_AMOUNT; ++i){
@@ -49,7 +50,6 @@ static void WaveCommand(VAR16 a, int b, int c)
 			gRx422TxVar[i].isTx = DISABLE_TX;
 		}
 	}
-
 }
 /***************************************************************
  *Name:						WaveCommand
@@ -59,8 +59,7 @@ static void WaveCommand(VAR16 a, int b, int c)
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-const functionMsgCodeUnpack msgInterface[] =
-{
+const functionMsgCodeUnpack msgInterface[] = {
 		0,
 		MsgStatusUnpack,
 		WaveCommand,
@@ -76,7 +75,7 @@ const functionMsgCodeUnpack msgInterface[] =
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int EnQueue(int e){
+inline int EnQueue(int e){
 	if((gRS422RxQue.rear + 1) % MAXQSIZE == gRS422RxQue.front){
 		//printf("EnQueue FULL \r\n");
 		return 0;
@@ -94,8 +93,7 @@ int EnQueue(int e){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int DeQueue(void)
-{
+inline int DeQueue(void){
 	if(gRS422RxQue.front == gRS422RxQue.rear){
 		return 0;
 	}
@@ -124,8 +122,8 @@ int RS422RxQueLength(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-void RS422A_receive(void)
-{
+void RS422A_receive(void){
+
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
 			//printf("RS422 rx queue full\r\n");
@@ -141,8 +139,7 @@ void RS422A_receive(void)
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int CalCrc(int crc, const char *buf, int len)
-{
+int CalCrc(int crc, const char *buf, int len){
 	int x;
 	int i;
 
@@ -165,6 +162,31 @@ int CalCrc(int crc, const char *buf, int len)
 int findhead(void){
 	char head1;
 	char head2;
+#if COMPARE_A_AND_B
+	while(1){
+
+		head1 = gRS422RxQue.rxBuff[gRS422RxQue.front];
+		head2 = gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE];
+
+		if(head1 == HEAD1 && head2 == HEAD2){
+			if(gRS422RxQueB.rxBuff[gRS422RxQue.front] == HEAD1 && gRS422RxQueB.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE] == HEAD2){
+				gRS422RxQueB.front = gRS422RxQue.front;
+				return SUCCESS;
+			}
+			else{
+				printf("RS422B NOT FIND HEAD\r\n");
+				return FAIL;
+			}
+		}
+
+		if(DeQueue() == 0){
+			//printf("rs422 rx queue is empty\r\n");
+			return FAIL;
+		}
+}
+
+
+#else
 	while(1){
 
 		head1 = gRS422RxQue.rxBuff[gRS422RxQue.front];
@@ -178,8 +200,8 @@ int findhead(void){
 			//printf("rs422 rx queue is empty\r\n");
 			return FAIL;
 		}
-
 	}
+#endif
 }
 /***************************************************************
  *Name:						findtail
@@ -212,13 +234,31 @@ int findtail(int len){
  *Date:						2018.10.25
  ****************************************************************/
 int checklength(void){
+#if COMPARE_A_AND_B
+
+	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
+		if((gRS422RxQueB.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLengthB()){
+			printf("RS422 A AND B CHANNEL LENGTH IS ENOUGH!!!!!\r\n");
+			return SUCCESS;
+		}
+		else{
+			printf("RS422 B channel length not enough\r\n");
+			return FAIL;
+		}
+	}
+	else{
+		return FAIL;
+	}
+
+#else
+
 	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
 		return SUCCESS;
 	}
-	else
-	{
+	else{
 		return FAIL;
 	}
+#endif
 }
 /***************************************************************
  *Name:						saveprofile
@@ -266,6 +306,29 @@ void unpack(int len){
 		}
 	}
 }
+/**************************************************************
+ *Name:		   CompareRS422AandB
+ *Comment:
+ *Input:	   Uint16 length
+ *Output:	   Uint16
+ *Author:	   Simon
+ *Date:		   2018��11��7������8:16:30
+ **************************************************************/
+Uint16 CompareRS422AandB(Uint16 len){
+	int16 i;
+
+	for (i = 0; i < len; ++i) {
+		printf("gRS422RxQue = %d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
+		printf("gRS422RxQueB= %d\r\n",gRS422RxQueB.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
+		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE] != gRS422RxQueB.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]){
+			printf("position = %d\r\n", i);
+			printf("gRS422RxQue.rxBuff = %d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
+			printf("gRS422RxQueB.rxBuff = %d\r\n",gRS422RxQueB.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
+			return FAIL;
+		}
+	}
+	return SUCCESS;
+}
 /***************************************************************
  *Name:						updatehead
  *Function:					move the front head to another position
@@ -297,22 +360,31 @@ void UnpackRS422ANew(void){
 	}
 
 	if(checklength() == FAIL){
-		printf("len received =%d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
-		printf("len calculate =%d\r\n",RS422RxQueLength());
+		printf("len received =%d\r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
+		printf("len calculate =%d\r\n", RS422RxQueLength());
+		printf("data length is not enough, waiting for more data\r\n");
 		return;
 	}
 	else{
-		printf("data length is not enough, waiting for more data\r\n");
+		printf("Check data length succeed, begin to check tail\r\n");
 	}
 
 	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
+#if COMPARE_A_AND_B
 
+	if(CompareRS422AandB(length) == FAIL){
+		printf("Data in RS422 A Channel are not the same with B channel \r\n");
+	}
+	else{
+		printf("CompareRS422AandB SUCCESS\r\n");
+	}
+
+#endif
 	if(findtail(length) == FAIL){
 		printf("find tail failed\r\n");
 		if(DeQueue() == 0){
 			printf("RS422 rx queue is empty\r\n");
 		}
-
 		return;
 	}
 	else{

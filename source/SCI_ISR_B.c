@@ -16,7 +16,7 @@ RS422RXQUEB gRS422RxQueB = {0};
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int EnQueue_B(int e){
+inline int EnQueue_B(int e){
 	if((gRS422RxQueB.rear + 1) % MAXQSIZE_B == gRS422RxQueB.front){
 		//printf("EnQueue FULL \r\n");
 		return 0;
@@ -50,7 +50,7 @@ int DeQueue_B(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int RS422RxQueLengthB(){
+int RS422RxQueLengthB(void){
 	int length;
 	length = (gRS422RxQueB.rear - gRS422RxQueB.front + MAXQSIZE_B) % MAXQSIZE_B;
 	return length;

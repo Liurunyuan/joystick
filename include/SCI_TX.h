@@ -5,7 +5,7 @@
 
 
 #define TXMAXQSIZE (1800)
-#define TOTAL_TX_VAR (20)
+#define TOTAL_TX_VAR (2)
 
 typedef void (*updatevalue)(int a, int b,int c);
 enum {

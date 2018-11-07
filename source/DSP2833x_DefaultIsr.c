@@ -51,7 +51,6 @@ interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 #if TEST_TIME_TIMER1
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
-
 	Uint16 TempPIEIER;
 	Uint16 TempPIEIER2;
 
