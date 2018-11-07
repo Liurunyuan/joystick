@@ -22,5 +22,6 @@ extern RS422RXQUEB gRS422RxQueB;
 
 
 void RS422B_receive(void);
+int RS422RxQueLengthB(void);
 
 #endif

@@ -50,7 +50,7 @@ int DeQueue_B(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int RS422RxQueLengthB(){
+int RS422RxQueLengthB(void){
 	int length;
 	length = (gRS422RxQueB.rear - gRS422RxQueB.front + MAXQSIZE_B) % MAXQSIZE_B;
 	return length;
