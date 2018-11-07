@@ -155,6 +155,10 @@ void Init_gRS422RxQue(void) {
 	gRS422RxQue.front = 0;
 	gRS422RxQue.rear = 0;
 	memset(gRS422RxQue.rxBuff, 0, sizeof(gRS422RxQue.rxBuff));
+
+	gRS422RxQueB.front = 0;
+	gRS422RxQueB.rear = 0;
+	memset(gRS422RxQueB.rxBuff, 0, sizeof(gRS422RxQueB.rxBuff));
 }
 /**************************************************************
  *Name:						Init_gRS422TxQue
@@ -296,12 +300,12 @@ void main(void) {
 
 		for(i = 0; i < 1000; ++i){
 			//delayfunction(32000);
-			delayfunction(3200);
+			delayfunction(32000);
 		}
 
 		test_spi_tx();
 
-		//UnpackRS422ANew();
+		UnpackRS422ANew();
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

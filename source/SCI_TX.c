@@ -6,7 +6,7 @@
 GRX422TX gRx422TxVar[TOTAL_TX_VAR] = {0};
 Uint16 gRx422TxEnableFlag[TOTAL_TX_VAR] = {0};
 RS422TXQUE gRS422TxQue = {0};
-#define S (5)
+#define S (1)
 
 
 /***************************************************************
@@ -129,7 +129,7 @@ void testrs422tx(void){
 			return;
 		}
 
-		updateTxEnableFlag();
+		//updateTxEnableFlag();
 	}
 
 	for(i = 0; i < TOTAL_TX_VAR; ++i){
@@ -157,7 +157,7 @@ void testrs422tx(void){
 	}
 
 	if(count == 0){
-		gRS422TxQue.txBuf[lenPosition] = total * S;//timer0 interrupt isr can not be interrupted by TX, so we can set length value here
+		gRS422TxQue.txBuf[lenPosition] = total * (S + 1);//timer0 interrupt isr can not be interrupted by TX, so we can set length value here
 	}
 
 	++count;
