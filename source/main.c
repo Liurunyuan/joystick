@@ -250,6 +250,7 @@ void Init_gSysMonitorVar() {
 void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
 	gRS422Status.rs422B = 1;
+	gRS422Status.rs422CurrentChannel = 1;
 }
 /***************************************************************
  *Name:						GlobleVarInit
@@ -306,7 +307,7 @@ void main(void) {
 
 		test_spi_tx();
 
-		//UnpackRS422ANew();
+		UnpackRS422ANew();
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

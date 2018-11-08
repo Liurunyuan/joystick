@@ -1,5 +1,6 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
+#include "public.h"
 #include "SCI_ISR.h"
 #include "SCI_ISR_B.h"
 #include "SCI_TX.h"
@@ -294,6 +295,13 @@ void unpack(int len){
 		var16.datahl.h = rs422rxPack[OFFSET + UNIT_LEN*i + 1];
 		var16.datahl.l = rs422rxPack[OFFSET + UNIT_LEN*i + 2];
 		var16.value = var16.datahl.l + (var16.datahl.h << 8);
+
+		if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A){
+			gRS422Status.rs422A = 1;
+		}
+		else if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_B){
+			gRS422Status.rs422B = 1;
+		}
 
 		if(msgCode < (sizeof(msgInterface) / sizeof(msgInterface[0]))){
 			//printf("msgCode = %d\r\n",msgCode);

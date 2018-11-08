@@ -41,6 +41,9 @@
 #define TRUE 1
 #define FALSE 0
 
+#define RS422_CHANNEL_A (1)
+#define RS422_CHANNEL_B (2)
+
 #define Duty_change_max 5
 
 //�������ϵ�����Ŀ���õ��ĺ궨�壬��ʼ��2016.6.12��yjs

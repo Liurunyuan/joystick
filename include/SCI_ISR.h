@@ -47,6 +47,7 @@ typedef union _VAR16{
 typedef struct{
 	Uint16 rs422A;
 	Uint16 rs422B;
+	Uint16 rs422CurrentChannel;
 }RS422STATUS;
 
 typedef void (*functionMsgCodeUnpack)(VAR16 a, int b,int c);
