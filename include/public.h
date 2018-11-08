@@ -11,7 +11,7 @@
 #define TEST_TIME_ECAP1   (0)
 #define TEST_TIME_MAIN_LOOP (0)
 
-//�������ϵ�����Ŀ���õ��ĺ궨�壬��ʼ��2016.6.12��yjs
+//epwm parameter config
 #define EPWM1_TIMER_TBPRD 1500     //������������ģʽ��6000--10k��3000--20k��4286--14K,120M/2/14K=4286
 #define EPWM2_TIMER_TBPRD 1500     //6000--10k��3000--20k��4286--14K
 #define EPWM1_TIMER_HALF_TBPRD  750            //
