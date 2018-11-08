@@ -307,7 +307,7 @@ void main(void) {
 
 		test_spi_tx();
 
-		UnpackRS422ANew();
+		UnpackRS422ANew(&gRS422RxQue);
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

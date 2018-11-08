@@ -909,7 +909,7 @@ interrupt void SCIRXINTC_ISR(void)     // SCI-C
 	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
 
-  RS422A_receive();
+  RS422A_receive(&gRS422RxQue);
   ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;
   PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
 

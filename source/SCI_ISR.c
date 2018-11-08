@@ -76,14 +76,14 @@ const functionMsgCodeUnpack msgInterface[] = {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-inline int EnQueue(int e){
-	if((gRS422RxQue.rear + 1) % MAXQSIZE == gRS422RxQue.front){
+inline int EnQueue(int e, RS422RXQUE *RS422RxQue){
+	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
 		//printf("EnQueue FULL \r\n");
 		return 0;
 	}
 
-	gRS422RxQue.rxBuff[gRS422RxQue.rear] = e;
-	gRS422RxQue.rear = (gRS422RxQue.rear + 1) % MAXQSIZE;
+	RS422RxQue->rxBuff[RS422RxQue->rear] = e;
+	RS422RxQue->rear = (RS422RxQue->rear + 1) % MAXQSIZE;
 	return 1;
 }
 /***************************************************************
@@ -94,12 +94,12 @@ inline int EnQueue(int e){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-inline int DeQueue(void){
-	if(gRS422RxQue.front == gRS422RxQue.rear){
+inline int DeQueue(RS422RXQUE *RS422RxQue){
+	if(RS422RxQue->front == RS422RxQue->rear){
 		return 0;
 	}
 
-	gRS422RxQue.front = (gRS422RxQue.front + 1) % MAXQSIZE;
+	RS422RxQue->front = (RS422RxQue->front + 1) % MAXQSIZE;
 	return 1;
 }
 /***************************************************************
@@ -110,9 +110,9 @@ inline int DeQueue(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int RS422RxQueLength(void){
+int RS422RxQueLength(RS422RXQUE *RS422RxQue){
 	int length;
-	length = (gRS422RxQue.rear - gRS422RxQue.front + MAXQSIZE) % MAXQSIZE;
+	length = (RS422RxQue->rear - RS422RxQue->front + MAXQSIZE) % MAXQSIZE;
 	return length;
 }
 /***************************************************************
@@ -123,10 +123,10 @@ int RS422RxQueLength(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-void RS422A_receive(void){
+void RS422A_receive(RS422RXQUE *RS422RxQue){
 
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
-		if(EnQueue(ScicRegs.SCIRXBUF.all) == 0){
+		if(EnQueue(ScicRegs.SCIRXBUF.all, RS422RxQue) == 0){
 			//printf("RS422 rx queue full\r\n");
 			//TODO update error msg
 		}
@@ -160,18 +160,19 @@ int CalCrc(int crc, const char *buf, int len){
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-int findhead(void){
+int findhead(RS422RXQUE *RS422RxQue){
+
 	char head1;
 	char head2;
 #if COMPARE_A_AND_B
 	while(1){
 
-		head1 = gRS422RxQue.rxBuff[gRS422RxQue.front];
-		head2 = gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE];
+		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
+		head2 = RS422RxQue->rxBuff[(RS422RxQue->front + 1) % MAXQSIZE];
 
 		if(head1 == HEAD1 && head2 == HEAD2){
-			if(gRS422RxQueB.rxBuff[gRS422RxQue.front] == HEAD1 && gRS422RxQueB.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE] == HEAD2){
-				gRS422RxQueB.front = gRS422RxQue.front;
+			if(gRS422RxQueB.rxBuff[RS422RxQue->front] == HEAD1 && gRS422RxQueB.rxBuff[(RS422RxQue->front + 1) % MAXQSIZE] == HEAD2){
+				gRS422RxQueB.front = RS422RxQue->front;
 				return SUCCESS;
 			}
 			else{
@@ -180,24 +181,24 @@ int findhead(void){
 			}
 		}
 
-		if(DeQueue() == 0){
+		if(DeQueue(RS422RxQue) == 0){
 			//printf("rs422 rx queue is empty\r\n");
 			return FAIL;
 		}
-}
+	}
 
 
 #else
 	while(1){
 
-		head1 = gRS422RxQue.rxBuff[gRS422RxQue.front];
-		head2 = gRS422RxQue.rxBuff[(gRS422RxQue.front + 1) % MAXQSIZE];
+		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
+		head2 = RS422RxQue->rxBuff[(RS422RxQue->front + 1) % MAXQSIZE];
 
 		if(head1 == HEAD1 && head2 == HEAD2){
 			return SUCCESS;
 		}
 
-		if(DeQueue() == 0){
+		if(DeQueue(RS422RxQue) == 0){
 			//printf("rs422 rx queue is empty\r\n");
 			return FAIL;
 		}
@@ -212,12 +213,12 @@ int findhead(void){
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-int findtail(int len){
+int findtail(int len, RS422RXQUE *RS422RxQue){
 	char tail1;
 	char tail2;
 
-	tail1 = gRS422RxQue.rxBuff[(gRS422RxQue.front + len - 1) % MAXQSIZE];
-	tail2 = gRS422RxQue.rxBuff[(gRS422RxQue.front + len - 2) % MAXQSIZE];
+	tail1 = RS422RxQue->rxBuff[(RS422RxQue->front + len - 1) % MAXQSIZE];
+	tail2 = RS422RxQue->rxBuff[(RS422RxQue->front + len - 2) % MAXQSIZE];
 
 	if(tail1 == TAIL1 && tail2 == TAIL2){
 		return SUCCESS;
@@ -234,11 +235,11 @@ int findtail(int len){
  *Author:					Simon
  *Date:						2018.10.25
  ****************************************************************/
-int checklength(void){
+int checklength(RS422RXQUE *RS422RxQue){
 #if COMPARE_A_AND_B
 
-	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
-		if((gRS422RxQueB.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLengthB()){
+	if((RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
+		if((gRS422RxQueB.rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLengthB()){
 			printf("RS422 A AND B CHANNEL LENGTH IS ENOUGH!!!!!\r\n");
 			return SUCCESS;
 		}
@@ -253,7 +254,7 @@ int checklength(void){
 
 #else
 
-	if((gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
+	if((RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength(RS422RxQue)){
 		return SUCCESS;
 	}
 	else{
@@ -269,11 +270,11 @@ int checklength(void){
  *Author:					Simon
  *Date:						2018.10.27
  ****************************************************************/
-void saveprofile(int len){
+void saveprofile(int len, RS422RXQUE *RS422RxQue){
 	int i;
 
 	for(i = 0; i < len; ++i){
-		rs422rxPack[i] = gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE];
+		rs422rxPack[i] = RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE];
 	}
 }
 /***************************************************************
@@ -291,7 +292,7 @@ void unpack(int len){
 
 	for(i = 0; i < len; ++i){
 
-		msgCode = rs422rxPack[OFFSET + UNIT_LEN*i];
+		msgCode = rs422rxPack[OFFSET + UNIT_LEN * i];
 		var16.datahl.h = rs422rxPack[OFFSET + UNIT_LEN*i + 1];
 		var16.datahl.l = rs422rxPack[OFFSET + UNIT_LEN*i + 2];
 		var16.value = var16.datahl.l + (var16.datahl.h << 8);
@@ -322,16 +323,16 @@ void unpack(int len){
  *Author:	   Simon
  *Date:		   2018��11��7������8:16:30
  **************************************************************/
-Uint16 CompareRS422AandB(Uint16 len){
+Uint16 CompareRS422AandB(Uint16 len, RS422RXQUE *RS422RxQue){
 	int16 i;
 
 	for (i = 0; i < len; ++i) {
-		printf("gRS422RxQue = %d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
-		printf("gRS422RxQueB= %d\r\n",gRS422RxQueB.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
-		if(gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE] != gRS422RxQueB.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]){
+		printf("gRS422RxQue = %d\r\n",RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
+		printf("gRS422RxQueB= %d\r\n",gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
+		if(RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE] != gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]){
 			printf("position = %d\r\n", i);
-			printf("gRS422RxQue.rxBuff = %d\r\n",gRS422RxQue.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
-			printf("gRS422RxQueB.rxBuff = %d\r\n",gRS422RxQueB.rxBuff[(gRS422RxQue.front + i) % MAXQSIZE]);
+			printf("RS422RxQue->rxBuff = %d\r\n",RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
+			printf("gRS422RxQueB.rxBuff = %d\r\n",gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
 			return FAIL;
 		}
 	}
@@ -345,8 +346,8 @@ Uint16 CompareRS422AandB(Uint16 len){
  *Author:					Simon
  *Date:						2018.10.27
  ****************************************************************/
-void updatehead(int len){
-	gRS422RxQue.front = (gRS422RxQue.front + len) % MAXQSIZE;
+void updatehead(int len, RS422RXQUE *RS422RxQue){
+	RS422RxQue->front = (RS422RxQue->front + len) % MAXQSIZE;
 }
 /***************************************************************
  *Name:						UnpackRS422ANew
@@ -356,10 +357,10 @@ void updatehead(int len){
  *Author:					Simon
  *Date:						2018.10.27
  ****************************************************************/
-void UnpackRS422ANew(void){
+void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	int length;
 
-	if(findhead() == FAIL){
+	if(findhead(RS422RxQue) == FAIL){
 		printf("find head failed\r\n");
 		return;
 	}
@@ -367,9 +368,9 @@ void UnpackRS422ANew(void){
 		printf("find head succeed\r\n");
 	}
 
-	if(checklength() == FAIL){
-		printf("len received =%d\r\n", gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
-		printf("len calculate =%d\r\n", RS422RxQueLength());
+	if(checklength(RS422RxQue) == FAIL){
+		printf("len received =%d\r\n", RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
+		printf("len calculate =%d\r\n", RS422RxQueLength(RS422RxQue));
 		printf("data length is not enough, waiting for more data\r\n");
 		return;
 	}
@@ -377,10 +378,10 @@ void UnpackRS422ANew(void){
 		printf("Check data length succeed, begin to check tail\r\n");
 	}
 
-	length = gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
+	length = RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
 #if COMPARE_A_AND_B
 
-	if(CompareRS422AandB(length) == FAIL){
+	if(CompareRS422AandB(length, RS422RxQue) == FAIL){
 		printf("Data in RS422 A Channel are not the same with B channel \r\n");
 	}
 	else{
@@ -388,9 +389,9 @@ void UnpackRS422ANew(void){
 	}
 
 #endif
-	if(findtail(length) == FAIL){
+	if(findtail(length,RS422RxQue) == FAIL){
 		printf("find tail failed\r\n");
-		if(DeQueue() == 0){
+		if(DeQueue(RS422RxQue) == 0){
 			printf("RS422 rx queue is empty\r\n");
 		}
 		return;
@@ -399,10 +400,10 @@ void UnpackRS422ANew(void){
 		printf("find tail succeed\r\n");
 	}
 
-	saveprofile(length);
+	saveprofile(length,RS422RxQue);
 
 	if(CalCrc(0, rs422rxPack + OFFSET, length - 5) != 0){
-		if(DeQueue() == 0){
+		if(DeQueue(RS422RxQue) == 0){
 			printf("RS422 rx queue is empty\r\n");
 		}
 		printf("CRC check failed\r\n");
@@ -412,8 +413,8 @@ void UnpackRS422ANew(void){
 		printf("CRC check succeed\r\n");
 	}
 
-	unpack(gRS422RxQue.rxBuff[(gRS422RxQue.front + 2) % MAXQSIZE]);
-	updatehead(length);
+	unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
+	updatehead(length, RS422RxQue);
 	printf("update the front position----------------------------\r\n");
 }
 /***************************************************************
