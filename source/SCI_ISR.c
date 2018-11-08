@@ -17,6 +17,7 @@
 /***********globle variable define here***************/
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
+RS422RXQUE gRS422RxQueB = {0};
 char rs422rxPack[16];
 RS422STATUS gRS422Status = {0};
 
@@ -131,6 +132,17 @@ void RS422A_receive(RS422RXQUE *RS422RxQue){
 			//TODO update error msg
 		}
 	}
+}
+
+void RS422B_receive(RS422RXQUE *RS422RxQue){
+
+	while(ScibRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
+		if(EnQueue(ScibRegs.SCIRXBUF.all, RS422RxQue) == 0){
+			//printf("RS422 rx queue full\r\n");
+			//TODO update error msg
+		}
+	}
+
 }
 /***************************************************************
  *Name:						CalCrc

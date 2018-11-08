@@ -53,11 +53,13 @@ typedef struct{
 typedef void (*functionMsgCodeUnpack)(VAR16 a, int b,int c);
 
 extern RS422RXQUE gRS422RxQue;
+extern RS422RXQUE gRS422RxQueB;
 extern RS422STATUS gRS422Status;
 
 
 void UnpackRS422A(void);
 void RS422A_receive(RS422RXQUE *RS422RxQue);
+void RS422B_receive(RS422RXQUE *RS422RxQue);
 void UnpackRS422ANew(RS422RXQUE *RS422RxQue);
 void testwithlabview();
 

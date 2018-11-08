@@ -306,8 +306,13 @@ void main(void) {
 		}
 
 		test_spi_tx();
+		if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A){
+			UnpackRS422ANew(&gRS422RxQue);
+		}
+		else if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_B){
+			UnpackRS422ANew(&gRS422RxQueB);
+		}
 
-		UnpackRS422ANew(&gRS422RxQue);
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

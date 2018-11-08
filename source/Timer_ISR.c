@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 #define N (10)
-#define RS422STATUSCHECK (200)
+#define RS422STATUSCHECK (1000)
 
 
 
@@ -26,7 +26,7 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		testrs422tx();
+		//testrs422tx();
 		count = 0;
 	}
 }
