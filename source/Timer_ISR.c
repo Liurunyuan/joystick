@@ -26,7 +26,7 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		//testrs422tx();
+		testrs422tx();
 		count = 0;
 	}
 }

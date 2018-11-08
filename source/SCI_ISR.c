@@ -78,6 +78,9 @@ const functionMsgCodeUnpack msgInterface[] = {
  *Date:						2018.10.21
  ****************************************************************/
 inline int EnQueue(int e, RS422RXQUE *RS422RxQue){
+	//TODO copy this function,  just in case two threads call this function
+
+	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
 		//printf("EnQueue FULL \r\n");
 		return 0;
