@@ -47,17 +47,20 @@ typedef union _VAR16{
 typedef struct{
 	Uint16 rs422A;
 	Uint16 rs422B;
+	Uint16 rs422CurrentChannel;
 }RS422STATUS;
 
 typedef void (*functionMsgCodeUnpack)(VAR16 a, int b,int c);
 
 extern RS422RXQUE gRS422RxQue;
+extern RS422RXQUE gRS422RxQueB;
 extern RS422STATUS gRS422Status;
 
 
 void UnpackRS422A(void);
-void RS422A_receive(void);
-void UnpackRS422ANew(void);
+void RS422A_receive(RS422RXQUE *RS422RxQue);
+void RS422B_receive(RS422RXQUE *RS422RxQue);
+void UnpackRS422ANew(RS422RXQUE *RS422RxQue);
 void testwithlabview();
 
 #endif
