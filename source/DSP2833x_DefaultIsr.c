@@ -29,6 +29,7 @@
 #include "PWM_ISR.h"
 #include "Timer_ISR.h"
 #include "SCI_TX.h"
+#include "ECap_ISR.h"
 
 interrupt void  TINT0_ISR(void)
 {
@@ -606,12 +607,7 @@ interrupt void ECAP4_INT_ISR(void)     // ECAP-4
   // Insert ISR Code here
 
   // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP4;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP4;
 }
 
 // INT4.5
@@ -620,12 +616,7 @@ interrupt void ECAP5_INT_ISR(void)     // ECAP-5
   // Insert ISR Code here
 
   // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP4;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP4;
 }
 // INT4.6
 interrupt void ECAP6_INT_ISR(void)     // ECAP-6
@@ -633,12 +624,7 @@ interrupt void ECAP6_INT_ISR(void)     // ECAP-6
   // Insert ISR Code here
 
   // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP4;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  asm ("      ESTOP0");
-  for(;;);
+   PieCtrlRegs.PIEACK.all = PIEACK_GROUP4;
 }
 // INT4.7 - Reserved
 // INT4.8 - Reserved
