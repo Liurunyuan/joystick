@@ -186,6 +186,31 @@ void testrs422tx(void){
 		}
 	}
 }
+/**************************************************************
+ *Name:		   ScibTxByte
+ *Comment:
+ *Input:	   one byte to send by sci B
+ *Output:	   none
+ *Author:	   Simon
+ *Date:		   2018年11月12日下午9:47:37
+ **************************************************************/
+void ScibTxByte(Uint16 t){
+
+	ScibRegs.SCITXBUF = t;
+}
+/**************************************************************
+ *Name:		   ScicTxByte
+ *Comment:
+ *Input:	   one byte to send by sci C
+ *Output:	   none
+ *Author:	   Simon
+ *Date:		   2018年11月12日下午9:47:37
+ **************************************************************/
+void ScicTxByte(Uint16 t){
+
+	ScicRegs.SCITXBUF = t;
+}
+
 /***************************************************************
  *Name:						rs422 tx interrupt isr
  *Function:			  none
@@ -204,9 +229,9 @@ void RS422A_Transmit(void){
 
 	while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
 				&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+		ScibTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);
+		//ScicTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);//printf by Scic
 
-		ScibRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
-		//ScicRegs.SCITXBUF = gRS422TxQue.txBuf[gRS422TxQue.front];
 		if(RX422TXDeQueue() == 0){
 			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
 			return;
