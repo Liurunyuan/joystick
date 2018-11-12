@@ -35,8 +35,7 @@ int RX422TXEnQueue(char e){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int RX422TXDeQueue(void)
-{
+int RX422TXDeQueue(void){
 	if(gRS422TxQue.front == gRS422TxQue.rear){
 		return 0;
 	}
@@ -65,8 +64,7 @@ int RS422TxQueLength(){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-int calCrc(int crc, const char *buf, int len)
-{
+int calCrc(int crc, const char *buf, int len) {
 	int x;
 	int i;
 
@@ -84,10 +82,9 @@ int calCrc(int crc, const char *buf, int len)
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ6ÈÕÏÂÎç7:43:55
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½6ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½7:43:55
  **************************************************************/
 void updateTxEnableFlag(void) {
-
 	int i;
 	for (i = 0; i < TOTAL_TX_VAR; ++i) {
 		gRx422TxVar[i].isTx = gRx422TxEnableFlag[i];
@@ -103,7 +100,6 @@ void updateTxEnableFlag(void) {
  *Date:						2018.10.21
  ****************************************************************/
 void PackRS422TxData(void){
-
 	//TODO need do some test, because we sync the tx enable flag here
 	int i;
 	char crcl;
@@ -192,11 +188,12 @@ void PackRS422TxData(void){
  *Input:	   one byte to send by sci B
  *Output:	   none
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ12ÈÕÏÂÎç9:47:37
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½12ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:47:37
  **************************************************************/
 void ScibTxByte(Uint16 t){
 
 	ScibRegs.SCITXBUF = t;
+
 }
 /**************************************************************
  *Name:		   ScicTxByte
@@ -204,11 +201,12 @@ void ScibTxByte(Uint16 t){
  *Input:	   one byte to send by sci C
  *Output:	   none
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ12ÈÕÏÂÎç9:47:37
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½12ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:47:37
  **************************************************************/
 void ScicTxByte(Uint16 t){
 
 	ScicRegs.SCITXBUF = t;
+
 }
 /**************************************************************
  *Name:		   DisableScicTxInterrupt
@@ -216,7 +214,7 @@ void ScicTxByte(Uint16 t){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ12ÈÕÏÂÎç10:00:34
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½12ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½10:00:34
  **************************************************************/
 void DisableScicTxInterrupt(void){
 
@@ -234,8 +232,7 @@ void DisableScicTxInterrupt(void){
 void RS422A_Transmit(void){
 
 	if(gRS422TxQue.front == gRS422TxQue.rear){
-
-		ScicRegs.SCIFFTX.bit.TXFFIENA = 0;//disable the tx interrupt when tx fifo empty
+		DisableScicTxInterrupt();//disable the tx interrupt when tx fifo empty
 		return;
 	}
 
