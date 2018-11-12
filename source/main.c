@@ -124,7 +124,7 @@ int PowerOnBIT(void){
  *Date:						2018.6.10
  **************************************************************/
 void Start_main_loop(void){
-	/*tbd-----------------*/
+
 	FeedWatchDog();
 	//TODO need to implement
 }
