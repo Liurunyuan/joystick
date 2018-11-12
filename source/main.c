@@ -189,6 +189,7 @@ void Init_gRx422TxVar(void) {
 	for (index = 0; index < 20; ++index) {
 
 		gRx422TxVar[index].isTx = 1;
+		gRx422TxEnableFlag[index] = 1;
 		gRx422TxVar[index].index = index;
 
 	}
@@ -249,6 +250,7 @@ void Init_gSysMonitorVar() {
 void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
 	gRS422Status.rs422B = 1;
+	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
 }
 /***************************************************************
  *Name:						GlobleVarInit
@@ -304,8 +306,13 @@ void main(void) {
 		}
 
 		test_spi_tx();
+		if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A){
+			UnpackRS422ANew(&gRS422RxQue);
+		}
+		else if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_B){
+			UnpackRS422ANew(&gRS422RxQueB);
+		}
 
-		UnpackRS422ANew();
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif
