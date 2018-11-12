@@ -95,14 +95,14 @@ void updateTxEnableFlag(void) {
 }
 
 /***************************************************************
- *Name:						testrs422tx
+ *Name:						PackRS422TxData
  *Function:					pack the data that need to be sent
  *Input:				    none
  *Output:					none
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-void testrs422tx(void){
+void PackRS422TxData(void){
 
 	//TODO need do some test, because we sync the tx enable flag here
 	int i;
