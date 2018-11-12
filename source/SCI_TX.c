@@ -210,7 +210,19 @@ void ScicTxByte(Uint16 t){
 
 	ScicRegs.SCITXBUF = t;
 }
+/**************************************************************
+ *Name:		   DisableScicTxInterrupt
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月12日下午10:00:34
+ **************************************************************/
+void DisableScicTxInterrupt(void){
 
+	ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
+
+}
 /***************************************************************
  *Name:						rs422 tx interrupt isr
  *Function:			  none
@@ -233,7 +245,7 @@ void RS422A_Transmit(void){
 		//ScicTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);//printf by Scic
 
 		if(RX422TXDeQueue() == 0){
-			ScicRegs.SCIFFTX.bit.TXFFIENA = 0;
+			DisableScicTxInterrupt();
 			return;
 		}
 	}

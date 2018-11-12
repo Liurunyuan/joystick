@@ -101,11 +101,14 @@ void FeedWatchDog(void){
 	TOOGLE_WATCHDOG = TRUE;
 }
 
-void delayfunction(int sec){
-	int count;
+void delayfunction(Uint16 sec){
+	Uint16 i;
+	Uint16 j;
 
-	for(count = 0; count < sec; count++){
-		++count;
+	for(i = 0; i < 1000; ++i){
+		for(j = 0; j < sec; ++j){
+			++j;
+		}
 	}
 }
 int PowerOnBIT(void){
@@ -269,6 +272,21 @@ void InitGlobleVar(void){
 	Init_gSysMonitorVar();
 	Init_gRS422Status();
 }
+/**************************************************************
+ *Name:		   RS422Unpack
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月12日下午10:05:17
+ **************************************************************/
+void RS422Unpack(void) {
+	if (RS422_CHANNEL_A == gRS422Status.rs422CurrentChannel) {
+		UnpackRS422ANew(&gRS422RxQue);
+	} else if (RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel) {
+		UnpackRS422ANew(&gRS422RxQueB);
+	}
+}
 
 /***************************************************************
  *Name:						main
@@ -296,23 +314,13 @@ void main(void) {
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
-
 		Start_main_loop();
-		int i;
 
-		for(i = 0; i < 1000; ++i){
-			//delayfunction(32000);
-			delayfunction(32000);
-		}
+		delayfunction(32000);
 
 		test_spi_tx();
-		if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A){
-			UnpackRS422ANew(&gRS422RxQue);
-		}
-		else if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_B){
-			UnpackRS422ANew(&gRS422RxQueB);
-		}
 
+		RS422Unpack();
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif
