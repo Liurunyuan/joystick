@@ -236,6 +236,7 @@ void DigitalValueInspect(void){
 			break;
 		default:
 			status = REFRESH;
+			break;
 	}
 }
 /**************************************************************

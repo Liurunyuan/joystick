@@ -26,9 +26,21 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		testrs422tx();
+		PackRS422TxData();
 		count = 0;
 	}
+}
+/**************************************************************
+ *Name:		   EnableScicTxInterrupt
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月12日下午10:41:29
+ **************************************************************/
+void EnableScicTxInterrupt(void){
+	ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
+	ScicRegs.SCIFFTX.bit.TXFFIENA = 1;
 }
 /***************************************************************
  *Name:						Timer1_ISR_Thread
@@ -50,7 +62,7 @@ void Timer1_ISR_Thread(void){
 			return;
 		}
 
-		if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A){
+		if(RS422_CHANNEL_A == gRS422Status.rs422CurrentChannel){
 			if(gRS422Status.rs422A){
 				gRS422Status.rs422A = 0;
 			}
@@ -60,7 +72,7 @@ void Timer1_ISR_Thread(void){
 				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
 			}
 		}
-		else if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_B){
+		else if(RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel){
 			if(gRS422Status.rs422B){
 				gRS422Status.rs422B = 0;
 			}
@@ -78,7 +90,7 @@ void Timer1_ISR_Thread(void){
 
 	if(gRS422TxQue.front != gRS422TxQue.rear
 			&& ScicRegs.SCIFFTX.bit.TXFFST == 0){
-		 ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
-		 ScicRegs.SCIFFTX.bit.TXFFIENA = 1;
+
+		 EnableScicTxInterrupt();
 	}
 }
