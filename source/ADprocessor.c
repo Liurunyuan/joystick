@@ -75,8 +75,8 @@ void UpdateSingleAnalogInput(void){
 	int index;
 
 	for(index = 0; index < TotalChannel; ++index){
-		//gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
-		gSysMonitorVar.anolog.single.var[index].value = DMABuf1[index];
+		gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
+		//gSysMonitorVar.anolog.single.var[index].value = DMABuf1[index];
 
 	}
 
@@ -274,7 +274,7 @@ void ReadAnalogValue(void){
 
     }
     */
-	UpdateSingleAnalogInput();
+	//UpdateSingleAnalogInput();
 	AnalogValueInspect();
 }
 /**************************************************************

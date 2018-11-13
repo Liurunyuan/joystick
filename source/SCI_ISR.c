@@ -113,7 +113,7 @@ inline int DeQueue(RS422RXQUE *RS422RxQue){
  *Input:
  *Output:	   Uint16
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ13ÈÕÏÂÎç7:52:22
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½13ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½7:52:22
  **************************************************************/
 Uint16 IsQueueEmpty(RS422RXQUE *RS422RxQue){
 	if(RS422RxQue->front == RS422RxQue->rear){
@@ -411,65 +411,66 @@ void UpdateRS422RxSerialNumber(void){
  ****************************************************************/
 void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	int length;
-
-	if(findhead(RS422RxQue) == FAIL){
-		printf("find head failed\r\n");
-		return;
-	}
-	else{
-		printf("find head succeed\r\n");
-	}
-
-	if(checklength(RS422RxQue) == FAIL){
-		printf("len received =%d\r\n", RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
-		printf("len calculate =%d\r\n", RS422RxQueLength(RS422RxQue));
-		printf("data length is not enough, waiting for more data\r\n");
-		return;
-	}
-	else{
-		printf("Check data length succeed, begin to check tail\r\n");
-	}
-
-	length = RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
-
-#if COMPARE_A_AND_B
-
-	if(CompareRS422AandB(length, RS422RxQue) == FAIL){
-		printf("Data in RS422 A Channel are not the same with B channel \r\n");
-	}
-	else{
-		printf("CompareRS422AandB SUCCESS\r\n");
-	}
-#endif
-
-	if(findtail(length,RS422RxQue) == FAIL){
-		printf("find tail failed\r\n");
-		if(DeQueue(RS422RxQue) == 0){
-			printf("RS422 rx queue is empty\r\n");
+	while(RS422RxQueLength(RS422RxQue) > EXTRA_LEN){
+		if(findhead(RS422RxQue) == FAIL){
+			//printf("find head failed\r\n");
+			return;
 		}
-		return;
-	}
-	else{
-		printf("find tail succeed\r\n");
-	}
-
-	saveprofile(length,RS422RxQue);
-
-	if(CalCrc(0, rs422rxPack + OFFSET, length - EXTRA_LEN + 2) != 0){
-		if(DeQueue(RS422RxQue) == 0){
-			printf("RS422 rx queue is empty\r\n");
+		else{
+			//printf("find head succeed\r\n");
 		}
-		printf("CRC check failed\r\n");
-		return;
-	}
-	else{
-		printf("CRC check succeed\r\n");
-	}
 
-	unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
-	UpdateRS422RxSerialNumber();
-	updatehead(length, RS422RxQue);
-	printf("update the front position----------------------------\r\n");
+		if(checklength(RS422RxQue) == FAIL){
+			//printf("len received =%d\r\n", RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
+			//printf("len calculate =%d\r\n", RS422RxQueLength(RS422RxQue));
+			//printf("data length is not enough, waiting for more data\r\n");
+			return;
+		}
+		else{
+			printf("Check data length succeed, begin to check tail\r\n");
+		}
+
+		length = RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
+
+	#if COMPARE_A_AND_B
+
+		if(CompareRS422AandB(length, RS422RxQue) == FAIL){
+			printf("Data in RS422 A Channel are not the same with B channel \r\n");
+		}
+		else{
+			printf("CompareRS422AandB SUCCESS\r\n");
+		}
+	#endif
+
+		if(findtail(length,RS422RxQue) == FAIL){
+			printf("find tail failed\r\n");
+			if(DeQueue(RS422RxQue) == 0){
+				printf("RS422 rx queue is empty\r\n");
+			}
+			return;
+		}
+		else{
+			printf("find tail succeed\r\n");
+		}
+
+		saveprofile(length,RS422RxQue);
+
+		if(CalCrc(0, rs422rxPack + OFFSET, length - EXTRA_LEN + 2) != 0){
+			if(DeQueue(RS422RxQue) == 0){
+				printf("RS422 rx queue is empty\r\n");
+			}
+			printf("CRC check failed\r\n");
+			return;
+		}
+		else{
+			printf("CRC check succeed\r\n");
+		}
+
+		unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
+		UpdateRS422RxSerialNumber();
+		updatehead(length, RS422RxQue);
+		printf("update the front position----------------------------\r\n");
+	}
 }
 /***************************************************************
  *Name:						testwithlabview
