@@ -47,6 +47,7 @@ typedef union _VAR16{
 typedef struct{
 	Uint16 rs422A;
 	Uint16 rs422B;
+	Uint16 currentSerialNumber;
 	Uint16 rs422CurrentChannel;
 }RS422STATUS;
 

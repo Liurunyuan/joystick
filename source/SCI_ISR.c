@@ -7,14 +7,15 @@
 #include <stdio.h>
 
 #define UNIT_LEN (3) 			//0x00(index 1 byte) + 0x00(high 8 bit) + 0x00(low 8 bit)
-#define EXTRA_LEN  (7)          //head(2 bytes) + length(1 byte) + crc(2 bytes) + tail(2 bytes)
-#define OFFSET (3) 				//head(2 bytes) + length(1 byte);
+#define EXTRA_LEN  (9)          //head(2 bytes) + length(1 byte) + serial number(2 bytes) + crc(2 bytes) + tail(2 bytes)
+#define OFFSET (5) 				//head(2 bytes) + length(1 byte) + serial number(2 bytes)
 #define WAVE_AMOUNT (16)
 #define ENABLE_TX (1)
 #define DISABLE_TX (0)
 
 #define COMPARE_A_AND_B (0)
 /***********globle variable define here***************/
+
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 RS422RXQUE gRS422RxQueB = {0};
@@ -82,7 +83,7 @@ inline int EnQueue(int e, RS422RXQUE *RS422RxQue){
 
 	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
-		//printf("EnQueue FULL \r\n");
+		printf("EnQueue FULL \r\n");
 		return 0;
 	}
 
@@ -105,6 +106,22 @@ inline int DeQueue(RS422RXQUE *RS422RxQue){
 
 	RS422RxQue->front = (RS422RxQue->front + 1) % MAXQSIZE;
 	return 1;
+}
+/**************************************************************
+ *Name:		   IsQueueEmpty
+ *Comment:
+ *Input:
+ *Output:	   Uint16
+ *Author:	   Simon
+ *Date:		   2018Äê11ÔÂ13ÈÕÏÂÎç7:52:22
+ **************************************************************/
+Uint16 IsQueueEmpty(RS422RXQUE *RS422RxQue){
+	if(RS422RxQue->front == RS422RxQue->rear){
+		return 0;
+	}
+	else{
+		return 1;
+	}
 }
 /***************************************************************
  *Name:						RS422RxQueLength
@@ -131,7 +148,7 @@ void RS422A_receive(RS422RXQUE *RS422RxQue){
 
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		if(EnQueue(ScicRegs.SCIRXBUF.all, RS422RxQue) == 0){
-			//printf("RS422 rx queue full\r\n");
+			printf("RS422 rx queue full\r\n");
 			//TODO update error msg
 		}
 	}
@@ -204,6 +221,12 @@ int findhead(RS422RXQUE *RS422RxQue){
 
 
 #else
+
+	if(RS422RxQueLength(RS422RxQue) < EXTRA_LEN){
+		printf("-------------------------------------data not enough to unpak, so do not find head\r\n");
+		return FAIL;
+	}
+
 	while(1){
 
 		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
@@ -320,7 +343,7 @@ void unpack(int len){
 		}
 
 		if(msgCode < (sizeof(msgInterface) / sizeof(msgInterface[0]))){
-			//printf("msgCode = %d\r\n",msgCode);
+			printf("msgCode = %d\r\n",msgCode);
 			if(msgInterface[msgCode]){
 				msgInterface[msgCode](var16, 0, 0);
 			}
@@ -364,6 +387,20 @@ Uint16 CompareRS422AandB(Uint16 len, RS422RXQUE *RS422RxQue){
 void updatehead(int len, RS422RXQUE *RS422RxQue){
 	RS422RxQue->front = (RS422RxQue->front + len) % MAXQSIZE;
 }
+/**************************************************************
+ *Name:		   UpdateRS422RxSerialNumber
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½13ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½7:14:51
+ **************************************************************/
+void UpdateRS422RxSerialNumber(void){
+
+	gRS422Status.currentSerialNumber = (rs422rxPack[3] << 8) + rs422rxPack[4];
+	printf("currentSerialNumber = %d\r\n", gRS422Status.currentSerialNumber);
+
+}
 /***************************************************************
  *Name:						UnpackRS422ANew
  *Function:					unpack the hole data package
@@ -394,6 +431,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	}
 
 	length = RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
+
 #if COMPARE_A_AND_B
 
 	if(CompareRS422AandB(length, RS422RxQue) == FAIL){
@@ -402,8 +440,8 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	else{
 		printf("CompareRS422AandB SUCCESS\r\n");
 	}
-
 #endif
+
 	if(findtail(length,RS422RxQue) == FAIL){
 		printf("find tail failed\r\n");
 		if(DeQueue(RS422RxQue) == 0){
@@ -417,7 +455,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 
 	saveprofile(length,RS422RxQue);
 
-	if(CalCrc(0, rs422rxPack + OFFSET, length - 5) != 0){
+	if(CalCrc(0, rs422rxPack + OFFSET, length - EXTRA_LEN + 2) != 0){
 		if(DeQueue(RS422RxQue) == 0){
 			printf("RS422 rx queue is empty\r\n");
 		}
@@ -429,6 +467,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	}
 
 	unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
+	UpdateRS422RxSerialNumber();
 	updatehead(length, RS422RxQue);
 	printf("update the front position----------------------------\r\n");
 }
@@ -446,10 +485,12 @@ void testwithlabview(){
 	static int f = 0;
 	int crc;
 	static int data = 0;
-	char buf[19]={
+	char buf[21]={
 				0x55,
 				0x5a,
 				0x04,
+				0x00,//serial number high byte
+				0x01,//serial number low byte
 				0x01,
 				0x00,
 				0x00,
@@ -487,7 +528,7 @@ void testwithlabview(){
 	crc = CalCrc(0, buf + OFFSET, 12);
 	buf[16] = (char)crc;
 	buf[15] = (char)(crc >> 8);
-	for(i = 0; i < 19; ++i){
+	for(i = 0; i < 21; ++i){
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 
 		}
