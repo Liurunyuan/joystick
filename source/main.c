@@ -318,7 +318,7 @@ void main(void) {
 		//printf(">>>>>>>>>>>>>>>>>>>\r\n");
 		Start_main_loop();
 
-		delayfunction(1200);
+		//delayfunction(1200);
 
 		test_spi_tx();
 
