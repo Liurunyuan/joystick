@@ -24,7 +24,7 @@ RS422STATUS gRS422Status = {0};
 /***************************************************************
  *Name:						MsgStatusUnpack
  *Function:
- *Input:          VAR16,int, int
+ *Input:          			VAR16,int, int
  *Output:					none
  *Author:					Simon
  *Date:						2018.10.25
@@ -135,7 +135,7 @@ int DeQueue(RS422RXQUE *RS422RxQue){
  *Input:
  *Output:	   Uint16
  *Author:	   Simon
- *Date:		   2018��11��13������7:52:22
+ *Date:		   2018.11.14
  **************************************************************/
 Uint16 IsQueueEmpty(RS422RXQUE *RS422RxQue){
 	if(RS422RxQue->front == RS422RxQue->rear){
@@ -148,7 +148,7 @@ Uint16 IsQueueEmpty(RS422RXQUE *RS422RxQue){
 /***************************************************************
  *Name:						RS422RxQueLength
  *Function:
- *Input:				  none
+ *Input:				  	none
  *Output:					rx queue length
  *Author:					Simon
  *Date:						2018.10.21
@@ -386,7 +386,7 @@ void unpack(int len){
  *Input:	   Uint16 length
  *Output:	   Uint16
  *Author:	   Simon
- *Date:		   2018��11��7������8:16:30
+ *Date:		   2018.11.14
  **************************************************************/
 Uint16 CompareRS422AandB(Uint16 len, RS422RXQUE *RS422RxQue){
 	int16 i;
@@ -420,7 +420,7 @@ void updatehead(int len, RS422RXQUE *RS422RxQue){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018��11��13������7:14:51
+ *Date:		   2018.11.14
  **************************************************************/
 void UpdateRS422RxSerialNumber(void){
 

@@ -262,15 +262,26 @@ void ECap4Config(void){
 	 ECap4Regs.ECCTL2.bit.CONT_ONESHT = 0;
 
 	 ECap4Regs.ECCTL1.bit.CAP1POL = 0;
+	 ECap4Regs.ECCTL1.bit.CAP2POL = 0;
+	 ECap4Regs.ECCTL1.bit.CAP3POL = 0;
+	 ECap4Regs.ECCTL1.bit.CAP4POL = 0;
+
 	 ECap4Regs.ECCTL1.bit.CTRRST1 = 0;
+	 ECap4Regs.ECCTL1.bit.CTRRST2 = 0;
+	 ECap4Regs.ECCTL1.bit.CTRRST3 = 0;
+	 ECap4Regs.ECCTL1.bit.CTRRST4 = 0;
+
 	 ECap4Regs.ECCTL2.bit.SYNCI_EN = 0;
 	 ECap4Regs.ECCTL2.bit.SYNCO_SEL = 3;
 	 ECap4Regs.ECCTL1.bit.PRESCALE =0;
 
-	 ECap4Regs.ECCTL2.bit.TSCTRSTOP = 1;        /* Start Counter*/
-	 ECap4Regs.ECCTL1.bit.CAPLDEN = 1;          // Enable CAP1-CAP4 register loads
 	 ECap4Regs.ECEINT.bit.CEVT1 = 1;            // 2 events = interrupt
+	 ECap4Regs.ECEINT.bit.CEVT2 = 1;
+	 ECap4Regs.ECEINT.bit.CEVT3 = 1;
+	 ECap4Regs.ECEINT.bit.CEVT4 = 1;
 
+	 ECap4Regs.ECCTL1.bit.CAPLDEN = 1;          // Enable CAP1-CAP4 register loads
+	 ECap4Regs.ECCTL2.bit.TSCTRSTOP = 1;        /* Start Counter*/
 }
 
 void ECap5Config(void){
@@ -287,15 +298,27 @@ void ECap5Config(void){
 	 ECap5Regs.ECCTL2.bit.CONT_ONESHT = 0;
 
 	 ECap5Regs.ECCTL1.bit.CAP1POL = 0;
+	 ECap5Regs.ECCTL1.bit.CAP2POL = 0;
+	 ECap5Regs.ECCTL1.bit.CAP3POL = 0;
+	 ECap5Regs.ECCTL1.bit.CAP4POL = 0;
+
+
 	 ECap5Regs.ECCTL1.bit.CTRRST1 = 0;
+	 ECap5Regs.ECCTL1.bit.CTRRST2 = 0;
+	 ECap5Regs.ECCTL1.bit.CTRRST3 = 0;
+	 ECap5Regs.ECCTL1.bit.CTRRST4 = 1;
+
 	 ECap5Regs.ECCTL2.bit.SYNCI_EN = 0;
 	 ECap5Regs.ECCTL2.bit.SYNCO_SEL = 3;
 	 ECap5Regs.ECCTL1.bit.PRESCALE =0;
 
-	 ECap5Regs.ECCTL2.bit.TSCTRSTOP = 1;        /* Start Counter*/
-	 ECap5Regs.ECCTL1.bit.CAPLDEN = 1;          // Enable CAP1-CAP4 register loads
 	 ECap5Regs.ECEINT.bit.CEVT1 = 1;            // 2 events = interrupt
+	 ECap5Regs.ECEINT.bit.CEVT2 = 1;
+	 ECap5Regs.ECEINT.bit.CEVT3 = 1;
+	 ECap5Regs.ECEINT.bit.CEVT4 = 1;
 
+	 ECap5Regs.ECCTL1.bit.CAPLDEN = 1;          // Enable CAP1-CAP4 register loads
+	 ECap5Regs.ECCTL2.bit.TSCTRSTOP = 1;        /* Start Counter*/
 }
 
 void ECap6Config(void){
@@ -312,15 +335,27 @@ void ECap6Config(void){
 	 ECap6Regs.ECCTL2.bit.CONT_ONESHT = 0;
 
 	 ECap6Regs.ECCTL1.bit.CAP1POL = 0;
+	 ECap6Regs.ECCTL1.bit.CAP2POL = 0;
+	 ECap6Regs.ECCTL1.bit.CAP3POL = 0;
+	 ECap6Regs.ECCTL1.bit.CAP4POL = 0;
+
+
 	 ECap6Regs.ECCTL1.bit.CTRRST1 = 0;
+	 ECap6Regs.ECCTL1.bit.CTRRST2 = 0;
+	 ECap6Regs.ECCTL1.bit.CTRRST3 = 0;
+	 ECap6Regs.ECCTL1.bit.CTRRST4 = 1;
+
 	 ECap6Regs.ECCTL2.bit.SYNCI_EN = 0;
 	 ECap6Regs.ECCTL2.bit.SYNCO_SEL = 3;
 	 ECap6Regs.ECCTL1.bit.PRESCALE =0;
 
-	 ECap6Regs.ECCTL2.bit.TSCTRSTOP = 1;        /* Start Counter*/
-	 ECap6Regs.ECCTL1.bit.CAPLDEN = 1;          // Enable CAP1-CAP4 register loads
-	 ECap6Regs.ECEINT.bit.CEVT1 = 1;            // 2 events = interrupt
+	 ECap6Regs.ECEINT.bit.CEVT1 = 1;
+	 ECap6Regs.ECEINT.bit.CEVT2 = 1;
+	 ECap6Regs.ECEINT.bit.CEVT3 = 1;
+	 ECap6Regs.ECEINT.bit.CEVT4 = 1;
 
+	 ECap6Regs.ECCTL1.bit.CAPLDEN = 1;          // Enable CAP1-CAP4 register loads
+	 ECap6Regs.ECCTL2.bit.TSCTRSTOP = 1;        /* Start Counter*/
 }
 
 void CAP_Config(void){
