@@ -4,7 +4,7 @@
 #include "GlobalVarAndFunc.h"
 
 
-
+Uint32 gECapCount;
 
 Uint16 ShakeHandWithUpperComputer(void){
 	return 0;
