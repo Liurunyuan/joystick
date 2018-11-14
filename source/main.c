@@ -14,7 +14,6 @@
 #include "public.h"
 #include "main.h"
 #include "SCI_ISR.h"
-#include "SCI_ISR_B.h"
 #include "ADprocessor.h"
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
@@ -105,9 +104,9 @@ void delayfunction(Uint16 sec){
 	Uint16 i;
 	Uint16 j;
 
-	for(i = 0; i < 1000; ++i){
+	for(i = 0; i < 10000; ++i){
 		for(j = 0; j < sec; ++j){
-			++j;
+			asm(" NOP");
 		}
 	}
 }
@@ -253,7 +252,8 @@ void Init_gSysMonitorVar() {
 void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
 	gRS422Status.rs422B = 1;
-	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
+	gRS422Status.currentSerialNumber = 0;
+	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
 }
 /***************************************************************
  *Name:						GlobleVarInit
@@ -263,7 +263,7 @@ void Init_gRS422Status(void){
  *Author:					Simon
  *Date:						2018.10.20
  ****************************************************************/
-void InitGlobleVar(void){
+void InitGlobalVar(void){
 
 	Init_gRS422RxQue();
 	Init_gRS422TxQue();
@@ -278,12 +278,13 @@ void InitGlobleVar(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ12ÈÕÏÂÎç10:05:17
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½12ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½10:05:17
  **************************************************************/
 void RS422Unpack(void) {
-	if (RS422_CHANNEL_A == gRS422Status.rs422CurrentChannel) {
+	if (gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A) {
 		UnpackRS422ANew(&gRS422RxQue);
-	} else if (RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel) {
+	}
+	else if (gRS422Status.rs422CurrentChannel == RS422_CHANNEL_B) {
 		UnpackRS422ANew(&gRS422RxQueB);
 	}
 }
@@ -303,7 +304,7 @@ void main(void) {
 	/*peripheral init*/
 	Init_Peripheral();
 
-	InitGlobleVar();
+	InitGlobalVar();
 	/*interrupt init*/
 	Init_Interrupt();
 
@@ -314,13 +315,23 @@ void main(void) {
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
+		//printf(">>>>>>>>>>>>>>>>>>>\r\n");
 		Start_main_loop();
 
-		delayfunction(32000);
+		//delayfunction(1200);
 
 		test_spi_tx();
 
 		RS422Unpack();
+		if(ScibRegs.SCIFFRX.bit.RXFFOVF == 1){
+			printf(">>>>>>scib rx fifo over flow\r\n");
+			ScibRegs.SCIFFRX.bit.RXFFOVRCLR = 1;
+			ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;
+			if(ScibRegs.SCIFFRX.bit.RXFFOVF == 0){
+				printf(">>scib clear fifo over flow flag\r\n");
+			}
+
+		}
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

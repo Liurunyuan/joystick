@@ -2,19 +2,19 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "SCI_ISR.h"
-#include "SCI_ISR_B.h"
 #include "SCI_TX.h"
 #include <stdio.h>
 
 #define UNIT_LEN (3) 			//0x00(index 1 byte) + 0x00(high 8 bit) + 0x00(low 8 bit)
-#define EXTRA_LEN  (7)          //head(2 bytes) + length(1 byte) + crc(2 bytes) + tail(2 bytes)
-#define OFFSET (3) 				//head(2 bytes) + length(1 byte);
+#define EXTRA_LEN  (9)          //head(2 bytes) + length(1 byte) + serial number(2 bytes) + crc(2 bytes) + tail(2 bytes)
+#define OFFSET (5) 				//head(2 bytes) + length(1 byte) + serial number(2 bytes)
 #define WAVE_AMOUNT (16)
 #define ENABLE_TX (1)
 #define DISABLE_TX (0)
 
 #define COMPARE_A_AND_B (0)
 /***********globle variable define here***************/
+
 int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 RS422RXQUE gRS422RxQueB = {0};
@@ -70,6 +70,28 @@ const functionMsgCodeUnpack msgInterface[] = {
 		0
 };
 /***************************************************************
+ *Name:						EnQueueB
+ *Function:					insert the element in the queue
+ *Input:				    received data from SCIC
+ *Output:					1 or 0, 1 means insert success, 0 means the queue is full
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
+int EnQueueB(int e, RS422RXQUE *RS422RxQue){
+	//TODO copy this function,  just in case two threads call this function
+
+	//TODO, when queue is full, override the queue, do not return fail
+	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
+		RS422RxQue->front += 1;
+		//printf("EnQueue FULL \r\n");
+		//return 0;
+	}
+
+	RS422RxQue->rxBuff[RS422RxQue->rear] = e;
+	RS422RxQue->rear = (RS422RxQue->rear + 1) % MAXQSIZE;
+	return 1;
+}
+/***************************************************************
  *Name:						EnQueue
  *Function:					insert the element in the queue
  *Input:				    received data from SCIC
@@ -77,13 +99,14 @@ const functionMsgCodeUnpack msgInterface[] = {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-inline int EnQueue(int e, RS422RXQUE *RS422RxQue){
+int EnQueue(int e, RS422RXQUE *RS422RxQue){
 	//TODO copy this function,  just in case two threads call this function
 
 	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
+		RS422RxQue->front += 1;
 		//printf("EnQueue FULL \r\n");
-		return 0;
+		//return 0;
 	}
 
 	RS422RxQue->rxBuff[RS422RxQue->rear] = e;
@@ -98,13 +121,29 @@ inline int EnQueue(int e, RS422RXQUE *RS422RxQue){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-inline int DeQueue(RS422RXQUE *RS422RxQue){
+int DeQueue(RS422RXQUE *RS422RxQue){
 	if(RS422RxQue->front == RS422RxQue->rear){
 		return 0;
 	}
 
 	RS422RxQue->front = (RS422RxQue->front + 1) % MAXQSIZE;
 	return 1;
+}
+/**************************************************************
+ *Name:		   IsQueueEmpty
+ *Comment:
+ *Input:
+ *Output:	   Uint16
+ *Author:	   Simon
+ *Date:		   2018��11��13������7:52:22
+ **************************************************************/
+Uint16 IsQueueEmpty(RS422RXQUE *RS422RxQue){
+	if(RS422RxQue->front == RS422RxQue->rear){
+		return 0;
+	}
+	else{
+		return 1;
+	}
 }
 /***************************************************************
  *Name:						RS422RxQueLength
@@ -128,19 +167,23 @@ int RS422RxQueLength(RS422RXQUE *RS422RxQue){
  *Date:						2018.10.21
  ****************************************************************/
 void RS422A_receive(RS422RXQUE *RS422RxQue){
+	int16 data;
 
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
-		if(EnQueue(ScicRegs.SCIRXBUF.all, RS422RxQue) == 0){
-			//printf("RS422 rx queue full\r\n");
+		data = ScicRegs.SCIRXBUF.all;
+		if(EnQueue(data, RS422RxQue) == 0){
+			printf("RS422 rx queue full\r\n");
 			//TODO update error msg
 		}
 	}
 }
 
 void RS422B_receive(RS422RXQUE *RS422RxQue){
+	int16 data;
 
 	while(ScibRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
-		if(EnQueue(ScibRegs.SCIRXBUF.all, RS422RxQue) == 0){
+		data = ScibRegs.SCIRXBUF.all;
+		if(EnQueueB(data, RS422RxQue) == 0){
 			//printf("RS422 rx queue full\r\n");
 			//TODO update error msg
 		}
@@ -204,8 +247,15 @@ int findhead(RS422RXQUE *RS422RxQue){
 
 
 #else
+
 	while(1){
 
+		//printf("front = %d\r\n",RS422RxQue->front );
+		//printf("rear = %d\r\n",RS422RxQue->rear );
+		if(RS422RxQueLength(RS422RxQue) < EXTRA_LEN){
+			//printf("-------------------------------------data not enough to unpak, so do not find head\r\n");
+			return FAIL;
+		}
 		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
 		head2 = RS422RxQue->rxBuff[(RS422RxQue->front + 1) % MAXQSIZE];
 
@@ -364,6 +414,20 @@ Uint16 CompareRS422AandB(Uint16 len, RS422RXQUE *RS422RxQue){
 void updatehead(int len, RS422RXQUE *RS422RxQue){
 	RS422RxQue->front = (RS422RxQue->front + len) % MAXQSIZE;
 }
+/**************************************************************
+ *Name:		   UpdateRS422RxSerialNumber
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018��11��13������7:14:51
+ **************************************************************/
+void UpdateRS422RxSerialNumber(void){
+
+	gRS422Status.currentSerialNumber = (rs422rxPack[3] << 8) + rs422rxPack[4];
+	//printf("currentSerialNumber = %d\r\n", gRS422Status.currentSerialNumber);
+
+}
 /***************************************************************
  *Name:						UnpackRS422ANew
  *Function:					unpack the hole data package
@@ -374,63 +438,66 @@ void updatehead(int len, RS422RXQUE *RS422RxQue){
  ****************************************************************/
 void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	int length;
-
-	if(findhead(RS422RxQue) == FAIL){
-		printf("find head failed\r\n");
-		return;
-	}
-	else{
-		printf("find head succeed\r\n");
-	}
-
-	if(checklength(RS422RxQue) == FAIL){
-		printf("len received =%d\r\n", RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
-		printf("len calculate =%d\r\n", RS422RxQueLength(RS422RxQue));
-		printf("data length is not enough, waiting for more data\r\n");
-		return;
-	}
-	else{
-		printf("Check data length succeed, begin to check tail\r\n");
-	}
-
-	length = RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
-#if COMPARE_A_AND_B
-
-	if(CompareRS422AandB(length, RS422RxQue) == FAIL){
-		printf("Data in RS422 A Channel are not the same with B channel \r\n");
-	}
-	else{
-		printf("CompareRS422AandB SUCCESS\r\n");
-	}
-
-#endif
-	if(findtail(length,RS422RxQue) == FAIL){
-		printf("find tail failed\r\n");
-		if(DeQueue(RS422RxQue) == 0){
-			printf("RS422 rx queue is empty\r\n");
+	while(RS422RxQueLength(RS422RxQue) > EXTRA_LEN){
+		if(findhead(RS422RxQue) == FAIL){
+			//printf("find head failed\r\n");
+			return;
 		}
-		return;
-	}
-	else{
-		printf("find tail succeed\r\n");
-	}
-
-	saveprofile(length,RS422RxQue);
-
-	if(CalCrc(0, rs422rxPack + OFFSET, length - 5) != 0){
-		if(DeQueue(RS422RxQue) == 0){
-			printf("RS422 rx queue is empty\r\n");
+		else{
+			//printf("find head succeed\r\n");
 		}
-		printf("CRC check failed\r\n");
-		return;
-	}
-	else{
-		printf("CRC check succeed\r\n");
-	}
 
-	unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
-	updatehead(length, RS422RxQue);
-	printf("update the front position----------------------------\r\n");
+		if(checklength(RS422RxQue) == FAIL){
+			//printf("len received =%d\r\n", RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
+			//printf("len calculate =%d\r\n", RS422RxQueLength(RS422RxQue));
+			//printf("data length is not enough, waiting for more data\r\n");
+			return;
+		}
+		else{
+			//printf("Check data length succeed, begin to check tail\r\n");
+		}
+
+		length = RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN;
+
+	#if COMPARE_A_AND_B
+
+		if(CompareRS422AandB(length, RS422RxQue) == FAIL){
+			//printf("Data in RS422 A Channel are not the same with B channel \r\n");
+		}
+		else{
+			//printf("CompareRS422AandB SUCCESS\r\n");
+		}
+	#endif
+
+		if(findtail(length,RS422RxQue) == FAIL){
+			//printf("find tail failed\r\n");
+			if(DeQueue(RS422RxQue) == 0){
+				//printf("RS422 rx queue is empty\r\n");
+			}
+			return;
+		}
+		else{
+			//printf("find tail succeed\r\n");
+		}
+
+		saveprofile(length,RS422RxQue);
+
+		if(CalCrc(0, rs422rxPack + OFFSET, length - EXTRA_LEN + 2) != 0){
+			if(DeQueue(RS422RxQue) == 0){
+				//printf("RS422 rx queue is empty\r\n");
+			}
+			//printf("CRC check failed\r\n");
+			return;
+		}
+		else{
+			//printf("CRC check succeed\r\n");
+		}
+
+		unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
+		UpdateRS422RxSerialNumber();
+		updatehead(length, RS422RxQue);
+		printf("update the front position-------------\r\n");
+	}
 }
 /***************************************************************
  *Name:						testwithlabview
@@ -446,10 +513,12 @@ void testwithlabview(){
 	static int f = 0;
 	int crc;
 	static int data = 0;
-	char buf[19]={
+	char buf[21]={
 				0x55,
 				0x5a,
 				0x04,
+				0x00,//serial number high byte
+				0x01,//serial number low byte
 				0x01,
 				0x00,
 				0x00,
@@ -487,7 +556,7 @@ void testwithlabview(){
 	crc = CalCrc(0, buf + OFFSET, 12);
 	buf[16] = (char)crc;
 	buf[15] = (char)(crc >> 8);
-	for(i = 0; i < 19; ++i){
+	for(i = 0; i < 21; ++i){
 		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
 
 		}

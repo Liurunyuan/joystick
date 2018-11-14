@@ -1,7 +1,7 @@
 #ifndef _SCI_ISR_H
 #define _SCI_ISR_H
 
-#define MAXQSIZE 128
+#define MAXQSIZE 800
 #define RXBUGLEN (16)
 
 #define HEAD1 0x5a
@@ -47,6 +47,7 @@ typedef union _VAR16{
 typedef struct{
 	Uint16 rs422A;
 	Uint16 rs422B;
+	Uint16 currentSerialNumber;
 	Uint16 rs422CurrentChannel;
 }RS422STATUS;
 
