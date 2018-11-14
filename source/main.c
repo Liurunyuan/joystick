@@ -14,7 +14,6 @@
 #include "public.h"
 #include "main.h"
 #include "SCI_ISR.h"
-#include "SCI_ISR_B.h"
 #include "ADprocessor.h"
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
@@ -105,9 +104,9 @@ void delayfunction(Uint16 sec){
 	Uint16 i;
 	Uint16 j;
 
-	for(i = 0; i < 1000; ++i){
+	for(i = 0; i < 10000; ++i){
 		for(j = 0; j < sec; ++j){
-			++j;
+			asm(" NOP");
 		}
 	}
 }
@@ -282,9 +281,10 @@ void InitGlobalVar(void){
  *Date:		   2018��11��12������10:05:17
  **************************************************************/
 void RS422Unpack(void) {
-	if (RS422_CHANNEL_A == gRS422Status.rs422CurrentChannel) {
+	if (gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A) {
 		UnpackRS422ANew(&gRS422RxQue);
-	} else if (RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel) {
+	}
+	else if (gRS422Status.rs422CurrentChannel == RS422_CHANNEL_B) {
 		UnpackRS422ANew(&gRS422RxQueB);
 	}
 }
@@ -315,9 +315,10 @@ void main(void) {
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
+		printf(">>>>>>>>>>>>>>>>>>>\r\n");
 		Start_main_loop();
 
-		delayfunction(3200);
+		delayfunction(1200);
 
 		test_spi_tx();
 

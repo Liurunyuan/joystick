@@ -1,7 +1,7 @@
 #ifndef _SCI_ISR_H
 #define _SCI_ISR_H
 
-#define MAXQSIZE 128
+#define MAXQSIZE 800
 #define RXBUGLEN (16)
 
 #define HEAD1 0x5a

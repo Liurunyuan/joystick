@@ -274,7 +274,7 @@ void ReadAnalogValue(void){
 
     }
     */
-	//UpdateSingleAnalogInput();
+	UpdateSingleAnalogInput();
 	AnalogValueInspect();
 }
 /**************************************************************

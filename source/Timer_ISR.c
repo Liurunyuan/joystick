@@ -6,7 +6,7 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-#define N (500)
+#define N (10)
 #define RS422STATUSCHECK (1000)
 
 
@@ -26,7 +26,7 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		PackRS422TxData();
+		//PackRS422TxData();
 		count = 0;
 	}
 }
@@ -36,7 +36,7 @@ void Timer0_ISR_Thread(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ12ÈÕÏÂÎç10:41:29
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½12ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½10:41:29
  **************************************************************/
 void EnableScicTxInterrupt(void){
 	ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
@@ -52,6 +52,13 @@ void EnableScicTxInterrupt(void){
  ****************************************************************/
 void Timer1_ISR_Thread(void){
 	static Uint16 count = 0;
+	++count;
+
+	if(gRS422TxQue.front != gRS422TxQue.rear
+			&& ScicRegs.SCIFFTX.bit.TXFFST == 0){
+
+		 EnableScicTxInterrupt();
+	}
 
 	if(count >= RS422STATUSCHECK){
 		printf(">>>>>>>>>Check RS422 channel\r\n");
@@ -68,8 +75,9 @@ void Timer1_ISR_Thread(void){
 			}
 			else{
 				//TODO need to switch rs422A to rs422b.
-				printf(">>>>>>>>>>Switch to RS422B channel\r\n");
+				printf(">>>>>>>>>>Switch to RS422BBBBBBBBBB channel\r\n");
 				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
+				//ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;
 			}
 		}
 		else if(RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel){
@@ -78,19 +86,12 @@ void Timer1_ISR_Thread(void){
 			}
 			else{
 				//TODO need to switch rs422B to rs422A.
+				printf(">>>Switch to RS422AAAAAAAAAAAAAAA channel\r\n");
 				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
 			}
 		}
 		else{
 			printf(">>>>>>>>>>>>>>>>>>>>Unknow RS422 channel\r\n");
 		}
-	}
-
-	++count;
-
-	if(gRS422TxQue.front != gRS422TxQue.rear
-			&& ScicRegs.SCIFFTX.bit.TXFFST == 0){
-
-		 EnableScicTxInterrupt();
 	}
 }

@@ -176,7 +176,7 @@ void scib_fifo_init(void)
     ScibRegs.SCIFFTX.bit.TXFFIENA		= 0;
 
     ScibRegs.SCIFFTX.bit.TXFFINTCLR		= 1;
-    ScibRegs.SCIFFRX.all				= 0x2028;
+    ScibRegs.SCIFFRX.all				= 0x2023;
 
     ScibRegs.SCIFFRX.bit.RXFFIENA		= 1;
     ScibRegs.SCIFFCT.all				= 0x0;
@@ -194,7 +194,7 @@ void scic_loopback_init(void)
                                    	   	   	       	// Disable RX ERR, SLEEP, TXWAKE
 	ScicRegs.SCICTL2.all 				= 0x0003;
 	ScicRegs.SCICTL2.bit.TXINTENA 		= 1;
-	ScicRegs.SCICTL2.bit.RXBKINTENA = 1;
+	ScicRegs.SCICTL2.bit.RXBKINTENA 	= 1;
     ScicRegs.SCIHBAUD    				= 0x00;		//0x00;-------------------------0x01
     ScicRegs.SCILBAUD    				= 0x1f;		//0x1f:115200-------------------0x86:9600
 	ScicRegs.SCICCR.bit.LOOPBKENA		= 0; 		// enable loop back
