@@ -253,7 +253,7 @@ void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
 	gRS422Status.rs422B = 1;
 	gRS422Status.currentSerialNumber = 0;
-	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
+	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
 }
 /***************************************************************
  *Name:						GlobleVarInit
@@ -315,7 +315,7 @@ void main(void) {
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
-		printf(">>>>>>>>>>>>>>>>>>>\r\n");
+		//printf(">>>>>>>>>>>>>>>>>>>\r\n");
 		Start_main_loop();
 
 		delayfunction(1200);
@@ -323,6 +323,15 @@ void main(void) {
 		test_spi_tx();
 
 		RS422Unpack();
+		if(ScibRegs.SCIFFRX.bit.RXFFOVF == 1){
+			printf(">>>>>>scib rx fifo over flow\r\n");
+			ScibRegs.SCIFFRX.bit.RXFFOVRCLR = 1;
+			ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;
+			if(ScibRegs.SCIFFRX.bit.RXFFOVF == 0){
+				printf(">>scib clear fifo over flow flag\r\n");
+			}
+
+		}
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

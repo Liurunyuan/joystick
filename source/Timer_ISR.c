@@ -26,7 +26,7 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		//PackRS422TxData();
+		PackRS422TxData();
 		count = 0;
 	}
 }

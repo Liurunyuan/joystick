@@ -82,8 +82,9 @@ int EnQueueB(int e, RS422RXQUE *RS422RxQue){
 
 	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
-		printf("EnQueue FULL \r\n");
-		return 0;
+		RS422RxQue->front += 1;
+		//printf("EnQueue FULL \r\n");
+		//return 0;
 	}
 
 	RS422RxQue->rxBuff[RS422RxQue->rear] = e;
@@ -103,8 +104,9 @@ int EnQueue(int e, RS422RXQUE *RS422RxQue){
 
 	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
-		printf("EnQueue FULL \r\n");
-		return 0;
+		RS422RxQue->front += 1;
+		//printf("EnQueue FULL \r\n");
+		//return 0;
 	}
 
 	RS422RxQue->rxBuff[RS422RxQue->rear] = e;
@@ -248,10 +250,10 @@ int findhead(RS422RXQUE *RS422RxQue){
 
 	while(1){
 
-		printf("front = %d\r\n",RS422RxQue->front );
-		printf("rear = %d\r\n",RS422RxQue->rear );
+		//printf("front = %d\r\n",RS422RxQue->front );
+		//printf("rear = %d\r\n",RS422RxQue->rear );
 		if(RS422RxQueLength(RS422RxQue) < EXTRA_LEN){
-			printf("-------------------------------------data not enough to unpak, so do not find head\r\n");
+			//printf("-------------------------------------data not enough to unpak, so do not find head\r\n");
 			return FAIL;
 		}
 		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
@@ -368,7 +370,7 @@ void unpack(int len){
 		}
 
 		if(msgCode < (sizeof(msgInterface) / sizeof(msgInterface[0]))){
-			printf("msgCode = %d\r\n",msgCode);
+			//printf("msgCode = %d\r\n",msgCode);
 			if(msgInterface[msgCode]){
 				msgInterface[msgCode](var16, 0, 0);
 			}
@@ -423,7 +425,7 @@ void updatehead(int len, RS422RXQUE *RS422RxQue){
 void UpdateRS422RxSerialNumber(void){
 
 	gRS422Status.currentSerialNumber = (rs422rxPack[3] << 8) + rs422rxPack[4];
-	printf("currentSerialNumber = %d\r\n", gRS422Status.currentSerialNumber);
+	//printf("currentSerialNumber = %d\r\n", gRS422Status.currentSerialNumber);
 
 }
 /***************************************************************
@@ -438,7 +440,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	int length;
 	while(RS422RxQueLength(RS422RxQue) > EXTRA_LEN){
 		if(findhead(RS422RxQue) == FAIL){
-			printf("find head failed\r\n");
+			//printf("find head failed\r\n");
 			return;
 		}
 		else{
@@ -448,7 +450,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 		if(checklength(RS422RxQue) == FAIL){
 			//printf("len received =%d\r\n", RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN );
 			//printf("len calculate =%d\r\n", RS422RxQueLength(RS422RxQue));
-			printf("data length is not enough, waiting for more data\r\n");
+			//printf("data length is not enough, waiting for more data\r\n");
 			return;
 		}
 		else{
@@ -460,10 +462,10 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 	#if COMPARE_A_AND_B
 
 		if(CompareRS422AandB(length, RS422RxQue) == FAIL){
-			printf("Data in RS422 A Channel are not the same with B channel \r\n");
+			//printf("Data in RS422 A Channel are not the same with B channel \r\n");
 		}
 		else{
-			printf("CompareRS422AandB SUCCESS\r\n");
+			//printf("CompareRS422AandB SUCCESS\r\n");
 		}
 	#endif
 
@@ -484,7 +486,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 			if(DeQueue(RS422RxQue) == 0){
 				//printf("RS422 rx queue is empty\r\n");
 			}
-			printf("CRC check failed\r\n");
+			//printf("CRC check failed\r\n");
 			return;
 		}
 		else{
@@ -494,7 +496,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 		unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
 		UpdateRS422RxSerialNumber();
 		updatehead(length, RS422RxQue);
-		printf("update the front position----------------------------\r\n");
+		printf("update the front position-------------\r\n");
 	}
 }
 /***************************************************************

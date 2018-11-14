@@ -176,7 +176,7 @@ void scib_fifo_init(void)
     ScibRegs.SCIFFTX.bit.TXFFIENA		= 0;
 
     ScibRegs.SCIFFTX.bit.TXFFINTCLR		= 1;
-    ScibRegs.SCIFFRX.all				= 0x2023;
+    ScibRegs.SCIFFRX.all				= 0x2028;
 
     ScibRegs.SCIFFRX.bit.RXFFIENA		= 1;
     ScibRegs.SCIFFCT.all				= 0x0;
