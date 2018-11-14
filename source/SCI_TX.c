@@ -236,10 +236,11 @@ void RS422A_Transmit(void){
 		return;
 	}
 
-	while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
-				&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
-		ScibTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);
-		//ScicTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);//printf by Scic
+	//while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
+	//			&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+	while((ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+		ScibTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);//printf by Scic
+		//ScicTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);
 
 		if(RX422TXDeQueue() == 0){
 			DisableScicTxInterrupt();
