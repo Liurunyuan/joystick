@@ -247,7 +247,7 @@ void Init_gSysMonitorVar() {
  *Input:	   none
  *Output:	   none
  *Author:	   Simon
- *Date:		   2018��11��4������1:16:11
+ *Date:		   2018.11.14
  **************************************************************/
 void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
@@ -278,7 +278,7 @@ void InitGlobalVar(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018��11��12������10:05:17
+ *Date:		   2018.11.14
  **************************************************************/
 void RS422Unpack(void) {
 	if (gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A) {

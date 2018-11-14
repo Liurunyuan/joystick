@@ -37,7 +37,7 @@ void Timer0_ISR_Thread(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018��11��12������10:41:29
+ *Date:		   2018.11.14
  **************************************************************/
 void EnableScicTxInterrupt(void){
 	ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;

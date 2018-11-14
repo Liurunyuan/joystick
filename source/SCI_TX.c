@@ -82,7 +82,7 @@ int calCrc(int crc, const char *buf, int len) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018��11��6������7:43:55
+ *Date:		   2018.11.14
  **************************************************************/
 void updateTxEnableFlag(void) {
 	int i;
@@ -188,7 +188,7 @@ void PackRS422TxData(void){
  *Input:	   one byte to send by sci B
  *Output:	   none
  *Author:	   Simon
- *Date:		   2018��11��12������9:47:37
+ *Date:		   2018.11.14
  **************************************************************/
 void ScibTxByte(Uint16 t){
 
@@ -201,7 +201,7 @@ void ScibTxByte(Uint16 t){
  *Input:	   one byte to send by sci C
  *Output:	   none
  *Author:	   Simon
- *Date:		   2018��11��12������9:47:37
+ *Date:		   2018.11.14
  **************************************************************/
 void ScicTxByte(Uint16 t){
 
@@ -214,7 +214,7 @@ void ScicTxByte(Uint16 t){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018��11��12������10:00:34
+ *Date:		   2018.11.14
  **************************************************************/
 void DisableScicTxInterrupt(void){
 
@@ -223,8 +223,8 @@ void DisableScicTxInterrupt(void){
 }
 /***************************************************************
  *Name:						rs422 tx interrupt isr
- *Function:			  none
- *Input:				  none
+ *Function:			  		none
+ *Input:				  	none
  *Output:					none
  *Author:					Simon
  *Date:						2018.11.3
