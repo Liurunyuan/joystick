@@ -5,7 +5,4 @@
 
 
 Uint32 gECapCount;
-
-Uint16 ShakeHandWithUpperComputer(void){
-	return 0;
-}
+RS422STATUS gRS422Status = {0};
