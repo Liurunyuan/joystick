@@ -19,6 +19,17 @@ SumPara sumPara = {
 	0
 };
 
+SumPara sumParaForce = {
+	SUMX,
+	0,
+	SUMXPOW2,
+	SUMXPOW3,
+	SUMXPOW4,
+	0,
+	0
+};
+
+
 
 FuncPara funcPara = {0,0,0};
 

@@ -21,8 +21,6 @@ void ForceAndDisplaceProcess(int count);
  **************************************************************/
 void CalForceSpeedAccel(void) {
 	static int count = 0;
-
-	//ForceAndDisplaceProcess(count);
 	//CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
 
 	CalFuncPara(feedbackVarBuf.displacementbuf[count], count);
