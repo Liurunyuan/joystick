@@ -49,6 +49,7 @@ typedef struct{
 	Uint16 rs422B;
 	Uint16 currentSerialNumber;
 	Uint16 rs422CurrentChannel;
+	Uint16 shakeHand;
 }RS422STATUS;
 
 typedef void (*functionMsgCodeUnpack)(VAR16 a, int b,int c);
@@ -62,6 +63,7 @@ void UnpackRS422A(void);
 void RS422A_receive(RS422RXQUE *RS422RxQue);
 void RS422B_receive(RS422RXQUE *RS422RxQue);
 void UnpackRS422ANew(RS422RXQUE *RS422RxQue);
-void testwithlabview();
+void testwithlabview(void);
+void ClearRS422RxOverFlow(void);
 
 #endif

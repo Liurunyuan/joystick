@@ -564,3 +564,21 @@ void testwithlabview(){
 
 	}
 }
+/**************************************************************
+ *Name:		   ClearRS422RxOverFlow
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018.11.15
+ **************************************************************/
+void ClearRS422RxOverFlow(void) {
+	if (ScibRegs.SCIFFRX.bit.RXFFOVF == 1) {
+		printf(">>>>>>scib rx fifo over flow\r\n");
+		ScibRegs.SCIFFRX.bit.RXFFOVRCLR = 1;
+		ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;
+		if (ScibRegs.SCIFFRX.bit.RXFFOVF == 0) {
+			printf(">>scib clear fifo over flow flag\r\n");
+		}
+	}
+}
