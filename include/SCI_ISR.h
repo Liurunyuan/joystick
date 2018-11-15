@@ -9,8 +9,6 @@
 #define TAIL1 0xa5
 #define TAIL2 0xa5
 
-#define FAIL (0)
-#define SUCCESS (1)
 
 typedef struct _RS422RXQUE{
 	char rxBuff[MAXQSIZE];

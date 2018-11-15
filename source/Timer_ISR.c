@@ -28,7 +28,9 @@ void Timer0_ISR_Thread(void){
 
 	if(count > N){
 		//FIXME only disable PackRS422TxData(), then SCIB RX ISR can work normally
-		//PackRS422TxData();
+		if(SUCCESS == gRS422Status.shakeHand){
+			PackRS422TxData();
+		}
 		count = 0;
 	}
 }

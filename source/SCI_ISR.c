@@ -22,6 +22,20 @@ RS422RXQUE gRS422RxQueB = {0};
 char rs422rxPack[16];
 
 
+
+/**************************************************************
+ *Name:		   ShakeHandMsg
+ *Comment:
+ *Input:	   VAR16, int, int
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月15日下午9:15:42
+ **************************************************************/
+static void ShakeHandMsg(VAR16 a, int b, int c) {
+	gRS422Status.shakeHand = SUCCESS;
+
+	//TODO just an example
+}
 /***************************************************************
  *Name:						MsgStatusUnpack
  *Function:
@@ -63,7 +77,7 @@ static void WaveCommand(VAR16 a, int b, int c) {
  *Date:						2018.10.25
  ****************************************************************/
 const functionMsgCodeUnpack msgInterface[] = {
-		0,
+		ShakeHandMsg,
 		MsgStatusUnpack,
 		WaveCommand,
 		0,

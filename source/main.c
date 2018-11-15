@@ -316,17 +316,17 @@ void main(void) {
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
-		//printf(">>>>>>>>>>>>>>>>>>>\r\n");
+
 		Start_main_loop();
 
 		ShakeHandWithUpperComputer();
 
-		//delayfunction(1200);
-
 		test_spi_tx();
 
 		RS422Unpack();
+
 		ClearRS422RxOverFlow();
+
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif
