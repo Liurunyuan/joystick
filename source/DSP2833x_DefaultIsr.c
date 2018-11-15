@@ -932,11 +932,24 @@ interrupt void SCITXINTC_ISR(void)     // SCI-C
 #if TEST_TIME_SCI_TX
 	GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
+	Uint16 TempPIEIER;
+
+	TempPIEIER = PieCtrlRegs.PIEIER9.all;
+	IER |= 0x100;
+	IER &= 0x100;
+	PieCtrlRegs.PIEIER9.all &= 0x0004;
+	PieCtrlRegs.PIEACK.all = 0xffff;
+
+	asm(" NOP");
+	EINT;
 
 	RS422A_Transmit();
 	ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
 
+
+	DINT;
+	PieCtrlRegs.PIEIER9.all =TempPIEIER;
 #if TEST_TIME_SCI_TX
 	GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;
 #endif

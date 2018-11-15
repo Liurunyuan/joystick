@@ -82,7 +82,7 @@ int EnQueueB(int e, RS422RXQUE *RS422RxQue){
 
 	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
-		RS422RxQue->front += 1;
+		RS422RxQue->front = (RS422RxQue->front + 1) % MAXQSIZE;
 		//printf("EnQueue FULL \r\n");
 		//return 0;
 	}
@@ -104,7 +104,7 @@ int EnQueue(int e, RS422RXQUE *RS422RxQue){
 
 	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
-		RS422RxQue->front += 1;
+		RS422RxQue->front = (RS422RxQue->front + 1) % MAXQSIZE;
 		//printf("EnQueue FULL \r\n");
 		//return 0;
 	}
