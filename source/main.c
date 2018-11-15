@@ -253,7 +253,7 @@ void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
 	gRS422Status.rs422B = 1;
 	gRS422Status.currentSerialNumber = 0;
-	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
+	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
 }
 /***************************************************************
  *Name:						GlobleVarInit
