@@ -5,6 +5,7 @@
 #include "ADprocessor.h"
 #include "Filter_Alg.h"
 #include "SPIprocess.h"
+#include "GlobalVarAndFunc.h"
 
 KeyValue gKeyValue = {0};
 FeedbackVarBuf feedbackVarBuf;
@@ -21,7 +22,7 @@ void ForceAndDisplaceProcess(int count);
 void CalForceSpeedAccel(void) {
 	static int count = 0;
 
-	ForceAndDisplaceProcess(count);
+	//ForceAndDisplaceProcess(count);
 	//CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
 
 	CalFuncPara(feedbackVarBuf.displacementbuf[count], count);
