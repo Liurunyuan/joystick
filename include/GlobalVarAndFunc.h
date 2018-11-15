@@ -3,12 +3,16 @@
 
 typedef Uint16 bool;
 
+typedef struct{
+	Uint16 rs422A;
+	Uint16 rs422B;
+	Uint16 currentSerialNumber;
+	Uint16 rs422CurrentChannel;
+	Uint16 shakeHand;
+}RS422STATUS;
 
 extern Uint32 gECapCount;
-
-Uint16 ShakeHandWithUpperComputer(void);
-
-
+extern RS422STATUS gRS422Status;
 
 
 #endif

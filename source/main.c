@@ -17,6 +17,7 @@
 #include "ADprocessor.h"
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
+#include "GlobalVarAndFunc.h"
 
 
 #define UART_PRINTF
@@ -317,6 +318,8 @@ void main(void) {
 #endif
 		//printf(">>>>>>>>>>>>>>>>>>>\r\n");
 		Start_main_loop();
+
+		ShakeHandWithUpperComputer();
 
 		//delayfunction(1200);
 

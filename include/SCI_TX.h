@@ -49,5 +49,6 @@ extern RS422TXQUE gRS422TxQue;
 int RX422TXDeQueue(void);
 void RS422A_Transmit(void);
 void PackRS422TxData(void);
+void ShakeHandWithUpperComputer(void);
 
 #endif

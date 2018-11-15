@@ -3,6 +3,7 @@
 #include "public.h"
 #include "SCI_ISR.h"
 #include "SCI_TX.h"
+#include "GlobalVarAndFunc.h"
 #include <stdio.h>
 
 #define UNIT_LEN (3) 			//0x00(index 1 byte) + 0x00(high 8 bit) + 0x00(low 8 bit)
@@ -19,7 +20,7 @@ int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 RS422RXQUE gRS422RxQueB = {0};
 char rs422rxPack[16];
-RS422STATUS gRS422Status = {0};
+
 
 /***************************************************************
  *Name:						MsgStatusUnpack
