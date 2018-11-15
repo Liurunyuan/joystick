@@ -23,13 +23,13 @@ void CalForceSpeedAccel(void) {
 	static int count = 0;
 	//CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
 
-	CalFuncPara(feedbackVarBuf.displacementbuf[count], count);
+	CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
 
 	count++;
 
 	if(count >= 10){
-		gKeyValue.motorSpeed = 2*funcPara.a*11 + funcPara.b;
-		gKeyValue.motorAccel = 2*funcPara.a;
+		gKeyValue.motorSpeed = 2*funcParaDisplacement.a*11 + funcParaDisplacement.b;
+		gKeyValue.motorAccel = 2*funcParaDisplacement.a;
 		count = 0;
 	}
 }
@@ -109,7 +109,8 @@ void Pwm_ISR_Thread(void)
 
 	//TODO prepare output
 	//ReadADBySpi();
-	CalForceSpeedAccel();
+
+	CalForceSpeedAccel();//TODO this function has been modified, need to do more test to verify
 }
 /**************************************************************
  *Name:						forcebufProcess
