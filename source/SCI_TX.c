@@ -1,5 +1,7 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
+#include "public.h"
+#include "GlobalVarAndFunc.h"
 #include "SCI_TX.h"
 #include <stdio.h>
 
@@ -246,5 +248,56 @@ void RS422A_Transmit(void){
 			DisableScicTxInterrupt();
 			return;
 		}
+	}
+}
+/**************************************************************
+ *Name:		   TransmitRS422ShakeHandMsg
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月15日下午9:02:53
+ **************************************************************/
+void TransmitRS422ShakeHandMsg(void){
+
+	int len;
+	int index;
+	char rs422ShakeHandMsg[] = {
+		//TODO use the real shake hand msg in the future
+		0x5a,//head1
+		0x5a,//head2
+		0x01,//length
+		0x00,//serial number
+		0x00,//serial number
+		0xff,//shake hand
+		0xff,//shake hand
+		0xff,//shake hand
+		0x00,//crc1
+		0x00,//crc2
+		0xa5,//tail1
+		0xa5 //tail2
+	};
+
+	len = sizeof(rs422ShakeHandMsg);
+
+	for(index = 0; index < len; ++index){
+		while(ScibRegs.SCIFFTX.bit.TXFFST != 0){
+
+		}
+		ScibRegs.SCITXBUF = rs422ShakeHandMsg[index];
+	}
+}
+/**************************************************************
+ *Name:		   ShakeHandWithUpperComputer
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月15日下午9:03:08
+ **************************************************************/
+void ShakeHandWithUpperComputer(void){
+
+	if(FAIL == gRS422Status.shakeHand){
+		TransmitRS422ShakeHandMsg();
 	}
 }

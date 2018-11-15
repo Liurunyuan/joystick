@@ -1,5 +1,6 @@
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
+#include "GlobalVarAndFunc.h"
 #include "public.h"
 #include "Timer_ISR.h"
 #include "SCI_ISR.h"
@@ -27,7 +28,9 @@ void Timer0_ISR_Thread(void){
 
 	if(count > N){
 		//FIXME only disable PackRS422TxData(), then SCIB RX ISR can work normally
-		PackRS422TxData();
+		if(SUCCESS == gRS422Status.shakeHand){
+			PackRS422TxData();
+		}
 		count = 0;
 	}
 }

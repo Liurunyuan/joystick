@@ -41,6 +41,9 @@
 #define TRUE 1
 #define FALSE 0
 
+#define SUCCESS (1)
+#define FAIL    (0)
+
 #define RS422_CHANNEL_A (1)
 #define RS422_CHANNEL_B (2)
 

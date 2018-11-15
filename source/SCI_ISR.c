@@ -3,6 +3,7 @@
 #include "public.h"
 #include "SCI_ISR.h"
 #include "SCI_TX.h"
+#include "GlobalVarAndFunc.h"
 #include <stdio.h>
 
 #define UNIT_LEN (3) 			//0x00(index 1 byte) + 0x00(high 8 bit) + 0x00(low 8 bit)
@@ -19,8 +20,22 @@ int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 RS422RXQUE gRS422RxQueB = {0};
 char rs422rxPack[16];
-RS422STATUS gRS422Status = {0};
 
+
+
+/**************************************************************
+ *Name:		   ShakeHandMsg
+ *Comment:
+ *Input:	   VAR16, int, int
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月15日下午9:15:42
+ **************************************************************/
+static void ShakeHandMsg(VAR16 a, int b, int c) {
+	gRS422Status.shakeHand = SUCCESS;
+
+	//TODO just an example
+}
 /***************************************************************
  *Name:						MsgStatusUnpack
  *Function:
@@ -62,7 +77,7 @@ static void WaveCommand(VAR16 a, int b, int c) {
  *Date:						2018.10.25
  ****************************************************************/
 const functionMsgCodeUnpack msgInterface[] = {
-		0,
+		ShakeHandMsg,
 		MsgStatusUnpack,
 		WaveCommand,
 		0,
@@ -562,5 +577,23 @@ void testwithlabview(){
 		}
 		ScicRegs.SCITXBUF = buf[i];
 
+	}
+}
+/**************************************************************
+ *Name:		   ClearRS422RxOverFlow
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018.11.15
+ **************************************************************/
+void ClearRS422RxOverFlow(void) {
+	if (ScibRegs.SCIFFRX.bit.RXFFOVF == 1) {
+		printf(">>>>>>scib rx fifo over flow\r\n");
+		ScibRegs.SCIFFRX.bit.RXFFOVRCLR = 1;
+		ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;
+		if (ScibRegs.SCIFFRX.bit.RXFFOVF == 0) {
+			printf(">>scib clear fifo over flow flag\r\n");
+		}
 	}
 }
