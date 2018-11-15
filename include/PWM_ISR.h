@@ -6,16 +6,6 @@
 void Pwm_ISR_Thread(void);
 
 
-
-
-typedef struct _KeyValue{
-	int32 force;
-	int32 displacement;
-	int32 motorSpeed;
-	int32 motorAccel;
-	int32 lock;
-}KeyValue;
-
 typedef struct _FeedbackVarBuf{
 
 	int32 forcebuf[10];

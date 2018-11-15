@@ -19,7 +19,8 @@ typedef struct _FuncPara{
 }FuncPara;
 
 
-void CalFuncPara(int y,int count);
+void CalFuncPara(int force, int displace, int count);
 
-extern FuncPara funcPara;
+extern FuncPara funcParaDisplacement;
+extern FuncPara funcParaForce;
 #endif

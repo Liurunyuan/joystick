@@ -5,8 +5,9 @@
 #include "ADprocessor.h"
 #include "Filter_Alg.h"
 #include "SPIprocess.h"
+#include "GlobalVarAndFunc.h"
 
-KeyValue gKeyValue = {0};
+
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
@@ -20,17 +21,15 @@ void ForceAndDisplaceProcess(int count);
  **************************************************************/
 void CalForceSpeedAccel(void) {
 	static int count = 0;
-
-	ForceAndDisplaceProcess(count);
 	//CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
 
-	CalFuncPara(feedbackVarBuf.displacementbuf[count], count);
+	CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
 
 	count++;
 
 	if(count >= 10){
-		gKeyValue.motorSpeed = 2*funcPara.a*11 + funcPara.b;
-		gKeyValue.motorAccel = 2*funcPara.a;
+		gKeyValue.motorSpeed = 2*funcParaDisplacement.a*11 + funcParaDisplacement.b;
+		gKeyValue.motorAccel = 2*funcParaDisplacement.a;
 		count = 0;
 	}
 }
@@ -110,7 +109,8 @@ void Pwm_ISR_Thread(void)
 
 	//TODO prepare output
 	//ReadADBySpi();
-	CalForceSpeedAccel();
+
+	CalForceSpeedAccel();//TODO this function has been modified, need to do more test to verify
 }
 /**************************************************************
  *Name:						forcebufProcess

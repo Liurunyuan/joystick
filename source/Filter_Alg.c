@@ -9,7 +9,17 @@
 #define SUMXPOW5 120825
 #define SUMXPOW6 978405
 
-SumPara sumPara = {
+SumPara sumParaDisplacement = {
+	SUMX,
+	0,
+	SUMXPOW2,
+	SUMXPOW3,
+	SUMXPOW4,
+	0,
+	0
+};
+
+SumPara sumParaForce = {
 	SUMX,
 	0,
 	SUMXPOW2,
@@ -20,16 +30,23 @@ SumPara sumPara = {
 };
 
 
-FuncPara funcPara = {0,0,0};
+
+FuncPara funcParaDisplacement = {0,0,0};
+FuncPara funcParaForce = {0,0,0};
 
 void clearSum(void) {
-	sumPara.sum_XY = 0;
-	sumPara.sum_Xpow2Y = 0;
-	sumPara.sum_Y = 0;
+	sumParaDisplacement.sum_XY = 0;
+	sumParaDisplacement.sum_Xpow2Y = 0;
+	sumParaDisplacement.sum_Y = 0;
+
+	sumParaForce.sum_XY = 0;
+	sumParaForce.sum_Xpow2Y = 0;
+	sumParaForce.sum_Y = 0;
 }
 
-void calFuncPara(void){
+FuncPara calFuncPara(SumPara sumPara){
 	float temp,temp0,temp1,temp2;
+	FuncPara funcPara;
 
 	temp = 10 * (sumPara.sum_Xpow2 * sumPara.sum_Xpow4 -sumPara.sum_Xpow3*sumPara.sum_Xpow3)
 			-  sumPara.sum_X* (sumPara.sum_X * sumPara.sum_Xpow4 - sumPara.sum_Xpow2 * sumPara.sum_Xpow3)
@@ -50,21 +67,27 @@ void calFuncPara(void){
 	funcPara.c = temp0/temp;
 	funcPara.b = temp1/temp;
 	funcPara.a = temp2/temp;
+	return funcPara;
 
 }
-void CalFuncPara(int y,int count){
+void CalFuncPara(int force, int displace, int count){
 	/*
 	if(count == 0){
 		clearSum();
 	}
 	*/
 
-	sumPara.sum_XY += count*y;
-	sumPara.sum_Xpow2Y += count*count*y;
-	sumPara.sum_Y += y;
+	sumParaDisplacement.sum_XY += count * displace;
+	sumParaDisplacement.sum_Xpow2Y += count * count * displace;
+	sumParaDisplacement.sum_Y += displace;
+
+	sumParaForce.sum_XY += count * force;
+	sumParaForce.sum_Xpow2Y += count*count * force;
+	sumParaForce.sum_Y += force;
 
 	if(count >=9){
-		calFuncPara();
+		funcParaDisplacement = calFuncPara(sumParaDisplacement);
+		funcParaForce = calFuncPara(sumParaForce);
 		clearSum();
 	}
 }
