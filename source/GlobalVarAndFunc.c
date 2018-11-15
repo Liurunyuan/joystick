@@ -6,3 +6,4 @@
 
 Uint32 gECapCount;
 RS422STATUS gRS422Status = {0};
+KeyValue gKeyValue = {0};
