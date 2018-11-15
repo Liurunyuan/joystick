@@ -7,7 +7,7 @@
 #include "SPIprocess.h"
 #include "GlobalVarAndFunc.h"
 
-KeyValue gKeyValue = {0};
+
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
