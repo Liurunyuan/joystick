@@ -129,11 +129,11 @@ void SwitchDirection(void){
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
 				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x11;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x11;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x11;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x11;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
 			}
 			break;
 		case 1://A+ ---------------> C-
