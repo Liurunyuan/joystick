@@ -311,12 +311,13 @@ void main(void) {
 
 	PowerOnBIT();
 
+	gSysInfo.currentHallPosition = 4;
+	gSysInfo.duty = 200;
 	while(1)
 	{
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
-
 		Start_main_loop();
 
 		ShakeHandWithUpperComputer();

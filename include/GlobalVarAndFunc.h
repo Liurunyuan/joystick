@@ -19,9 +19,16 @@ typedef struct _KeyValue{
 	int32 lock;
 }KeyValue;
 
+typedef struct{
+	Uint16 currentHallPosition;
+	Uint16 lastTimeHalllPosition;
+	int16 duty;
+}SYSINFO;
+
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
+extern SYSINFO gSysInfo;
 
 
 #endif
