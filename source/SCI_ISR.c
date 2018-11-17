@@ -22,6 +22,34 @@ RS422RXQUE gRS422RxQueB = {0};
 char rs422rxPack[16];
 
 
+/**************************************************************
+ *Name:		   TestDuty
+ *Comment:
+ *Input:	   VAR16, int, int
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月15日下午9:15:42
+ **************************************************************/
+static void TestDuty(VAR16 a, int b, int c) {
+
+	gSysInfo.duty = a.value;
+
+	//TODO just an example
+}
+/**************************************************************
+ *Name:		   TestHallPosition
+ *Comment:
+ *Input:	   VAR16, int, int
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月15日下午9:15:42
+ **************************************************************/
+static void TestHallPosition(VAR16 a, int b, int c) {
+
+	gSysInfo.currentHallPosition = a.value;
+
+	//TODO just an example
+}
 
 /**************************************************************
  *Name:		   ShakeHandMsg
@@ -80,8 +108,8 @@ const functionMsgCodeUnpack msgInterface[] = {
 		ShakeHandMsg,
 		MsgStatusUnpack,
 		WaveCommand,
-		0,
-		0,
+		TestHallPosition,
+		TestDuty,
 		0
 };
 /***************************************************************

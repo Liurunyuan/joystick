@@ -34,14 +34,14 @@ void CalForceSpeedAccel(void) {
 	}
 }
 /**************************************************************
- *Name:						ReadHallValue
+ *Name:						GetCurrentHallValue
  *Function:
  *Input:					none
  *Output:					none
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
-Uint16 ReadHallValue(void){
+Uint16 GetCurrentHallValue(void){
 
 	Uint16 temp;
 	Uint16 a;
@@ -57,8 +57,6 @@ Uint16 ReadHallValue(void){
 	if(temp < 1 || temp >6){
 		//TODO if temp < 1 or >6 means program abnormal, need to do something
 	}
-
-
 	return temp;
 }
 /**************************************************************
@@ -70,8 +68,108 @@ Uint16 ReadHallValue(void){
  *Date:						2018.10.31
  **************************************************************/
 void SwitchDirection(void){
+	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
+	//gSysInfo.currentHallPosition = GetCurrentHallValue();
+//3:A 2:B 1:C
+	switch (gSysInfo.currentHallPosition) {
+		case 4://C+ ---------------> B-
+			if((4 == gSysInfo.lastTimeHalllPosition ) || (5 == gSysInfo.lastTimeHalllPosition)){
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x01;//shutdown A phase
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x01;//shutdown A phase
 
 
+				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
+				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
+
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+
+
+
+			}
+			break;
+		case 6://C+ ---------------> A-
+			if((6 == gSysInfo.lastTimeHalllPosition ) || (4 == gSysInfo.lastTimeHalllPosition)){
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x01;//shutdown B phase
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x01;//shutdown B phase
+
+				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
+				EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
+
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+			}
+			break;
+		case 2://B+ ---------------> A-
+			if((2 == gSysInfo.lastTimeHalllPosition ) || (6 == gSysInfo.lastTimeHalllPosition)){
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x01;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x01;//shutdown C phase
+
+				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
+				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
+
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+			}
+			break;
+		case 3://B+ ---------------> C-
+			if((3 == gSysInfo.lastTimeHalllPosition ) || (2 == gSysInfo.lastTimeHalllPosition)){
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x01;//shutdown A phase
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x01;//shutdown A phase
+
+				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
+				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
+
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+			}
+			break;
+		case 1://A+ ---------------> C-
+			if((1 == gSysInfo.lastTimeHalllPosition ) || (3 == gSysInfo.lastTimeHalllPosition)){
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x01;//shutdown B phase
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x01;//shutdown B phase
+
+				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
+				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
+
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+			}
+			break;
+		case 5://A+ ---------------> B-
+			if((5 == gSysInfo.lastTimeHalllPosition ) || (1 == gSysInfo.lastTimeHalllPosition)){
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x01;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x01;//shutdown C phase
+
+				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
+				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
+
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+			}
+			break;
+		default:
+			//TODO need to generate alram
+			break;
+	}
 }
 
 /**************************************************************
@@ -89,14 +187,14 @@ void Pwm_ISR_Thread(void)
 	//read 12bit AD value
 	//read DI
 	//specific channel check
-	//»»Ïò£¬Õ¼¿Õ±ÈÊä³ö
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½Õ±ï¿½ï¿½ï¿½ï¿½ï¿½
 	//prepare output
 	//read spi value
 	/*struct FanKui_OUT {int32 LI, WEIYI , SPEED, ACCEL, LOCK }  LW_BUFF;
-	LOCK=0£ºPWMÏß³ÌÒÑ½«Êý¾ÝÊä³ö£¬0.25msÖÐ¶ÏÉÐÎ´¸´ÖÆ
-	LOCK=1£º0.25msÒÑÍê³É¸´ÖÆ
-	ÔÚPWMÖÐ¶ÏÖÐ£¬ÖÐ¶ÏµÚ10´Î×¼±¸Ë¢ÐÂLW_BUFFÊ±£¬¼ì²éLOCK£¬ÈôLOCK=1£¬Ôò¸´ÖÆÊý¾Ý£¬²¢½«LOCK=0£»ÈôLOCK=0£¬ÔòÈí¼þ±¨¾¯£¨LOCK 001£©
-	ÔÚ0.25msÖÐ¶ÏÖÐ£¬½øÈëÖÐ¶ÏÅÐ¶ÏLOCK£¬ÈôLOCK=0£¬Ôò¸´ÖÆÊý¾Ý£¨½«È«¾Ö±äÁ¿ÒÔÐÎ²ÎµÄÐÎÊ½µ÷ÓÃº¯Êý£¬µÈÓÚ½«È«¾Ö±äÁ¿Ñ¹Èë¶ÑÕ»£¬±»µ÷ÓÃµÄº¯ÊýµÚÒ»¾ä»°½«È«¾Ö±äÁ¿µÄLOCK=1£©£»ÈôLOCK=1£¬Ôò±¨¾¯£¨LOCK 002£©
+	LOCK=0ï¿½ï¿½PWMï¿½ß³ï¿½ï¿½Ñ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0.25msï¿½Ð¶ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½
+	LOCK=1ï¿½ï¿½0.25msï¿½ï¿½ï¿½ï¿½ï¿½É¸ï¿½ï¿½ï¿½
+	ï¿½ï¿½PWMï¿½Ð¶ï¿½ï¿½Ð£ï¿½ï¿½Ð¶Ïµï¿½10ï¿½ï¿½×¼ï¿½ï¿½Ë¢ï¿½ï¿½LW_BUFFÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LOCKï¿½ï¿½ï¿½ï¿½LOCK=1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½LOCK=0ï¿½ï¿½ï¿½ï¿½LOCK=0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LOCK 001ï¿½ï¿½
+	ï¿½ï¿½0.25msï¿½Ð¶ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ð¶ï¿½LOCKï¿½ï¿½ï¿½ï¿½LOCK=0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î²Îµï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄºï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ä»°ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½LOCK=1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LOCK=1ï¿½ï¿½ï¿½ò±¨¾ï¿½ï¿½ï¿½LOCK 002ï¿½ï¿½
 	 */
 
 	//StartGetADBySpi();
@@ -108,6 +206,7 @@ void Pwm_ISR_Thread(void)
 	}
 
 	//TODO prepare output
+	SwitchDirection();
 	//ReadADBySpi();
 
 	CalForceSpeedAccel();//TODO this function has been modified, need to do more test to verify
@@ -198,4 +297,3 @@ void ForceAndDisplaceProcess(int count){
 		feedbackVarBuf.sumDisplacement =0;
 	}
 }
-
