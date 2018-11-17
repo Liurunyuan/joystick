@@ -22,7 +22,7 @@ typedef struct _KeyValue{
 typedef struct{
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
-	Uint16 duty;
+	int16 duty;
 }SYSINFO;
 
 extern Uint32 gECapCount;

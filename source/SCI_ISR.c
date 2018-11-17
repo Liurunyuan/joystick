@@ -21,6 +21,21 @@ RS422RXQUE gRS422RxQue = {0};
 RS422RXQUE gRS422RxQueB = {0};
 char rs422rxPack[16];
 
+
+/**************************************************************
+ *Name:		   TestDuty
+ *Comment:
+ *Input:	   VAR16, int, int
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018年11月15日下午9:15:42
+ **************************************************************/
+static void TestDuty(VAR16 a, int b, int c) {
+
+	gSysInfo.duty = a.value;
+
+	//TODO just an example
+}
 /**************************************************************
  *Name:		   TestHallPosition
  *Comment:
@@ -94,7 +109,7 @@ const functionMsgCodeUnpack msgInterface[] = {
 		MsgStatusUnpack,
 		WaveCommand,
 		TestHallPosition,
-		0,
+		TestDuty,
 		0
 };
 /***************************************************************
