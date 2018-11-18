@@ -197,7 +197,7 @@ void Pwm_ISR_Thread(void)
 	��0.25ms�ж��У������ж��ж�LOCK����LOCK=0�����������ݣ���ȫ�ֱ������βε���ʽ���ú��������ڽ�ȫ�ֱ���ѹ����ջ�������õĺ�����һ�仰��ȫ�ֱ�����LOCK=1������LOCK=1���򱨾���LOCK 002��
 	 */
 
-	//StartGetADBySpi();
+	StartGetADBySpi();
 	ReadAnalogValue();
 	ReadDigitalValue();
 
