@@ -2,6 +2,7 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "SPIprocess.h"
 #include "ADprocessor.h"
+#include "GlobalVarAndFunc.h"
 
 
 
@@ -17,6 +18,13 @@
 void StartGetADBySpi(void)
 {
 	//TODO
+
+	GpioDataRegs.GPCSET.bit.GPIO84 = 1;
+
+	while(gSysInfo.sdoStatus == 0){
+		gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
+	}
+
 	int retry = 0;
 	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
 	{
@@ -26,15 +34,38 @@ void StartGetADBySpi(void)
 		}
 	}
 	SpiaRegs.SPITXBUF = 0xffff;
+
 	retry = 0;
 	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
 		retry ++;
-			if(retry > 200){
-				//return 0;
-			}
+		if(retry > 200){
+			return;
+		}
 	}
+
 	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
 
+
+	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
+	{
+		retry ++;
+		if(retry > 200){
+			return;
+		}
+	}
+	SpiaRegs.SPITXBUF = 0xffff;
+
+	retry = 0;
+	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
+		retry ++;
+		if(retry > 200){
+			return;
+		}
+	}
+
+	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
+
+	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 }
 /***************************************************************
  *Name:						ReadADBySpi
