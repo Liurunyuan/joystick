@@ -18,14 +18,23 @@
 void StartGetADBySpi(void)
 {
 	//TODO
-
+	int retry = 0;
 	GpioDataRegs.GPCSET.bit.GPIO84 = 1;
-
+	/**********************************************/
 	while(gSysInfo.sdoStatus == 0){
 		gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
 	}
+	/**********************************************/
 
-	int retry = 0;
+	SpiaRegs.SPICCR.bit.SPICHAR = 0x0;
+	SpiaRegs.SPIDAT = 1;
+	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
+		retry ++;
+	}
+	retry = SpiaRegs.SPIRXBUF;
+	/**********************************************/
+	SpiaRegs.SPICCR.bit.SPICHAR = 0xf;
+	retry = 0;
 	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
 	{
 		retry ++;
@@ -33,8 +42,8 @@ void StartGetADBySpi(void)
 			//return 0;
 		}
 	}
-	SpiaRegs.SPITXBUF = 1;
-
+	//SpiaRegs.SPICCR.bit.SPICHAR = 0x1;
+	SpiaRegs.SPIDAT = 0x1;
 	retry = 0;
 	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
 		retry ++;
@@ -44,7 +53,8 @@ void StartGetADBySpi(void)
 	}
 
 	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
-
+	/**********************************************/
+	retry = 0;
 	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
 	{
 		retry ++;
@@ -52,8 +62,7 @@ void StartGetADBySpi(void)
 			return;
 		}
 	}
-	//SpiaRegs.SPITXBUF = 1;
-	SpiaRegs.SPIDAT = 0x5a5a;
+	SpiaRegs.SPIDAT = 0x1;
 
 	retry = 0;
 	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
@@ -62,9 +71,8 @@ void StartGetADBySpi(void)
 			return;
 		}
 	}
-
 	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
-
+	/**********************************************/
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	//GpioDataRegs.GPBSET.bit.GPIO56 = 1;
 }

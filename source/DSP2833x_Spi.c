@@ -105,7 +105,7 @@ void SPI_Config(void)
 {
 	/*Find the data sheet and finish the configuration code here*/
 	SpiaRegs.SPICCR.all 		= 0x0051;		//复位SPI,上升沿发送，下降沿接受，16位数据
-	SpiaRegs.SPICTL.all 		= 0x0006;		//无相位延时，主模式
+	SpiaRegs.SPICTL.all 		= 0x000f;		//无相位延时，主模式
 	SpiaRegs.SPIBRR				= 0x0000;		//确定SPICLK
 	SpiaRegs.SPICCR.all 		= 0x009F;		//自测模式，并从复位状态释放
 	SpiaRegs.SPIPRI.bit.FREE 	= 1;			//自由运行
