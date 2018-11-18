@@ -33,7 +33,7 @@ void StartGetADBySpi(void)
 			//return 0;
 		}
 	}
-	SpiaRegs.SPITXBUF = 0xffff;
+	SpiaRegs.SPITXBUF = 1;
 
 	retry = 0;
 	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
@@ -45,7 +45,6 @@ void StartGetADBySpi(void)
 
 	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
 
-
 	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
 	{
 		retry ++;
@@ -53,7 +52,8 @@ void StartGetADBySpi(void)
 			return;
 		}
 	}
-	SpiaRegs.SPITXBUF = 0xffff;
+	//SpiaRegs.SPITXBUF = 1;
+	SpiaRegs.SPIDAT = 0x5a5a;
 
 	retry = 0;
 	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
@@ -66,6 +66,7 @@ void StartGetADBySpi(void)
 	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
 
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
+	//GpioDataRegs.GPBSET.bit.GPIO56 = 1;
 }
 /***************************************************************
  *Name:						ReadADBySpi

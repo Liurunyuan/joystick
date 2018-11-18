@@ -198,7 +198,7 @@ void Pwm_ISR_Thread(void)
 	 */
 
 	StartGetADBySpi();
-	ReadAnalogValue();
+	//ReadAnalogValue();
 	ReadDigitalValue();
 
 	if(IsSingleAnalogValueAbnormal() == True){

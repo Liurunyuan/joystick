@@ -104,12 +104,17 @@ void InitSpiaGpio()
 void SPI_Config(void)
 {
 	/*Find the data sheet and finish the configuration code here*/
-	SpiaRegs.SPICCR.all 		= 0x000F;		//复位SPI,上升沿发送，下降沿接受，16位数据
+	SpiaRegs.SPICCR.all 		= 0x0051;		//复位SPI,上升沿发送，下降沿接受，16位数据
 	SpiaRegs.SPICTL.all 		= 0x0006;		//无相位延时，主模式
 	SpiaRegs.SPIBRR				= 0x0000;		//确定SPICLK
 	SpiaRegs.SPICCR.all 		= 0x009F;		//自测模式，并从复位状态释放
 	SpiaRegs.SPIPRI.bit.FREE 	= 1;			//自由运行
 
+	SpiaRegs.SPICTL.bit.CLK_PHASE = 0;
+	SpiaRegs.SPICCR.bit.CLKPOLARITY = 1;
+	SpiaRegs.SPICCR.bit.SPICHAR = 0xf;
+
+	SpiaRegs.SPICCR.bit.SPILBK = 0;
 
 	/*config SPI FIFO*/
 	//SpiaRegs.SPIFFTX.all		= 0xE040;		//使能FIFIO，清除发送中断
