@@ -21,15 +21,18 @@ void ForceAndDisplaceProcess(int count);
  **************************************************************/
 void CalForceSpeedAccel(void) {
 	static int count = 0;
-	//CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
 
 	CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
 
 	count++;
 
 	if(count >= 10){
+		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
 		gKeyValue.motorSpeed = 2*funcParaDisplacement.a*11 + funcParaDisplacement.b;
 		gKeyValue.motorAccel = 2*funcParaDisplacement.a;
+
+		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;
+
 		count = 0;
 	}
 }
