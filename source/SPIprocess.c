@@ -19,9 +19,20 @@
 void StartGetADBySpi(void)
 {
 	//TODO
-	int retry = 0;
 	GpioDataRegs.GPCSET.bit.GPIO84 = 1;
-
+}
+/***************************************************************
+ *Name:						ReadADBySpi
+ *Function:
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.10.21
+ ****************************************************************/
+void ReadADBySpi(void)
+{
+	//TODO
+	int retry = 0;
 	//gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
 	/**********************************************/
 	while(1){
@@ -81,16 +92,4 @@ void StartGetADBySpi(void)
 	/**********************************************/
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	//GpioDataRegs.GPBSET.bit.GPIO56 = 1;
-}
-/***************************************************************
- *Name:						ReadADBySpi
- *Function:
- *Input:				    none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.21
- ****************************************************************/
-void ReadADBySpi(void)
-{
-	//TODO
 }
