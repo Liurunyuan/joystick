@@ -81,14 +81,11 @@ void SwitchDirection(void){
 				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
-
-
-
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 6://C+ ---------------> A-
@@ -99,11 +96,11 @@ void SwitchDirection(void){
 				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
 				EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 2://B+ ---------------> A-
@@ -114,11 +111,11 @@ void SwitchDirection(void){
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
 				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 3://B+ ---------------> C-
@@ -129,11 +126,11 @@ void SwitchDirection(void){
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
 				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 1://A+ ---------------> C-
@@ -144,11 +141,11 @@ void SwitchDirection(void){
 				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
 				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 5://A+ ---------------> B-
@@ -159,11 +156,11 @@ void SwitchDirection(void){
 				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		default:

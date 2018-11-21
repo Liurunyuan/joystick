@@ -3,6 +3,7 @@
 #include "SPIprocess.h"
 #include "ADprocessor.h"
 #include "GlobalVarAndFunc.h"
+#include "public.h"
 
 
 
@@ -20,12 +21,17 @@ void StartGetADBySpi(void)
 	//TODO
 	int retry = 0;
 	GpioDataRegs.GPCSET.bit.GPIO84 = 1;
+
+	//gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
 	/**********************************************/
-	while(gSysInfo.sdoStatus == 0){
-		gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
+	while(1){
+		retry++;
+		if(retry > 3000){
+			break;
+		}
+		//gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
 	}
 	/**********************************************/
-
 	SpiaRegs.SPICCR.bit.SPICHAR = 0x0;
 	SpiaRegs.SPIDAT = 1;
 	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
