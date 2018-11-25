@@ -246,7 +246,7 @@ void Pwm_ISR_Thread(void)
 
 	SwitchDirection();
 	ReadADBySpi();
-	//TODO CalForceSpeedAccel function has been modified, need to do more test to verify
+
 	CalForceSpeedAccel();
 }
 /**************************************************************

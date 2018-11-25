@@ -4,6 +4,14 @@
 typedef Uint16 bool;
 
 typedef struct{
+	Uint16 high8bit : 8;
+	Uint16 low8bit	: 8;
+}VAR16BIT;
+typedef union{
+	VAR16BIT data;
+	Uint16 all;
+}PACK;
+typedef struct{
 	Uint16 rs422A;
 	Uint16 rs422B;
 	Uint16 currentSerialNumber;
@@ -12,10 +20,10 @@ typedef struct{
 }RS422STATUS;
 
 typedef struct _KeyValue{
-	int32 force;
-	int32 displacement;
-	int32 motorSpeed;
-	int32 motorAccel;
+	double force;
+	double displacement;
+	double motorSpeed;
+	double motorAccel;
 	int32 lock;
 }KeyValue;
 
@@ -23,14 +31,11 @@ typedef struct{
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
 	Uint16 sdoStatus;
-	int16 duty;
+	Uint16 duty;
 }SYSINFO;
 
 
-typedef struct{
-	Uint16 high8bit : 8;
-	Uint16 low8bit	: 8;
-}VAR16BIT;
+
 
 typedef struct{
 	Uint16 software : 1;
