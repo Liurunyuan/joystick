@@ -121,13 +121,33 @@ typedef struct{
 }SYSSTATE;
 
 
+typedef struct{
+	double k_springForce;
+	double k_dampForce;
+	double mass;
 
+}SYSPARA;
+
+typedef struct{
+	double springForce;
+	double dampForce;
+	double accTarget;
+	double speedTarget;
+	double displaceTarget;
+	double errAcc;
+	double errSpeed;
+	double errDisplacement;
+}SYSCURRENTSTATE;
 
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
 extern SYSINFO gSysInfo;
 extern SYSSTATE gSysState;
+extern SYSPARA gSysPara;
+extern SYSCURRENTSTATE gSysCurrentState;
+
+
 void InitSysState(void);
 
 
