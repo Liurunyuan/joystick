@@ -93,8 +93,8 @@ static void WaveCommand(VAR16 a, int b, int c) {
 	}
 }
 /***************************************************************
- *Name:						WaveCommand
- *Function:
+ *Name:						functionMsgCodeUnpack
+ *Function:					poniter of function list
  *Input:				    none
  *Output:					none
  *Author:					Simon
