@@ -120,6 +120,10 @@ void SPI_Config(void)
 	//SpiaRegs.SPIFFTX.all		= 0xE040;		//使能FIFIO，清除发送中断
 	//SpiaRegs.SPIFFRX.all		= 0x204F;		//使能FIFO接受16级深度
 	//SpiaRegs.SPIFFCT.all		= 0x00;			//清楚FIFO计数器
+
+    SpiaRegs.SPIFFTX.all=0xE040;
+    SpiaRegs.SPIFFRX.all=0x204f;
+    SpiaRegs.SPIFFCT.all=0x0;
 }
 
 /*

@@ -22,7 +22,8 @@ void ForceAndDisplaceProcess(int count);
 void CalForceSpeedAccel(void) {
 	static int count = 0;
 
-	CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
+	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value, gSysMonitorVar.anolog.single.var[ForceValue].value, count);
 
 	count++;
 
@@ -207,7 +208,7 @@ void Pwm_ISR_Thread(void)
 
 	//TODO prepare output
 	SwitchDirection();
-	//ReadADBySpi();
+	ReadADBySpi();
 
 	CalForceSpeedAccel();//TODO this function has been modified, need to do more test to verify
 }

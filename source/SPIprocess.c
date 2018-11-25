@@ -19,7 +19,8 @@
 void StartGetADBySpi(void)
 {
 	//TODO
-	GpioDataRegs.GPCSET.bit.GPIO84 = 1;
+	//GpioDataRegs.GPCSET.bit.GPIO84 = 1;
+	GpioDataRegs.GPCDAT.bit.GPIO84 = 1;
 }
 /***************************************************************
  *Name:						ReadADBySpi
@@ -32,64 +33,37 @@ void StartGetADBySpi(void)
 void ReadADBySpi(void)
 {
 	//TODO
-	int retry = 0;
-	//gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
-	/**********************************************/
-	while(1){
-		retry++;
-		if(retry > 3000){
-			break;
-		}
-		//gSysInfo.sdoStatus = GpioDataRegs.GPBDAT.bit.GPIO55;
-	}
-	/**********************************************/
-	SpiaRegs.SPICCR.bit.SPICHAR = 0x0;
-	SpiaRegs.SPIDAT = 1;
-	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
-		retry ++;
-	}
-	retry = SpiaRegs.SPIRXBUF;
-	/**********************************************/
-	SpiaRegs.SPICCR.bit.SPICHAR = 0xf;
-	retry = 0;
-	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
-	{
-		retry ++;
-		if(retry > 200){
-			//return 0;
-		}
-	}
-	//SpiaRegs.SPICCR.bit.SPICHAR = 0x1;
-	SpiaRegs.SPIDAT = 0x1;
-	retry = 0;
-	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
-		retry ++;
-		if(retry > 200){
-			return;
-		}
-	}
+	int retry;
 
+
+
+	/**********************************************/
+
+	SpiaRegs.SPICCR.bit.SPICHAR = 0xf;
+	//while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
+	//{
+	//	retry ++;
+	//	if(retry > 200){
+	//		//return 0;
+	//	}
+	//}
+	//SpiaRegs.SPICCR.bit.SPICHAR = 0x1;
+	SpiaRegs.SPITXBUF = 0x1;
+	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) { }
+	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
+
+	/**********************************************/
+	SpiaRegs.SPITXBUF = 0x1;
+	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) { }
 	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
 	/**********************************************/
-	retry = 0;
-	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1)
-	{
-		retry ++;
-		if(retry > 200){
-			return;
-		}
-	}
-	SpiaRegs.SPIDAT = 0x1;
 
-	retry = 0;
-	while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
-		retry ++;
-		if(retry > 200){
-			return;
-		}
-	}
-	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
-	/**********************************************/
-	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
-	//GpioDataRegs.GPBSET.bit.GPIO56 = 1;
+	SpiaRegs.SPICCR.bit.SPICHAR = 0x0;
+	SpiaRegs.SPITXBUF = 1;
+	//while(SpiaRegs.SPISTS.bit.INT_FLAG == 0){
+	//	retry ++;
+	//}
+	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) { }
+	retry = SpiaRegs.SPIRXBUF;
+	GpioDataRegs.GPCDAT.bit.GPIO84 = 0;
 }
