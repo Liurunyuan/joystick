@@ -33,7 +33,7 @@ typedef struct{
 }VAR16BIT;
 
 typedef struct{
-	Uint16 a : 1;
+	Uint16 software : 1;
 	Uint16 b : 1;
 	Uint16 c : 1;
 	Uint16 d : 1;
@@ -122,6 +122,7 @@ extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
 extern SYSINFO gSysInfo;
+extern SYSSTATE gSysState;
 void InitSysState(void);
 
 
