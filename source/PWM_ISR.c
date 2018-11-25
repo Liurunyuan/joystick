@@ -21,15 +21,19 @@ void ForceAndDisplaceProcess(int count);
  **************************************************************/
 void CalForceSpeedAccel(void) {
 	static int count = 0;
-	//CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value,count);
 
-	CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
+	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value, gSysMonitorVar.anolog.single.var[ForceValue].value, count);
 
 	count++;
 
 	if(count >= 10){
+		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
 		gKeyValue.motorSpeed = 2*funcParaDisplacement.a*11 + funcParaDisplacement.b;
 		gKeyValue.motorAccel = 2*funcParaDisplacement.a;
+
+		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;
+
 		count = 0;
 	}
 }
@@ -81,14 +85,11 @@ void SwitchDirection(void){
 				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
-
-
-
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 6://C+ ---------------> A-
@@ -99,11 +100,11 @@ void SwitchDirection(void){
 				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
 				EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 2://B+ ---------------> A-
@@ -114,11 +115,11 @@ void SwitchDirection(void){
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
 				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 3://B+ ---------------> C-
@@ -129,11 +130,11 @@ void SwitchDirection(void){
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
 				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 1://A+ ---------------> C-
@@ -144,11 +145,11 @@ void SwitchDirection(void){
 				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
 				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
 
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		case 5://A+ ---------------> B-
@@ -159,11 +160,11 @@ void SwitchDirection(void){
 				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
 				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
 
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
 
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;//shutdown C phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;//shutdown C phase
+				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
+				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
 			}
 			break;
 		default:
@@ -197,8 +198,8 @@ void Pwm_ISR_Thread(void)
 	��0.25ms�ж��У������ж��ж�LOCK����LOCK=0�����������ݣ���ȫ�ֱ������βε���ʽ���ú��������ڽ�ȫ�ֱ���ѹ����ջ�������õĺ�����һ�仰��ȫ�ֱ�����LOCK=1������LOCK=1���򱨾���LOCK 002��
 	 */
 
-	//StartGetADBySpi();
-	ReadAnalogValue();
+	StartGetADBySpi();
+	//ReadAnalogValue();
 	ReadDigitalValue();
 
 	if(IsSingleAnalogValueAbnormal() == True){
@@ -207,7 +208,7 @@ void Pwm_ISR_Thread(void)
 
 	//TODO prepare output
 	SwitchDirection();
-	//ReadADBySpi();
+	ReadADBySpi();
 
 	CalForceSpeedAccel();//TODO this function has been modified, need to do more test to verify
 }
