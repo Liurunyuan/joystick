@@ -26,6 +26,12 @@ typedef struct{
 	int16 duty;
 }SYSINFO;
 
+
+typedef struct{
+	Uint16 high8bit : 8;
+	Uint16 low8bit	: 8;
+}VAR16BIT;
+
 typedef struct{
 	Uint16 a : 1;
 	Uint16 b : 1;
@@ -45,8 +51,10 @@ typedef struct{
 	Uint16 p : 1;
 }ERROBIT;
 
+
 typedef union{
 	Uint16 all;
+	VAR16BIT data;
 	ERROBIT bit;
 }SYSERRO;
 /*************************************/
@@ -71,6 +79,7 @@ typedef struct{
 
 typedef union{
 	Uint16 all;
+	VAR16BIT data;
 	WARNINGBIT bit;
 }SYSWARNING;
 /*************************************/
@@ -95,6 +104,7 @@ typedef struct{
 
 typedef union{
 	Uint16 all;
+	VAR16BIT data;
 	ALARMBIT bit;
 }SYSALARM;
 /*************************************/
