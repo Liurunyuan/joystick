@@ -101,7 +101,7 @@ void FeedWatchDog(void){
 	TOOGLE_WATCHDOG = TRUE;
 }
 
-void delayfunction(Uint16 sec){
+void Delayfunc(Uint16 sec){
 	Uint16 i;
 	Uint16 j;
 
@@ -311,18 +311,23 @@ void main(void) {
 
 	PowerOnBIT();
 
-	gSysInfo.currentHallPosition = 4;
+	gSysInfo.currentHallPosition = 6;
 	gSysInfo.duty = 200;
+
+	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
+	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
+
 	while(1)
 	{
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCSET.bit.GPIO82 = 1;
 #endif
+
 		Start_main_loop();
 
 		ShakeHandWithUpperComputer();
 
-		test_spi_tx();
+		//test_spi_tx();
 
 		RS422Unpack();
 

@@ -22,6 +22,7 @@ typedef struct _KeyValue{
 typedef struct{
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
+	Uint16 sdoStatus;
 	int16 duty;
 }SYSINFO;
 

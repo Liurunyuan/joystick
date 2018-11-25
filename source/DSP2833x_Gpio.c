@@ -165,14 +165,16 @@ void InitOutputPin(void)
 	GpioCtrlRegs.GPCMUX2.bit.GPIO82	= GPIO;
 	GpioCtrlRegs.GPCDIR.bit.GPIO82	= OUTPUT;
 
-
+	/*
+	 *GPIO84
+	 *Pin index:			169
+	 *Name in circuit:		GPIO84, just for test£¬GPIO84-------->CNV_AD;
+	 */
+	GpioCtrlRegs.GPCMUX2.bit.GPIO84	= GPIO;
+	GpioCtrlRegs.GPCDIR.bit.GPIO84	= OUTPUT;
 
 
 	EDIS;
-
-
-
-
 }
 
 void InitInputPin(void)
