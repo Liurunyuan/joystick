@@ -27,7 +27,6 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		//FIXME only disable PackRS422TxData(), then SCIB RX ISR can work normally
 		if(SUCCESS == gRS422Status.shakeHand){
 			PackRS422TxData();
 		}
@@ -78,7 +77,6 @@ void Timer1_ISR_Thread(void){
 				gRS422Status.rs422A = 0;
 			}
 			else{
-				//TODO need to switch rs422A to rs422b.
 				printf(">>>>>>>>>>Switch to RS422BBBBBBBBBB channel\r\n");
 				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
 				//ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;

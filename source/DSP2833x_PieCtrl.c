@@ -109,7 +109,7 @@ void Init_Interrupt(void)
 		ConfigCpuTimer(&CpuTimer0, 120, 200);//t = freq * priod/150000000,0.2ms
 	    CpuTimer0Regs.TCR.bit.TIE= 1;
 	    CpuTimer0Regs.TCR.bit.TSS = 0;
-		ConfigCpuTimer(&CpuTimer1, 120, 10000);//TODO 10MS 10000,why t = 10000????? need to calculate again
+		ConfigCpuTimer(&CpuTimer1, 120, 10000);
 	    CpuTimer1Regs.TCR.bit.TIE= 1;
 	    CpuTimer1Regs.TCR.bit.TSS = 0;
 	    //÷–∂œ≈‰÷√

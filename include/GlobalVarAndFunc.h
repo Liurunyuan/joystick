@@ -90,7 +90,7 @@ typedef union{
 /*************************************/
 typedef struct{
 	Uint16 a : 1;
-	Uint16 b : 1;
+	Uint16 rs422RxQFull : 1;
 	Uint16 c : 1;
 	Uint16 d : 1;
 	Uint16 e : 1;

@@ -47,8 +47,6 @@ static void TestDuty(VAR16 a, int b, int c) {
 static void TestHallPosition(VAR16 a, int b, int c) {
 
 	gSysInfo.currentHallPosition = a.value;
-
-	//TODO just an example
 }
 
 /**************************************************************
@@ -61,8 +59,6 @@ static void TestHallPosition(VAR16 a, int b, int c) {
  **************************************************************/
 static void ShakeHandMsg(VAR16 a, int b, int c) {
 	gRS422Status.shakeHand = SUCCESS;
-
-	//TODO just an example
 }
 /***************************************************************
  *Name:						MsgStatusUnpack
@@ -121,13 +117,9 @@ const functionMsgCodeUnpack msgInterface[] = {
  *Date:						2018.10.21
  ****************************************************************/
 int EnQueueB(int e, RS422RXQUE *RS422RxQue){
-	//TODO copy this function,  just in case two threads call this function
 
-	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
 		RS422RxQue->front = (RS422RxQue->front + 1) % MAXQSIZE;
-		//printf("EnQueue FULL \r\n");
-		//return 0;
 	}
 
 	RS422RxQue->rxBuff[RS422RxQue->rear] = e;
@@ -143,13 +135,9 @@ int EnQueueB(int e, RS422RXQUE *RS422RxQue){
  *Date:						2018.10.21
  ****************************************************************/
 int EnQueue(int e, RS422RXQUE *RS422RxQue){
-	//TODO copy this function,  just in case two threads call this function
 
-	//TODO, when queue is full, override the queue, do not return fail
 	if((RS422RxQue->rear + 1) % MAXQSIZE == RS422RxQue->front){
 		RS422RxQue->front = (RS422RxQue->front + 1) % MAXQSIZE;
-		//printf("EnQueue FULL \r\n");
-		//return 0;
 	}
 
 	RS422RxQue->rxBuff[RS422RxQue->rear] = e;
@@ -215,8 +203,7 @@ void RS422A_receive(RS422RXQUE *RS422RxQue){
 	while(ScicRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		data = ScicRegs.SCIRXBUF.all;
 		if(EnQueue(data, RS422RxQue) == 0){
-			printf("RS422 rx queue full\r\n");
-			//TODO update error msg
+			gSysState.alarm.bit.rs422RxQFull = 1;
 		}
 	}
 }
@@ -227,8 +214,7 @@ void RS422B_receive(RS422RXQUE *RS422RxQue){
 	while(ScibRegs.SCIFFRX.bit.RXFFST != 0){// rs422 rx fifo is not empty
 		data = ScibRegs.SCIRXBUF.all;
 		if(EnQueueB(data, RS422RxQue) == 0){
-			//printf("RS422 rx queue full\r\n");
-			//TODO update error msg
+			gSysState.alarm.bit.rs422RxQFull = 1;
 		}
 	}
 
