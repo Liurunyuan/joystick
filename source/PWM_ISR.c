@@ -64,6 +64,120 @@ Uint16 GetCurrentHallValue(void){
 	return temp;
 }
 /**************************************************************
+ *Name:		   CPositiveToBNegtive
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:16:27
+ **************************************************************/
+inline void CPositiveToBNegtive(void) {
+
+	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
+	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
+	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+}
+/**************************************************************
+ *Name:		   CPositiveToANegtive
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:16:55
+ **************************************************************/
+inline void CPositiveToANegtive(void) {
+
+	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
+	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
+	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+}
+/**************************************************************
+ *Name:		   BPositiveToANegtive
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:04
+ **************************************************************/
+inline void BPositiveToANegtive(void) {
+
+	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
+	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
+	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+}
+/**************************************************************
+ *Name:		   BPositiveToCNegtive
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:14
+ **************************************************************/
+inline void BPositiveToCNegtive(void) {
+
+	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
+	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
+	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+}
+/**************************************************************
+ *Name:		   APositiveToCNegtive
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:26
+ **************************************************************/
+inline void APositiveToCNegtive(void) {
+
+	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
+	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+}
+/**************************************************************
+ *Name:		   APositiveToBNegtive
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:37
+ **************************************************************/
+inline void APositiveToBNegtive(void) {
+
+	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
+	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+}
+
+/**************************************************************
  *Name:						SwitchDirection
  *Function:
  *Input:					none
@@ -74,101 +188,40 @@ Uint16 GetCurrentHallValue(void){
 void SwitchDirection(void){
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
 	//gSysInfo.currentHallPosition = GetCurrentHallValue();
-//3:A 2:B 1:C
+	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 4://C+ ---------------> B-
 			if((4 == gSysInfo.lastTimeHalllPosition ) || (5 == gSysInfo.lastTimeHalllPosition)){
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x01;//shutdown A phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x01;//shutdown A phase
-
-
-				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
-				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
-
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
-
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
+				CPositiveToBNegtive();
 			}
 			break;
 		case 6://C+ ---------------> A-
 			if((6 == gSysInfo.lastTimeHalllPosition ) || (4 == gSysInfo.lastTimeHalllPosition)){
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x01;//shutdown B phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x01;//shutdown B phase
-
-				EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;//C+
-				EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
-
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
-
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
+				CPositiveToANegtive();
 			}
 			break;
 		case 2://B+ ---------------> A-
 			if((2 == gSysInfo.lastTimeHalllPosition ) || (6 == gSysInfo.lastTimeHalllPosition)){
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x01;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x01;//shutdown C phase
-
-				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
-				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//A-
-
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
-
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
+				BPositiveToANegtive();
 			}
 			break;
 		case 3://B+ ---------------> C-
 			if((3 == gSysInfo.lastTimeHalllPosition ) || (2 == gSysInfo.lastTimeHalllPosition)){
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x01;//shutdown A phase
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x01;//shutdown A phase
-
-				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//B+
-				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
-
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
-
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
+				BPositiveToCNegtive();
 			}
 			break;
 		case 1://A+ ---------------> C-
 			if((1 == gSysInfo.lastTimeHalllPosition ) || (3 == gSysInfo.lastTimeHalllPosition)){
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x01;//shutdown B phase
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x01;//shutdown B phase
-
-				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
-				EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//C-
-
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x00;
-
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
+				APositiveToCNegtive();
 			}
 			break;
 		case 5://A+ ---------------> B-
 			if((5 == gSysInfo.lastTimeHalllPosition ) || (1 == gSysInfo.lastTimeHalllPosition)){
-				EPwm1Regs.AQCSFRC.bit.CSFA=0x01;//shutdown C phase
-				EPwm1Regs.AQCSFRC.bit.CSFB=0x01;//shutdown C phase
-
-				EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;//A+
-				EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;//B-
-
-				EPwm2Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm2Regs.AQCSFRC.bit.CSFB=0x00;
-
-				EPwm3Regs.AQCSFRC.bit.CSFA=0x00;
-				EPwm3Regs.AQCSFRC.bit.CSFB=0x00;
+				APositiveToBNegtive();
 			}
 			break;
 		default:
-			//TODO need to generate alram
+			gSysState.erro.bit.software = TRUE;
 			break;
 	}
 }
@@ -183,21 +236,6 @@ void SwitchDirection(void){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
-	//TODO
-	//start spi
-	//read 12bit AD value
-	//read DI
-	//specific channel check
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½Õ±ï¿½ï¿½ï¿½ï¿½ï¿½
-	//prepare output
-	//read spi value
-	/*struct FanKui_OUT {int32 LI, WEIYI , SPEED, ACCEL, LOCK }  LW_BUFF;
-	LOCK=0ï¿½ï¿½PWMï¿½ß³ï¿½ï¿½Ñ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0.25msï¿½Ð¶ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½
-	LOCK=1ï¿½ï¿½0.25msï¿½ï¿½ï¿½ï¿½ï¿½É¸ï¿½ï¿½ï¿½
-	ï¿½ï¿½PWMï¿½Ð¶ï¿½ï¿½Ð£ï¿½ï¿½Ð¶Ïµï¿½10ï¿½ï¿½×¼ï¿½ï¿½Ë¢ï¿½ï¿½LW_BUFFÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LOCKï¿½ï¿½ï¿½ï¿½LOCK=1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½LOCK=0ï¿½ï¿½ï¿½ï¿½LOCK=0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LOCK 001ï¿½ï¿½
-	ï¿½ï¿½0.25msï¿½Ð¶ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ð¶ï¿½LOCKï¿½ï¿½ï¿½ï¿½LOCK=0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î²Îµï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄºï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ä»°ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½LOCK=1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LOCK=1ï¿½ï¿½ï¿½ò±¨¾ï¿½ï¿½ï¿½LOCK 002ï¿½ï¿½
-	 */
-
 	StartGetADBySpi();
 	//ReadAnalogValue();
 	ReadDigitalValue();
@@ -206,11 +244,10 @@ void Pwm_ISR_Thread(void)
 		//TODO
 	}
 
-	//TODO prepare output
 	SwitchDirection();
 	ReadADBySpi();
 
-	CalForceSpeedAccel();//TODO this function has been modified, need to do more test to verify
+	CalForceSpeedAccel();
 }
 /**************************************************************
  *Name:						forcebufProcess
