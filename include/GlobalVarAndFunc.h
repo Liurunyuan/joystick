@@ -26,10 +26,93 @@ typedef struct{
 	int16 duty;
 }SYSINFO;
 
+typedef struct{
+	Uint16 a : 1;
+	Uint16 b : 1;
+	Uint16 c : 1;
+	Uint16 d : 1;
+	Uint16 e : 1;
+	Uint16 f : 1;
+	Uint16 g : 1;
+	Uint16 h : 1;
+	Uint16 i : 1;
+	Uint16 j : 1;
+	Uint16 k : 1;
+	Uint16 l : 1;
+	Uint16 m : 1;
+	Uint16 n : 1;
+	Uint16 o : 1;
+	Uint16 p : 1;
+}ERROBIT;
+
+typedef union{
+	Uint16 all;
+	ERROBIT bit;
+}SYSERRO;
+/*************************************/
+typedef struct{
+	Uint16 a : 1;
+	Uint16 b : 1;
+	Uint16 c : 1;
+	Uint16 d : 1;
+	Uint16 e : 1;
+	Uint16 f : 1;
+	Uint16 g : 1;
+	Uint16 h : 1;
+	Uint16 i : 1;
+	Uint16 j : 1;
+	Uint16 k : 1;
+	Uint16 l : 1;
+	Uint16 m : 1;
+	Uint16 n : 1;
+	Uint16 o : 1;
+	Uint16 p : 1;
+}WARNINGBIT;
+
+typedef union{
+	Uint16 all;
+	WARNINGBIT bit;
+}SYSWARNING;
+/*************************************/
+typedef struct{
+	Uint16 a : 1;
+	Uint16 b : 1;
+	Uint16 c : 1;
+	Uint16 d : 1;
+	Uint16 e : 1;
+	Uint16 f : 1;
+	Uint16 g : 1;
+	Uint16 h : 1;
+	Uint16 i : 1;
+	Uint16 j : 1;
+	Uint16 k : 1;
+	Uint16 l : 1;
+	Uint16 m : 1;
+	Uint16 n : 1;
+	Uint16 o : 1;
+	Uint16 p : 1;
+}ALARMBIT;
+
+typedef union{
+	Uint16 all;
+	ALARMBIT bit;
+}SYSALARM;
+/*************************************/
+
+typedef struct{
+	SYSALARM alarm;
+	SYSWARNING warning;
+	SYSERRO erro;
+}SYSSTATE;
+
+
+
+
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
 extern SYSINFO gSysInfo;
+void InitSysState(void);
 
 
 #endif
