@@ -403,7 +403,7 @@ void unpack(int len){
 		msgCode = rs422rxPack[OFFSET + UNIT_LEN * i];
 		var16.datahl.h = rs422rxPack[OFFSET + UNIT_LEN*i + 1];
 		var16.datahl.l = rs422rxPack[OFFSET + UNIT_LEN*i + 2];
-		var16.value = var16.datahl.l + (var16.datahl.h << 8);
+		//var16.value = var16.datahl.l + (var16.datahl.h << 8);
 
 		if(gRS422Status.rs422CurrentChannel == RS422_CHANNEL_A){
 			gRS422Status.rs422A = 1;
