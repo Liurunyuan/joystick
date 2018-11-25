@@ -2,12 +2,12 @@
 #include "Filter_Alg.h"
 
 
-#define SUMX 45
-#define SUMXPOW2 285
-#define SUMXPOW3 2025
-#define SUMXPOW4 15333
-#define SUMXPOW5 120825
-#define SUMXPOW6 978405
+#define SUMX 45L
+#define SUMXPOW2 285L
+#define SUMXPOW3 2025L
+#define SUMXPOW4 15333L
+#define SUMXPOW5 120825L
+#define SUMXPOW6 978405L
 
 SumPara sumParaDisplacement = {
 	SUMX,
@@ -45,7 +45,7 @@ void clearSum(void) {
 }
 
 FuncPara calFuncPara(SumPara sumPara){
-	float temp,temp0,temp1,temp2;
+	double temp,temp0,temp1,temp2;
 	FuncPara funcPara;
 
 	temp = 10 * (sumPara.sum_Xpow2 * sumPara.sum_Xpow4 -sumPara.sum_Xpow3*sumPara.sum_Xpow3)
@@ -70,13 +70,9 @@ FuncPara calFuncPara(SumPara sumPara){
 	return funcPara;
 
 }
-void CalFuncPara(int force, int displace, int count){
-	/*
-	if(count == 0){
-		clearSum();
-	}
-	*/
-
+void CalFuncPara(double force, double displace, int count){
+	force = force / 13107.0;
+	displace = displace / 13107.0;
 	sumParaDisplacement.sum_XY += count * displace;
 	sumParaDisplacement.sum_Xpow2Y += count * count * displace;
 	sumParaDisplacement.sum_Y += displace;
