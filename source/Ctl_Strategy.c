@@ -63,7 +63,7 @@ inline void CalculateTargetSpeed(void) {
  *Date:		   2018��11��25������9:32:11
  **************************************************************/
 inline void CalculateTargeDisplace(void) {
-
+//TODO need to find a method to get the right target of displacement
 
 }
 /**************************************************************
@@ -108,6 +108,7 @@ inline void UpdateDisplacementErr(void) {
  *Date:		   2018��11��25������9:33:16
  **************************************************************/
 void PidProcess(void){
+
 	CalculateSpringForce();
 	CalculateDampForce();
 	CalculateTargetAcc();
