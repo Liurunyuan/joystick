@@ -27,9 +27,9 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		if(SUCCESS == gRS422Status.shakeHand){
+		//if(SUCCESS == gRS422Status.shakeHand){
 			PackRS422TxData();
-		}
+		//}
 		count = 0;
 	}
 }
