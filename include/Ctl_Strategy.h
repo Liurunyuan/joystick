@@ -2,7 +2,7 @@
 #define _CTLSTRATEGY_
 
 
-
+void PidProcess(void);
 
 
 #endif

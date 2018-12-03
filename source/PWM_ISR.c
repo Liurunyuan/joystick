@@ -59,7 +59,7 @@ Uint16 GetCurrentHallValue(void){
 	temp = ((c << 2) + (b << 1) + a)^0x07;
 
 	if(temp < 1 || temp >6){
-		//TODO if temp < 1 or >6 means program abnormal, need to do something
+		gSysState.erro.bit.software = 1;
 	}
 	return temp;
 }

@@ -40,7 +40,6 @@ void StartGetADBySpi(void)
  ****************************************************************/
 void ReadADBySpi(void)
 {
-	//TODO
 	int retry;
 	/**********************************************/
 	Send16Clocks();

@@ -115,19 +115,7 @@ int PowerOnBIT(void){
 	//TODO   implement here, figure out what need to check, what to do if BIT fail.
 	return 0;
 }
-/**************************************************************
- *Name:						Start_main_loop
- *Function:					Business logic
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.6.10
- **************************************************************/
-void Start_main_loop(void){
 
-	FeedWatchDog();
-	//TODO need to implement
-}
 /**************************************************************
  *Name:						test_spi_tx
  *Function:					Business logic
@@ -290,6 +278,27 @@ void RS422Unpack(void) {
 		UnpackRS422ANew(&gRS422RxQueB);
 	}
 }
+/**************************************************************
+ *Name:						Start_main_loop
+ *Function:					Business logic
+ *Input:					none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2018.6.10
+ **************************************************************/
+void Start_main_loop(void){
+
+	FeedWatchDog();
+
+	//ShakeHandWithUpperComputer();
+
+	//test_spi_tx();
+
+	RS422Unpack();
+
+	ClearRS422RxOverFlow();
+	//TODO need to implement
+}
 /***************************************************************
  *Name:						main
  *Function:
@@ -324,14 +333,6 @@ void main(void) {
 #endif
 
 		Start_main_loop();
-
-		ShakeHandWithUpperComputer();
-
-		//test_spi_tx();
-
-		RS422Unpack();
-
-		ClearRS422RxOverFlow();
 
 #if TEST_TIME_MAIN_LOOP
 		GpioDataRegs.GPCCLEAR.bit.GPIO82 = 1;

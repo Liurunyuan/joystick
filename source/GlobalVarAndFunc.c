@@ -9,6 +9,8 @@ RS422STATUS gRS422Status = {0};
 KeyValue gKeyValue = {0};
 SYSINFO gSysInfo = {0};
 SYSSTATE gSysState = {0};
+SYSPARA gSysPara = {0};
+SYSCURRENTSTATE gSysCurrentState = {0};
 
 /**************************************************************
  *Name:		   InitSysState
@@ -22,4 +24,14 @@ void InitSysState(void){
 	gSysState.alarm.all 	= 0;
 	gSysState.erro.all 		= 0;
 	gSysState.warning.all 	= 0;
+
+	gSysPara.k_dampForce = 0;
+	gSysPara.k_springForce = 0;
+	gSysPara.mass = 0;
+
+	gSysCurrentState.accTarget = 0;
+	gSysCurrentState.dampForce = 0;
+	gSysCurrentState.displaceTarget = 0;
+	gSysCurrentState.speedTarget = 0;
+	gSysCurrentState.springForce = 0;
 }
