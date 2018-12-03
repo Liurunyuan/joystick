@@ -152,6 +152,8 @@ void PackRS422TxData(void){
 			}
 			crc = calCrc(crc, tmp, 3);
 		}
+
+		//错误信息，报警信息一直发送
 	}
 
 	if(count == 0){

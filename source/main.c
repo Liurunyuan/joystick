@@ -320,9 +320,6 @@ void main(void) {
 
 	PowerOnBIT();
 
-	gSysInfo.currentHallPosition = 6;
-	gSysInfo.duty = 200;
-
 	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 
