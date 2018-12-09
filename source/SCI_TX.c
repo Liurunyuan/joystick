@@ -5,6 +5,7 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 #include "ADprocessor.h"
+#include "PWM_ISR.h"
 
 GRX422TX gRx422TxVar[TOTAL_TX_VAR] = {0};
 Uint16 gRx422TxEnableFlag[TOTAL_TX_VAR] = {0};
@@ -113,6 +114,12 @@ void PackRS422TxData(void){
 	int lenPosition = 0;
 	Uint16 total =0;
 	static Uint16 testdata = 0;
+	static Uint16 alcount = 0;
+
+	if(testdata >= 150){
+		//testdata = 0;
+		return;
+	}
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
@@ -144,14 +151,27 @@ void PackRS422TxData(void){
 			++total;
 			if(i == 0){
 				//gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
-				gRx422TxVar[i].value = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+				//gRx422TxVar[i].value = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+				gRx422TxVar[i].value = test_data[testdata];
+
+//				if(testdata >= 150){
+//					//testdata = 0;
+//					return;
+//				}
 			}
 			else if(i == 1){
 				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 100);
-				gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
+				//gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
+//				gRx422TxVar[i].value = al[alcount];
+//				if(testdata % 10 == 0)
+//				{
+//					++alcount;
+//				}
+				gRx422TxVar[i].value = al[testdata];
+				++testdata;
 			}
 			else if(i == 2){
-				gRx422TxVar[i].value =(int16)(gKeyValue.motorSpeed * 100);
+				gRx422TxVar[i].value =(int16)(gKeyValue.motorSpeed * 10000);
 			}
 			else if(i == 3){
 				gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 100);
