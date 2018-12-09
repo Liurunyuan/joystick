@@ -10,6 +10,8 @@
 
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
+Uint16 test_data[150] = {0};
+Uint16 al[150] = {0};
 
 /**************************************************************
  *Name:						CalForceSpeedAccel
@@ -21,18 +23,35 @@ void ForceAndDisplaceProcess(int count);
  **************************************************************/
 void CalForceSpeedAccel(void) {
 	static int count = 0;
+	static int test = 0;
+	int i = 0;
+	if(test >= 150){
+		return;
+	}
 
 	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
-	CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value, gSysMonitorVar.anolog.single.var[ForceValue].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
 
-	count++;
+	++count;
 
 	if(count >= 10){
-		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
-		gKeyValue.motorSpeed = 2*funcParaDisplacement.a*11 + funcParaDisplacement.b;
-		gKeyValue.motorAccel = 2*funcParaDisplacement.a;
+//		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
+//		gKeyValue.motorSpeed = (funcParaDisplacement.a * 22) + (funcParaDisplacement.b);
+//		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+
+		gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
+		gKeyValue.motorSpeed = (funcParaDisplacement.a * 20) + (funcParaDisplacement.b);
+		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 
 		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;
+
+		for(i = 0; i < 10; ++i){
+			al[test + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*100;
+
+		}
+		//al[test] = gKeyValue.displacement * 100;
+		test += 10;
+
 
 		count = 0;
 	}
@@ -191,6 +210,7 @@ void SwitchDirection(void){
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 4://C+ ---------------> B-
+			//本项目电机会进行正转和反转。所以需要判断HALL相邻两个位置是否一样。
 			if((4 == gSysInfo.lastTimeHalllPosition ) || (5 == gSysInfo.lastTimeHalllPosition)){
 				CPositiveToBNegtive();
 			}
@@ -236,18 +256,30 @@ void SwitchDirection(void){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
+	static int test = 0;
+	static int delay = 0;
+//	++delay;
+
+	if(test >= 150){
+		return;
+	}
 	StartGetADBySpi();
 	//ReadAnalogValue();
 	ReadDigitalValue();
 
 	if(IsSingleAnalogValueAbnormal() == True){
-		//TODO
+		//TODO  不着急的量放进主循环，这里只判断电流以及高速
 	}
-
 	SwitchDirection();
 	ReadADBySpi();
-
+//	if(delay > 10000)
+//	{
+	test_data[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+	++test;
+	//传入最小二乘法的值范围为-10 到 10
 	CalForceSpeedAccel();
+//	}
+
 }
 /**************************************************************
  *Name:						forcebufProcess

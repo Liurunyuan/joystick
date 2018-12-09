@@ -4,11 +4,13 @@
 #include "GlobalVarAndFunc.h"
 #include "SCI_TX.h"
 #include <stdio.h>
+#include "ADprocessor.h"
+#include "PWM_ISR.h"
 
 GRX422TX gRx422TxVar[TOTAL_TX_VAR] = {0};
 Uint16 gRx422TxEnableFlag[TOTAL_TX_VAR] = {0};
 RS422TXQUE gRS422TxQue = {0};
-#define S (1)
+#define S (0)
 
 
 /***************************************************************
@@ -111,6 +113,13 @@ void PackRS422TxData(void){
 	char tmp[3] = {0};
 	int lenPosition = 0;
 	Uint16 total =0;
+	static Uint16 testdata = 0;
+	static Uint16 alcount = 0;
+
+	if(testdata >= 150){
+		//testdata = 0;
+		return;
+	}
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
@@ -126,14 +135,47 @@ void PackRS422TxData(void){
 			asm ("      ESTOP0");
 			return;
 		}
-
+//		if(RX422TXEnQueue(0xff) == 0){
+//			asm ("      ESTOP0");
+//			return;
+//		}
+//		if(RX422TXEnQueue(0xff) == 0){
+//			asm ("      ESTOP0");
+//			return;
+//		}
 		updateTxEnableFlag();
 	}
 
 	for(i = 0; i < TOTAL_TX_VAR; ++i){
 		if(gRx422TxVar[i].isTx){
 			++total;
-			gRx422TxVar[i].value = ((AdcRegs.ADCRESULT0) >> 4);
+			if(i == 0){
+				//gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
+				//gRx422TxVar[i].value = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+				gRx422TxVar[i].value = test_data[testdata];
+
+//				if(testdata >= 150){
+//					//testdata = 0;
+//					return;
+//				}
+			}
+			else if(i == 1){
+				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 100);
+				//gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
+//				gRx422TxVar[i].value = al[alcount];
+//				if(testdata % 10 == 0)
+//				{
+//					++alcount;
+//				}
+				gRx422TxVar[i].value = al[testdata];
+				++testdata;
+			}
+			else if(i == 2){
+				gRx422TxVar[i].value =(int16)(gKeyValue.motorSpeed * 10000);
+			}
+			else if(i == 3){
+				gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 100);
+			}
 
 			tmp[0] = gRx422TxVar[i].index;
 			tmp[1] = gRx422TxVar[i].value >> 8;
@@ -152,6 +194,8 @@ void PackRS422TxData(void){
 			}
 			crc = calCrc(crc, tmp, 3);
 		}
+
+		//错误信息，报警信息一直发送
 	}
 
 	if(count == 0){
@@ -241,6 +285,10 @@ void RS422A_Transmit(void){
 	//while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
 	//			&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
 	while((ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+		if(RS422TxQueLength() == 0)
+		{
+			return;
+		}
 		ScibTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);//printf by Scic
 		//ScicTxByte(gRS422TxQue.txBuf[gRS422TxQue.front]);
 

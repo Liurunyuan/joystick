@@ -64,36 +64,37 @@ void Timer1_ISR_Thread(void){
 	}
 
 	if(count >= RS422STATUSCHECK){
-		printf(">>>>>>>>>Check RS422 channel\r\n");
 		count = 0;
-
-		if(gRS422Status.rs422A == 0 && gRS422Status.rs422B == 0){
-			printf(">>>>>>>>>>RS422A and RS422B both failed to connect\r\n");
-			return;
-		}
-
-		if(RS422_CHANNEL_A == gRS422Status.rs422CurrentChannel){
-			if(gRS422Status.rs422A){
-				gRS422Status.rs422A = 0;
-			}
-			else{
-				printf(">>>>>>>>>>Switch to RS422BBBBBBBBBB channel\r\n");
-				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
-				//ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;
-			}
-		}
-		else if(RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel){
-			if(gRS422Status.rs422B){
-				gRS422Status.rs422B = 0;
-			}
-			else{
-				//TODO need to switch rs422B to rs422A.
-				printf(">>>Switch to RS422AAAAAAAAAAAAAAA channel\r\n");
-				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
-			}
-		}
-		else{
-			printf(">>>>>>>>>>>>>>>>>>>>Unknow RS422 channel\r\n");
-		}
+//		printf(">>>>>>>>>Check RS422 channel\r\n");
+//
+//
+//		if(gRS422Status.rs422A == 0 && gRS422Status.rs422B == 0){
+//			printf(">>>>>>>>>>RS422A and RS422B both failed to connect\r\n");
+//			return;
+//		}
+//
+//		if(RS422_CHANNEL_A == gRS422Status.rs422CurrentChannel){
+//			if(gRS422Status.rs422A){
+//				gRS422Status.rs422A = 0;
+//			}
+//			else{
+//				printf(">>>>>>>>>>Switch to RS422BBBBBBBBBB channel\r\n");
+//				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
+//				//ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;
+//			}
+//		}
+//		else if(RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel){
+//			if(gRS422Status.rs422B){
+//				gRS422Status.rs422B = 0;
+//			}
+//			else{
+//				//TODO need to switch rs422B to rs422A.
+//				printf(">>>Switch to RS422AAAAAAAAAAAAAAA channel\r\n");
+//				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
+//			}
+//		}
+//		else{
+//			printf(">>>>>>>>>>>>>>>>>>>>Unknow RS422 channel\r\n");
+//		}
 	}
 }
