@@ -1,6 +1,7 @@
 #ifndef _FILTERALG_H
 #define _FILTERALG_H
 
+#define DATA_AMOUNT (20)
 typedef struct _SumPara{
 	double sum_X;
 	double sum_Y;

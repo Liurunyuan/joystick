@@ -116,7 +116,7 @@ void PackRS422TxData(void){
 	static Uint16 testdata = 0;
 	static Uint16 alcount = 0;
 
-	if(testdata >= 150){
+	if(testdata >= 160){
 		//testdata = 0;
 		return;
 	}

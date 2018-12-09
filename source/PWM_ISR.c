@@ -25,7 +25,7 @@ void CalForceSpeedAccel(void) {
 	static int count = 0;
 	static int test = 0;
 	int i = 0;
-	if(test >= 150){
+	if(test >= 160){
 		return;
 	}
 
@@ -34,7 +34,7 @@ void CalForceSpeedAccel(void) {
 
 	++count;
 
-	if(count >= 10){
+	if(count >= DATA_AMOUNT){
 //		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
 //		gKeyValue.motorSpeed = (funcParaDisplacement.a * 22) + (funcParaDisplacement.b);
 //		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
@@ -45,14 +45,12 @@ void CalForceSpeedAccel(void) {
 
 		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;
 
-		for(i = 0; i < 10; ++i){
-			al[test + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*100;
+		for(i = 0; i < DATA_AMOUNT; ++i){
+			al[test + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*1000;
 
 		}
 		//al[test] = gKeyValue.displacement * 100;
-		test += 10;
-
-
+		test += DATA_AMOUNT;
 		count = 0;
 	}
 }
@@ -260,7 +258,7 @@ void Pwm_ISR_Thread(void)
 	static int delay = 0;
 //	++delay;
 
-	if(test >= 150){
+	if(test >= 160){
 		return;
 	}
 	StartGetADBySpi();
