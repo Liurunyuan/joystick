@@ -45,15 +45,14 @@ void ReadADBySpi(void)
 	Send16Clocks();
 	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
 	}
-	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
+	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
 	/**********************************************/
 	Send16Clocks();
 	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
 	}
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
+	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
 	/**********************************************/
 	Send1Clock();
-
 	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
 	}
 	retry = SpiaRegs.SPIRXBUF;

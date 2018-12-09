@@ -180,10 +180,14 @@ void Init_gRx422TxVar(void) {
 	for (index = 0; index < 20; ++index) {
 
 		gRx422TxVar[index].isTx = 1;
-		gRx422TxEnableFlag[index] = 1;
+
 		gRx422TxVar[index].index = index;
 
 	}
+	gRx422TxEnableFlag[0] = 1;
+	gRx422TxEnableFlag[1] = 1;
+	gRx422TxEnableFlag[2] = 1;
+	gRx422TxEnableFlag[3] = 1;
 }
 /**************************************************************
  *Name:						Init_feedbackVarBuf
@@ -294,9 +298,9 @@ void Start_main_loop(void){
 
 	//test_spi_tx();
 
-	RS422Unpack();
+	//RS422Unpack();
 
-	ClearRS422RxOverFlow();
+	//ClearRS422RxOverFlow();
 	//TODO need to implement
 }
 /***************************************************************

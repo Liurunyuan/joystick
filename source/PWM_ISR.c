@@ -23,14 +23,18 @@ void CalForceSpeedAccel(void) {
 	static int count = 0;
 
 	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
-	CalFuncPara(gSysMonitorVar.anolog.single.var[DisplacementValue].value, gSysMonitorVar.anolog.single.var[ForceValue].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
 
-	count++;
+	++count;
 
 	if(count >= 10){
-		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
-		gKeyValue.motorSpeed = 2*funcParaDisplacement.a*11 + funcParaDisplacement.b;
-		gKeyValue.motorAccel = 2*funcParaDisplacement.a;
+//		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
+//		gKeyValue.motorSpeed = (funcParaDisplacement.a * 22) + (funcParaDisplacement.b);
+//		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+
+		gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
+		gKeyValue.motorSpeed = (funcParaDisplacement.a * 20) + (funcParaDisplacement.b);
+		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 
 		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;
 
@@ -238,7 +242,7 @@ void SwitchDirection(void){
 void Pwm_ISR_Thread(void)
 {
 	StartGetADBySpi();
-	ReadAnalogValue();
+	//ReadAnalogValue();
 	ReadDigitalValue();
 
 	if(IsSingleAnalogValueAbnormal() == True){
