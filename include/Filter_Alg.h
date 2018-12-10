@@ -25,6 +25,7 @@ void CalFuncParaB(double displace, int count);
 FuncPara calFuncPara(SumPara sumPara);
 
 extern FuncPara funcParaDisplacement;
+extern FuncPara funcParaDisplacementb;
 extern FuncPara funcParaForce;
 extern SumPara sumParaDisplacementB;
 #endif

@@ -10,8 +10,10 @@
 
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
-Uint16 test_data[150] = {0};
-Uint16 al[150] = {0};
+Uint16 test_data[160] = {0};
+Uint16 al[160] = {0};
+Uint16 alb[160] = {0};
+Uint16 alc[160] = {0};
 
 /**************************************************************
  *Name:						CalForceSpeedAccel
@@ -22,10 +24,11 @@ Uint16 al[150] = {0};
  *Date:						2018.10.28
  **************************************************************/
 void CalForceSpeedAccel(void) {
+	static int countb = 0;
 	static int count = 0;
 	static int test = 0;
-	static int section = 0;
-	static int currentCh = 0;
+	static int testb = 10;
+	static int next = 0;
 	int i = 0;
 	if(test >= 160){
 		return;
@@ -33,10 +36,26 @@ void CalForceSpeedAccel(void) {
 
 	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
 	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
-	CalFuncParaB(gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
+	if(countb >= 10){
+		CalFuncParaB(gSysMonitorVar.anolog.single.var[DisplacementValue].value, countb);
+	}
 
+	++countb;
 	++count;
 
+	if(countb >= 30){
+
+		for(i = 0; i < DATA_AMOUNT; ++i){
+			alc[testb + i] = ((funcParaDisplacementb.a * i * i) + (funcParaDisplacementb.b * i) + (funcParaDisplacementb.c))*1000;
+		}
+		for(i = 0; i < 10; ++i){
+			alb[next + i] = ((funcParaDisplacementb.a * i * i) + (funcParaDisplacementb.b * i) + (funcParaDisplacementb.c))*1000;
+
+		}
+		next = next + 10;
+		testb = testb + DATA_AMOUNT;
+		countb = 10;
+	}
 	if(count >= DATA_AMOUNT){
 //		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
 //		gKeyValue.motorSpeed = (funcParaDisplacement.a * 22) + (funcParaDisplacement.b);
@@ -50,9 +69,14 @@ void CalForceSpeedAccel(void) {
 
 		for(i = 0; i < DATA_AMOUNT; ++i){
 			al[test + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*1000;
-
 		}
 		//al[test] = gKeyValue.displacement * 100;
+		for(i = 0; i < 10; ++i){
+			alb[next + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*1000;
+
+		}
+		next = next + 10;
+
 		test += DATA_AMOUNT;
 		count = 0;
 	}
@@ -276,9 +300,10 @@ void Pwm_ISR_Thread(void)
 //	if(delay > 10000)
 //	{
 	test_data[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
-	++test;
+
 	//传入最小二乘法的值范围为-10 到 10
 	CalForceSpeedAccel();
+	++test;
 //	}
 
 }

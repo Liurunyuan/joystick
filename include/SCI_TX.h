@@ -4,7 +4,7 @@
 
 
 
-#define TXMAXQSIZE (400)
+#define TXMAXQSIZE (300)
 #define TOTAL_TX_VAR (4)
 
 typedef void (*updatevalue)(int a, int b,int c);

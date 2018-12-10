@@ -20,6 +20,8 @@ typedef struct _FeedbackVarBuf{
 }FeedbackVarBuf;
 
 extern FeedbackVarBuf feedbackVarBuf;
-extern Uint16 test_data[150];
-extern Uint16 al[150];
+extern Uint16 test_data[160];
+extern Uint16 al[160];
+extern Uint16 alb[160];
+extern Uint16 alc[160];
 #endif
