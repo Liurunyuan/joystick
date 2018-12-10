@@ -21,7 +21,10 @@ typedef struct _FuncPara{
 
 
 void CalFuncPara(double force, double displace, int count);
+void CalFuncParaB(double displace, int count);
+FuncPara calFuncPara(SumPara sumPara);
 
 extern FuncPara funcParaDisplacement;
 extern FuncPara funcParaForce;
+extern SumPara sumParaDisplacementB;
 #endif

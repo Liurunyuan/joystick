@@ -24,6 +24,8 @@ Uint16 al[150] = {0};
 void CalForceSpeedAccel(void) {
 	static int count = 0;
 	static int test = 0;
+	static int section = 0;
+	static int currentCh = 0;
 	int i = 0;
 	if(test >= 160){
 		return;
@@ -31,6 +33,7 @@ void CalForceSpeedAccel(void) {
 
 	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
 	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
+	CalFuncParaB(gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
 
 	++count;
 

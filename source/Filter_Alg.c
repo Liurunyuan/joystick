@@ -27,6 +27,15 @@ SumPara sumParaDisplacement = {
 	0,
 	0
 };
+SumPara sumParaDisplacementB = {
+	SUMX,
+	0,
+	SUMXPOW2,
+	SUMXPOW3,
+	SUMXPOW4,
+	0,
+	0
+};
 
 SumPara sumParaForce = {
 	SUMX,
@@ -96,6 +105,27 @@ void CalFuncPara(double force, double displace, int count){
 	if(count >= (DATA_AMOUNT - 1)){
 		funcParaDisplacement = calFuncPara(sumParaDisplacement);
 		funcParaForce = calFuncPara(sumParaForce);
+		clearSum();
+	}
+}
+void clearSumB(void) {
+	sumParaDisplacementB.sum_XY = 0;
+	sumParaDisplacementB.sum_Xpow2Y = 0;
+	sumParaDisplacementB.sum_Y = 0;
+
+}
+void CalFuncParaB(double displace, int count){
+	//force = force / 13107.0;
+	//displace = displace / 13107.0;
+
+
+	displace = displace / 1000.0;
+	sumParaDisplacementB.sum_XY += count * displace;
+	sumParaDisplacementB.sum_Xpow2Y += count * count * displace;
+	sumParaDisplacementB.sum_Y += displace;
+
+	if(count >= (DATA_AMOUNT - 1)){
+		funcParaDisplacement = calFuncPara(sumParaDisplacementB);
 		clearSum();
 	}
 }
