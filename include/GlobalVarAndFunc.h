@@ -1,6 +1,9 @@
 #ifndef _GLOBAL_VAR_AND_FUNC_H
 #define _GLOBAL_VAR_AND_FUNC_H
 
+#define KALMAN_Q  (1.1)
+#define KALMAN_R  (57.2)
+
 typedef Uint16 bool;
 
 typedef struct{
@@ -149,6 +152,7 @@ extern SYSCURRENTSTATE gSysCurrentState;
 
 
 void InitSysState(void);
+double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 
 
 #endif
