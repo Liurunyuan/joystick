@@ -109,10 +109,10 @@ PAGE 1 :
 
 
    RAMM1      : origin = 0x000400, length = 0x000400     /* on-chip RAM block M1 */
-   RAML4      : origin = 0x00C000, length = 0x001000
-   RAML5      : origin = 0x00D000, length = 0x001000
-   RAML6      : origin = 0x00E000, length = 0x001000
-   RAML7      : origin = 0x00F000, length = 0x001000
+   RAML4      : origin = 0x00C000, length = 0x002000
+   RAML5      : origin = 0x00E000, length = 0x001000
+   RAML6      : origin = 0x00F000, length = 0x001000
+   RAML7      : origin = 0x010000, length = 0x001000
    ZONE7B     : origin = 0x20FC00, length = 0x000400     /* XINTF zone 7 - data space */
 }
 

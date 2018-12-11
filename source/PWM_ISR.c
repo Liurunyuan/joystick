@@ -14,6 +14,7 @@ Uint16 test_data[160] = {0};
 Uint16 al[160] = {0};
 Uint16 alb[160] = {0};
 Uint16 alc[160] = {0};
+Uint16 kal[160] = {0};
 
 /**************************************************************
  *Name:						CalForceSpeedAccel
@@ -48,10 +49,10 @@ void CalForceSpeedAccel(void) {
 		for(i = 0; i < DATA_AMOUNT; ++i){
 			alc[testb + i] = ((funcParaDisplacementb.a * i * i) + (funcParaDisplacementb.b * i) + (funcParaDisplacementb.c))*1000;
 		}
-//		for(i = 0; i < 10; ++i){
-//			alb[next + i] = ((funcParaDisplacementb.a * i * i) + (funcParaDisplacementb.b * i) + (funcParaDisplacementb.c))*1000;
-//
-//		}
+		for(i = 0; i < 10; ++i){
+			alb[next + i] = ((funcParaDisplacementb.a * i * i) + (funcParaDisplacementb.b * i) + (funcParaDisplacementb.c))*1000;
+
+		}
 		next = next + 10;
 		testb = testb + DATA_AMOUNT;
 		countb = 10;
@@ -71,10 +72,10 @@ void CalForceSpeedAccel(void) {
 			al[test + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*1000;
 		}
 		//al[test] = gKeyValue.displacement * 100;
-//		for(i = 0; i < 10; ++i){
-//			alb[next + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*1000;
-//
-//		}
+		for(i = 0; i < 10; ++i){
+			alb[next + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*1000;
+
+		}
 		next = next + 10;
 
 		test += DATA_AMOUNT;
@@ -302,7 +303,7 @@ void Pwm_ISR_Thread(void)
 //	{
 	test_data[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
 	gSysMonitorVar.anolog.single.var[DisplacementValue].value =  KalmanFilter(gSysMonitorVar.anolog.single.var[DisplacementValue].value, KALMAN_Q, KALMAN_R);
-	alb[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+	kal[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
 	//传入最小二乘法的值范围为-10 到 10
 	CalForceSpeedAccel();
 	++test;

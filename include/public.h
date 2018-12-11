@@ -3,7 +3,7 @@
 
 //define for calculating running time of function\
 
-#define TEST_TIME_EPWM1   (0)
+#define TEST_TIME_EPWM1   (1)
 #define TEST_TIME_SCI_TX  (0)
 #define TEST_TIME_SCI_RX  (0)
 #define TEST_TIME_TIMER0  (0)

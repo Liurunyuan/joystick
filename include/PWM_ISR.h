@@ -24,4 +24,5 @@ extern Uint16 test_data[160];
 extern Uint16 al[160];
 extern Uint16 alb[160];
 extern Uint16 alc[160];
+extern Uint16 kal[160];
 #endif

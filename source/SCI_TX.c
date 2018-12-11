@@ -166,17 +166,20 @@ void PackRS422TxData(void){
 //				{
 //					++alcount;
 //				}
-				gRx422TxVar[i].value = al[testdata];
+				gRx422TxVar[i].value = kal[testdata];
+
 				//++testdata;
 			}
 			else if(i == 2){
 				//gRx422TxVar[i].value =(int16)(gKeyValue.motorSpeed * 10000);
-				gRx422TxVar[i].value = alb[testdata];
+				gRx422TxVar[i].value = al[testdata];
+
 				//++testdata;
 			}
 			else if(i == 3){
 				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 100);
-				gRx422TxVar[i].value = alc[testdata];
+				//gRx422TxVar[i].value = alc[testdata];
+				gRx422TxVar[i].value = alb[testdata];
 				++testdata;
 			}
 
