@@ -116,8 +116,8 @@ void PackRS422TxData(void){
 	static Uint16 testdata = 0;
 
 	if(testdata >= 160){
-		//testdata = 0;
-		return;
+		testdata = 0;
+		//return;
 	}
 
 	if(count == 0){
@@ -150,8 +150,8 @@ void PackRS422TxData(void){
 			++total;
 			if(i == 0){
 				//gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
-				//gRx422TxVar[i].value = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
-				gRx422TxVar[i].value = test_data[testdata];
+				gRx422TxVar[i].value = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+				//gRx422TxVar[i].value = test_data[testdata];
 
 //				if(testdata >= 150){
 //					//testdata = 0;

@@ -7,7 +7,7 @@
 #include "SCI_TX.h"
 #include <stdio.h>
 
-#define N (10)
+#define N (20)
 #define RS422STATUSCHECK (1000)
 
 

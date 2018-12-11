@@ -32,7 +32,10 @@ void CalForceSpeedAccel(void) {
 	static int next = 0;
 	int i = 0;
 	if(test >= 160){
-		return;
+		//return;
+		test = 0;
+		next = 0;
+		testb = 10;
 	}
 
 	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
@@ -43,6 +46,7 @@ void CalForceSpeedAccel(void) {
 
 	++countb;
 	++count;
+	++test;
 
 	if(countb >= 30){
 
@@ -283,11 +287,10 @@ void SwitchDirection(void){
 void Pwm_ISR_Thread(void)
 {
 	static int test = 0;
-	static int delay = 0;
-//	++delay;
 
 	if(test >= 160){
-		return;
+		//return;
+		test = 0;
 	}
 	StartGetADBySpi();
 	//ReadAnalogValue();
@@ -299,16 +302,13 @@ void Pwm_ISR_Thread(void)
 	SwitchDirection();
 	ReadADBySpi();
 
-//	if(delay > 10000)
-//	{
+
 	test_data[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value =  KalmanFilter(gSysMonitorVar.anolog.single.var[DisplacementValue].value, KALMAN_Q, KALMAN_R);
+	//gSysMonitorVar.anolog.single.var[DisplacementValue].value =  KalmanFilter(gSysMonitorVar.anolog.single.var[DisplacementValue].value, KALMAN_Q, KALMAN_R);
 	kal[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
 	//传入最小二乘法的值范围为-10 到 10
 	CalForceSpeedAccel();
 	++test;
-//	}
-
 }
 /**************************************************************
  *Name:						forcebufProcess
