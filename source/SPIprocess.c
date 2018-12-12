@@ -52,7 +52,6 @@ void ReadADBySpi(void)
 	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
 	}
 	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
-	//gSysMonitorVar.anolog.single.var[ForceValue].value = KalmanFilter(SpiaRegs.SPIRXBUF, KALMAN_Q, KALMAN_R);
 	/**********************************************/
 	Send1Clock();
 	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
