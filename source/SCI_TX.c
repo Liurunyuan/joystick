@@ -149,8 +149,8 @@ void PackRS422TxData(void){
 		if(gRx422TxVar[i].isTx){
 			++total;
 			if(i == 0){
-				//gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
-				gRx422TxVar[i].value = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
+				gRx422TxVar[i].value =(int16)(gKeyValue.displacement);
+				//gRx422TxVar[i].value = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
 				//gRx422TxVar[i].value = test_data[testdata];
 
 //				if(testdata >= 150){
@@ -159,27 +159,27 @@ void PackRS422TxData(void){
 //				}
 			}
 			else if(i == 1){
-				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 100);
+				gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
 				//gRx422TxVar[i].value =(int16)(gKeyValue.displacement * 100);
 //				gRx422TxVar[i].value = al[alcount];
 //				if(testdata % 10 == 0)
 //				{
 //					++alcount;
 //				}
-				gRx422TxVar[i].value = kal[testdata];
+				//gRx422TxVar[i].value = kal[testdata];
 
 				//++testdata;
 			}
 			else if(i == 2){
-				//gRx422TxVar[i].value =(int16)(gKeyValue.motorSpeed * 10000);
-				gRx422TxVar[i].value = al[testdata];
+				gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 1000 + 16000);
+				//gRx422TxVar[i].value = al[testdata];
 
 				//++testdata;
 			}
 			else if(i == 3){
-				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 100);
+				gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
 				//gRx422TxVar[i].value = alc[testdata];
-				gRx422TxVar[i].value = alb[testdata];
+//				gRx422TxVar[i].value = alb[testdata];
 				++testdata;
 			}
 

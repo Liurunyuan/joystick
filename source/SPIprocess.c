@@ -45,8 +45,8 @@ void ReadADBySpi(void)
 	Send16Clocks();
 	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
 	}
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
-	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = KalmanFilter(SpiaRegs.SPIRXBUF, KALMAN_Q, KALMAN_R);
+	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
+	gSysMonitorVar.anolog.single.var[DisplacementValue].value = KalmanFilter(SpiaRegs.SPIRXBUF, KALMAN_Q, KALMAN_R);
 	/**********************************************/
 	Send16Clocks();
 	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {

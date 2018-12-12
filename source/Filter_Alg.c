@@ -93,8 +93,8 @@ void CalFuncPara(double force, double displace, int count){
 	//force = force / 13107.0;
 	//displace = displace / 13107.0;
 
-	force = force / 1000.0;
-	displace = displace / 1000.0;
+	force = force / 1.0;
+	displace = displace / 1.0;
 	sumParaDisplacement.sum_XY += count * displace;
 	sumParaDisplacement.sum_Xpow2Y += count * count * displace;
 	sumParaDisplacement.sum_Y += displace;
