@@ -2,20 +2,20 @@
 #include "Filter_Alg.h"
 
 
-//#define SUMX 45L
-//#define SUMXPOW2 285L
-//#define SUMXPOW3 2025L
-//#define SUMXPOW4 15333L
-//#define SUMXPOW5 120825L
-//#define SUMXPOW6 978405L
+#define SUMX 45L
+#define SUMXPOW2 285L
+#define SUMXPOW3 2025L
+#define SUMXPOW4 15333L
+#define SUMXPOW5 120825L
+#define SUMXPOW6 978405L
 
 
-#define SUMX 190L
-#define SUMXPOW2 2470L
-#define SUMXPOW3 36100L
-#define SUMXPOW4 562666L
-#define SUMXPOW5 9133300L
-#define SUMXPOW6 152455810L
+//#define SUMX 190L
+//#define SUMXPOW2 2470L
+//#define SUMXPOW3 36100L
+//#define SUMXPOW4 562666L
+//#define SUMXPOW5 9133300L
+//#define SUMXPOW6 152455810L
 
 
 SumPara sumParaDisplacement = {
