@@ -32,7 +32,7 @@ void CalForceSpeedAccel(void) {
 	if(count >= DATA_AMOUNT){
 
 		gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
-		gKeyValue.motorSpeed = KalmanFilterSpeed(((funcParaDisplacement.a * 20) + (funcParaDisplacement.b)), KALMAN_Q, KALMAN_R);
+		//gKeyValue.motorSpeed = KalmanFilterSpeed(((funcParaDisplacement.a * 20) + (funcParaDisplacement.b)), KALMAN_Q, KALMAN_R);
 		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 
 		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;

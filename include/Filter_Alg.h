@@ -1,7 +1,17 @@
 #ifndef _FILTERALG_H
 #define _FILTERALG_H
 
+#define TEN_POINTS
+//#define TWENTY_POINTS
+
+#ifdef TEN_POINTS
+#define DATA_AMOUNT (10)
+#endif
+
+#ifdef TWENTY_POINTS
 #define DATA_AMOUNT (20)
+#endif
+
 typedef struct _SumPara{
 	double sum_X;
 	double sum_Y;

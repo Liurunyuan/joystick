@@ -147,7 +147,7 @@ void PackRS422TxData(void){
 				gRx422TxVar[i].value =(int16)(gKeyValue.displacement);
 			}
 			else if(i == 1){
-				gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 500);
+				gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 1000);
 			}
 			else if(i == 2){
 				gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
