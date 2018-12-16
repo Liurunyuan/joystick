@@ -23,16 +23,11 @@ int16 countreal = 0;
 Uint16 zz[400] = {0};
 
 void UpdateKeyValue(void) {
-	int a;
-	int b;
-	int c;
-	double speed;
-
 
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
-	gKeyValue.displacement = funcParaDisplacement.a * 400 + funcParaDisplacement.b * 20 + funcParaDisplacement.c;
+	gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
 
-	gKeyValue.motorSpeed = KalmanFilterSpeed(funcParaDisplacement.a * 40 + funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
+	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 10 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
 	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
 	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 }
@@ -276,22 +271,14 @@ void Pwm_ISR_Thread(void)
 	SwitchDirection();
 	ReadADBySpi();
 
-//	if(real > 29300){
-//		++countreal;
-//	}
-//	else if(real < 2200){
-//		++countreal;
-//	}
 	if(real2 > 400){
 		++countreal;
 		real5 = real2;
 	}
-//
-//	zz[count] = real;
-//	++count;
+
 	gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
-//	gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
-//
+	gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
+
 	CalForceSpeedAccel();
 }
 /**************************************************************
