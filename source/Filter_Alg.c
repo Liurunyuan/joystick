@@ -1,6 +1,7 @@
 #include <math.h>
 #include "Filter_Alg.h"
 
+
 #ifdef TEN_POINTS
 #define SUMX 45L
 #define SUMXPOW2 285L
@@ -95,8 +96,8 @@ void CalFuncPara(double force, double displace, int count){
 //	force = force / 13107.0;
 //	displace = displace / 13107.0;
 
-	//force = force / 1.0;
-	//displace = displace / 1.0;
+//	force = force / 100.0;
+//	displace = displace / 100.0;
 	sumParaDisplacement.sum_XY += count * displace;
 	sumParaDisplacement.sum_Xpow2Y += count * count * displace;
 	sumParaDisplacement.sum_Y += displace;
@@ -105,11 +106,11 @@ void CalFuncPara(double force, double displace, int count){
 	sumParaForce.sum_Xpow2Y += count*count * force;
 	sumParaForce.sum_Y += force;
 
-	if(count >= (DATA_AMOUNT - 1)){
-		funcParaDisplacement = calFuncPara(sumParaDisplacement);
-		//funcParaForce = calFuncPara(sumParaForce);
-		clearSum();
-	}
+//	if(count >= (DATA_AMOUNT - 1)){
+//		funcParaDisplacement = calFuncPara(sumParaDisplacement);
+//		//funcParaForce = calFuncPara(sumParaForce);
+//		clearSum();
+//	}
 }
 void clearSumB(void) {
 	sumParaDisplacementB.sum_XY = 0;

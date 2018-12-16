@@ -144,16 +144,21 @@ void PackRS422TxData(void){
 		if(gRx422TxVar[i].isTx){
 			++total;
 			if(i == 0){
-				gRx422TxVar[i].value =(int16)(gKeyValue.displacement);
+				//gRx422TxVar[i].value =(int)(gKeyValue.displacement * 100);
+				gRx422TxVar[i].value = real;
+
 			}
 			else if(i == 1){
-				gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 1000);
+				gRx422TxVar[i].value = real2;
+				//gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 10000);
 			}
 			else if(i == 2){
-				gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
+				gRx422TxVar[i].value =(int)(gKeyValue.displacement);
+				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
 			}
 			else if(i == 3){
-				gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
+				gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 100);
+				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
 			}
 
 			tmp[0] = gRx422TxVar[i].index;

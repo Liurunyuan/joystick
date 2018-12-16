@@ -11,7 +11,31 @@
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
-int tmp = 0;
+Uint16 real = 0;
+Uint16 realbak = 0;
+Uint16 real2 = 0;
+Uint16 real3 = 0;
+Uint16 real4 = 0;
+Uint16 real5 = 0;
+Uint16 real6 = 0;
+
+int16 countreal = 0;
+Uint16 zz[400] = {0};
+
+void UpdateKeyValue(void) {
+	int a;
+	int b;
+	int c;
+	double speed;
+
+
+	funcParaDisplacement = calFuncPara(sumParaDisplacement);
+	gKeyValue.displacement = funcParaDisplacement.a * 400 + funcParaDisplacement.b * 20 + funcParaDisplacement.c;
+
+	gKeyValue.motorSpeed = KalmanFilterSpeed(funcParaDisplacement.a * 40 + funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
+	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
+	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+}
 
 /**************************************************************
  *Name:						CalForceSpeedAccel
@@ -25,17 +49,14 @@ void CalForceSpeedAccel(void) {
 
 	static int count = 0;
 
+	if(gKeyValue.lock == 1){
+		return;
+	}
 	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
-
 	++count;
 
 	if(count >= DATA_AMOUNT){
-
-		gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
-		//gKeyValue.motorSpeed = KalmanFilterSpeed(((funcParaDisplacement.a * 20) + (funcParaDisplacement.b)), KALMAN_Q, KALMAN_R);
-		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
-
-		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;
+		gKeyValue.lock = 1;
 		count = 0;
 	}
 }
@@ -239,7 +260,13 @@ void SwitchDirection(void){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
+	static int count = 0;
 	StartGetADBySpi();
+
+	if(count >= 400){
+		count = 0;
+	}
+
 	//ReadAnalogValue();
 	ReadDigitalValue();
 
@@ -249,7 +276,22 @@ void Pwm_ISR_Thread(void)
 	SwitchDirection();
 	ReadADBySpi();
 
-	//传入最小二乘法的值范围为-10 到 10
+//	if(real > 29300){
+//		++countreal;
+//	}
+//	else if(real < 2200){
+//		++countreal;
+//	}
+	if(real2 > 400){
+		++countreal;
+		real5 = real2;
+	}
+//
+//	zz[count] = real;
+//	++count;
+	gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
+//	gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
+//
 	CalForceSpeedAccel();
 }
 /**************************************************************

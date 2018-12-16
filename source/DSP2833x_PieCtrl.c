@@ -120,7 +120,7 @@ void Init_Interrupt(void)
 	 	InitPieVectTable();
 
 	    IER |= M_INT1;
-	    //IER |= M_INT2;
+	    IER |= M_INT2;
 	    IER |= M_INT3;
 	    IER |= M_INT4;
 	    IER |= M_INT7;

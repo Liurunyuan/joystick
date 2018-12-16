@@ -106,24 +106,30 @@ void SPI_Config(void)
 	/*Find the data sheet and finish the configuration code here*/
 	SpiaRegs.SPICCR.all 		= 0x0051;		//复位SPI,上升沿发送，下降沿接受，16位数据
 	SpiaRegs.SPICTL.all 		= 0x000f;		//无相位延时，主模式
-	SpiaRegs.SPIBRR				= 0x0000;		//确定SPICLK
-	SpiaRegs.SPICCR.all 		= 0x009F;		//自测模式，并从复位状态释放
-	SpiaRegs.SPIPRI.bit.FREE 	= 1;			//自由运行
+	SpiaRegs.SPIBRR				= 0x0;		//确定SPICLK
+	SpiaRegs.SPICCR.all 		= 0x000F;		//自测模式，并从复位状态释放
+
 
 	SpiaRegs.SPICTL.bit.CLK_PHASE = 0;
 	SpiaRegs.SPICCR.bit.CLKPOLARITY = 1;
 	SpiaRegs.SPICCR.bit.SPICHAR = 0xf;
 
 	SpiaRegs.SPICCR.bit.SPILBK = 0;
+	SpiaRegs.SPICCR.bit.SPISWRESET = 1;
+	SpiaRegs.SPIPRI.bit.FREE 	= 1;			//自由运行
 
 	/*config SPI FIFO*/
 	//SpiaRegs.SPIFFTX.all		= 0xE040;		//使能FIFIO，清除发送中断
 	//SpiaRegs.SPIFFRX.all		= 0x204F;		//使能FIFO接受16级深度
 	//SpiaRegs.SPIFFCT.all		= 0x00;			//清楚FIFO计数器
 
-    SpiaRegs.SPIFFTX.all=0xE040;
+    SpiaRegs.SPIFFTX.all=0xE04f;
     SpiaRegs.SPIFFRX.all=0x204f;
+
     SpiaRegs.SPIFFCT.all=0x0;
+
+//    SpiaRegs.SPIFFTX.bit.SPIFFENA = 0;
+//    SpiaRegs.SPIFFRX.bit.RXFFIENA = 0;
 }
 
 /*

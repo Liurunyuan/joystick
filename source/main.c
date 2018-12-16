@@ -266,6 +266,7 @@ void InitGlobalVar(void){
 	Init_gSysMonitorVar();
 	Init_gRS422Status();
 	gKeyValue.displacement = 10;
+	gKeyValue.lock = 0;
 }
 /**************************************************************
  *Name:		   RS422Unpack

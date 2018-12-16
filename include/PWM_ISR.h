@@ -20,5 +20,14 @@ typedef struct _FeedbackVarBuf{
 }FeedbackVarBuf;
 
 extern FeedbackVarBuf feedbackVarBuf;
+extern Uint16 real;
+extern Uint16 real2;
+extern Uint16 real3;
+extern Uint16 real4;
+extern Uint16 real5;
+extern Uint16 real6;
+
+void UpdateKeyValue(void);
+
 
 #endif
