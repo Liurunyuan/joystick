@@ -6,7 +6,7 @@
 #define TEST_TIME_EPWM1   (0)
 #define TEST_TIME_SCI_TX  (0)
 #define TEST_TIME_SCI_RX  (0)
-#define TEST_TIME_TIMER0  (0)
+#define TEST_TIME_TIMER0  (1)
 #define TEST_TIME_TIMER1  (0)
 #define TEST_TIME_ECAP1   (0)
 #define TEST_TIME_MAIN_LOOP (0)

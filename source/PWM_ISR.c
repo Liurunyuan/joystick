@@ -10,8 +10,27 @@
 
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
-Uint16 test_data[150] = {0};
-Uint16 al[150] = {0};
+
+Uint16 real = 0;
+Uint16 realbak = 0;
+Uint16 real2 = 0;
+Uint16 real3 = 0;
+Uint16 real4 = 0;
+Uint16 real5 = 0;
+Uint16 real6 = 0;
+
+int16 countreal = 0;
+Uint16 zz[400] = {0};
+
+void UpdateKeyValue(void) {
+
+	funcParaDisplacement = calFuncPara(sumParaDisplacement);
+	gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
+
+	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 10 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
+	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
+	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+}
 
 /**************************************************************
  *Name:						CalForceSpeedAccel
@@ -22,37 +41,17 @@ Uint16 al[150] = {0};
  *Date:						2018.10.28
  **************************************************************/
 void CalForceSpeedAccel(void) {
+
 	static int count = 0;
-	static int test = 0;
-	int i = 0;
-	if(test >= 150){
+
+	if(gKeyValue.lock == 1){
 		return;
 	}
-
-	//CalFuncPara(feedbackVarBuf.displacementbuf[count], feedbackVarBuf.forcebuf[count], count);
 	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
-
 	++count;
 
-	if(count >= 10){
-//		gKeyValue.displacement = funcParaDisplacement.a * 121 + funcParaDisplacement.b * 11 + funcParaDisplacement.c;
-//		gKeyValue.motorSpeed = (funcParaDisplacement.a * 22) + (funcParaDisplacement.b);
-//		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
-
-		gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
-		gKeyValue.motorSpeed = (funcParaDisplacement.a * 20) + (funcParaDisplacement.b);
-		gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
-
-		gKeyValue.force = funcParaForce.a * 121 + funcParaForce.b * 11 + funcParaForce.c;
-
-		for(i = 0; i < 10; ++i){
-			al[test + i] = ((funcParaDisplacement.a * i * i) + (funcParaDisplacement.b * i) + (funcParaDisplacement.c))*100;
-
-		}
-		//al[test] = gKeyValue.displacement * 100;
-		test += 10;
-
-
+	if(count >= DATA_AMOUNT){
+		gKeyValue.lock = 1;
 		count = 0;
 	}
 }
@@ -256,14 +255,13 @@ void SwitchDirection(void){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
-	static int test = 0;
-	static int delay = 0;
-//	++delay;
-
-	if(test >= 150){
-		return;
-	}
+	static int count = 0;
 	StartGetADBySpi();
+
+	if(count >= 400){
+		count = 0;
+	}
+
 	//ReadAnalogValue();
 	ReadDigitalValue();
 
@@ -272,14 +270,16 @@ void Pwm_ISR_Thread(void)
 	}
 	SwitchDirection();
 	ReadADBySpi();
-//	if(delay > 10000)
-//	{
-	test_data[test] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
-	++test;
-	//传入最小二乘法的值范围为-10 到 10
-	CalForceSpeedAccel();
-//	}
 
+	if(real2 > 400){
+		++countreal;
+		real5 = real2;
+	}
+
+	gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
+	gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
+
+	CalForceSpeedAccel();
 }
 /**************************************************************
  *Name:						forcebufProcess
