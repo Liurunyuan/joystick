@@ -4,6 +4,8 @@
 #include "Ctl_Strategy.h"
 #include "GlobalVarAndFunc.h"
 
+#define ITEGRATION_TIMES (6)
+
 /**************************************************************
  *Name:		   CalculateSpringForce
  *Comment:
@@ -122,6 +124,50 @@ void PidProcess(void){
 	UpdateSpeedErr();
 	UpdateDisplacementErr();
 }
+//F - K1 * dy/dt - K2 * y = m * dy2/dt2
+//F外 - K阻尼 * dy/dt - K弹 * y = m * dy2/dt2
+//令z = dy/dt
+//=====>
+double function(double x0, double y0, double z0, double h){
+	int K11;
+	int K12;
+	int K13;
+	int K14;
+
+	int K21;
+	int K22;
+	int K23;
+	int K24;
+
+	int a = 0;//a = f阻尼/m
+	int b = 0;//b = f弹簧/m
+	int c = 0;//c = -f外力/m
+
+	a = gSysPara.k_dampForce/gSysPara.mass;
+	b = gSysPara.k_springForce / gSysPara.mass;
+	c = gKeyValue.force / gSysPara.mass;
+
+	double y1;
+	double z1;
+
+	K11 = z0;
+	K21 = c - (a * z0) - (b * y0);
+
+	K12 = z0 + h/2 * K21;
+	K22 =   -2 * (y0 + h/2 * K11) + 2 * (z0 + h/2 * K21);
+
+	K13 = z0 + h/2 * K22;
+	K23 =   -2 * (y0 + h/2 * K12) + 2 * (z0 + h/2 * K22);
+
+	K14 = z0 + h * K23;
+	K24 =   -2 * (y0 + h/2 * K13) + 2 * (z0 + h * K23);
+
+	y1 = y0 + h/6 *(K11 + 2 * K12 + 2 * K13 + K14);
+	z1 = z0 + h/6 *(K21 + 2 * K22 + 2 * K23 + K24);
+
+
+	return y1;
+}
 /**************************************************************
  *Name:		   RKT
  *Comment:
@@ -130,8 +176,15 @@ void PidProcess(void){
  *Author:	   Simon
  *Date:		   2018年12月18日下午9:05:27
  **************************************************************/
-int RKT(void){
+int RKT(double x, double y, double z, double h){
 	int ret = 0;
+	int i;
 
+	for(i = 0; i < 10; ++i){
+		function(x, y, z, h);
+		//TODO update value of y
+		//TODO update value of z
+		x = x + h;
+	}
 	return ret;
 }
