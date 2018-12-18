@@ -101,6 +101,21 @@ int IsSingleAnalogValueAbnormal(void){
 	return ret;
 }
 /**************************************************************
+ *Name:		   IsCommonAnalogValueAbnormal
+ *Comment:
+ *Input:	   void
+ *Output:	   int
+ *Author:	   Simon
+ *Date:		   2018年12月18日下午9:02:38
+ **************************************************************/
+int IsCommonAnalogValueAbnormal(void){
+
+	//TODO need to impletment later
+	int ret = 0;
+
+	return ret;
+}
+/**************************************************************
  *Name:						AdcConversionUnStable
  *Function:					判定模拟量多通道切换以及转换是否稳定
  *Input:					none
