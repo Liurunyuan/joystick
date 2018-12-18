@@ -122,3 +122,16 @@ void PidProcess(void){
 	UpdateSpeedErr();
 	UpdateDisplacementErr();
 }
+/**************************************************************
+ *Name:		   RKT
+ *Comment:
+ *Input:	   void
+ *Output:	   int
+ *Author:	   Simon
+ *Date:		   2018年12月18日下午9:05:27
+ **************************************************************/
+int RKT(void){
+	int ret = 0;
+
+	return ret;
+}

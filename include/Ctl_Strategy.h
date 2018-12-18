@@ -3,6 +3,7 @@
 
 
 void PidProcess(void);
+int RKT(void);
 
 
 #endif
