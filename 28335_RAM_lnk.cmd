@@ -87,8 +87,8 @@ PAGE 0 :
    BOOT_RSVD  : origin = 0x000002, length = 0x00004E     /* Part of M0, BOOT rom will use this for stack */
    RAMM0      : origin = 0x000050, length = 0x0003B0
 
-   RAML0      : origin = 0x008000, length = 0x000100
-   RAML1      : origin = 0x008100, length = 0x003f00
+   RAML0      : origin = 0x008000, length = 0x000130
+   RAML1      : origin = 0x008130, length = 0x003ed0
    RAML2      : origin = 0x00C000, length = 0x000100
    RAML3      : origin = 0x00C100, length = 0x001000
    ZONE7A     : origin = 0x200000, length = 0x00FC00    /* XINTF zone 7 - program space */
@@ -109,10 +109,10 @@ PAGE 1 :
 
 
    RAMM1      : origin = 0x000400, length = 0x000400     /* on-chip RAM block M1 */
-   RAML4      : origin = 0x00C000, length = 0x001000
-   RAML5      : origin = 0x00D000, length = 0x001000
-   RAML6      : origin = 0x00E000, length = 0x001000
-   RAML7      : origin = 0x00F000, length = 0x001000
+   RAML4      : origin = 0x00C000, length = 0x002000
+   RAML5      : origin = 0x00E000, length = 0x001000
+   RAML6      : origin = 0x00F000, length = 0x001000
+   RAML7      : origin = 0x010000, length = 0x001000
    ZONE7B     : origin = 0x20FC00, length = 0x000400     /* XINTF zone 7 - data space */
 }
 
