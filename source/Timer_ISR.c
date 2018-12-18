@@ -5,9 +5,11 @@
 #include "Timer_ISR.h"
 #include "SCI_ISR.h"
 #include "SCI_TX.h"
+#include "PWM_ISR.h"
+#include "Filter_Alg.h"
 #include <stdio.h>
 
-#define N (20)
+#define N (10)
 #define RS422STATUSCHECK (1000)
 
 
@@ -27,10 +29,15 @@ void Timer0_ISR_Thread(void){
 	++count;
 
 	if(count > N){
-		//if(SUCCESS == gRS422Status.shakeHand){
-			PackRS422TxData();
-		//}
+		PackRS422TxData();
 		count = 0;
+	}
+
+	if(gKeyValue.lock == 1){
+		//calculate function parameter
+		UpdateKeyValue();
+		clearSum();
+		gKeyValue.lock = 0;
 	}
 }
 /**************************************************************

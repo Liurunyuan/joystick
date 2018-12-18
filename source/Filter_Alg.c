@@ -2,20 +2,23 @@
 #include "Filter_Alg.h"
 
 
-//#define SUMX 45L
-//#define SUMXPOW2 285L
-//#define SUMXPOW3 2025L
-//#define SUMXPOW4 15333L
-//#define SUMXPOW5 120825L
-//#define SUMXPOW6 978405L
+#ifdef TEN_POINTS
+#define SUMX 45L
+#define SUMXPOW2 285L
+#define SUMXPOW3 2025L
+#define SUMXPOW4 15333L
+#define SUMXPOW5 120825L
+#define SUMXPOW6 978405L
+#endif
 
-
+#ifdef TWENTY_POINTS
 #define SUMX 190L
 #define SUMXPOW2 2470L
 #define SUMXPOW3 36100L
 #define SUMXPOW4 562666L
 #define SUMXPOW5 9133300L
 #define SUMXPOW6 152455810L
+#endif
 
 
 SumPara sumParaDisplacement = {
@@ -90,11 +93,11 @@ FuncPara calFuncPara(SumPara sumPara){
 
 }
 void CalFuncPara(double force, double displace, int count){
-	//force = force / 13107.0;
-	//displace = displace / 13107.0;
+//	force = force / 13107.0;
+//	displace = displace / 13107.0;
 
-	force = force / 1.0;
-	displace = displace / 1.0;
+//	force = force / 100.0;
+//	displace = displace / 100.0;
 	sumParaDisplacement.sum_XY += count * displace;
 	sumParaDisplacement.sum_Xpow2Y += count * count * displace;
 	sumParaDisplacement.sum_Y += displace;
@@ -103,11 +106,11 @@ void CalFuncPara(double force, double displace, int count){
 	sumParaForce.sum_Xpow2Y += count*count * force;
 	sumParaForce.sum_Y += force;
 
-	if(count >= (DATA_AMOUNT - 1)){
-		funcParaDisplacement = calFuncPara(sumParaDisplacement);
-		funcParaForce = calFuncPara(sumParaForce);
-		clearSum();
-	}
+//	if(count >= (DATA_AMOUNT - 1)){
+//		funcParaDisplacement = calFuncPara(sumParaDisplacement);
+//		//funcParaForce = calFuncPara(sumParaForce);
+//		clearSum();
+//	}
 }
 void clearSumB(void) {
 	sumParaDisplacementB.sum_XY = 0;

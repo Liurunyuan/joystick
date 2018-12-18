@@ -2,7 +2,7 @@
 #define _GLOBAL_VAR_AND_FUNC_H
 
 #define KALMAN_Q  (1.1)
-#define KALMAN_R  (117.2)
+#define KALMAN_R  (157.2)
 
 typedef Uint16 bool;
 
