@@ -16,11 +16,11 @@ inline void Send16Clocks(void){
 	SpiaRegs.SPITXBUF = 0xffff;
 	//SpiaRegs.SPIDAT = 0xffff;
 }
-inline void Send1Clock(void) {
-	SpiaRegs.SPICCR.bit.SPICHAR = 0x0;
-	//SpiaRegs.SPITXBUF = 1;
-	SpiaRegs.SPIDAT = 0xffff;
-}
+//inline void Send1Clock(void) {
+//	SpiaRegs.SPICCR.bit.SPICHAR = 0x0;
+//	//SpiaRegs.SPITXBUF = 1;
+//	SpiaRegs.SPIDAT = 0xffff;
+//}
 /***************************************************************
  *Name:						StartGetADBySpi
  *Function:
