@@ -268,6 +268,7 @@ void AnalogValueInspect(void);
 void DigitalValueInspect(void);
 void ReadAnalogValue(void);
 void ReadDigitalValue(void);
+int IsCommonAnalogValueAbnormal(void);
 extern SysMonitorVar gSysMonitorVar;
 //extern struct MULTCH gAnalogAndDigitalInspect;
 

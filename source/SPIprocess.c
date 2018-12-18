@@ -47,34 +47,7 @@ void ReadADBySpi(void)
 	while(GpioDataRegs.GPBDAT.bit.GPIO55 == 0){
 		asm ("      NOP");
 	}
-//
-//	Send1Clock();
-//	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
-//	}
-//	retry = SpiaRegs.SPIRXBUF;
-//	/**********************************************/
-//	Send16Clocks();
-//	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
-//	}
-//	//tmp = SpiaRegs.SPIRXBUF;
-//	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = KalmanFilter(tmp, KALMAN_Q, KALMAN_R);
-//	real2 = SpiaRegs.SPIRXBUF;
-//	real = KalmanFilter(real2, KALMAN_Q, KALMAN_R);
-//	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = SpiaRegs.SPIRXBUF;
-//	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = KalmanFilter(SpiaRegs.SPIRXBUF, KALMAN_Q, KALMAN_R);
-//	/**********************************************/
-//	Send16Clocks();
-//	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
-//	}
-////	real2 = SpiaRegs.SPIRXBUF;
-//	//retry = SpiaRegs.SPIRXBUF;
-//	gSysMonitorVar.anolog.single.var[ForceValue].value = SpiaRegs.SPIRXBUF;
-//	/**********************************************/
-////	Send1Clock();
-////	while(SpiaRegs.SPIFFRX.bit.RXFFST !=1) {
-////	}
-////	retry = SpiaRegs.SPIRXBUF;
-//	/**********************************************/
+
 	Send16Clocks();
 	Send16Clocks();
 	Send16Clocks();
