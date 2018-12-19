@@ -119,6 +119,7 @@ void PidProcess(void){
 	CalculateTargetSpeed();
 	CalculateTargeDisplace();
 
+	RKT(0,gKeyValue.displacement,gKeyValue.motorSpeed,0.1);
 
 	UpdateAccErr();
 	UpdateSpeedErr();
