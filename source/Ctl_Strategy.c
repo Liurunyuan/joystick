@@ -129,19 +129,19 @@ void PidProcess(void){
 //Áîz = dy/dt
 //=====>
 double function(double x0, double y0, double z0, double h){
-	int K11;
-	int K12;
-	int K13;
-	int K14;
+	double K11;
+	double K12;
+	double K13;
+	double K14;
 
-	int K21;
-	int K22;
-	int K23;
-	int K24;
+	double K21;
+	double K22;
+	double K23;
+	double K24;
 
-	int a = 0;//a = f×èÄá/m
-	int b = 0;//b = fµ¯»É/m
-	int c = 0;//c = -fÍâÁ¦/m
+	double a = 0;//a = f×èÄá/m
+	double b = 0;//b = fµ¯»É/m
+	double c = 0;//c = -fÍâÁ¦/m
 
 	a = gSysPara.k_dampForce/gSysPara.mass;
 	b = gSysPara.k_springForce / gSysPara.mass;
@@ -149,23 +149,28 @@ double function(double x0, double y0, double z0, double h){
 
 	double y1;
 	double z1;
+	double a1;
 
 	K11 = z0;
 	K21 = c - (a * z0) - (b * y0);
 
 	K12 = z0 + h/2 * K21;
-	K22 =   -2 * (y0 + h/2 * K11) + 2 * (z0 + h/2 * K21);
+	K22 = c - b * (y0 + h/2 * K11) - a * (z0 + h/2 * K21);
 
 	K13 = z0 + h/2 * K22;
-	K23 =   -2 * (y0 + h/2 * K12) + 2 * (z0 + h/2 * K22);
+	K23 = c - b * (y0 + h/2 * K12) - a * (z0 + h/2 * K22);
 
 	K14 = z0 + h * K23;
-	K24 =   -2 * (y0 + h/2 * K13) + 2 * (z0 + h * K23);
+	K24 = c - b * (y0 + h/2 * K13) - a * (z0 + h * K23);
 
 	y1 = y0 + h/6 *(K11 + 2 * K12 + 2 * K13 + K14);
 	z1 = z0 + h/6 *(K21 + 2 * K22 + 2 * K23 + K24);
+	a1 = c - a * z1 - b * y1;
 
 
+	gSysCurrentState.displaceTarget = y1;
+	gSysCurrentState.speedTarget = z1;
+	gSysCurrentState.accTarget = a1;
 	return y1;
 }
 /**************************************************************
@@ -180,11 +185,18 @@ int RKT(double x, double y, double z, double h){
 	int ret = 0;
 	int i;
 
+	double x0 = x;
+	double y0 = y;
+	double z0 = z;
+	double h0 = h;
+
 	for(i = 0; i < 10; ++i){
-		function(x, y, z, h);
+		function(x0, y0, z0, h0);
 		//TODO update value of y
 		//TODO update value of z
-		x = x + h;
+		x0 = x0 + h0;
+		y0 = gSysCurrentState.displaceTarget;
+		z0 = gSysCurrentState.speedTarget;
 	}
 	return ret;
 }
