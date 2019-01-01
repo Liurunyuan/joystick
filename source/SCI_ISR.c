@@ -85,10 +85,10 @@ static void WaveCommand(VAR16 a, int b, int c) {
 	for(i = 0; i < WAVE_AMOUNT; ++i){
 		//unpack bit information
 		if((a.value & (0x0001 << i)) >> i){
-			gRx422TxVar[i].isTx = ENABLE_TX;
+			gRx422TxEnableFlag[i] = ENABLE_TX;
 		}
 		else{
-			gRx422TxVar[i].isTx = DISABLE_TX;
+			gRx422TxEnableFlag[i] = DISABLE_TX;
 		}
 	}
 }

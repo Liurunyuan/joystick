@@ -177,17 +177,18 @@ void Init_gRx422TxVar(void) {
 
 	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
 	memset(gRx422TxEnableFlag, 0, sizeof(gRx422TxEnableFlag));
-	for (index = 0; index < 20; ++index) {
+	for (index = 0; index < 16; ++index) {
 
-		gRx422TxVar[index].isTx = 1;
+		gRx422TxVar[index].isTx = 0;
+		gRx422TxEnableFlag[index] = 0;
 
 		gRx422TxVar[index].index = index;
 
 	}
-	gRx422TxEnableFlag[0] = 1;
-	gRx422TxEnableFlag[1] = 1;
+//	gRx422TxEnableFlag[0] = 1;
+//	gRx422TxEnableFlag[1] = 1;
 	gRx422TxEnableFlag[2] = 1;
-	gRx422TxEnableFlag[3] = 1;
+//	gRx422TxEnableFlag[3] = 1;
 }
 /**************************************************************
  *Name:						Init_feedbackVarBuf
@@ -246,7 +247,7 @@ void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
 	gRS422Status.rs422B = 1;
 	gRS422Status.currentSerialNumber = 0;
-	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
+	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
 	gRS422Status.shakeHand = FAIL;
 }
 /***************************************************************
@@ -303,7 +304,7 @@ void Start_main_loop(void){
 
 	//test_spi_tx();
 
-	//RS422Unpack();
+	RS422Unpack();
 
 	//ClearRS422RxOverFlow();
 	//TODO need to implement

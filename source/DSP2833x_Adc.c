@@ -38,7 +38,7 @@ void InitAdc(void)
 
 	EALLOW;
 	SysCtrlRegs.PCLKCR0.bit.ADCENCLK = 1;
-	ADC_cal();
+	//ADC_cal();
 	EDIS;
 
 
@@ -55,9 +55,10 @@ void InitAdc(void)
 
     //AdcRegs.ADCTRL3.all = 0x00E0;  // Power up bandgap/reference/ADC circuits
 	AdcRegs.ADCTRL3.bit.ADCBGRFDN = 3;//  模数转换内部参考电压源电路上电
+	DELAY_US(ADC_usDELAY);
   	AdcRegs.ADCTRL3.bit.ADCPWDN = 1;//  模数转换核模拟电路加电
-    //DELAY_US(20); // Delay at least 20us before converting ADC channels 	//  至少20us延时
-  	DELAY_US(5000);
+    DELAY_US(20); // Delay at least 20us before converting ADC channels 	//  至少20us延时
+  	//DELAY_US(5000);
     //DELAY_US(ADC_usDELAY);         // Delay before converting ADC channels
 }
 

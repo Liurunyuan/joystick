@@ -9,7 +9,7 @@
 #include "Filter_Alg.h"
 #include <stdio.h>
 
-#define N (10)
+#define N (50)
 #define RS422STATUSCHECK (1000)
 
 
