@@ -245,6 +245,7 @@ extern CONFIGPARA gConfigPara;
 
 
 void InitSysState(void);
+void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 
