@@ -142,6 +142,98 @@ typedef struct{
 	double errDisplacement;
 }SYSCURRENTSTATE;
 
+typedef struct{
+	int LF_MaxForce;
+	int LF_Force1;
+	int LF_Force2;
+	int LF_Force3;
+	int LF_Force4;
+	int LF_Force5;
+	int LF_Force6;
+	int LF_Force7;
+	int LF_Force8;
+	int LF_Force9;
+
+
+	int RB_Force1;
+	int RB_Force2;
+	int RB_Force3;
+	int RB_Force4;
+	int RB_Force5;
+	int RB_Force6;
+	int RB_Force7;
+	int RB_Force8;
+	int RB_Force9;
+	int RB_MaxForce;
+
+	int LF_MaxDistance;
+	int LF_Distance1;
+	int LF_Distance2;
+	int LF_Distance3;
+	int LF_Distance4;
+	int LF_Distance5;
+	int LF_Distance6;
+	int LF_Distance7;
+	int LF_Distance8;
+	int LF_Distance9;
+
+
+	int RB_Distance1;
+	int RB_Distance2;
+	int RB_Distance3;
+	int RB_Distance4;
+	int RB_Distance5;
+	int RB_Distance6;
+	int RB_Distance7;
+	int RB_Distance8;
+	int RB_Distance9;
+	int RB_MaxDistance;
+
+	int LF_StartForce;
+	int RB_StartForce;
+
+	int LF_FrontFriction;
+	int LF_RearFriction;
+	int RB_FrontFriction;
+	int RB_RearFriction;
+
+	int LF_EmptyDistance;
+	int RB_EmptyDistance;
+
+	int dampingFactor;
+	int naturalVibrationFreq;
+
+	int equivalentMass;
+	int LF_TrimRange;
+	int RB_TrimRange;
+
+	int trimTarget;
+	int trimCommand;
+
+	int timeDelay;
+	int stateCommand;
+
+	int innerMaxKp;
+	int innerErrorThresholdWithInnerMaxKp;
+	int innerKi;
+	int innerKd;
+	int innerFeedForward;
+	int innerMaxStartError;
+	int innerMinStartError;
+	int innerMaxIntergralSaturation;
+	int innerMinIntergralSaturation;
+
+	int middleKp;
+	int middleKi;
+	int middleKd;
+
+	int outerKp;
+	int outerKi;
+	int outerKd;
+
+
+}CONFIGPARA;
+
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
@@ -149,6 +241,7 @@ extern SYSINFO gSysInfo;
 extern SYSSTATE gSysState;
 extern SYSPARA gSysPara;
 extern SYSCURRENTSTATE gSysCurrentState;
+extern CONFIGPARA gConfigPara;
 
 
 void InitSysState(void);

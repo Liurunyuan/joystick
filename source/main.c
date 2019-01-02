@@ -266,6 +266,7 @@ void InitGlobalVar(void){
 	Init_feedbackVarBuf();
 	Init_gSysMonitorVar();
 	Init_gRS422Status();
+	InitConfigParameter();
 	gKeyValue.displacement = 10;
 	gKeyValue.lock = 0;
 }
