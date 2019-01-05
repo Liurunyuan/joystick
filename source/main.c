@@ -165,32 +165,6 @@ void Init_gRS422TxQue(void) {
 	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
 }
 /**************************************************************
- *Name:						Init_gRx422TxVar
- *Function:
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-void Init_gRx422TxVar(void) {
-	int index;
-
-	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
-	memset(gRx422TxEnableFlag, 0, sizeof(gRx422TxEnableFlag));
-	for (index = 0; index < 16; ++index) {
-
-		gRx422TxVar[index].isTx = 0;
-		gRx422TxEnableFlag[index] = 0;
-
-		gRx422TxVar[index].index = index;
-
-	}
-//	gRx422TxEnableFlag[0] = 1;
-//	gRx422TxEnableFlag[1] = 1;
-	gRx422TxEnableFlag[2] = 1;
-//	gRx422TxEnableFlag[3] = 1;
-}
-/**************************************************************
  *Name:						Init_feedbackVarBuf
  *Function:
  *Input:					none
@@ -262,11 +236,12 @@ void InitGlobalVar(void){
 
 	Init_gRS422RxQue();
 	Init_gRS422TxQue();
-	Init_gRx422TxVar();
 	Init_feedbackVarBuf();
 	Init_gSysMonitorVar();
 	Init_gRS422Status();
 	InitConfigParameter();
+	InitgRx422TxVar();
+	InitgRx422TxEnableFlag();
 	gKeyValue.displacement = 10;
 	gKeyValue.lock = 0;
 }

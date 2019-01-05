@@ -4,6 +4,7 @@
 #include "GlobalVarAndFunc.h"
 #include "SCI_TX.h"
 #include <stdio.h>
+#include <string.h>
 #include "ADprocessor.h"
 #include "PWM_ISR.h"
 
@@ -11,7 +12,84 @@ GRX422TX gRx422TxVar[TOTAL_TX_VAR] = {0};
 Uint16 gRx422TxEnableFlag[TOTAL_TX_VAR] = {0};
 RS422TXQUE gRS422TxQue = {0};
 #define S (0)
+/***************************************************************/
 
+
+
+void GetTorqueCurve(int a, int b, int c){
+	gRx422TxVar[0].value = 500;
+}
+void GetMotorSpeedCurve(int a, int b, int c){
+	gRx422TxVar[1].value = (int)(gKeyValue.motorSpeed * 500);
+}
+void GetDisplacementCurve(int a, int b, int c){
+	gRx422TxVar[2].value = (int)(gKeyValue.displacement);
+}
+void GetMotorCurrentCurve(int a, int b, int c){
+	gRx422TxVar[3].value = gSysMonitorVar.anolog.single.var[BusCurrentA].value;
+}
+void GetDynamoVoltageCurve(int a, int b, int c){
+	gRx422TxVar[4].value = 1;
+}
+void GetDynamoCurrentCurve(int a, int b, int c){
+	gRx422TxVar[4].value = 1;
+}
+void GetTemperatureCurve(int a, int b, int c){
+	gRx422TxVar[5].value = 3000;
+}
+void GetMotorAccelCurve(int a, int b, int c){
+	gRx422TxVar[6].value = (int)(gKeyValue.motorAccel * 500);;
+}
+
+
+
+
+
+
+void InitgRx422TxEnableFlag(void){
+/**************************************************************
+ *Name:		   InitgRx422TxEnableFlag
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2019年1月5日下午3:58:19
+ **************************************************************/
+	int index;
+
+	memset(gRx422TxEnableFlag, 0, sizeof(gRx422TxEnableFlag));
+	for (index = 0; index < 16; ++index) {
+
+		gRx422TxEnableFlag[index] = 0;
+	}
+}
+/**************************************************************
+ *Name:		   InitgRx422TxVar
+ *Comment:
+ *Input:	   void
+ *Output:	   void
+ *Author:	   Simon
+ *Date:		   2019年1月5日下午3:55:13
+ **************************************************************/
+void InitgRx422TxVar(void) {
+
+	int index;
+
+	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
+	for (index = 0; index < 16; ++index) {
+
+		gRx422TxVar[index].isTx = 0;
+		gRx422TxVar[index].index = index;
+	}
+	gRx422TxVar[0].updateValue = GetTorqueCurve;
+	gRx422TxVar[1].updateValue = GetMotorSpeedCurve;
+	gRx422TxVar[2].updateValue = GetDisplacementCurve;
+	gRx422TxVar[3].updateValue = GetMotorCurrentCurve;
+	gRx422TxVar[4].updateValue = GetDynamoVoltageCurve;
+	gRx422TxVar[5].updateValue = GetDynamoCurrentCurve;
+	gRx422TxVar[6].updateValue = GetTemperatureCurve;
+	gRx422TxVar[7].updateValue = GetMotorAccelCurve;
+}
 
 /***************************************************************
  *Name:						RX422TXEnQueue
@@ -129,38 +207,22 @@ void PackRS422TxData(void){
 			asm ("      ESTOP0");
 			return;
 		}
-//		if(RX422TXEnQueue(0xff) == 0){
-//			asm ("      ESTOP0");
-//			return;
-//		}
-//		if(RX422TXEnQueue(0xff) == 0){
-//			asm ("      ESTOP0");
-//			return;
-//		}
+		if(RX422TXEnQueue(0xff) == 0){
+			asm ("      ESTOP0");
+			return;
+		}
+		if(RX422TXEnQueue(0xff) == 0){
+			asm ("      ESTOP0");
+			return;
+		}
 		updateTxEnableFlag();
 	}
 
 	for(i = 0; i < TOTAL_TX_VAR; ++i){
 		if(gRx422TxVar[i].isTx){
 			++total;
-			if(i == 0){
-				//gRx422TxVar[i].value =(int)(gKeyValue.displacement * 100);
-				gRx422TxVar[i].value = real;
 
-			}
-			else if(i == 1){
-				gRx422TxVar[i].value = real2;
-				//gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 10000);
-			}
-			else if(i == 2){
-				gRx422TxVar[i].value =(int)(gKeyValue.displacement);
-				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
-			}
-			else if(i == 3){
-				gRx422TxVar[i].value =(int)(gKeyValue.motorSpeed * 500);
-				//gRx422TxVar[i].value =(int16)(gKeyValue.motorAccel * 1000);
-			}
-
+			gRx422TxVar[i].updateValue(0,0,0);
 			tmp[0] = gRx422TxVar[i].index;
 			tmp[1] = gRx422TxVar[i].value >> 8;
 			tmp[2] = gRx422TxVar[i].value;
@@ -179,7 +241,7 @@ void PackRS422TxData(void){
 			crc = calCrc(crc, tmp, 3);
 		}
 
-		//错误信息，报警信息一直发送
+		//TODO 错误信息，报警信息一直发送
 	}
 
 	if(count == 0){
