@@ -3,9 +3,41 @@
 #include "public.h"
 #include "Ctl_Strategy.h"
 #include "GlobalVarAndFunc.h"
+#include "ADprocessor.h"
+#include <math.h>
 
 #define ITEGRATION_TIMES (6)
 
+
+
+double findSpringForceK(double displace){
+	double springForce = 0;
+	int index;
+	if(displace >= 0){
+		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
+
+			if(displace < gForceAndDisplaceCurve.displacementP[index] &&
+					displace >= gForceAndDisplaceCurve.displacementP[index - 1]){
+				springForce = gForceAndDisplaceCurve.K_spring_forceP[index - 1];
+				return springForce;
+			}
+		}
+	}
+	else
+	{
+		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
+
+			if(displace < gForceAndDisplaceCurve.displacementN[index] &&
+					displace >= gForceAndDisplaceCurve.displacementN[index - 1]){
+				springForce = gForceAndDisplaceCurve.K_spring_forceN[index - 1];
+				return springForce;
+			}
+		}
+	}
+
+	//TODO generate alarm, because the displacement is out of range
+	return springForce;
+}
 /**************************************************************
  *Name:		   CalculateSpringForce
  *Comment:
@@ -144,13 +176,22 @@ double function(double x0, double y0, double z0, double h){
 	double b = 0;//b = fµØª…/m
 	double c = 0;//c = -fÕ‚¡¶/m
 
-	a = gSysPara.k_dampForce/gSysPara.mass;
-	b = gSysPara.k_springForce / gSysPara.mass;
-	c = gKeyValue.force / gSysPara.mass;
 
 	double y1;
 	double z1;
 	double a1;
+
+	double k;
+
+//	a = gSysPara.k_dampForce/gSysPara.mass;
+//	b = gSysPara.k_springForce / gSysPara.mass;
+//	c = gKeyValue.force / gSysPara.mass;
+
+	k = findSpringForceK(gSysMonitorVar.anolog.single.var[DisplacementValue].value);
+
+	a = 2 * gConfigPara.dampingFactor * sqrt(k / gSysPara.mass);
+	b =	(k * gKeyValue.displacement)/gSysPara.mass;
+	c =	gKeyValue.force / gSysPara.mass;
 
 	K11 = z0;
 	K21 = c - (a * z0) - (b * y0);
@@ -172,6 +213,7 @@ double function(double x0, double y0, double z0, double h){
 	gSysCurrentState.displaceTarget = y1;
 	gSysCurrentState.speedTarget = z1;
 	gSysCurrentState.accTarget = a1;
+
 	return y1;
 }
 /**************************************************************

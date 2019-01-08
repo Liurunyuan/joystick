@@ -234,6 +234,25 @@ typedef struct{
 
 }CONFIGPARA;
 
+
+typedef struct{
+	int springForceP[10];
+	int springForceN[10];
+	int displacementP[10];
+	int displacementN[10];
+
+	double K_spring_forceP[10];
+	double b_P[10];
+	double K_spring_forceN[10];
+	double b_N[10];
+
+	int maxPoints;
+
+
+}FORCE_DISPLACE_CURVE;
+
+
+
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
@@ -242,12 +261,14 @@ extern SYSSTATE gSysState;
 extern SYSPARA gSysPara;
 extern SYSCURRENTSTATE gSysCurrentState;
 extern CONFIGPARA gConfigPara;
+extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 
 
 void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
+void UpdateForceDisplaceCurve(void);
 
 
 #endif
