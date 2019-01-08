@@ -272,7 +272,7 @@ void RS422Unpack(void) {
 void Start_main_loop(void){
 
 	FeedWatchDog();
-	UpdateForceDisplaceCurve();
+//	UpdateForceDisplaceCurve();
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}
