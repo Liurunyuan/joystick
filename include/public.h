@@ -1,5 +1,5 @@
 /***************************************************/
-#define FLASH
+//#define FLASH
 
 //define for calculating running time of function\
 
