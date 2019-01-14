@@ -165,31 +165,6 @@ void Init_gRS422TxQue(void) {
 	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
 }
 /**************************************************************
- *Name:						Init_gRx422TxVar
- *Function:
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-void Init_gRx422TxVar(void) {
-	int index;
-
-	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
-	memset(gRx422TxEnableFlag, 0, sizeof(gRx422TxEnableFlag));
-	for (index = 0; index < 20; ++index) {
-
-		gRx422TxVar[index].isTx = 1;
-
-		gRx422TxVar[index].index = index;
-
-	}
-	gRx422TxEnableFlag[0] = 1;
-	gRx422TxEnableFlag[1] = 1;
-	gRx422TxEnableFlag[2] = 1;
-	gRx422TxEnableFlag[3] = 1;
-}
-/**************************************************************
  *Name:						Init_feedbackVarBuf
  *Function:
  *Input:					none
@@ -230,8 +205,9 @@ void Init_gSysMonitorVar() {
 		gSysMonitorVar.anolog.single.var[index].min =
 				anologMaxMinInit[index][1];
 	}
+	gSysMonitorVar.digit.multi.var[8].valueN = 55;
+	gSysMonitorVar.digit.multi.var[8].valueP = 55;
 	for (index = 0; index < 12; ++index) {
-		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
 }
 /**************************************************************
@@ -246,7 +222,7 @@ void Init_gRS422Status(void){
 	gRS422Status.rs422A = 1;
 	gRS422Status.rs422B = 1;
 	gRS422Status.currentSerialNumber = 0;
-	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
+	gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
 	gRS422Status.shakeHand = FAIL;
 }
 /***************************************************************
@@ -261,10 +237,12 @@ void InitGlobalVar(void){
 
 	Init_gRS422RxQue();
 	Init_gRS422TxQue();
-	Init_gRx422TxVar();
 	Init_feedbackVarBuf();
 	Init_gSysMonitorVar();
 	Init_gRS422Status();
+	InitConfigParameter();
+	InitgRx422TxVar();
+	InitgRx422TxEnableFlag();
 	gKeyValue.displacement = 10;
 	gKeyValue.lock = 0;
 }
@@ -295,6 +273,7 @@ void RS422Unpack(void) {
 void Start_main_loop(void){
 
 	FeedWatchDog();
+//	UpdateForceDisplaceCurve();
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}
@@ -303,10 +282,14 @@ void Start_main_loop(void){
 
 	//test_spi_tx();
 
-	//RS422Unpack();
+	RS422Unpack();
 
 	//ClearRS422RxOverFlow();
 	//TODO need to implement
+}
+
+void EnablePwmOutput(void){
+	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
 }
 /***************************************************************
  *Name:						main
@@ -325,12 +308,20 @@ void main(void) {
 
 	InitGlobalVar();
 	/*interrupt init*/
+	SET_DIGIT_SER_LOAD_HIGH;
+	SET_DIGIT_SER_CLK_LOW;
+	gSysInfo.currentHallPosition = 3;
+	gSysInfo.duty = 100;
+
 	Init_Interrupt();
 
 	PowerOnBIT();
 
 	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
+
+
+	EnablePwmOutput();
 
 	while(1)
 	{

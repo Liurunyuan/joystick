@@ -3,7 +3,41 @@
 #include "public.h"
 #include "Ctl_Strategy.h"
 #include "GlobalVarAndFunc.h"
+#include "ADprocessor.h"
+#include <math.h>
 
+#define ITEGRATION_TIMES (6)
+
+
+
+double findSpringForceK(double displace){
+	double springForce = 0;
+	int index;
+	if(displace >= 0){
+		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
+
+			if(displace < gForceAndDisplaceCurve.displacementP[index] &&
+					displace >= gForceAndDisplaceCurve.displacementP[index - 1]){
+				springForce = gForceAndDisplaceCurve.K_spring_forceP[index - 1];
+				return springForce;
+			}
+		}
+	}
+	else
+	{
+		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
+
+			if(displace < gForceAndDisplaceCurve.displacementN[index] &&
+					displace >= gForceAndDisplaceCurve.displacementN[index - 1]){
+				springForce = gForceAndDisplaceCurve.K_spring_forceN[index - 1];
+				return springForce;
+			}
+		}
+	}
+
+	//TODO generate alarm, because the displacement is out of range
+	return springForce;
+}
 /**************************************************************
  *Name:		   CalculateSpringForce
  *Comment:
@@ -117,8 +151,95 @@ void PidProcess(void){
 	CalculateTargetSpeed();
 	CalculateTargeDisplace();
 
+	RKT(0,gKeyValue.displacement,gKeyValue.motorSpeed,0.1);
 
 	UpdateAccErr();
 	UpdateSpeedErr();
 	UpdateDisplacementErr();
+}
+//F - K1 * dy/dt - K2 * y = m * dy2/dt2
+//F外 - K阻尼 * dy/dt - K弹 * y = m * dy2/dt2
+//令z = dy/dt
+//=====>
+double function(double x0, double y0, double z0, double h){
+	double K11;
+	double K12;
+	double K13;
+	double K14;
+
+	double K21;
+	double K22;
+	double K23;
+	double K24;
+
+	double a = 0;//a = f阻尼/m
+	double b = 0;//b = f弹簧/m
+	double c = 0;//c = -f外力/m
+
+
+	double y1;
+	double z1;
+	double a1;
+
+	double k;
+
+//	a = gSysPara.k_dampForce/gSysPara.mass;
+//	b = gSysPara.k_springForce / gSysPara.mass;
+//	c = gKeyValue.force / gSysPara.mass;
+
+	k = findSpringForceK(gSysMonitorVar.anolog.single.var[DisplacementValue].value);
+
+	a = 2 * gConfigPara.dampingFactor * sqrt(k / gSysPara.mass);
+	b =	(k * gKeyValue.displacement)/gSysPara.mass;
+	c =	gKeyValue.force / gSysPara.mass;
+
+	K11 = z0;
+	K21 = c - (a * z0) - (b * y0);
+
+	K12 = z0 + h/2 * K21;
+	K22 = c - b * (y0 + h/2 * K11) - a * (z0 + h/2 * K21);
+
+	K13 = z0 + h/2 * K22;
+	K23 = c - b * (y0 + h/2 * K12) - a * (z0 + h/2 * K22);
+
+	K14 = z0 + h * K23;
+	K24 = c - b * (y0 + h/2 * K13) - a * (z0 + h * K23);
+
+	y1 = y0 + h/6 *(K11 + 2 * K12 + 2 * K13 + K14);
+	z1 = z0 + h/6 *(K21 + 2 * K22 + 2 * K23 + K24);
+	a1 = c - a * z1 - b * y1;
+
+
+	gSysCurrentState.displaceTarget = y1;
+	gSysCurrentState.speedTarget = z1;
+	gSysCurrentState.accTarget = a1;
+
+	return y1;
+}
+/**************************************************************
+ *Name:		   RKT
+ *Comment:
+ *Input:	   void
+ *Output:	   int
+ *Author:	   Simon
+ *Date:		   2018年12月18日下午9:05:27
+ **************************************************************/
+int RKT(double x, double y, double z, double h){
+	int ret = 0;
+	int i;
+
+	double x0 = x;
+	double y0 = y;
+	double z0 = z;
+	double h0 = h;
+
+	for(i = 0; i < 10; ++i){
+		function(x0, y0, z0, h0);
+		//TODO update value of y
+		//TODO update value of z
+		x0 = x0 + h0;
+		y0 = gSysCurrentState.displaceTarget;
+		z0 = gSysCurrentState.speedTarget;
+	}
+	return ret;
 }

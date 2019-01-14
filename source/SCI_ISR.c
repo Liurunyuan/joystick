@@ -60,17 +60,234 @@ static void TestHallPosition(VAR16 a, int b, int c) {
 static void ShakeHandMsg(VAR16 a, int b, int c) {
 	gRS422Status.shakeHand = SUCCESS;
 }
-/***************************************************************
- *Name:						MsgStatusUnpack
- *Function:
- *Input:          			VAR16,int, int
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.25
- ****************************************************************/
-static void MsgStatusUnpack(VAR16 a, int b, int c) {
-	//TODO just an example
+
+/*******************************************************/
+static void configPara1(VAR16 a, int b, int c) {
+	gConfigPara.LF_MaxForce = (int)a.value;
 }
+static void configPara2(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force1 = (int)a.value;
+}
+static void configPara3(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force2 = (int)a.value;
+}
+static void configPara4(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force3 = (int)a.value;
+}
+static void configPara5(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force4 = (int)a.value;
+}
+static void configPara6(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force5 = (int)a.value;
+}
+static void configPara7(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force6 = (int)a.value;
+}
+static void configPara8(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force7 = (int)a.value;
+}
+static void configPara9(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force8 = (int)a.value;
+}
+static void configPara10(VAR16 a, int b, int c) {
+	gConfigPara.LF_Force9 = (int)a.value;
+}
+/*******************************************************/
+static void configPara11(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force1 = (int)a.value;
+}
+static void configPara12(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force2 = (int)a.value;
+}
+static void configPara13(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force3 = (int)a.value;
+}
+static void configPara14(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force4 = (int)a.value;
+}
+static void configPara15(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force5 = (int)a.value;
+}
+static void configPara16(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force6 = (int)a.value;
+}
+static void configPara17(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force7 = (int)a.value;
+}
+static void configPara18(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force8 = (int)a.value;
+}
+static void configPara19(VAR16 a, int b, int c) {
+	gConfigPara.RB_Force9 = (int)a.value;
+}
+static void configPara20(VAR16 a, int b, int c) {
+	gConfigPara.RB_MaxForce = (int)a.value;
+}
+/*******************************************************/
+static void configPara21(VAR16 a, int b, int c) {
+	gConfigPara.LF_MaxDistance = (int)a.value;
+}
+static void configPara22(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance1 = (int)a.value;
+}
+static void configPara23(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance2 = (int)a.value;
+}
+static void configPara24(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance3 = (int)a.value;
+}
+static void configPara25(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance4 = (int)a.value;
+}
+static void configPara26(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance5 = (int)a.value;
+}
+static void configPara27(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance6 = (int)a.value;
+}
+static void configPara28(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance7 = (int)a.value;
+}
+static void configPara29(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance8 = (int)a.value;
+}
+static void configPara30(VAR16 a, int b, int c) {
+	gConfigPara.LF_Distance9 = (int)a.value;
+}
+/**************************************************************/
+static void configPara31(VAR16 a, int b, int c) {
+	gConfigPara.RB_MaxDistance = (int)a.value;
+}
+static void configPara32(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance1 = (int)a.value;
+}
+static void configPara33(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance2 = (int)a.value;
+}
+static void configPara34(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance3 = (int)a.value;
+}
+static void configPara35(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance4 = (int)a.value;
+}
+static void configPara36(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance5 = (int)a.value;
+}
+static void configPara37(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance6 = (int)a.value;
+}
+static void configPara38(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance7 = (int)a.value;
+}
+static void configPara39(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance8 = (int)a.value;
+}
+static void configPara40(VAR16 a, int b, int c) {
+	gConfigPara.RB_Distance9 = (int)a.value;
+}
+/*****************************************************************/
+static void configPara41(VAR16 a, int b, int c) {
+	gConfigPara.LF_StartForce = (int)a.value;
+}
+static void configPara42(VAR16 a, int b, int c) {
+	gConfigPara.RB_StartForce = (int)a.value;
+}
+/*****************************************************************/
+static void configPara43(VAR16 a, int b, int c) {
+	gConfigPara.LF_FrontFriction = (int)a.value;
+}
+static void configPara44(VAR16 a, int b, int c) {
+	gConfigPara.LF_RearFriction = (int)a.value;
+}
+static void configPara45(VAR16 a, int b, int c) {
+	gConfigPara.RB_FrontFriction = (int)a.value;
+}
+static void configPara46(VAR16 a, int b, int c) {
+	gConfigPara.RB_RearFriction = (int)a.value;
+}
+/*****************************************************************/
+static void configPara47(VAR16 a, int b, int c) {
+	gConfigPara.LF_EmptyDistance = (int)a.value;
+}
+static void configPara48(VAR16 a, int b, int c) {
+	gConfigPara.RB_EmptyDistance = (int)a.value;
+}
+/*****************************************************************/
+static void configPara49(VAR16 a, int b, int c) {
+	gConfigPara.dampingFactor = (int)a.value;
+}
+static void configPara50(VAR16 a, int b, int c) {
+	gConfigPara.naturalVibrationFreq = (int)a.value;
+}
+static void configPara51(VAR16 a, int b, int c) {
+	gConfigPara.equivalentMass = (int)a.value;
+}
+static void configPara52(VAR16 a, int b, int c) {
+	gConfigPara.LF_TrimRange = (int)a.value;
+}
+static void configPara53(VAR16 a, int b, int c) {
+	gConfigPara.RB_TrimRange = (int)a.value;
+}
+static void configPara54(VAR16 a, int b, int c) {
+	gConfigPara.trimTarget = (int)a.value;
+}
+static void configPara55(VAR16 a, int b, int c) {
+	gConfigPara.trimTarget = (int)a.value;
+}
+static void configPara56(VAR16 a, int b, int c) {
+	gConfigPara.timeDelay = (int)a.value;
+}
+static void configPara57(VAR16 a, int b, int c) {
+	gConfigPara.stateCommand = (int)a.value;
+}
+/************************************************************/
+static void configPara58(VAR16 a, int b, int c) {
+	gConfigPara.innerMaxKp = (int)a.value;
+}
+static void configPara59(VAR16 a, int b, int c) {
+	gConfigPara.innerErrorThresholdWithInnerMaxKp = (int)a.value;
+}
+static void configPara60(VAR16 a, int b, int c) {
+	gConfigPara.innerKi = (int)a.value;
+}
+static void configPara61(VAR16 a, int b, int c) {
+	gConfigPara.innerKd = (int)a.value;
+}
+static void configPara62(VAR16 a, int b, int c) {
+	gConfigPara.innerFeedForward = (int)a.value;
+}
+static void configPara63(VAR16 a, int b, int c) {
+	gConfigPara.innerMaxStartError = (int)a.value;
+}
+static void configPara64(VAR16 a, int b, int c) {
+	gConfigPara.innerMinStartError = (int)a.value;
+}
+static void configPara65(VAR16 a, int b, int c) {
+	gConfigPara.innerMaxIntergralSaturation = (int)a.value;
+}
+static void configPara66(VAR16 a, int b, int c) {
+	gConfigPara.innerMinIntergralSaturation = (int)a.value;
+}
+static void configPara67(VAR16 a, int b, int c) {
+	gConfigPara.middleKp = (int)a.value;
+}
+static void configPara68(VAR16 a, int b, int c) {
+	gConfigPara.middleKi = (int)a.value;
+}
+static void configPara69(VAR16 a, int b, int c) {
+	gConfigPara.middleKd = (int)a.value;
+}
+static void configPara70(VAR16 a, int b, int c) {
+	gConfigPara.outerKp = (int)a.value;
+}
+static void configPara71(VAR16 a, int b, int c) {
+	gConfigPara.outerKi = (int)a.value;
+}
+static void configPara72(VAR16 a, int b, int c) {
+	gConfigPara.outerKd = (int)a.value;
+}
+
+
 /***************************************************************
  *Name:						WaveCommand
  *Function:
@@ -85,12 +302,25 @@ static void WaveCommand(VAR16 a, int b, int c) {
 	for(i = 0; i < WAVE_AMOUNT; ++i){
 		//unpack bit information
 		if((a.value & (0x0001 << i)) >> i){
-			gRx422TxVar[i].isTx = ENABLE_TX;
+			gRx422TxEnableFlag[i] = ENABLE_TX;
 		}
 		else{
-			gRx422TxVar[i].isTx = DISABLE_TX;
+			gRx422TxEnableFlag[i] = DISABLE_TX;
 		}
 	}
+}
+
+static void clutchSlipSpeedTarget(VAR16 a, int b, int c) {
+
+}
+static void twinTrawlingSpeedTarget(VAR16 a, int b, int c) {
+
+}
+static void runningTime(VAR16 a, int b, int c) {
+
+}
+static void actionCommand(VAR16 a, int b, int c) {
+
 }
 /***************************************************************
  *Name:						functionMsgCodeUnpack
@@ -101,11 +331,88 @@ static void WaveCommand(VAR16 a, int b, int c) {
  *Date:						2018.10.25
  ****************************************************************/
 const functionMsgCodeUnpack msgInterface[] = {
-		ShakeHandMsg,
-		MsgStatusUnpack,
-		WaveCommand,
-		TestHallPosition,
+		ShakeHandMsg,						//0
+		actionCommand,						//1
+		WaveCommand,						//2
+		clutchSlipSpeedTarget,				//3
+		twinTrawlingSpeedTarget,			//4
+		runningTime,						//5
+		configPara1,						//6
+		configPara2,						//7
+		configPara3,						//8
+		configPara4,						//9
+		configPara5,						//10
+		configPara6,						//11
+		configPara7,						//12
+		configPara8,						//13
+		configPara9,						//14
+		configPara10,						//15
+		configPara11,						//16
+		configPara12,						//17
+		configPara13,						//18
+		configPara14,						//19
+		configPara15,						//20
+		configPara16,						//21
+		configPara17,						//22
+		configPara18,						//23
+		configPara19,						//24
+		configPara20,						//25
+		configPara21,						//26
+		configPara22,						//27
+		configPara23,						//28
+		configPara24,						//29
+		configPara25,						//30
+		configPara26,						//31
+		configPara27,						//32
+		configPara28,						//33
+		configPara29,						//34
+		configPara30,						//35
+		configPara31,						//36
+		configPara32,						//37
+		configPara33,						//38
+		configPara34,						//39
+		configPara35,						//40
+		configPara36,						//41
+		configPara37,						//42
+		configPara38,						//43
+		configPara39,						//44
+		configPara40,						//45
+		configPara41,						//46
+		configPara42,						//47
+		configPara43,						//48
+		configPara44,						//49
+		configPara45,						//50
+		configPara46,						//51
+		configPara47,						//52
+		configPara48,						//53
+		configPara49,						//54
+		configPara50,						//55
+		configPara51,						//56
+		configPara52,						//57
+		configPara53,						//58
+		configPara54,						//59
+		configPara55,						//60
+		configPara56,						//61
+		configPara57,						//62
+		configPara58,						//63
+		configPara59,						//64
+		configPara60,						//65
+		configPara61,						//66
+		configPara62,						//67
+		configPara63,						//68
+		configPara64,						//69
+		configPara65,						//70
+		configPara66,						//71
+		configPara67,						//72
+		configPara68,						//73
+		configPara69,						//74
+		configPara70,						//74
+		configPara71,						//75
+		configPara72,
+		0,
 		TestDuty,
+		TestHallPosition,
+		0,
 		0
 };
 /***************************************************************
@@ -525,7 +832,7 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 		unpack(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
 		UpdateRS422RxSerialNumber();
 		updatehead(length, RS422RxQue);
-		printf("update the front position-------------\r\n");
+//		printf("update the front position-------------\r\n");
 	}
 }
 /***************************************************************

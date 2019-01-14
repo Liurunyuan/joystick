@@ -2,6 +2,7 @@
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
 #include "public.h"
 #include "GlobalVarAndFunc.h"
+#include <string.h>
 
 
 Uint32 gECapCount;
@@ -11,7 +12,173 @@ SYSINFO gSysInfo = {0};
 SYSSTATE gSysState = {0};
 SYSPARA gSysPara = {0};
 SYSCURRENTSTATE gSysCurrentState = {0};
+CONFIGPARA gConfigPara = {0};
+FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
 
+void InitForceDisplaceCurve(void){
+
+}
+
+void UpdateForceDisplaceCurve(void){
+	int index;
+
+	gForceAndDisplaceCurve.springForceP[0] = gConfigPara.LF_Force1;
+	gForceAndDisplaceCurve.springForceP[1] = gConfigPara.LF_Force2;
+	gForceAndDisplaceCurve.springForceP[2] = gConfigPara.LF_Force3;
+	gForceAndDisplaceCurve.springForceP[3] = gConfigPara.LF_Force4;
+	gForceAndDisplaceCurve.springForceP[4] = gConfigPara.LF_Force5;
+	gForceAndDisplaceCurve.springForceP[5] = gConfigPara.LF_Force6;
+	gForceAndDisplaceCurve.springForceP[6] = gConfigPara.LF_Force7;
+	gForceAndDisplaceCurve.springForceP[7] = gConfigPara.LF_Force8;
+	gForceAndDisplaceCurve.springForceP[8] = gConfigPara.LF_Force9;
+	gForceAndDisplaceCurve.springForceP[9] = gConfigPara.LF_MaxForce;
+
+	gForceAndDisplaceCurve.springForceN[0] = gConfigPara.RB_Force1;
+	gForceAndDisplaceCurve.springForceN[1] = gConfigPara.RB_Force2;
+	gForceAndDisplaceCurve.springForceN[2] = gConfigPara.RB_Force3;
+	gForceAndDisplaceCurve.springForceN[3] = gConfigPara.RB_Force4;
+	gForceAndDisplaceCurve.springForceN[4] = gConfigPara.RB_Force5;
+	gForceAndDisplaceCurve.springForceN[5] = gConfigPara.RB_Force6;
+	gForceAndDisplaceCurve.springForceN[6] = gConfigPara.RB_Force7;
+	gForceAndDisplaceCurve.springForceN[7] = gConfigPara.RB_Force8;
+	gForceAndDisplaceCurve.springForceN[8] = gConfigPara.RB_Force9;
+	gForceAndDisplaceCurve.springForceN[9] = gConfigPara.RB_MaxForce;
+
+	gForceAndDisplaceCurve.displacementP[0] = gConfigPara.LF_Distance1;
+	gForceAndDisplaceCurve.displacementP[1] = gConfigPara.LF_Distance2;
+	gForceAndDisplaceCurve.displacementP[2] = gConfigPara.LF_Distance3;
+	gForceAndDisplaceCurve.displacementP[3] = gConfigPara.LF_Distance4;
+	gForceAndDisplaceCurve.displacementP[4] = gConfigPara.LF_Distance5;
+	gForceAndDisplaceCurve.displacementP[5] = gConfigPara.LF_Distance6;
+	gForceAndDisplaceCurve.displacementP[6] = gConfigPara.LF_Distance7;
+	gForceAndDisplaceCurve.displacementP[7] = gConfigPara.LF_Distance8;
+	gForceAndDisplaceCurve.displacementP[8] = gConfigPara.LF_Distance9;
+	gForceAndDisplaceCurve.displacementP[9] = gConfigPara.LF_MaxDistance;
+
+
+	gForceAndDisplaceCurve.displacementN[0] = gConfigPara.RB_Distance1;
+	gForceAndDisplaceCurve.displacementN[1] = gConfigPara.RB_Distance2;
+	gForceAndDisplaceCurve.displacementN[2] = gConfigPara.RB_Distance3;
+	gForceAndDisplaceCurve.displacementN[3] = gConfigPara.RB_Distance4;
+	gForceAndDisplaceCurve.displacementN[4] = gConfigPara.RB_Distance5;
+	gForceAndDisplaceCurve.displacementN[5] = gConfigPara.RB_Distance6;
+	gForceAndDisplaceCurve.displacementN[6] = gConfigPara.RB_Distance7;
+	gForceAndDisplaceCurve.displacementN[7] = gConfigPara.RB_Distance8;
+	gForceAndDisplaceCurve.displacementN[8] = gConfigPara.RB_Distance9;
+	gForceAndDisplaceCurve.displacementN[9] = gConfigPara.RB_MaxDistance;
+
+	gForceAndDisplaceCurve.maxPoints = 10;
+
+	for(index = 1; index <gForceAndDisplaceCurve.maxPoints; ++index){
+		gForceAndDisplaceCurve.K_spring_forceP[index] =
+				(gForceAndDisplaceCurve.springForceP[index] - gForceAndDisplaceCurve.springForceP[index - 1]) /
+				(gForceAndDisplaceCurve.displacementP[index] - gForceAndDisplaceCurve.displacementP[index - 1]);
+
+		gForceAndDisplaceCurve.b_P[index] =
+				gForceAndDisplaceCurve.springForceP[index] - gForceAndDisplaceCurve.K_spring_forceP[index] * gForceAndDisplaceCurve.displacementP[index];
+	}
+
+	for(index = 1; index <gForceAndDisplaceCurve.maxPoints; ++index){
+		gForceAndDisplaceCurve.K_spring_forceN[index] =
+				(gForceAndDisplaceCurve.springForceN[index] - gForceAndDisplaceCurve.springForceN[index - 1]) /
+				(gForceAndDisplaceCurve.displacementN[index] - gForceAndDisplaceCurve.displacementN[index - 1]);
+
+		gForceAndDisplaceCurve.b_N[index] =
+				gForceAndDisplaceCurve.springForceN[index] - gForceAndDisplaceCurve.K_spring_forceN[index] * gForceAndDisplaceCurve.displacementN[index];
+	}
+}
+
+void InitConfigParameter(void){
+	gConfigPara.LF_MaxForce = 0;
+	gConfigPara.LF_Force1 = 0;
+	gConfigPara.LF_Force2 = 0;
+	gConfigPara.LF_Force3 = 0;
+	gConfigPara.LF_Force4 = 0;
+	gConfigPara.LF_Force5 = 0;
+	gConfigPara.LF_Force6 = 0;
+	gConfigPara.LF_Force7 = 0;
+	gConfigPara.LF_Force8 = 0;
+	gConfigPara.LF_Force9 = 0;
+
+	gConfigPara.RB_Force1 = 0;
+	gConfigPara.RB_Force2 = 0;
+	gConfigPara.RB_Force3 = 0;
+	gConfigPara.RB_Force4 = 0;
+	gConfigPara.RB_Force5 = 0;
+	gConfigPara.RB_Force6 = 0;
+	gConfigPara.RB_Force7 = 0;
+	gConfigPara.RB_Force8 = 0;
+	gConfigPara.RB_Force9 = 0;
+	gConfigPara.RB_MaxForce = 0;
+
+	gConfigPara.LF_MaxDistance = 0;
+	gConfigPara.LF_Distance1 = 0;
+	gConfigPara.LF_Distance2 = 0;
+	gConfigPara.LF_Distance3 = 0;
+	gConfigPara.LF_Distance4 = 0;
+	gConfigPara.LF_Distance5 = 0;
+	gConfigPara.LF_Distance6 = 0;
+	gConfigPara.LF_Distance7 = 0;
+	gConfigPara.LF_Distance8 = 0;
+	gConfigPara.LF_Distance9 = 0;
+
+	gConfigPara.RB_Distance1 = 0;
+	gConfigPara.RB_Distance2 = 0;
+	gConfigPara.RB_Distance3 = 0;
+	gConfigPara.RB_Distance4 = 0;
+	gConfigPara.RB_Distance5 = 0;
+	gConfigPara.RB_Distance6 = 0;
+	gConfigPara.RB_Distance7 = 0;
+	gConfigPara.RB_Distance8 = 0;
+	gConfigPara.RB_Distance9 = 0;
+	gConfigPara.RB_MaxDistance = 0;
+
+	gConfigPara.LF_StartForce = 0;
+	gConfigPara.RB_StartForce = 0;
+
+	gConfigPara.LF_FrontFriction = 0;
+	gConfigPara.LF_RearFriction = 0;
+	gConfigPara.RB_FrontFriction = 0;
+	gConfigPara.RB_RearFriction = 0;
+
+	gConfigPara.LF_EmptyDistance = 0;
+	gConfigPara.RB_EmptyDistance = 0;
+
+	gConfigPara.dampingFactor = 0;
+
+	gConfigPara.naturalVibrationFreq = 0;
+
+	gConfigPara.equivalentMass = 0;
+
+	gConfigPara.LF_TrimRange = 0;
+	gConfigPara.RB_TrimRange = 0;
+
+	gConfigPara.trimTarget = 0;
+
+	gConfigPara.trimCommand = 0;
+
+	gConfigPara.timeDelay = 0;
+
+	gConfigPara.stateCommand = 0;
+
+	gConfigPara.innerErrorThresholdWithInnerMaxKp = 0;
+	gConfigPara.innerMaxKp = 0;
+	gConfigPara.innerKi = 0;
+	gConfigPara.innerKd = 0;
+	gConfigPara.innerFeedForward = 0;
+	gConfigPara.innerMaxStartError = 0;
+	gConfigPara.innerMinStartError = 0;
+	gConfigPara.innerMaxIntergralSaturation = 0;
+	gConfigPara.innerMinIntergralSaturation = 0;
+
+	gConfigPara.middleKd = 0;
+	gConfigPara.middleKi = 0;
+	gConfigPara.middleKp = 0;
+
+	gConfigPara.outerKd = 0;
+	gConfigPara.outerKi = 0;
+	gConfigPara.outerKp = 0;
+}
 /**************************************************************
  *Name:		   InitSysState
  *Comment:
@@ -35,9 +202,17 @@ void InitSysState(void){
 	gSysCurrentState.speedTarget = 0;
 	gSysCurrentState.springForce = 0;
 }
-
+/**************************************************************
+ *Name:		   KalmanFilter
+ *Comment:
+ *Input:	   const double, double, double
+ *Output:	   double
+ *Author:	   Simon
+ *Date:		   2019年1月2日下午9:57:12
+ **************************************************************/
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
+
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
