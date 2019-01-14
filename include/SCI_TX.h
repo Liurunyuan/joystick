@@ -5,7 +5,7 @@
 
 
 #define TXMAXQSIZE (900)
-#define TOTAL_TX_VAR (16)
+#define TOTAL_TX_VAR (8)
 
 typedef void (*updatevalue)(int a, int b,int c);
 enum {
@@ -50,5 +50,7 @@ int RX422TXDeQueue(void);
 void RS422A_Transmit(void);
 void PackRS422TxData(void);
 void ShakeHandWithUpperComputer(void);
+void InitgRx422TxVar(void);
+void InitgRx422TxEnableFlag(void);
 
 #endif

@@ -15,9 +15,9 @@ Uint16 real = 0;
 Uint16 realbak = 0;
 Uint16 real2 = 0;
 Uint16 real3 = 0;
-Uint16 real4 = 0;
+
 Uint16 real5 = 0;
-Uint16 real6 = 0;
+
 
 int16 countreal = 0;
 Uint16 zz[400] = {0};
@@ -74,7 +74,7 @@ Uint16 GetCurrentHallValue(void){
 	b = GpioDataRegs.GPBDAT.bit.GPIO48;
 	a = GpioDataRegs.GPBDAT.bit.GPIO49;
 
-	temp = ((c << 2) + (b << 1) + a)^0x07;
+	temp = ((c << 2) + (b << 1) + a);
 
 	if(temp < 1 || temp >6){
 		gSysState.erro.bit.software = 1;
@@ -205,7 +205,7 @@ inline void APositiveToBNegtive(void) {
  **************************************************************/
 void SwitchDirection(void){
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
-	//gSysInfo.currentHallPosition = GetCurrentHallValue();
+	gSysInfo.currentHallPosition = GetCurrentHallValue();
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 4://C+ ---------------> B-
@@ -273,14 +273,17 @@ void SwitchDirection(void){
 void Pwm_ISR_Thread(void)
 {
 	static int count = 0;
+
 	StartGetADBySpi();
 
 	if(count >= 400){
 		count = 0;
 	}
 
-	//ReadAnalogValue();
 	ReadDigitalValue();
+
+
+	ReadAnalogValue();
 
 	if(IsSingleAnalogValueAbnormal() == True){
 		//TODO  不着急的量放进主循环，这里只判断电流以及高速
