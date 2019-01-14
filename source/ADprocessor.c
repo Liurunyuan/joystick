@@ -4,6 +4,8 @@
 #include "ADprocessor.h"
 
 SysMonitorVar gSysMonitorVar;
+Uint16 real4 = 0;
+Uint16 real6 = 0;
 
 /********update anolog variable value******************************/
 //int updateForceValue(void){return GET_FORCE_SGN;}
@@ -77,7 +79,6 @@ void UpdateSingleAnalogInput(void){
 	for(index = 0; index < TotalChannel; ++index){
 		gSysMonitorVar.anolog.single.var[index].value = gSysMonitorVar.anolog.single.var[index].updateValue();
 		//gSysMonitorVar.anolog.single.var[index].value = DMABuf1[index];
-
 	}
 
 }
@@ -179,10 +180,45 @@ void SwitchAnalogChannel(Uint16 address){
 	 * GPIO39->AD4K
 	 *
 	 * */
-	SET_AD1K = address & 0x0001;
-	SET_AD3K = (address & 0x0004) >> 2;
-    SET_AD4K = (address & 0x0008) >> 3;
-	SET_AD2K = (address & 0x0002) >> 1;
+	int result;
+	result = address & 0x0001;
+	if(result == 0 ){
+		GpioDataRegs.GPACLEAR.bit.GPIO30 = 1;
+	}
+	else{
+		GpioDataRegs.GPASET.bit.GPIO30 = 1;
+	}
+
+	result = (address & 0x0004) >> 2;
+	if(result == 0 ){
+		GpioDataRegs.GPCCLEAR.bit.GPIO85 = 1;
+	}
+	else{
+		GpioDataRegs.GPCSET.bit.GPIO85 = 1;
+	}
+
+	result = (address & 0x0008) >> 3;
+	if(result == 0 ){
+		GpioDataRegs.GPBCLEAR.bit.GPIO39 = 1;
+	}
+	else{
+		GpioDataRegs.GPBSET.bit.GPIO39 = 1;
+	}
+
+	result = (address & 0x0002) >> 1;
+	if(result == 0 ){
+		GpioDataRegs.GPACLEAR.bit.GPIO29 = 1;
+	}
+	else{
+		GpioDataRegs.GPASET.bit.GPIO29 = 1;
+	}
+//	SET_AD1K = address & 0x0001;
+//
+//	SET_AD3K = (address & 0x0004) >> 2;
+//
+//    SET_AD4K = (address & 0x0008) >> 3;
+//
+//	SET_AD2K = (address & 0x0002) >> 1;
 }
 /**************************************************************
  *Name:						AnalogValueInspect
@@ -199,7 +235,11 @@ void AnalogValueInspect(void){
     }
     else{
         ReadChannelAdcValue(address);
-    	address = AnalogChannelChange(address);
+    	++address;
+    	if (address >= TOTAL_CTRLBRD_MULTI_DIGIT) {
+    		address = 0;
+    	}
+//    	address = AnalogChannelChange(address);
         SwitchAnalogChannel(address);
     }
 
@@ -229,16 +269,25 @@ void DigitalValueInspect(void){
 			status = TRIGGER;
 			break;
 		case TRIGGER:
+			gSysMonitorVar.digit.multi.var[channel].valueP = GpioDataRegs.GPBDAT.bit.GPIO59;
+			gSysMonitorVar.digit.multi.var[channel].valueN = GpioDataRegs.GPBDAT.bit.GPIO60;
 			SET_DIGIT_SER_CLK_HIGH;
 			status = GETDATA;
 			break;
 		case GETDATA:
-			gSysMonitorVar.digit.multi.var[channel].valueP = GET_DIGIT_SERIAL_P;
-			gSysMonitorVar.digit.multi.var[channel].valueN = GET_DIGIT_SERIAL_N;
+			if(gSysMonitorVar.digit.multi.var[channel].valueP !=0 && gSysMonitorVar.digit.multi.var[channel].valueP != 1){
+				real4++;
+			}
+			if(	gSysMonitorVar.digit.multi.var[channel].valueN !=0 && 	gSysMonitorVar.digit.multi.var[channel].valueN !=1){
+				real6++;
+			}
+//			gSysMonitorVar.digit.multi.var[channel].valueP = GpioDataRegs.GPBDAT.bit.GPIO59;
+//			gSysMonitorVar.digit.multi.var[channel].valueN = GpioDataRegs.GPBDAT.bit.GPIO60;
 
 			SET_DIGIT_SER_CLK_LOW;
 
-			if(channel >= 9)
+			++channel;
+			if(channel >= TOTAL_CTRLBRD_MULTI_DIGIT)
 			{
 				channel = 0;
 				status = REFRESH;
@@ -246,8 +295,6 @@ void DigitalValueInspect(void){
 			else{
 				status = TRIGGER;
 			}
-
-			++channel;
 			break;
 		default:
 			status = REFRESH;
@@ -256,7 +303,7 @@ void DigitalValueInspect(void){
 }
 /**************************************************************
  *Name:						UpdateSingleDigitInput
- *Function:					更新系统模拟量的转换值
+ *Function:
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -266,8 +313,6 @@ void UpdateSingleDigitInput(void){
 	int index;
 
 	for(index=0;index<12;++index){
-		gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
-
 	}
 
 }
@@ -280,7 +325,7 @@ void UpdateSingleDigitInput(void){
  *Date:						2018.8.6
  **************************************************************/
 void ReadAnalogValue(void){
-	/*
+
     if((AdcRegs.ADCASEQSR.bit.SEQ_CNTR==0)&&
               (AdcRegs.ADCST.bit.SEQ1_BSY==0)){
 
@@ -288,8 +333,8 @@ void ReadAnalogValue(void){
     else{
 
     }
-    */
-	UpdateSingleAnalogInput();
+
+//	UpdateSingleAnalogInput();
 	AnalogValueInspect();
 }
 /**************************************************************
@@ -303,5 +348,4 @@ void ReadAnalogValue(void){
 void ReadDigitalValue(void){
 	DigitalValueInspect();
 	//UpdateSingleDigitInput();
-	//read single digital channel value
 }

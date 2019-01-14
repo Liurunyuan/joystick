@@ -20,7 +20,7 @@ void GetTorqueCurve(int a, int b, int c){
 	gRx422TxVar[0].value = 500;
 }
 void GetMotorSpeedCurve(int a, int b, int c){
-	gRx422TxVar[1].value = (int)(gKeyValue.motorSpeed * 500);
+	gRx422TxVar[1].value = (int)real2;
 }
 void GetDisplacementCurve(int a, int b, int c){
 	gRx422TxVar[2].value = (int)(gKeyValue.displacement);

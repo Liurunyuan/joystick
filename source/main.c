@@ -205,8 +205,9 @@ void Init_gSysMonitorVar() {
 		gSysMonitorVar.anolog.single.var[index].min =
 				anologMaxMinInit[index][1];
 	}
+	gSysMonitorVar.digit.multi.var[8].valueN = 55;
+	gSysMonitorVar.digit.multi.var[8].valueP = 55;
 	for (index = 0; index < 12; ++index) {
-		//gSysMonitorVar.digit.single.var[index].valueP = gSysMonitorVar.digit.single.var[index].updateValue();
 	}
 }
 /**************************************************************
@@ -286,6 +287,10 @@ void Start_main_loop(void){
 	//ClearRS422RxOverFlow();
 	//TODO need to implement
 }
+
+void EnablePwmOutput(void){
+	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
+}
 /***************************************************************
  *Name:						main
  *Function:
@@ -303,12 +308,20 @@ void main(void) {
 
 	InitGlobalVar();
 	/*interrupt init*/
+	SET_DIGIT_SER_LOAD_HIGH;
+	SET_DIGIT_SER_CLK_LOW;
+	gSysInfo.currentHallPosition = 3;
+	gSysInfo.duty = 100;
+
 	Init_Interrupt();
 
 	PowerOnBIT();
 
 	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
+
+
+	EnablePwmOutput();
 
 	while(1)
 	{
