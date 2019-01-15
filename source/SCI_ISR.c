@@ -286,6 +286,9 @@ static void configPara71(VAR16 a, int b, int c) {
 static void configPara72(VAR16 a, int b, int c) {
 	gConfigPara.outerKd = (int)a.value;
 }
+static void systemStateCommand(VAR16 a, int b, int c){
+	gConfigPara.stateCommand = (int)a.value;
+}
 
 
 /***************************************************************
@@ -406,10 +409,10 @@ const functionMsgCodeUnpack msgInterface[] = {
 		configPara67,						//72
 		configPara68,						//73
 		configPara69,						//74
-		configPara70,						//74
-		configPara71,						//75
+		configPara70,						//75
+		configPara71,						//76
 		configPara72,
-		0,
+		systemStateCommand,
 		TestDuty,
 		TestHallPosition,
 		0,

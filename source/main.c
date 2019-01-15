@@ -262,6 +262,22 @@ void RS422Unpack(void) {
 		UnpackRS422ANew(&gRS422RxQueB);
 	}
 }
+
+void EnablePwmOutput(void){
+	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
+}
+void DisablePwmOutput(void){
+	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
+}
+void StateMachine(void){
+	if(gConfigPara.stateCommand == 1){
+		EnablePwmOutput();
+	}
+	else{
+		DisablePwmOutput();
+	}
+
+}
 /**************************************************************
  *Name:						Start_main_loop
  *Function:					Business logic
@@ -273,14 +289,11 @@ void RS422Unpack(void) {
 void Start_main_loop(void){
 
 	FeedWatchDog();
+	StateMachine();
 //	UpdateForceDisplaceCurve();
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}
-
-	//ShakeHandWithUpperComputer();
-
-	//test_spi_tx();
 
 	RS422Unpack();
 
@@ -288,9 +301,6 @@ void Start_main_loop(void){
 	//TODO need to implement
 }
 
-void EnablePwmOutput(void){
-	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
-}
 /***************************************************************
  *Name:						main
  *Function:
@@ -310,7 +320,9 @@ void main(void) {
 	/*interrupt init*/
 	SET_DIGIT_SER_LOAD_HIGH;
 	SET_DIGIT_SER_CLK_LOW;
+	DisablePwmOutput();
 	gSysInfo.currentHallPosition = 3;
+	gConfigPara.stateCommand = 0;
 	gSysInfo.duty = 100;
 
 	Init_Interrupt();
@@ -319,9 +331,6 @@ void main(void) {
 
 	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
-
-
-	EnablePwmOutput();
 
 	while(1)
 	{

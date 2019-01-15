@@ -74,7 +74,7 @@ Uint16 GetCurrentHallValue(void){
 	b = GpioDataRegs.GPBDAT.bit.GPIO48;
 	a = GpioDataRegs.GPBDAT.bit.GPIO49;
 
-	temp = ((c << 2) + (b << 1) + a);
+	temp = ((c << 2) + (b << 1) + a)^0x07;
 
 	if(temp < 1 || temp >6){
 		gSysState.erro.bit.software = 1;
