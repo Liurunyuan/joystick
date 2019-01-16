@@ -43,7 +43,6 @@ void StartGetADBySpi(void)
  ****************************************************************/
 void ReadADBySpi(void)
 {
-	int retry = 0;
 	while(GpioDataRegs.GPBDAT.bit.GPIO55 == 0){
 		asm ("      NOP");
 	}
