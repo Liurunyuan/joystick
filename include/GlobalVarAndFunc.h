@@ -273,6 +273,9 @@ void EnablePwmOutput(void);
 void DisablePwmOutput(void);
 
 void StateMachine(void);
+void ClearFault(void);
+void Enable_PWMD_BK(void);
+void Disable_PWMD_BK(void);
 
 
 #endif

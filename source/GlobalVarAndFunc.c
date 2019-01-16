@@ -300,5 +300,23 @@ void StateMachine(void){
 	}
 }
 
+void ClearFault(void){
+	int i = 0;
+
+	GpioDataRegs.GPACLEAR.bit.GPIO9 = 1;
+	//TODO delay for some time, need to verify
+	for(i = 0; i < 1000; ++i){
+		asm(" NOP");
+	}
+	GpioDataRegs.GPASET.bit.GPIO9 = 1;
+}
+
+void Enable_PWMD_BK(void){
+	GpioDataRegs.GPACLEAR.bit.GPIO6 = 1;
+}
+void Disable_PWMD_BK(void){
+	GpioDataRegs.GPASET.bit.GPIO9 = 1;
+}
+
 
 
