@@ -307,6 +307,7 @@ void main(void) {
 	SET_DIGIT_SER_LOAD_HIGH;
 	SET_DIGIT_SER_CLK_LOW;
 	gSysInfo.currentHallPosition = 3;
+	gSysState.erro.bit.software = 0;
 	gConfigPara.stateCommand = 0;
 	gSysInfo.duty = 100;
 

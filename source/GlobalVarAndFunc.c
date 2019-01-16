@@ -292,7 +292,7 @@ void DisablePwmOutput(void){
 	Disable_KZ_N_DSP();
 }
 void StateMachine(void){
-	if(gConfigPara.stateCommand == 1){
+	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){
 		EnablePwmOutput();
 	}
 	else{
