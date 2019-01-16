@@ -297,7 +297,7 @@ void Start_main_loop(void){
 
 	RS422Unpack();
 
-	//ClearRS422RxOverFlow();
+	ClearRS422RxOverFlow();
 	//TODO need to implement
 }
 
