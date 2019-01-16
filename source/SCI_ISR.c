@@ -591,10 +591,10 @@ int findhead(RS422RXQUE *RS422RxQue){
 
 		//printf("front = %d\r\n",RS422RxQue->front );
 		//printf("rear = %d\r\n",RS422RxQue->rear );
-		if(RS422RxQueLength(RS422RxQue) < EXTRA_LEN){
-			//printf("-------------------------------------data not enough to unpak, so do not find head\r\n");
-			return FAIL;
-		}
+//		if(RS422RxQueLength(RS422RxQue) < 1){
+//			//printf("-------------------------------------data not enough to unpak, so do not find head\r\n");
+//			return FAIL;
+//		}
 		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
 		head2 = RS422RxQue->rxBuff[(RS422RxQue->front + 1) % MAXQSIZE];
 
@@ -658,7 +658,7 @@ int checklength(RS422RXQUE *RS422RxQue){
 
 #else
 
-	if((RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength(RS422RxQue)){
+	if((RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) <= RS422RxQueLength(RS422RxQue)){
 		return SUCCESS;
 	}
 	else{
@@ -917,7 +917,7 @@ void ClearRS422RxOverFlow(void) {
 		ScibRegs.SCIFFRX.bit.RXFFOVRCLR = 1;
 		ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;
 		if (ScibRegs.SCIFFRX.bit.RXFFOVF == 0) {
-			printf(">>scib clear fifo over flow flag\r\n");
+//			printf(">>scib clear fifo over flow flag\r\n");
 		}
 	}
 }
