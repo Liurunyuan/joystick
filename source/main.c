@@ -99,6 +99,7 @@ void Init_Peripheral(void){
  *************************************************************/
 void FeedWatchDog(void){
 	TOOGLE_WATCHDOG = TRUE;
+	POWER_BOARD_TOOGLE_WATCHDOG = TRUE;
 }
 
 void Delayfunc(Uint16 sec){
