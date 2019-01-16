@@ -269,6 +269,10 @@ void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 void UpdateForceDisplaceCurve(void);
+void EnablePwmOutput(void);
+void DisablePwmOutput(void);
+
+void StateMachine(void);
 
 
 #endif

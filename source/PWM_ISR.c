@@ -258,6 +258,7 @@ void SwitchDirection(void){
 			break;
 		default:
 			gSysState.erro.bit.software = TRUE;
+			DisablePwmOutput();
 			break;
 	}
 }

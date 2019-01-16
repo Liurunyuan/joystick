@@ -265,3 +265,40 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
+
+
+void Enable_KZ_P_DSP(void){
+	GpioDataRegs.GPASET.bit.GPIO31 = 1;
+}
+void Disable_KZ_P_DSP(void){
+	GpioDataRegs.GPACLEAR.bit.GPIO31 = 1;
+}
+
+void Enable_KZ_N_DSP(void){
+	GpioDataRegs.GPCCLEAR.bit.GPIO86 = 1;
+}
+void Disable_KZ_N_DSP(void){
+	GpioDataRegs.GPASET.bit.GPIO31 = 1;
+}
+
+void EnablePwmOutput(void){
+	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
+	Enable_KZ_P_DSP();
+	Enable_KZ_N_DSP();
+}
+void DisablePwmOutput(void){
+	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
+	Disable_KZ_P_DSP();
+	Disable_KZ_N_DSP();
+}
+void StateMachine(void){
+	if(gConfigPara.stateCommand == 1){
+		EnablePwmOutput();
+	}
+	else{
+		DisablePwmOutput();
+	}
+}
+
+
+

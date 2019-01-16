@@ -262,22 +262,6 @@ void RS422Unpack(void) {
 		UnpackRS422ANew(&gRS422RxQueB);
 	}
 }
-
-void EnablePwmOutput(void){
-	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
-}
-void DisablePwmOutput(void){
-	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
-}
-void StateMachine(void){
-	if(gConfigPara.stateCommand == 1){
-		EnablePwmOutput();
-	}
-	else{
-		DisablePwmOutput();
-	}
-
-}
 /**************************************************************
  *Name:						Start_main_loop
  *Function:					Business logic
@@ -318,9 +302,9 @@ void main(void) {
 
 	InitGlobalVar();
 	/*interrupt init*/
+	DisablePwmOutput();
 	SET_DIGIT_SER_LOAD_HIGH;
 	SET_DIGIT_SER_CLK_LOW;
-	DisablePwmOutput();
 	gSysInfo.currentHallPosition = 3;
 	gConfigPara.stateCommand = 0;
 	gSysInfo.duty = 100;
