@@ -20,7 +20,6 @@ Uint16 real5 = 0;
 
 
 int16 countreal = 0;
-Uint16 zz[400] = {0};
 
 void UpdateKeyValue(void) {
 
@@ -32,6 +31,37 @@ void UpdateKeyValue(void) {
 	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 }
 
+
+void DisablePwm1(void){
+	EALLOW;
+	EPwm1Regs.TZFRC.bit.OST = 1;
+	EDIS;
+}
+void DisablePwm2(void){
+	EALLOW;
+	EPwm2Regs.TZFRC.bit.OST = 1;
+	EDIS;
+}
+void DisablePwm3(void){
+	EALLOW;
+	EPwm3Regs.TZFRC.bit.OST = 1;
+	EDIS;
+}
+void EnablePwm1(void){
+	EALLOW;
+	EPwm1Regs.TZCLR.all = 0x003f;
+	EDIS;
+}
+void EnablePwm2(void){
+	EALLOW;
+	EPwm2Regs.TZCLR.all = 0x003f;
+	EDIS;
+}
+void EnablePwm3(void){
+	EALLOW;
+	EPwm3Regs.TZCLR.all = 0x003f;
+	EDIS;
+}
 /**************************************************************
  *Name:						CalForceSpeedAccel
  *Function:
@@ -91,14 +121,23 @@ Uint16 GetCurrentHallValue(void){
  **************************************************************/
 inline void CPositiveToBNegtive(void) {
 
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
-	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.all = 9;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+	DisablePwm1();
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
 	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+	EnablePwm2();
+	EnablePwm3();
 }
 /**************************************************************
  *Name:		   CPositiveToANegtive
@@ -110,14 +149,24 @@ inline void CPositiveToBNegtive(void) {
  **************************************************************/
 inline void CPositiveToANegtive(void) {
 
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
-	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.all = 9;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+
+	DisablePwm2();
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EnablePwm1();
+	EnablePwm3();
 }
 /**************************************************************
  *Name:		   BPositiveToANegtive
@@ -129,14 +178,23 @@ inline void CPositiveToANegtive(void) {
  **************************************************************/
 inline void BPositiveToANegtive(void) {
 
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.all = 9;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+	DisablePwm3();
 	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EnablePwm2();
+	EnablePwm1();
 }
 /**************************************************************
  *Name:		   BPositiveToCNegtive
@@ -148,13 +206,25 @@ inline void BPositiveToANegtive(void) {
  **************************************************************/
 inline void BPositiveToCNegtive(void) {
 
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.all = 9;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+
+	DisablePwm1();
 	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EnablePwm2();
+	EnablePwm3();
 }
 /**************************************************************
  *Name:		   APositiveToCNegtive
@@ -166,14 +236,23 @@ inline void BPositiveToCNegtive(void) {
  **************************************************************/
 inline void APositiveToCNegtive(void) {
 
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.all = 9;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+	DisablePwm2();
+	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EnablePwm1();
+	EnablePwm3();
 }
 /**************************************************************
  *Name:		   APositiveToBNegtive
@@ -185,14 +264,27 @@ inline void APositiveToCNegtive(void) {
  **************************************************************/
 inline void APositiveToBNegtive(void) {
 
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.all = 9;
+//	EALLOW;
+//	EPwm1Regs.TZFRC.bit.OST = 1;
+//	EDIS;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+//
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+	DisablePwm3();
+	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
 	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+	EnablePwm1();
+	EnablePwm2();
 }
 
 /**************************************************************
@@ -205,7 +297,7 @@ inline void APositiveToBNegtive(void) {
  **************************************************************/
 void SwitchDirection(void){
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
-	gSysInfo.currentHallPosition = GetCurrentHallValue();
+//	gSysInfo.currentHallPosition = GetCurrentHallValue();
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 4://C+ ---------------> B-
