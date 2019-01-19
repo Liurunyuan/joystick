@@ -202,8 +202,8 @@ void InitEPwm1()
 	//EPwm1Regs.TZSEL.bit.CBC4=1;
 	//EPwm1Regs.TZSEL.bit.CBC5=1;//使能TZ3周期触发联防中断
 	//EPwm1Regs.TZSEL.bit.CBC6=1;
-	EPwm1Regs.TZCTL.bit.TZA=2;//发生错误时PWMA输出低电平
-	EPwm1Regs.TZCTL.bit.TZB=2;//发生错误时PWMB输出低电平
+	EPwm1Regs.TZCTL.bit.TZA=1;//发生错误时PWMA输出低电平
+	EPwm1Regs.TZCTL.bit.TZB=1;//发生错误时PWMB输出低电平
 //	EPwm1Regs.TZEINT.bit.OST=1;//使能CBC中断
 	EDIS;
 
@@ -234,7 +234,7 @@ void InitEPwm1()
 
 //	EPwm1Regs.DBCTL.all = 0x000b;
 	EPwm1Regs.DBCTL.bit.IN_MODE = 2;//EPWMxA rising edge delay , EPWMXB falling edge delay
-	EPwm1Regs.DBCTL.bit.POLSEL = 2;  //EPWMxB  invert
+	EPwm1Regs.DBCTL.bit.POLSEL = 1;  //EPWMxB  invert
 	EPwm1Regs.DBCTL.bit.OUT_MODE = 3;
 	EPwm1Regs.DBRED = 60;//180==1.5us
 	EPwm1Regs.DBFED = 60;//180==1.5us
@@ -244,8 +244,8 @@ void InitEPwm2()
 	EALLOW;
 //	EPwm2Regs.TZSEL.bit.OSHT2=1;
 //	EPwm2Regs.TZSEL.bit.OSHT3=1;
-	EPwm2Regs.TZCTL.bit.TZA=2;
-	EPwm2Regs.TZCTL.bit.TZB=2;
+	EPwm2Regs.TZCTL.bit.TZA=1;
+	EPwm2Regs.TZCTL.bit.TZB=1;
 //	EPwm2Regs.TZEINT.bit.OST=1;
 	EDIS;
 
@@ -273,7 +273,7 @@ void InitEPwm2()
 
 //	EPwm2Regs.DBCTL.all = 0xb;
 	EPwm2Regs.DBCTL.bit.IN_MODE = 2;//EPWMxA rising edge delay , EPWMXB falling edge delay
-	EPwm2Regs.DBCTL.bit.POLSEL = 2;  //EPWMxB  invert
+	EPwm2Regs.DBCTL.bit.POLSEL = 1;  //EPWMxB  invert
 	EPwm2Regs.DBCTL.bit.OUT_MODE = 3;
 	EPwm2Regs.DBRED = 60;
 	EPwm2Regs.DBFED = 60;
@@ -284,8 +284,8 @@ void InitEPwm3()
 	EALLOW;
 //	EPwm3Regs.TZSEL.bit.OSHT2=1;
 //	EPwm3Regs.TZSEL.bit.OSHT3=1;
-	EPwm3Regs.TZCTL.bit.TZA=2;
-	EPwm3Regs.TZCTL.bit.TZB=2;
+	EPwm3Regs.TZCTL.bit.TZA=1;
+	EPwm3Regs.TZCTL.bit.TZB=1;
 //	EPwm3Regs.TZEINT.bit.OST=1;
 	EDIS;
 
@@ -313,7 +313,7 @@ void InitEPwm3()
 
 //	EPwm3Regs.DBCTL.all = 0xb;
 	EPwm3Regs.DBCTL.bit.IN_MODE = 2;//EPWMxA rising edge delay , EPWMXB falling edge delay
-	EPwm3Regs.DBCTL.bit.POLSEL = 2;  //EPWMxB  invert
+	EPwm3Regs.DBCTL.bit.POLSEL = 1;  //EPWMxB  invert
 	EPwm3Regs.DBCTL.bit.OUT_MODE = 3;
 	EPwm3Regs.DBRED = 60;
 	EPwm3Regs.DBFED = 60;
