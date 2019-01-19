@@ -100,11 +100,11 @@ Uint16 GetCurrentHallValue(void){
 	Uint16 b;
 	Uint16 c;
 
-	c = GpioDataRegs.GPADAT.bit.GPIO27;
+	a = GpioDataRegs.GPADAT.bit.GPIO27;
 	b = GpioDataRegs.GPBDAT.bit.GPIO48;
-	a = GpioDataRegs.GPBDAT.bit.GPIO49;
+	c = GpioDataRegs.GPBDAT.bit.GPIO49;
 
-	temp = ((c << 2) + (b << 1) + a)^0x07;
+	temp = ((c << 2) + (b << 1) + a);
 
 	if(temp < 1 || temp >6){
 		gSysState.erro.bit.software = 1;
@@ -300,7 +300,7 @@ void SwitchDirection(void){
 //	gSysInfo.currentHallPosition = GetCurrentHallValue();
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
-		case 4://C+ ---------------> B-
+		case 3://C+ ---------------> B-
 			//本项目电机会进行正转和反转。所以需要判断HALL相邻两个位置是否一样。
 			if((4 == gSysInfo.lastTimeHalllPosition )
 				|| (5 == gSysInfo.lastTimeHalllPosition)
@@ -309,7 +309,7 @@ void SwitchDirection(void){
 				CPositiveToBNegtive();
 			}
 			break;
-		case 6://C+ ---------------> A-
+		case 1://C+ ---------------> A-
 			if((6 == gSysInfo.lastTimeHalllPosition )
 				|| (4 == gSysInfo.lastTimeHalllPosition)
 				|| (2 == gSysInfo.lastTimeHalllPosition)){
@@ -317,7 +317,7 @@ void SwitchDirection(void){
 				CPositiveToANegtive();
 			}
 			break;
-		case 2://B+ ---------------> A-
+		case 5://B+ ---------------> A-
 			if((2 == gSysInfo.lastTimeHalllPosition )
 				|| (6 == gSysInfo.lastTimeHalllPosition)
 				|| (3 == gSysInfo.lastTimeHalllPosition)){
@@ -325,14 +325,14 @@ void SwitchDirection(void){
 				BPositiveToANegtive();
 			}
 			break;
-		case 3://B+ ---------------> C-
+		case 4://B+ ---------------> C-
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
 				|| (1 == gSysInfo.lastTimeHalllPosition)){
 				BPositiveToCNegtive();
 			}
 			break;
-		case 1://A+ ---------------> C-
+		case 6://A+ ---------------> C-
 			if((1 == gSysInfo.lastTimeHalllPosition )
 				|| (3 == gSysInfo.lastTimeHalllPosition)
 				|| (5 == gSysInfo.lastTimeHalllPosition)){
@@ -340,7 +340,7 @@ void SwitchDirection(void){
 				APositiveToCNegtive();
 			}
 			break;
-		case 5://A+ ---------------> B-
+		case 2://A+ ---------------> B-
 			if((5 == gSysInfo.lastTimeHalllPosition )
 				|| (1 == gSysInfo.lastTimeHalllPosition)
 				|| (4 == gSysInfo.lastTimeHalllPosition)){
