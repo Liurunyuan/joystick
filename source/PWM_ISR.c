@@ -36,31 +36,39 @@ void DisablePwm1(void){
 	EALLOW;
 	EPwm1Regs.TZFRC.bit.OST = 1;
 	EDIS;
+
+//	EPwm1Regs.AQCSFRC.all = 0x0009;
 }
 void DisablePwm2(void){
 	EALLOW;
 	EPwm2Regs.TZFRC.bit.OST = 1;
 	EDIS;
+//	EPwm2Regs.AQCSFRC.all = 0x0009;
 }
 void DisablePwm3(void){
 	EALLOW;
 	EPwm3Regs.TZFRC.bit.OST = 1;
 	EDIS;
+
+//	EPwm3Regs.AQCSFRC.all = 0x0009;
 }
 void EnablePwm1(void){
 	EALLOW;
 	EPwm1Regs.TZCLR.all = 0x003f;
 	EDIS;
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
 }
 void EnablePwm2(void){
 	EALLOW;
 	EPwm2Regs.TZCLR.all = 0x003f;
 	EDIS;
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
 }
 void EnablePwm3(void){
 	EALLOW;
 	EPwm3Regs.TZCLR.all = 0x003f;
 	EDIS;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
 }
 /**************************************************************
  *Name:						CalForceSpeedAccel
