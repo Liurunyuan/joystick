@@ -349,8 +349,11 @@ void SwitchDirection(void){
 			}
 			break;
 		default:
-			gSysState.erro.bit.software = TRUE;
-			DisablePwmOutput();
+//			gSysState.erro.bit.software = TRUE;
+//			DisablePwmOutput();
+			DisablePwm1();
+			DisablePwm2();
+			DisablePwm3();
 			break;
 	}
 }
@@ -381,7 +384,16 @@ void Pwm_ISR_Thread(void)
 	if(IsSingleAnalogValueAbnormal() == True){
 		//TODO  不着急的量放进主循环，这里只判断电流以及高速
 	}
-	SwitchDirection();
+
+	if(gConfigPara.stateCommand == 1){
+		SwitchDirection();
+	}
+	else{
+		DisablePwm1();
+		DisablePwm2();
+		DisablePwm3();
+	}
+
 	ReadADBySpi();
 
 	if(real2 > 400){
