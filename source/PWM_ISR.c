@@ -297,53 +297,53 @@ inline void APositiveToBNegtive(void) {
  **************************************************************/
 void SwitchDirection(void){
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
-//	gSysInfo.currentHallPosition = GetCurrentHallValue();
+	gSysInfo.currentHallPosition = GetCurrentHallValue();
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 3://C+ ---------------> B-
 			//本项目电机会进行正转和反转。所以需要判断HALL相邻两个位置是否一样。
-			if((4 == gSysInfo.lastTimeHalllPosition )
-				|| (5 == gSysInfo.lastTimeHalllPosition)
-				|| (6 == gSysInfo.lastTimeHalllPosition)){
+			if((3 == gSysInfo.lastTimeHalllPosition )
+				|| (2 == gSysInfo.lastTimeHalllPosition)
+				|| (1 == gSysInfo.lastTimeHalllPosition)){
 
 				CPositiveToBNegtive();
 			}
 			break;
 		case 1://C+ ---------------> A-
-			if((6 == gSysInfo.lastTimeHalllPosition )
-				|| (4 == gSysInfo.lastTimeHalllPosition)
-				|| (2 == gSysInfo.lastTimeHalllPosition)){
+			if((1 == gSysInfo.lastTimeHalllPosition )
+				|| (3 == gSysInfo.lastTimeHalllPosition)
+				|| (5 == gSysInfo.lastTimeHalllPosition)){
 
 				CPositiveToANegtive();
 			}
 			break;
 		case 5://B+ ---------------> A-
-			if((2 == gSysInfo.lastTimeHalllPosition )
-				|| (6 == gSysInfo.lastTimeHalllPosition)
-				|| (3 == gSysInfo.lastTimeHalllPosition)){
+			if((5 == gSysInfo.lastTimeHalllPosition )
+				|| (1 == gSysInfo.lastTimeHalllPosition)
+				|| (4 == gSysInfo.lastTimeHalllPosition)){
 
 				BPositiveToANegtive();
 			}
 			break;
 		case 4://B+ ---------------> C-
-			if((3 == gSysInfo.lastTimeHalllPosition )
-				|| (2 == gSysInfo.lastTimeHalllPosition)
-				|| (1 == gSysInfo.lastTimeHalllPosition)){
+			if((4 == gSysInfo.lastTimeHalllPosition )
+				|| (5 == gSysInfo.lastTimeHalllPosition)
+				|| (6 == gSysInfo.lastTimeHalllPosition)){
 				BPositiveToCNegtive();
 			}
 			break;
 		case 6://A+ ---------------> C-
-			if((1 == gSysInfo.lastTimeHalllPosition )
-				|| (3 == gSysInfo.lastTimeHalllPosition)
-				|| (5 == gSysInfo.lastTimeHalllPosition)){
+			if((6 == gSysInfo.lastTimeHalllPosition )
+				|| (4 == gSysInfo.lastTimeHalllPosition)
+				|| (2 == gSysInfo.lastTimeHalllPosition)){
 
 				APositiveToCNegtive();
 			}
 			break;
 		case 2://A+ ---------------> B-
-			if((5 == gSysInfo.lastTimeHalllPosition )
-				|| (1 == gSysInfo.lastTimeHalllPosition)
-				|| (4 == gSysInfo.lastTimeHalllPosition)){
+			if((2 == gSysInfo.lastTimeHalllPosition )
+				|| (3 == gSysInfo.lastTimeHalllPosition)
+				|| (6 == gSysInfo.lastTimeHalllPosition)){
 
 				APositiveToBNegtive();
 			}
