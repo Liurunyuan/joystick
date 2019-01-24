@@ -262,6 +262,7 @@ extern SYSPARA gSysPara;
 extern SYSCURRENTSTATE gSysCurrentState;
 extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
+extern int gMotorSpeedEcap;
 
 
 void InitSysState(void);
@@ -276,6 +277,8 @@ void StateMachine(void);
 void ClearFault(void);
 void Enable_PWMD_BK(void);
 void Disable_PWMD_BK(void);
+
+int32 CalMotorSpeedByEcap(Uint32 capCount);
 
 
 #endif

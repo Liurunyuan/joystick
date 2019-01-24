@@ -282,6 +282,8 @@ void Start_main_loop(void){
 
 	RS422Unpack();
 
+	gMotorSpeedEcap = CalMotorSpeedByEcap(gECapCount);
+
 	ClearRS422RxOverFlow();
 	//TODO need to implement
 }

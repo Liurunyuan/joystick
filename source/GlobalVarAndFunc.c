@@ -15,6 +15,8 @@ SYSCURRENTSTATE gSysCurrentState = {0};
 CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
 
+int gMotorSpeedEcap = 0;
+
 void InitForceDisplaceCurve(void){
 
 }
@@ -318,6 +320,25 @@ void Enable_PWMD_BK(void){
 }
 void Disable_PWMD_BK(void){
 	GpioDataRegs.GPASET.bit.GPIO9 = 1;
+}
+
+int32 CalMotorSpeedByEcap(Uint32 capCount){
+	float speed = 0.0;
+	int32 speed32 = 0;
+
+	if(capCount <= 0){
+		return -1000;
+	}
+
+	speed =((4500000000.0) / ((float)capCount));
+	speed32 = (int32)speed;
+	if(speed32 < 19200){
+		return speed32;
+	}
+	else{
+		return -2000;
+	}
+
 }
 
 
