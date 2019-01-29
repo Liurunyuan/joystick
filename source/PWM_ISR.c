@@ -106,9 +106,9 @@ Uint16 GetCurrentHallValue(void){
 
 	temp = ((c << 2) + (b << 1) + a);
 
-	if(temp < 1 || temp >6){
-		gSysState.erro.bit.software = 1;
-	}
+//	if(temp < 1 || temp >6){
+//		gSysState.erro.bit.software = 1;
+//	}
 	return temp;
 }
 /**************************************************************
@@ -306,7 +306,7 @@ void SwitchDirection(void){
 				|| (2 == gSysInfo.lastTimeHalllPosition)
 				|| (1 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToBNegtive();
+				CPositiveToANegtive();
 			}
 			break;
 		case 1://C+ ---------------> A-
@@ -314,7 +314,7 @@ void SwitchDirection(void){
 				|| (3 == gSysInfo.lastTimeHalllPosition)
 				|| (5 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToANegtive();
+				CPositiveToBNegtive();
 			}
 			break;
 		case 5://B+ ---------------> A-
@@ -322,14 +322,15 @@ void SwitchDirection(void){
 				|| (1 == gSysInfo.lastTimeHalllPosition)
 				|| (4 == gSysInfo.lastTimeHalllPosition)){
 
-				BPositiveToANegtive();
+				APositiveToBNegtive();
 			}
 			break;
 		case 4://B+ ---------------> C-
 			if((4 == gSysInfo.lastTimeHalllPosition )
 				|| (5 == gSysInfo.lastTimeHalllPosition)
 				|| (6 == gSysInfo.lastTimeHalllPosition)){
-				BPositiveToCNegtive();
+
+				APositiveToCNegtive();
 			}
 			break;
 		case 6://A+ ---------------> C-
@@ -337,7 +338,7 @@ void SwitchDirection(void){
 				|| (4 == gSysInfo.lastTimeHalllPosition)
 				|| (2 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToCNegtive();
+				BPositiveToCNegtive();
 			}
 			break;
 		case 2://A+ ---------------> B-
@@ -345,7 +346,7 @@ void SwitchDirection(void){
 				|| (3 == gSysInfo.lastTimeHalllPosition)
 				|| (6 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToBNegtive();
+				BPositiveToANegtive();
 			}
 			break;
 		default:
