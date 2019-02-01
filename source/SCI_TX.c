@@ -38,12 +38,8 @@ void GetTemperatureCurve(int a, int b, int c){
 	gRx422TxVar[5].value = 3000;
 }
 void GetMotorAccelCurve(int a, int b, int c){
-	gRx422TxVar[6].value = (int)(gKeyValue.motorAccel * 500);;
+	gRx422TxVar[6].value = (int)(gKeyValue.motorAccel * 500);
 }
-
-
-
-
 
 
 void InitgRx422TxEnableFlag(void){
