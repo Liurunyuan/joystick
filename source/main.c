@@ -308,8 +308,8 @@ void main(void) {
 	SET_DIGIT_SER_CLK_LOW;
 	gSysInfo.currentHallPosition = 5;
 	gSysState.erro.bit.software = 0;
-	gConfigPara.stateCommand = 1;
-	gSysInfo.duty = 100;
+	gConfigPara.stateCommand = 0;
+	gSysInfo.duty = 0;
 
 	Init_Interrupt();
 

@@ -308,52 +308,52 @@ void SwitchDirection(void){
 //	gSysInfo.currentHallPosition = GetCurrentHallValue();
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
-		case 3://C+ ---------------> B-
+		case 3://C+ ---------------> A-
 			//本项目电机会进行正转和反转。所以需要判断HALL相邻两个位置是否一样。
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
 				|| (1 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToBNegtive();
+				CPositiveToANegtive();
 			}
 			break;
-		case 1://C+ ---------------> A-
+		case 1://C+ ---------------> B-
 			if((1 == gSysInfo.lastTimeHalllPosition )
 				|| (3 == gSysInfo.lastTimeHalllPosition)
 				|| (5 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToANegtive();
+				CPositiveToBNegtive();
 			}
 			break;
-		case 5://B+ ---------------> A-
+		case 5://A+ ---------------> B-
 			if((5 == gSysInfo.lastTimeHalllPosition )
 				|| (1 == gSysInfo.lastTimeHalllPosition)
 				|| (4 == gSysInfo.lastTimeHalllPosition)){
 
-				BPositiveToANegtive();
+				APositiveToBNegtive();
 			}
 			break;
-		case 4://B+ ---------------> C-
+		case 4://A+ ---------------> C-
 			if((4 == gSysInfo.lastTimeHalllPosition )
 				|| (5 == gSysInfo.lastTimeHalllPosition)
 				|| (6 == gSysInfo.lastTimeHalllPosition)){
-				BPositiveToCNegtive();
+				APositiveToCNegtive();
 			}
 			break;
-		case 6://A+ ---------------> C-
+		case 6://B+ ---------------> C-
 			if((6 == gSysInfo.lastTimeHalllPosition )
 				|| (4 == gSysInfo.lastTimeHalllPosition)
 				|| (2 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToCNegtive();
+				BPositiveToCNegtive();
 			}
 			break;
-		case 2://A+ ---------------> B-
+		case 2://B+ ---------------> A-
 			if((2 == gSysInfo.lastTimeHalllPosition )
 				|| (6 == gSysInfo.lastTimeHalllPosition)
 				|| (3 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToBNegtive();
+				BPositiveToANegtive();
 			}
 			break;
 		default:
