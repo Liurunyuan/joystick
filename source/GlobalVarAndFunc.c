@@ -280,7 +280,7 @@ void Enable_KZ_N_DSP(void){
 	GpioDataRegs.GPCCLEAR.bit.GPIO86 = 1;
 }
 void Disable_KZ_N_DSP(void){
-	GpioDataRegs.GPASET.bit.GPIO31 = 1;
+	GpioDataRegs.GPCSET.bit.GPIO86 = 1;
 }
 
 void EnablePwmOutput(void){
