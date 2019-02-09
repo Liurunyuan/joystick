@@ -305,55 +305,56 @@ inline void APositiveToBNegtive(void) {
  **************************************************************/
 void SwitchDirection(void){
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
-//	gSysInfo.currentHallPosition = GetCurrentHallValue();
+	gSysInfo.currentHallPosition = GetCurrentHallValue();
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
-		case 3://C+ ---------------> A-
+		case 3://A+ ---------------> C-
 			//本项目电机会进行正转和反转。所以需要判断HALL相邻两个位置是否一样。
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
 				|| (1 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToANegtive();
+				APositiveToCNegtive();
 			}
 			break;
-		case 1://C+ ---------------> B-
+		case 1://B+ ---------------> C-
 			if((1 == gSysInfo.lastTimeHalllPosition )
 				|| (3 == gSysInfo.lastTimeHalllPosition)
 				|| (5 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToBNegtive();
+				BPositiveToCNegtive();
 			}
 			break;
-		case 5://A+ ---------------> B-
+		case 5://B+ ---------------> A-
 			if((5 == gSysInfo.lastTimeHalllPosition )
 				|| (1 == gSysInfo.lastTimeHalllPosition)
 				|| (4 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToBNegtive();
+				BPositiveToANegtive();
 			}
 			break;
-		case 4://A+ ---------------> C-
+		case 4://C+ ---------------> A-
 			if((4 == gSysInfo.lastTimeHalllPosition )
 				|| (5 == gSysInfo.lastTimeHalllPosition)
 				|| (6 == gSysInfo.lastTimeHalllPosition)){
-				APositiveToCNegtive();
+
+				CPositiveToANegtive();
 			}
 			break;
-		case 6://B+ ---------------> C-
+		case 6://C+ ---------------> B-
 			if((6 == gSysInfo.lastTimeHalllPosition )
 				|| (4 == gSysInfo.lastTimeHalllPosition)
 				|| (2 == gSysInfo.lastTimeHalllPosition)){
 
-				BPositiveToCNegtive();
+				CPositiveToBNegtive();
 			}
 			break;
-		case 2://B+ ---------------> A-
+		case 2://A+ ---------------> B-
 			if((2 == gSysInfo.lastTimeHalllPosition )
 				|| (6 == gSysInfo.lastTimeHalllPosition)
 				|| (3 == gSysInfo.lastTimeHalllPosition)){
 
-				BPositiveToANegtive();
+				APositiveToBNegtive();
 			}
 			break;
 		default:
@@ -389,7 +390,13 @@ void Pwm_ISR_Thread(void)
 	if(IsSingleAnalogValueAbnormal() == True){
 		//TODO  不着急的量放进主循环，这里只判断电流以及高速
 	}
-	SwitchDirection();
+	if(gConfigPara.stateCommand == 1){
+		SwitchDirection();
+	}
+	else{
+		DisablePwmOutput();
+	}
+
 	ReadADBySpi();
 
 	if(real2 > 400){
