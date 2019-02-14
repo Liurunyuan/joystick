@@ -19,6 +19,8 @@
 #include "PWM_ISR.h"
 #include "GlobalVarAndFunc.h"
 
+Uint16 currentRefCollect[100] = {0};
+Uint16 voltageRefCollect[100] = {0};
 
 #define UART_PRINTF
 
@@ -205,6 +207,9 @@ void Init_gSysMonitorVar() {
 				anologMaxMinInit[index][0];
 		gSysMonitorVar.anolog.single.var[index].min =
 				anologMaxMinInit[index][1];
+
+		gSysMonitorVar.anolog.single.var[index].count_max = 0;
+		gSysMonitorVar.anolog.single.var[index].count_min = 0;
 	}
 	gSysMonitorVar.digit.multi.var[8].valueN = 55;
 	gSysMonitorVar.digit.multi.var[8].valueP = 55;
@@ -300,6 +305,8 @@ void main(void) {
 	InitSysCtrl_M();
 	/*peripheral init*/
 	Init_Peripheral();
+	int i;
+
 
 	InitGlobalVar();
 	/*interrupt init*/
@@ -318,7 +325,14 @@ void main(void) {
 	Init_Interrupt();
 	ClearFault();
 	PowerOnBIT();
+	for(i = 0; i<100; i++){
+		while(AdcRegs.ADCST.bit.INT_SEQ1==0){
 
+		}
+		currentRefCollect[i] = AdcRegs.ADCRESULT1;
+		voltageRefCollect[i] = AdcRegs.ADCRESULT2;
+		AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;
+	}
 	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	//GpioDataRegs.GPASET.bit.GPIO6 = 1;

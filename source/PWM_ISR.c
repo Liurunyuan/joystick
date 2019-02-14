@@ -442,6 +442,65 @@ void SwitchDirection(void){
 	}
 }
 
+
+inline void Check_Current(){
+	Uint16 currentRef = 0;
+	Uint16 absDeltaCurrent;
+	absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentPos].value) - currentRef);
+
+	if(absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentPos].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	}
+}
+
+inline void Check_Voltage(){
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].value > gSysMonitorVar.anolog.single.var[Power28V_M].min) {
+		++gSysMonitorVar.anolog.single.var[Power28V_M].count_min;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[Power28V_M].count_min > 0)
+			--gSysMonitorVar.anolog.single.var[Power28V_M].count_min;
+		else{
+			gSysMonitorVar.anolog.single.var[Power28V_M].count_min = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].count_min > VOLTAGE_ABNORMAL_COUNT){
+		// TODO generate alarm message and open XIEFANG
+	}
+	else{
+		gSysMonitorVar.anolog.single.var[Power28V_M].count_max = 0;
+		return;
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].value > gSysMonitorVar.anolog.single.var[Power28V_M].max) {
+		++gSysMonitorVar.anolog.single.var[Power28V_M].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[Power28V_M].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[Power28V_M].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[Power28V_M].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].count_max > VOLTAGE_ABNORMAL_COUNT){
+		// TODO generate alarm message and open XIEFANG and diable output
+	}
+}
+
+
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -466,9 +525,10 @@ void Pwm_ISR_Thread(void)
 
 	ReadAnalogValue();
 
-	if(IsSingleAnalogValueAbnormal() == True){
-		//TODO  不着急的量放进主循环，这里只判断电流以及高速
-	}
+	Check_Current();
+
+	Check_Voltage();
+
 	if(gConfigPara.stateCommand == 1){
 		SwitchDirection();
 	}

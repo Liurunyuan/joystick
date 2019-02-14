@@ -73,6 +73,9 @@
 #define MAX_C_BUS_CURRENT					(2048)
 #define MIN_C_BUS_CURRENT					(2048)
 
+#define CURRENT_ABNORMAL_COUNT				(10)
+#define VOLTAGE_ABNORMAL_COUNT				(10)
+#define TEMP_ABNORMAL_COUNT				(10)
 
 
 enum Status{
@@ -235,6 +238,8 @@ typedef struct _AnalogVar{
 	int value;
 	int max;
 	int min;
+	int count_max;
+	int count_min;
 	UV updateValue;
 }AnalogVar;
 
