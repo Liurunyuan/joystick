@@ -3,7 +3,7 @@
 #include "public.h"
 #include "GlobalVarAndFunc.h"
 #include <string.h>
-
+#include "PWM_ISR.h"
 
 Uint32 gECapCount;
 RS422STATUS gRS422Status = {0};
@@ -278,18 +278,25 @@ void Enable_KZ_N_DSP(void){
 	GpioDataRegs.GPCCLEAR.bit.GPIO86 = 1;
 }
 void Disable_KZ_N_DSP(void){
-	GpioDataRegs.GPASET.bit.GPIO31 = 1;
+	GpioDataRegs.GPCSET.bit.GPIO86 = 1;
 }
 
 void EnablePwmOutput(void){
+	//gSysInfo.currentHallPosition = GetCurrentHallValue();
+	//gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
+
 	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
 	Enable_KZ_P_DSP();
 	Enable_KZ_N_DSP();
 }
 void DisablePwmOutput(void){
 	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
+	//GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1; //For temp use
 	Disable_KZ_P_DSP();
 	Disable_KZ_N_DSP();
+	EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+	EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+	EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
 }
 void StateMachine(void){
 	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){

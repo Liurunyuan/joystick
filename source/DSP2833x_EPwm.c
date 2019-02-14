@@ -43,8 +43,8 @@ void InitEPwmGpio(void)
    InitEPwm1Gpio();
    InitEPwm2Gpio();
    InitEPwm3Gpio();
-   InitEPwm4Gpio();
-   InitEPwm5Gpio();
+   //InitEPwm4Gpio();
+   //InitEPwm5Gpio();
    //InitEPwm6Gpio();
 }
 

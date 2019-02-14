@@ -306,17 +306,22 @@ void main(void) {
 	DisablePwmOutput();
 	SET_DIGIT_SER_LOAD_HIGH;
 	SET_DIGIT_SER_CLK_LOW;
-	gSysInfo.currentHallPosition = 5;
+	//gSysInfo.currentHallPosition = 5;
+
+	gSysInfo.currentHallPosition = GetCurrentHallValue();
+	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
+
 	gSysState.erro.bit.software = 0;
-	gConfigPara.stateCommand = 1;
-	gSysInfo.duty = 100;
+	gConfigPara.stateCommand = 0;
+	gSysInfo.duty = 0;
 
 	Init_Interrupt();
-
+	ClearFault();
 	PowerOnBIT();
 
 	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
+	//GpioDataRegs.GPASET.bit.GPIO6 = 1;
 
 	while(1)
 	{
