@@ -93,7 +93,7 @@ void UpdateSingleAnalogInput(void){
 int IsSingleAnalogValueAbnormal(void){
 	int index;
 	int ret = 1;
-	for(index = 0; index <= TotalChannel; ++index){
+	for(index = 0; index < TotalChannel; ++index){
 		if((gSysMonitorVar.anolog.single.var[index].value > gSysMonitorVar.anolog.single.var[index].max) ||
 				(gSysMonitorVar.anolog.single.var[index].value < gSysMonitorVar.anolog.single.var[index].min)) {
 			ret = 0;

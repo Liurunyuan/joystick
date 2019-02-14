@@ -174,6 +174,17 @@ void InitOutputPin(void)
 	GpioCtrlRegs.GPCDIR.bit.GPIO84	= OUTPUT;
 
 
+	/*
+	 *GPIO6
+	 *Pin index:			13
+	 *Name in circuit:		GPIO6;
+	 */
+	GpioCtrlRegs.GPAMUX1.bit.GPIO6	= GPIO;
+	GpioDataRegs.GPASET.bit.GPIO6 = 1;
+	GpioCtrlRegs.GPADIR.bit.GPIO6	= OUTPUT;
+
+	//GpioCtrlRegs.GPAPUD.bit.GPIO6 = 0;
+
 	EDIS;
 }
 

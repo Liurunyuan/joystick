@@ -282,17 +282,21 @@ void Disable_KZ_N_DSP(void){
 }
 
 void EnablePwmOutput(void){
+	//gSysInfo.currentHallPosition = GetCurrentHallValue();
+	//gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
+
 	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
 	Enable_KZ_P_DSP();
 	Enable_KZ_N_DSP();
 }
 void DisablePwmOutput(void){
 	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
+	//GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1; //For temp use
 	Disable_KZ_P_DSP();
 	Disable_KZ_N_DSP();
-	DisablePwm1();
-	DisablePwm2();
-	DisablePwm3();
+	EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+	EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+	EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
 }
 void StateMachine(void){
 	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){

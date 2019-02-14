@@ -31,45 +31,58 @@ void UpdateKeyValue(void) {
 	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 }
 
-
+/*
 void DisablePwm1(void){
-	EALLOW;
-	EPwm1Regs.TZFRC.bit.OST = 1;
-	EDIS;
+	//EALLOW;
+	//EPwm1Regs.AQCSFRC.bit.CSFA = 1;
+	//EPwm1Regs.AQCSFRC.bit.CSFB = 2;
+	//EPwm1Regs.TZFRC.bit.OST = 1;
+	//EDIS;
 
-//	EPwm1Regs.AQCSFRC.all = 0x0009;
+	EPwm1Regs.AQCSFRC.all = 0x0009;
 }
 void DisablePwm2(void){
-	EALLOW;
-	EPwm2Regs.TZFRC.bit.OST = 1;
-	EDIS;
-//	EPwm2Regs.AQCSFRC.all = 0x0009;
+	//EALLOW;
+	//EPwm2Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm2Regs.AQCSFRC.bit.CSFB = 1;
+	//EPwm2Regs.TZFRC.bit.OST = 1;
+	//EDIS;
+	EPwm2Regs.AQCSFRC.all = 0x0009;
 }
 void DisablePwm3(void){
-	EALLOW;
-	EPwm3Regs.TZFRC.bit.OST = 1;
-	EDIS;
+	//EALLOW;
+	//EPwm3Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm3Regs.AQCSFRC.bit.CSFB = 1;
+	//EPwm3Regs.TZFRC.bit.OST = 1;
+	//EDIS;
 
-//	EPwm3Regs.AQCSFRC.all = 0x0009;
+	EPwm3Regs.AQCSFRC.all = 0x0009;
 }
 void EnablePwm1(void){
-	EALLOW;
-	EPwm1Regs.TZCLR.all = 0x003f;
-	EDIS;
-//	EPwm1Regs.AQCSFRC.all = 0x000f;
+	//EALLOW;
+	//EPwm1Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm1Regs.AQCSFRC.bit.CSFB = 3;
+	//EPwm1Regs.TZCLR.all = 0x003f;
+	//EDIS;
+	EPwm1Regs.AQCSFRC.all = 0x000f;
 }
 void EnablePwm2(void){
-	EALLOW;
-	EPwm2Regs.TZCLR.all = 0x003f;
-	EDIS;
-//	EPwm2Regs.AQCSFRC.all = 0x000f;
+	//EALLOW;
+	//EPwm2Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm2Regs.AQCSFRC.bit.CSFB = 3;
+	//EPwm2Regs.TZCLR.all = 0x003f;
+	//EDIS;
+	EPwm2Regs.AQCSFRC.all = 0x000f;
 }
 void EnablePwm3(void){
-	EALLOW;
-	EPwm3Regs.TZCLR.all = 0x003f;
-	EDIS;
-//	EPwm3Regs.AQCSFRC.all = 0x000f;
+	//EALLOW;
+	//EPwm3Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm3Regs.AQCSFRC.bit.CSFB = 3;
+	//EPwm3Regs.TZCLR.all = 0x003f;
+	//EDIS;
+	EPwm3Regs.AQCSFRC.all = 0x000f;
 }
+*/
 /**************************************************************
  *Name:						CalForceSpeedAccel
  *Function:
@@ -78,6 +91,7 @@ void EnablePwm3(void){
  *Author:					Simon
  *Date:						2018.10.28
  **************************************************************/
+
 void CalForceSpeedAccel(void) {
 
 	static int count = 0;
@@ -93,6 +107,7 @@ void CalForceSpeedAccel(void) {
 		count = 0;
 	}
 }
+
 /**************************************************************
  *Name:						GetCurrentHallValue
  *Function:
@@ -101,6 +116,7 @@ void CalForceSpeedAccel(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
+
 Uint16 GetCurrentHallValue(void){
 
 	Uint16 temp;
@@ -112,13 +128,14 @@ Uint16 GetCurrentHallValue(void){
 	b = GpioDataRegs.GPBDAT.bit.GPIO48;
 	c = GpioDataRegs.GPBDAT.bit.GPIO49;
 
-	temp = ((c << 2) + (b << 1) + a);
+	temp = ((a << 2) + (b << 1) + c);
 
 	if(temp < 1 || temp >6){
 		gSysState.erro.bit.software = 1;
 	}
 	return temp;
 }
+
 /**************************************************************
  *Name:		   CPositiveToBNegtive
  *Comment:
@@ -127,6 +144,7 @@ Uint16 GetCurrentHallValue(void){
  *Author:	   Simon
  *Date:		   2018年11月25日下午1:16:27
  **************************************************************/
+/*
 inline void CPositiveToBNegtive(void) {
 
 //	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
@@ -147,6 +165,7 @@ inline void CPositiveToBNegtive(void) {
 	EnablePwm2();
 	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   CPositiveToANegtive
  *Comment:
@@ -155,6 +174,7 @@ inline void CPositiveToBNegtive(void) {
  *Author:	   Simon
  *Date:		   2018年11月25日下午1:16:55
  **************************************************************/
+/*
 inline void CPositiveToANegtive(void) {
 
 //	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
@@ -176,6 +196,7 @@ inline void CPositiveToANegtive(void) {
 	EnablePwm1();
 	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   BPositiveToANegtive
  *Comment:
@@ -184,6 +205,7 @@ inline void CPositiveToANegtive(void) {
  *Author:	   Simon
  *Date:		   2018年11月25日下午1:17:04
  **************************************************************/
+/*
 inline void BPositiveToANegtive(void) {
 
 //	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
@@ -199,11 +221,14 @@ inline void BPositiveToANegtive(void) {
 //	EPwm2Regs.AQCSFRC.all = 0x000f;
 //	EPwm3Regs.AQCSFRC.all = 0x000f;
 	DisablePwm3();
-	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm2Regs.CMPA.half.CMPA = duty_p;
+	EPwm1Regs.CMPA.half.CMPA = duty_n;
 	EnablePwm2();
 	EnablePwm1();
 }
+*/
 /**************************************************************
  *Name:		   BPositiveToCNegtive
  *Comment:
@@ -212,6 +237,7 @@ inline void BPositiveToANegtive(void) {
  *Author:	   Simon
  *Date:		   2018年11月25日下午1:17:14
  **************************************************************/
+/*
 inline void BPositiveToCNegtive(void) {
 
 //	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
@@ -229,11 +255,14 @@ inline void BPositiveToCNegtive(void) {
 //	EPwm2Regs.AQCSFRC.all = 0x000f;
 
 	DisablePwm1();
-	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm2Regs.CMPA.half.CMPA = duty_p;
+	EPwm3Regs.CMPA.half.CMPA = duty_n;
 	EnablePwm2();
 	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   APositiveToCNegtive
  *Comment:
@@ -242,6 +271,7 @@ inline void BPositiveToCNegtive(void) {
  *Author:	   Simon
  *Date:		   2018年11月25日下午1:17:26
  **************************************************************/
+/*
 inline void APositiveToCNegtive(void) {
 
 //	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
@@ -257,11 +287,14 @@ inline void APositiveToCNegtive(void) {
 //	EPwm1Regs.AQCSFRC.all = 0x000f;
 //	EPwm3Regs.AQCSFRC.all = 0x000f;
 	DisablePwm2();
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = duty_p;
+	EPwm3Regs.CMPA.half.CMPA = duty_n;
 	EnablePwm1();
 	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   APositiveToBNegtive
  *Comment:
@@ -270,6 +303,7 @@ inline void APositiveToCNegtive(void) {
  *Author:	   Simon
  *Date:		   2018年11月25日下午1:17:37
  **************************************************************/
+/*
 inline void APositiveToBNegtive(void) {
 
 //	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
@@ -289,12 +323,15 @@ inline void APositiveToBNegtive(void) {
 //	EPwm2Regs.AQCSFRC.all = 0x000f;
 //	EPwm3Regs.AQCSFRC.all = 0x000f;
 	DisablePwm3();
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = duty_p;
+	EPwm2Regs.CMPA.half.CMPA = duty_n;
+
 	EnablePwm1();
 	EnablePwm2();
 }
-
+*/
 /**************************************************************
  *Name:						SwitchDirection
  *Function:
@@ -304,17 +341,33 @@ inline void APositiveToBNegtive(void) {
  *Date:						2018.10.31
  **************************************************************/
 void SwitchDirection(void){
+	int t_duty_temp;
+	Uint16 t_duty_p;
+	Uint16 t_duty_n;
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
 	gSysInfo.currentHallPosition = GetCurrentHallValue();
+
+	t_duty_temp = gSysInfo.duty;
+	if(t_duty_temp > EPWM2_TIMER_HALF_TBPRD) t_duty_temp = EPWM2_TIMER_HALF_TBPRD;
+	else if(t_duty_temp < -( EPWM2_TIMER_HALF_TBPRD )) t_duty_temp = -( EPWM2_TIMER_HALF_TBPRD );
+	t_duty_p = (Uint16)(EPWM2_TIMER_HALF_TBPRD + t_duty_temp);
+	t_duty_n = (Uint16)(EPWM2_TIMER_HALF_TBPRD - t_duty_temp);
+
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 3://A+ ---------------> C-
 			//本项目电机会进行正转和反转。所以需要判断HALL相邻两个位置是否一样。
+
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
 				|| (1 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToCNegtive();
+				//APositiveToCNegtive();
+				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+				EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
 			break;
 		case 1://B+ ---------------> C-
@@ -322,7 +375,12 @@ void SwitchDirection(void){
 				|| (3 == gSysInfo.lastTimeHalllPosition)
 				|| (5 == gSysInfo.lastTimeHalllPosition)){
 
-				BPositiveToCNegtive();
+				//BPositiveToCNegtive();
+				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+				EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
 			break;
 		case 5://B+ ---------------> A-
@@ -330,7 +388,12 @@ void SwitchDirection(void){
 				|| (1 == gSysInfo.lastTimeHalllPosition)
 				|| (4 == gSysInfo.lastTimeHalllPosition)){
 
-				BPositiveToANegtive();
+				//BPositiveToANegtive();
+				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+				EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 			}
 			break;
 		case 4://C+ ---------------> A-
@@ -338,7 +401,12 @@ void SwitchDirection(void){
 				|| (5 == gSysInfo.lastTimeHalllPosition)
 				|| (6 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToANegtive();
+				//CPositiveToANegtive();
+				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+				EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
 			break;
 		case 6://C+ ---------------> B-
@@ -346,7 +414,12 @@ void SwitchDirection(void){
 				|| (4 == gSysInfo.lastTimeHalllPosition)
 				|| (2 == gSysInfo.lastTimeHalllPosition)){
 
-				CPositiveToBNegtive();
+				//CPositiveToBNegtive();
+				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+				EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
 			break;
 		case 2://A+ ---------------> B-
@@ -354,7 +427,12 @@ void SwitchDirection(void){
 				|| (6 == gSysInfo.lastTimeHalllPosition)
 				|| (3 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToBNegtive();
+				//APositiveToBNegtive();
+				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+				EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 			}
 			break;
 		default:
@@ -374,6 +452,7 @@ void SwitchDirection(void){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
+	//return; //LRT For test use
 	static int count = 0;
 
 	StartGetADBySpi();

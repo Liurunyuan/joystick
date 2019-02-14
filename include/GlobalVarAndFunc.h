@@ -34,7 +34,7 @@ typedef struct{
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
 	Uint16 sdoStatus;
-	Uint16 duty;
+	int16 duty;
 }SYSINFO;
 
 

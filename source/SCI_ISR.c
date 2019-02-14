@@ -32,7 +32,7 @@ char rs422rxPack[16];
  **************************************************************/
 static void TestDuty(VAR16 a, int b, int c) {
 
-	gSysInfo.duty = a.value;
+	gSysInfo.duty = (int)a.value;
 
 	//TODO just an example
 }
@@ -46,7 +46,7 @@ static void TestDuty(VAR16 a, int b, int c) {
  **************************************************************/
 static void TestHallPosition(VAR16 a, int b, int c) {
 
-	gSysInfo.currentHallPosition = a.value;
+	//gSysInfo.currentHallPosition = a.value;
 }
 
 /**************************************************************
