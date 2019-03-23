@@ -54,7 +54,7 @@ void ReadADBySpi(void)
 	}
 	real = SpiaRegs.SPIRXBUF;
 	real2  = SpiaRegs.SPIRXBUF;
-	real3 = SpiaRegs.SPIRXBUF;
+	real3 = SpiaRegs.SPIRXBUF;   //not used
 
 
 	DISABLE_CNV_AD;

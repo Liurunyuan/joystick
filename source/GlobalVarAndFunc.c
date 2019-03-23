@@ -299,6 +299,7 @@ void DisablePwmOutput(void){
 	EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
 }
 void StateMachine(void){
+	//gConfigPara.stateCommand = 1; // For TEMP Test
 	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){
 		EnablePwmOutput();
 	}

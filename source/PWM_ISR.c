@@ -348,6 +348,9 @@ void SwitchDirection(void){
 	gSysInfo.currentHallPosition = GetCurrentHallValue();
 
 	t_duty_temp = gSysInfo.duty;
+
+	t_duty_temp = 100;
+
 	if(t_duty_temp > EPWM2_TIMER_HALF_TBPRD) t_duty_temp = EPWM2_TIMER_HALF_TBPRD;
 	else if(t_duty_temp < -( EPWM2_TIMER_HALF_TBPRD )) t_duty_temp = -( EPWM2_TIMER_HALF_TBPRD );
 	t_duty_p = (Uint16)(EPWM2_TIMER_HALF_TBPRD + t_duty_temp);
@@ -446,6 +449,7 @@ void SwitchDirection(void){
 inline void Check_Current(){
 	Uint16 currentRef = 0;
 	Uint16 absDeltaCurrent;
+
 	absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentPos].value) - currentRef);
 
 	if(absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentPos].max) {
@@ -464,42 +468,137 @@ inline void Check_Current(){
 	}
 }
 
-inline void Check_Voltage(){
-	if(gSysMonitorVar.anolog.single.var[Power28V_M].value > gSysMonitorVar.anolog.single.var[Power28V_M].min) {
-		++gSysMonitorVar.anolog.single.var[Power28V_M].count_min;
+inline void Check_A_Q_Current(){
+	Uint16 q_A_currentRef = 0;
+	Uint16 q_A_absDeltaCurrent;
+
+	q_A_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentA].value) - q_A_currentRef);
+
+	if(q_A_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentA].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentA].count_max;
 	}
 	else{
-		if(gSysMonitorVar.anolog.single.var[Power28V_M].count_min > 0)
-			--gSysMonitorVar.anolog.single.var[Power28V_M].count_min;
+		if(gSysMonitorVar.anolog.single.var[BusCurrentA].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentA].count_max;
 		else{
-			gSysMonitorVar.anolog.single.var[Power28V_M].count_min = 0;
+			gSysMonitorVar.anolog.single.var[BusCurrentA].count_max = 0;
 		}
 	}
 
-	if(gSysMonitorVar.anolog.single.var[Power28V_M].count_min > VOLTAGE_ABNORMAL_COUNT){
-		// TODO generate alarm message and open XIEFANG
-	}
-	else{
-		gSysMonitorVar.anolog.single.var[Power28V_M].count_max = 0;
-		return;
-	}
-
-	if(gSysMonitorVar.anolog.single.var[Power28V_M].value > gSysMonitorVar.anolog.single.var[Power28V_M].max) {
-		++gSysMonitorVar.anolog.single.var[Power28V_M].count_max;
-	}
-	else{
-		if(gSysMonitorVar.anolog.single.var[Power28V_M].count_max > 0)
-			--gSysMonitorVar.anolog.single.var[Power28V_M].count_max;
-		else{
-			gSysMonitorVar.anolog.single.var[Power28V_M].count_max = 0;
-		}
-	}
-
-	if(gSysMonitorVar.anolog.single.var[Power28V_M].count_max > VOLTAGE_ABNORMAL_COUNT){
-		// TODO generate alarm message and open XIEFANG and diable output
+	if(gSysMonitorVar.anolog.single.var[BusCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
 	}
 }
 
+inline void Check_A_X_Current(){
+	Uint16 x_A_currentRef = 0;
+	Uint16 x_A_absDeltaCurrent;
+
+	x_A_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentA].value) - x_A_currentRef);
+
+	if(x_A_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentA].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	}
+}
+
+inline void Check_B_Q_Current(){
+	Uint16 q_B_currentRef = 0;
+	Uint16 q_B_absDeltaCurrent;
+
+	q_B_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentB].value) - q_B_currentRef);
+
+	if(q_B_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentB].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentB].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentB].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentB].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentB].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	}
+}
+
+inline void Check_B_X_Current(){
+	Uint16 x_B_currentRef = 0;
+	Uint16 x_B_absDeltaCurrent;
+
+	x_B_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentB].value) - x_B_currentRef);
+
+	if(x_B_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentB].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	}
+}
+
+inline void Check_C_Q_Current(){
+	Uint16 q_C_currentRef = 0;
+	Uint16 q_C_absDeltaCurrent;
+
+	q_C_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentC].value) - q_C_currentRef);
+
+	if(q_C_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentC].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentC].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentC].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentC].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentC].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	}
+}
+
+inline void Check_C_X_Current(){
+	Uint16 x_C_currentRef = 0;
+	Uint16 x_C_absDeltaCurrent;
+
+	x_C_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentC].value) - x_C_currentRef);
+
+	if(x_C_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentC].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	}
+}
 
 /**************************************************************
  *Name:						Pwm_ISR_Thread
@@ -526,8 +625,12 @@ void Pwm_ISR_Thread(void)
 	ReadAnalogValue();
 
 	Check_Current();
-
-	Check_Voltage();
+	Check_A_Q_Current();
+	Check_A_X_Current();
+	Check_B_Q_Current();
+	Check_B_X_Current();
+	Check_C_Q_Current();
+	Check_C_X_Current();
 
 	if(gConfigPara.stateCommand == 1){
 		SwitchDirection();
@@ -536,15 +639,18 @@ void Pwm_ISR_Thread(void)
 		DisablePwmOutput();
 	}
 
-	ReadADBySpi();
+	//ReadADBySpi();
+
+	//TODO add force and displacement limit protection
+
 
 	if(real2 > 400){
 		++countreal;
 		real5 = real2;
 	}
 
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
+	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
+	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
 
 	CalForceSpeedAccel();
 }

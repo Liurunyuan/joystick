@@ -596,11 +596,14 @@ void Init_DMA(void){
 	DMADest   = &DMABuf1[0];              //Point DMA destination to the beginning of the array
 	DMASource = &AdcMirror.ADCRESULT0;    //Point DMA source to ADC result register base
 	DMACH1AddrConfig(DMADest,DMASource);
-	DMACH1BurstConfig(15,1,10);
-	DMACH1TransferConfig(9,-15,(-150 + 1));
+	DMACH1BurstConfig(15,1,1);
+	DMACH1TransferConfig(15,1,1);
 	DMACH1WrapConfig(100,100,100,100);	  //Don't use wrap function
 	DMACH1ModeConfig(DMA_SEQ1INT,PERINT_ENABLE,ONESHOT_DISABLE,CONT_ENABLE,SYNC_DISABLE,SYNC_SRC,
 			                 OVRFLOW_DISABLE,SIXTEEN_BIT,CHINT_END,CHINT_ENABLE);
+
+	//DMACH1BurstConfig(15,1,10);
+	//DMACH1TransferConfig(9,-15,(-150 + 1));
 
 
 	StartDMACH1();

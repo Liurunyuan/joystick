@@ -22,6 +22,16 @@
 Uint16 currentRefCollect[100] = {0};
 Uint16 voltageRefCollect[100] = {0};
 
+enum FSM {
+	INIT = 0,
+	ZERO,
+	PASSIVE,
+	DAMP,
+	SLAVE,
+	FREEZE,
+	ALARM
+};
+
 #define UART_PRINTF
 
 #ifdef UART_PRINTF
@@ -268,6 +278,90 @@ void RS422Unpack(void) {
 		UnpackRS422ANew(&gRS422RxQueB);
 	}
 }
+
+inline void Check_Power28V_M(){
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].value > gSysMonitorVar.anolog.single.var[Power28V_M].min) {
+		++gSysMonitorVar.anolog.single.var[Power28V_M].count_min;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[Power28V_M].count_min > 0)
+			--gSysMonitorVar.anolog.single.var[Power28V_M].count_min;
+		else{
+			gSysMonitorVar.anolog.single.var[Power28V_M].count_min = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].count_min > VOLTAGE_ABNORMAL_COUNT){
+		// TODO generate alarm message and open XIEFANG
+		//GpioDataRegs.GPACLEAR.bit.GPIO6 = 1;
+	}
+	else{
+		gSysMonitorVar.anolog.single.var[Power28V_M].count_max = 0;
+		return;
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].value > gSysMonitorVar.anolog.single.var[Power28V_M].max) {
+		++gSysMonitorVar.anolog.single.var[Power28V_M].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[Power28V_M].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[Power28V_M].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[Power28V_M].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V_M].count_max > VOLTAGE_ABNORMAL_COUNT){
+		// TODO generate alarm message and open XIEFANG and diable output
+		//GpioDataRegs.GPACLEAR.bit.GPIO6 = 1;
+		//EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+		//EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+		//EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+	}
+}
+
+inline void Check_Power28V(){
+	if(gSysMonitorVar.anolog.single.var[Power28V].value > gSysMonitorVar.anolog.single.var[Power28V].min) {
+		++gSysMonitorVar.anolog.single.var[Power28V].count_min;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[Power28V].count_min > 0)
+			--gSysMonitorVar.anolog.single.var[Power28V].count_min;
+		else{
+			gSysMonitorVar.anolog.single.var[Power28V].count_min = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V].count_min > VOLTAGE_ABNORMAL_COUNT){
+		// TODO generate alarm message and open XIEFANG
+		//GpioDataRegs.GPACLEAR.bit.GPIO6 = 1;
+	}
+	else{
+		gSysMonitorVar.anolog.single.var[Power28V].count_max = 0;
+		return;
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V].value > gSysMonitorVar.anolog.single.var[Power28V].max) {
+		++gSysMonitorVar.anolog.single.var[Power28V].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[Power28V].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[Power28V].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[Power28V].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[Power28V].count_max > VOLTAGE_ABNORMAL_COUNT){
+		// TODO generate alarm message and open XIEFANG and diable output
+		//GpioDataRegs.GPACLEAR.bit.GPIO6 = 1;
+		//EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+		//EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+		//EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+	}
+}
+
+
 /**************************************************************
  *Name:						Start_main_loop
  *Function:					Business logic
@@ -281,6 +375,11 @@ void Start_main_loop(void){
 	FeedWatchDog();
 	StateMachine();
 //	UpdateForceDisplaceCurve();
+
+	Check_Power28V_M();
+
+	Check_Power28V();
+
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}
@@ -289,6 +388,7 @@ void Start_main_loop(void){
 
 	ClearRS422RxOverFlow();
 	//TODO need to implement
+
 }
 
 /***************************************************************
@@ -305,8 +405,6 @@ void main(void) {
 	InitSysCtrl_M();
 	/*peripheral init*/
 	Init_Peripheral();
-	int i;
-
 
 	InitGlobalVar();
 	/*interrupt init*/
@@ -320,19 +418,21 @@ void main(void) {
 
 	gSysState.erro.bit.software = 0;
 	gConfigPara.stateCommand = 0;
+	//gConfigPara.stateCommand = 1;
 	gSysInfo.duty = 0;
+	//gSysInfo.duty = 100;
 
 	Init_Interrupt();
 	ClearFault();
 	PowerOnBIT();
-	for(i = 0; i<100; i++){
-		while(AdcRegs.ADCST.bit.INT_SEQ1==0){
-
-		}
-		currentRefCollect[i] = AdcRegs.ADCRESULT1;
-		voltageRefCollect[i] = AdcRegs.ADCRESULT2;
-		AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;
-	}
+//	for(i = 0; i<100; i++){
+//		while(AdcRegs.ADCST.bit.INT_SEQ1==0){
+//
+//		}
+//		currentRefCollect[i] = AdcRegs.ADCRESULT1;
+//		voltageRefCollect[i] = AdcRegs.ADCRESULT2;
+//		AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;
+//	}
 	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 	//GpioDataRegs.GPASET.bit.GPIO6 = 1;
