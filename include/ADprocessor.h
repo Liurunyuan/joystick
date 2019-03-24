@@ -247,6 +247,10 @@ typedef struct _SingleChannelA{
 	AnalogVar var[TotalChannel];
 }SingleChannelA;
 
+typedef struct _SingleChannelB{
+	AnalogVar var[TotalChannel];
+}SingleChannelB;
+
 typedef struct _MultiChannelA{
 	AnalogVar var[TOTAL_CTRLBRD_MULTI_ANAL];
 }MultiChannelA;
@@ -255,6 +259,7 @@ typedef struct _MultiChannelA{
 typedef struct _SysAnalogVar{
 	SingleChannelA single;
 	MultiChannelA multi[2];
+	SingleChannelB singleB;
 }SysAnalogVar;
 
 /**********************系统数字量数据结构****************************/

@@ -639,7 +639,7 @@ void Pwm_ISR_Thread(void)
 		DisablePwmOutput();
 	}
 
-	//ReadADBySpi();
+	ReadADBySpi();
 
 	//TODO add force and displacement limit protection
 
@@ -648,9 +648,9 @@ void Pwm_ISR_Thread(void)
 		++countreal;
 		real5 = real2;
 	}
-
-	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
-	//gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
+	gSysMonitorVar.anolog.singleB.var[ForceValue].value = real2;
+	gSysMonitorVar.anolog.singleB.var[DisplacementValue].value = real;
+	gSysMonitorVar.anolog.singleB.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
 
 	CalForceSpeedAccel();
 }
