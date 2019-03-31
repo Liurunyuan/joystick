@@ -349,7 +349,7 @@ void SwitchDirection(void){
 
 	t_duty_temp = gSysInfo.duty;
 
-	t_duty_temp = 100;
+	//t_duty_temp = 100;
 
 	if(t_duty_temp > EPWM2_TIMER_HALF_TBPRD) t_duty_temp = EPWM2_TIMER_HALF_TBPRD;
 	else if(t_duty_temp < -( EPWM2_TIMER_HALF_TBPRD )) t_duty_temp = -( EPWM2_TIMER_HALF_TBPRD );
