@@ -74,8 +74,8 @@ void ADC_Config(void)
 
 //    AdcRegs.ADCTRL1.bit.CPS = 0;
 	AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 0; //启动SEQ转换（SOC）触发，0：清除不确定的SOC触发；1：软件触发SOC
-	AdcRegs.ADCTRL1.bit.CPS = 0; // 1:对HSPCLK进行2分频，0：不分频
-	AdcRegs.ADCTRL3.bit.ADCCLKPS = 0x0001; //0: ADCCLK=HSPCLK/(CPS+1); 1<=ADCCLK<=15: ADCCLK=HSPCLK/(2*ADCCLKPS*(CPS+1))
+	//AdcRegs.ADCTRL1.bit.CPS = 0; // 1:对HSPCLK进行2分频，0：不分频
+	AdcRegs.ADCTRL3.bit.ADCCLKPS = 0x0005; //0: ADCCLK=HSPCLK/(CPS+1); 1<=ADCCLK<=15: ADCCLK=HSPCLK/(2*ADCCLKPS*(CPS+1))
 
 	/*顺序采样模式下：一个AD转换周期（及完整的S/H采样保持周期）=SOC+ADCCLK;
 	 *同步采样模式下：一个AD转换周期（及完整的S/H采样保持周期）=SOC+2*ADCCLK*/
@@ -86,10 +86,10 @@ void ADC_Config(void)
 
 	/*0: 启动/停止转换方式，到达EOC时，停止采样，需要手动将SEQ_CNTR置1，
 	 *1: 自动重新开始，即在SEQ_CNTR=0时，自动重新将MAXCONVn的值装入。 */
-	AdcRegs.ADCTRL1.bit.CONT_RUN = 1;
+	AdcRegs.ADCTRL1.bit.CONT_RUN = 0;
 
 	//同步模式下最大通道的配置
-	AdcRegs.ADCMAXCONV.all = 0x77;
+	AdcRegs.ADCMAXCONV.all = 0x0007;
 
     AdcRegs.ADCCHSELSEQ1.bit.CONV00 = 0x0;
     AdcRegs.ADCCHSELSEQ1.bit.CONV01 = 0x1;
@@ -144,16 +144,18 @@ void ADC_Config(void)
     AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;
 
     //new adc init
-
+*/
     AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 1;//允许ePWM的触发信号启动SEQ1
+   // AdcRegs.ADCTRL2.bit.EPWM_SOCB_SEQ2 = 1;//允许ePWM的触发信号启动SEQ1
 
     AdcRegs.ADCTRL2.bit.RST_SEQ1 = 0x1;			//复位排序器SEQ1到CONV00状态
-    AdcRegs.ADCTRL2.bit.INT_MOD_SEQ1=0;			//每个SEQ1序列结束时，INT_SEQ1置位
-    AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x0;		//禁止SEQ1中断
+  //  AdcRegs.ADCTRL2.bit.RST_SEQ2 = 0x1;         //复位排序器SEQ1到CONV00状态
+   // AdcRegs.ADCTRL2.bit.INT_MOD_SEQ1=0;			//每个SEQ1序列结束时，INT_SEQ1置位
+   // AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x0;		//禁止SEQ1中断
 
-    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;
-    AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 1;
- */
+   // AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;
+    //AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 1;
+
 }
 /*
  * Initialize ADC, including GPIO and configuration
