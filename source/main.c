@@ -215,8 +215,12 @@ void Init_gSysMonitorVar() {
 		gSysMonitorVar.anolog.single.var[index].updateValue = funcptr[index];
 		gSysMonitorVar.anolog.single.var[index].max =
 				anologMaxMinInit[index][0];
+        gSysMonitorVar.anolog.single.var[index].max2nd =
+                anologMaxMinInit[index][1];
 		gSysMonitorVar.anolog.single.var[index].min =
-				anologMaxMinInit[index][1];
+				anologMaxMinInit[index][2];
+        gSysMonitorVar.anolog.single.var[index].min2nd =
+                anologMaxMinInit[index][3];
 
 		gSysMonitorVar.anolog.single.var[index].count_max = 0;
 		gSysMonitorVar.anolog.single.var[index].count_min = 0;

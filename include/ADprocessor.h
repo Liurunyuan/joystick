@@ -237,7 +237,9 @@ struct SingleAnalogVar
 typedef struct _AnalogVar{
 	int value;
 	int max;
+	int max2nd;
 	int min;
+	int min2nd;
 	int count_max;
 	int count_min;
 	UV updateValue;
@@ -305,6 +307,6 @@ int IsCommonAnalogValueAbnormal(void);
 extern SysMonitorVar gSysMonitorVar;
 
 extern const UV funcptr[];
-extern const int anologMaxMinInit[][2];
+extern const int anologMaxMinInit[][4];
 
 #endif

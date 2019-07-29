@@ -632,7 +632,9 @@ void Pwm_ISR_Thread(void)
 	Check_C_Q_Current();
 	Check_C_X_Current();
 
-	if(gConfigPara.stateCommand == 1){
+	if((gConfigPara.stateCommand == 1) &&
+	   ((gSysMonitorVar.anolog.single.var[DisplacementValue].value < gSysMonitorVar.anolog.single.var[DisplacementValue].max2nd) ||
+	    (gSysMonitorVar.anolog.single.var[DisplacementValue].value > gSysMonitorVar.anolog.single.var[DisplacementValue].min2nd))){
 		SwitchDirection();
 	}
 	else{
