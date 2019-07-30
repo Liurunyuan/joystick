@@ -465,6 +465,8 @@ inline void Check_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
+	    DisablePwmOutput();
+	    gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -487,6 +489,8 @@ inline void Check_A_Q_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BusCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -509,6 +513,8 @@ inline void Check_A_X_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -531,6 +537,8 @@ inline void Check_B_Q_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BusCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -553,6 +561,8 @@ inline void Check_B_X_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -575,6 +585,8 @@ inline void Check_C_Q_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BusCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -597,7 +609,19 @@ inline void Check_C_X_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
 	}
+}
+
+int checkDisplaceValidation(){
+    if ((gSysMonitorVar.anolog.single.var[DisplacementValue].value < gSysMonitorVar.anolog.single.var[DisplacementValue].max2nd) &&
+        (gSysMonitorVar.anolog.single.var[DisplacementValue].value > gSysMonitorVar.anolog.single.var[DisplacementValue].min2nd)){
+        return 0;
+    }
+    else{
+        return 1;
+    }
 }
 
 /**************************************************************
@@ -632,9 +656,7 @@ void Pwm_ISR_Thread(void)
 	Check_C_Q_Current();
 	Check_C_X_Current();
 
-	if((gConfigPara.stateCommand == 1) &&
-	   (gSysMonitorVar.anolog.single.var[DisplacementValue].value < gSysMonitorVar.anolog.single.var[DisplacementValue].max2nd) &&
-	    (gSysMonitorVar.anolog.single.var[DisplacementValue].value > gSysMonitorVar.anolog.single.var[DisplacementValue].min2nd)){
+	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
 		SwitchDirection();
 	}
 	else{

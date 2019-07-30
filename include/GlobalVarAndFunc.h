@@ -92,10 +92,10 @@ typedef union{
 }SYSWARNING;
 /*************************************/
 typedef struct{
-	Uint16 a : 1;
+	Uint16 overCurrent : 1;
 	Uint16 rs422RxQFull : 1;
-	Uint16 c : 1;
-	Uint16 d : 1;
+	Uint16 overBusVoltage : 1;
+	Uint16 overTemperature : 1;
 	Uint16 e : 1;
 	Uint16 f : 1;
 	Uint16 g : 1;
