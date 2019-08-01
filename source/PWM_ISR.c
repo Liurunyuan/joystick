@@ -617,10 +617,18 @@ inline void Check_C_X_Current(){
 int checkDisplaceValidation(){
     if ((gSysMonitorVar.anolog.single.var[DisplacementValue].value < gSysMonitorVar.anolog.single.var[DisplacementValue].max2nd) &&
         (gSysMonitorVar.anolog.single.var[DisplacementValue].value > gSysMonitorVar.anolog.single.var[DisplacementValue].min2nd)){
-        return 0;
+        return 1;
     }
     else{
-        return 1;
+        if((gSysMonitorVar.anolog.single.var[DisplacementValue].value > gSysMonitorVar.anolog.single.var[DisplacementValue].max2nd) && (gSysInfo.duty > 0)){
+            return 1;
+        }
+        else if((gSysMonitorVar.anolog.single.var[DisplacementValue].value < gSysMonitorVar.anolog.single.var[DisplacementValue].min2nd) && (gSysInfo.duty < 0)){
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 }
 
