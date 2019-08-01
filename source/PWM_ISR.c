@@ -99,7 +99,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.singleB.var[ForceValue].value, gSysMonitorVar.anolog.singleB.var[DisplacementValue].value, count);
 	++count;
 
 	if(count >= DATA_AMOUNT){
@@ -142,7 +142,7 @@ Uint16 GetCurrentHallValue(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018年11月25日下午1:16:27
+ *Date:		   2018锟斤拷11锟斤拷25锟斤拷锟斤拷锟斤拷1:16:27
  **************************************************************/
 /*
 inline void CPositiveToBNegtive(void) {
@@ -172,7 +172,7 @@ inline void CPositiveToBNegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018年11月25日下午1:16:55
+ *Date:		   2018锟斤拷11锟斤拷25锟斤拷锟斤拷锟斤拷1:16:55
  **************************************************************/
 /*
 inline void CPositiveToANegtive(void) {
@@ -203,7 +203,7 @@ inline void CPositiveToANegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018年11月25日下午1:17:04
+ *Date:		   2018锟斤拷11锟斤拷25锟斤拷锟斤拷锟斤拷1:17:04
  **************************************************************/
 /*
 inline void BPositiveToANegtive(void) {
@@ -235,7 +235,7 @@ inline void BPositiveToANegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018年11月25日下午1:17:14
+ *Date:		   2018锟斤拷11锟斤拷25锟斤拷锟斤拷锟斤拷1:17:14
  **************************************************************/
 /*
 inline void BPositiveToCNegtive(void) {
@@ -269,7 +269,7 @@ inline void BPositiveToCNegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018年11月25日下午1:17:26
+ *Date:		   2018锟斤拷11锟斤拷25锟斤拷锟斤拷锟斤拷1:17:26
  **************************************************************/
 /*
 inline void APositiveToCNegtive(void) {
@@ -301,7 +301,7 @@ inline void APositiveToCNegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018年11月25日下午1:17:37
+ *Date:		   2018锟斤拷11锟斤拷25锟斤拷锟斤拷锟斤拷1:17:37
  **************************************************************/
 /*
 inline void APositiveToBNegtive(void) {
@@ -359,7 +359,7 @@ void SwitchDirection(void){
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 3://A+ ---------------> C-
-			//本项目电机会进行正转和反转。所以需要判断HALL相邻两个位置是否一样。
+			//锟斤拷锟斤拷目锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷转锟酵凤拷转锟斤拷锟斤拷锟斤拷锟斤拷要锟叫讹拷HALL锟斤拷锟斤拷锟斤拷锟斤拷位锟斤拷锟角凤拷一锟斤拷锟斤拷
 
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
