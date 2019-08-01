@@ -185,7 +185,7 @@ void InitConfigParameter(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç12:40:11
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½12:40:11
  **************************************************************/
 void InitSysState(void){
 	gSysState.alarm.all 	= 0;
@@ -208,7 +208,7 @@ void InitSysState(void){
  *Input:	   const double, double, double
  *Output:	   double
  *Author:	   Simon
- *Date:		   2019Äê1ÔÂ2ÈÕÏÂÎç9:57:12
+ *Date:		   2019ï¿½ï¿½1ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:57:12
  **************************************************************/
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
@@ -216,11 +216,11 @@ double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double Measur
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
-	static double x_last;
+	static double x_last = 0;
 	double x_mid = x_last;
 	double x_now;
 
-	static double p_last;
+	static double p_last = 0;
 	double p_mid;
 	double p_now;
 
@@ -243,11 +243,11 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
-	static double x_last;
+	static double x_last = 0;
 	double x_mid = x_last;
 	double x_now;
 
-	static double p_last;
+	static double p_last = 0;
 	double p_mid;
 	double p_now;
 
