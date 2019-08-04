@@ -52,8 +52,8 @@ void ReadADBySpi(void)
 	Send16Clocks();
 	while(SpiaRegs.SPIFFRX.bit.RXFFST < 3) {
 	}
-	real = SpiaRegs.SPIRXBUF;
-	real2  = SpiaRegs.SPIRXBUF;
+	gAnalog16bit.displace = SpiaRegs.SPIRXBUF;
+	gAnalog16bit.force  = SpiaRegs.SPIRXBUF;
 	real3 = SpiaRegs.SPIRXBUF;   //not used
 
 

@@ -4,8 +4,6 @@
 #include "ADprocessor.h"
 
 SysMonitorVar gSysMonitorVar;
-Uint16 real4 = 0;
-Uint16 real6 = 0;
 
 /********update anolog variable value******************************/
 int updateForceValue(void){return GET_FORCE_SGN;}
@@ -68,7 +66,7 @@ const int anologMaxMinInit[][4] = {
 };
 /**************************************************************
  *Name:						UpdatePowerBoardAnalogInput
- *Function:					¸üÐÂ¹¦ÂÊ°åÊäÈëÄ£ÄâÁ¿
+ *Function:					ï¿½ï¿½ï¿½Â¹ï¿½ï¿½Ê°ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -85,9 +83,9 @@ void UpdateSingleAnalogInput(void){
 }
 /**************************************************************
  *Name:						IsSingleAnalogValueAbnormal
- *Function:					ÅÐ¶¨µ¥Í¨µÀÄ£ÄâÁ¿ÊÇ·ñÔ½½ç
+ *Function:					ï¿½Ð¶ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Ô½ï¿½ï¿½
  *Input:					none
- *Output:					return 1±íÃ÷Ô½½ç return 0±íÃ÷Ã»ÓÐÔ½½ç
+ *Output:					return 1ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ return 0ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ô½ï¿½ï¿½
  *Author:					Simon
  *Date:						2018.8.2
  **************************************************************/
@@ -108,7 +106,7 @@ int IsSingleAnalogValueAbnormal(void){
  *Input:	   void
  *Output:	   int
  *Author:	   Simon
- *Date:		   2018Äê12ÔÂ18ÈÕÏÂÎç9:02:38
+ *Date:		   2018ï¿½ï¿½12ï¿½ï¿½18ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:02:38
  **************************************************************/
 int IsCommonAnalogValueAbnormal(void){
 
@@ -119,9 +117,9 @@ int IsCommonAnalogValueAbnormal(void){
 }
 /**************************************************************
  *Name:						AdcConversionUnStable
- *Function:					ÅÐ¶¨Ä£ÄâÁ¿¶àÍ¨µÀÇÐ»»ÒÔ¼°×ª»»ÊÇ·ñÎÈ¶¨
+ *Function:					ï¿½Ð¶ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ô¼ï¿½×ªï¿½ï¿½ï¿½Ç·ï¿½ï¿½È¶ï¿½
  *Input:					none
- *Output:					return 1±íÃ÷±¾´Î²»ÎÈ¶¨ return 0±íÃ÷×ª»»ÒÑ¾­ÎÈ¶¨
+ *Output:					return 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½È¶ï¿½ return 0ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½È¶ï¿½
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
@@ -139,9 +137,9 @@ int AdcConversionUnStable() {
 }
 /**************************************************************
  *Name:						AnologChannelChange
- *Function:					Ä£ÄâÁ¿¶àÍ¨µÀµØÖ·¸Ä±ä
- *Input:					ÉÏ´Î¶àÍ¨µÀÄ£ÄâÁ¿µØÖ·Öµ
- *Output:					·µ»Ø¶àÍ¨µÀÄ£ÄâÁ¿µØÖ·Öµ
+ *Function:					Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½Ö·ï¿½Ä±ï¿½
+ *Input:					ï¿½Ï´Î¶ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·Öµ
+ *Output:					ï¿½ï¿½ï¿½Ø¶ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·Öµ
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
@@ -155,8 +153,8 @@ Uint16 AnalogChannelChange(Uint16 address){
 }
 /**************************************************************
  *Name:						ReadChannelAdcValue
- *Function:					¶ÁÈ¡DSPµÄADC×ª»»½á¹û
- *Input:					Í¨µÀÖµ
+ *Function:					ï¿½ï¿½È¡DSPï¿½ï¿½ADC×ªï¿½ï¿½ï¿½ï¿½ï¿½
+ *Input:					Í¨ï¿½ï¿½Öµ
  *Output:					none
  *Author:					Simon
  *Date:						2018.7.30
@@ -167,8 +165,8 @@ void ReadChannelAdcValue(Uint16 index){
 }
 /**************************************************************
  *Name:						SwitchAnalogChannel
- *Function:					ÇÐ»»¶àÍ¨µÀÄ£ÄâÁ¿µÄµØÖ·Öµ
- *Input:					±¾´ÎÒªÉèÖÃµÄ¶àÍ¨µÀÄ£ÄâÁ¿µÄµØÖ·Öµ
+ *Function:					ï¿½Ð»ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·Öµ
+ *Input:					ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ÃµÄ¶ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·Öµ
  *Output:					none
  *Author:					Simon
  *Date:						2018.7.30
@@ -223,7 +221,7 @@ void SwitchAnalogChannel(Uint16 address){
 }
 /**************************************************************
  *Name:						AnalogValueInspect
- *Function:					Ä£ÄâÁ¿¶àÍ¨µÀÑ²¼ìº¯Êý
+ *Function:					Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ñ²ï¿½ìº¯ï¿½ï¿½
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -247,7 +245,7 @@ void AnalogValueInspect(void){
 }
 /**************************************************************
  *Name:						DigitalValueInspect
- *Function:					Êý×ÖÁ¿¶àÍ¨µÀÑ²¼ìº¯Êý
+ *Function:					ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ñ²ï¿½ìº¯ï¿½ï¿½
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -277,10 +275,8 @@ void DigitalValueInspect(void){
 			break;
 		case GETDATA:
 			if(gSysMonitorVar.digit.multi.var[channel].valueP !=0 && gSysMonitorVar.digit.multi.var[channel].valueP != 1){
-				real4++;
 			}
 			if(	gSysMonitorVar.digit.multi.var[channel].valueN !=0 && 	gSysMonitorVar.digit.multi.var[channel].valueN !=1){
-				real6++;
 			}
 //			gSysMonitorVar.digit.multi.var[channel].valueP = GpioDataRegs.GPBDAT.bit.GPIO59;
 //			gSysMonitorVar.digit.multi.var[channel].valueN = GpioDataRegs.GPBDAT.bit.GPIO60;
@@ -319,7 +315,7 @@ void UpdateSingleDigitInput(void){
 }
 /**************************************************************
  *Name:						ReadAnalogValue
- *Function:					¸üÐÂÏµÍ³Ä£ÄâÁ¿µÄ×ª»»Öµ
+ *Function:					ï¿½ï¿½ï¿½ï¿½ÏµÍ³Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Öµ
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -335,12 +331,12 @@ void ReadAnalogValue(void){
 
     }
 
-	UpdateSingleAnalogInput();
+	//UpdateSingleAnalogInput();
 	AnalogValueInspect();
 }
 /**************************************************************
  *Name:						ReadDigitalValue
- *Function:					¸üÐÂÏµÍ³Êý×ÖÁ¿µÄ×ª»»Öµ
+ *Function:					ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Öµ
  *Input:					none
  *Output:					none
  *Author:					Simon

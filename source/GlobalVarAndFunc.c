@@ -15,6 +15,8 @@ SYSCURRENTSTATE gSysCurrentState = {0};
 CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
 
+ANOLOG16BIT gAnalog16bit = {0};
+
 void InitForceDisplaceCurve(void){
 
 }

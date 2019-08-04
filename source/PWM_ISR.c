@@ -11,15 +11,8 @@
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
-Uint16 real = 0;
-Uint16 realbak = 0;
-Uint16 real2 = 0;
+
 Uint16 real3 = 0;
-
-Uint16 real5 = 0;
-
-
-int16 countreal = 0;
 
 void UpdateKeyValue(void) {
 
@@ -676,13 +669,8 @@ void Pwm_ISR_Thread(void)
 	//TODO add force and displacement limit protection
 
 
-	if(real2 > 400){
-		++countreal;
-		real5 = real2;
-	}
-	gSysMonitorVar.anolog.singleB.var[ForceValue].value = real2;
-	gSysMonitorVar.anolog.singleB.var[DisplacementValue].value = real;
-	gSysMonitorVar.anolog.singleB.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
+	gSysMonitorVar.anolog.singleB.var[ForceValue].value = gAnalog16bit.force;
+	gSysMonitorVar.anolog.singleB.var[DisplacementValue].value = (int)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	CalForceSpeedAccel();
 }

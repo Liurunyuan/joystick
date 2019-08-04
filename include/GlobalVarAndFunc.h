@@ -251,6 +251,11 @@ typedef struct{
 
 }FORCE_DISPLACE_CURVE;
 
+typedef struct{
+    int64 displace;
+    int64 force;
+}ANOLOG16BIT;
+
 
 
 extern Uint32 gECapCount;
@@ -262,6 +267,8 @@ extern SYSPARA gSysPara;
 extern SYSCURRENTSTATE gSysCurrentState;
 extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
+
+extern ANOLOG16BIT gAnalog16bit;
 
 
 void InitSysState(void);
