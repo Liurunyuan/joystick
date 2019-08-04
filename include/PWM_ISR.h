@@ -5,6 +5,12 @@
 /*Switch the analog channel, plus 1 every time*/
 void Pwm_ISR_Thread(void);
 
+enum COMPARE
+{
+    LESS_THAN = 0,
+    LARGE_THAN
+};
+
 
 typedef struct _FeedbackVarBuf{
 

@@ -50,7 +50,7 @@ const UV funcptr[] = {
 
 };
 
-const int anologMaxMinInit[][4] = {
+const Uint16 anologMaxMinInit[][4] = {
         //{max,2ndmax,min,2ndmin}
 		{0,0,0,0},
 		{1,0,0,0},
@@ -62,8 +62,17 @@ const int anologMaxMinInit[][4] = {
 		{7,0,0,0},
 		{2690,2400,861,1000},
 		{9,0,0,0},
-		{10,0,0,0}
+		{10,0,0,0},
+		{11,0,0,0}
 };
+
+const Uint16 AD16bitMaxMinInit[][4] = {
+        //{max,2ndmax,min,2ndmin}
+        {0,0,0,0},
+        {42294,40000,13378,15000},
+        {2,0,0,0}
+};
+
 /**************************************************************
  *Name:						UpdatePowerBoardAnalogInput
  *Function:					���¹��ʰ�����ģ����

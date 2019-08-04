@@ -92,7 +92,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.singleB.var[ForceValue].value, gSysMonitorVar.anolog.singleB.var[DisplacementValue].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue_16bit].value, gSysMonitorVar.anolog.single.var[DisplacementValue_16bit].value, count);
 	++count;
 
 	if(count >= DATA_AMOUNT){
@@ -608,20 +608,48 @@ inline void Check_C_X_Current(){
 }
 
 int checkDisplaceValidation(){
-    if ((gSysMonitorVar.anolog.single.var[DisplacementValue].value < gSysMonitorVar.anolog.single.var[DisplacementValue].max2nd) &&
-        (gSysMonitorVar.anolog.single.var[DisplacementValue].value > gSysMonitorVar.anolog.single.var[DisplacementValue].min2nd)){
-        return 1;
-    }
-    else{
-        if((gSysMonitorVar.anolog.single.var[DisplacementValue].value > gSysMonitorVar.anolog.single.var[DisplacementValue].max2nd) && (gSysInfo.duty > 0)){
-            return 1;
-        }
-        else if((gSysMonitorVar.anolog.single.var[DisplacementValue].value < gSysMonitorVar.anolog.single.var[DisplacementValue].min2nd) && (gSysInfo.duty < 0)){
-            return 1;
+    if(gSysInfo.duty > 0){
+        if(gforwardOverLimit == 1){
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
+                return 1;
+            }
+            else{
+                gforwardOverLimit = 1;
+                return 0;
+            }
         }
         else{
-            return 0;
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
+                return 1;
+            }
+            else{
+                gforwardOverLimit = 1;
+                return 0;
+            }
         }
+    }
+    else if(gSysInfo.duty < 0){
+        if(gbackwardOverLimit == 1){
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
+                return 1;
+            }
+            else{
+                gbackwardOverLimit = 1;
+                return 0;
+            }
+        }
+        else{
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
+                return 1;
+            }
+            else{
+                gbackwardOverLimit = 1;
+                return 0;
+            }
+        }
+    }
+    else{
+        return 1;
     }
 }
 
@@ -635,7 +663,6 @@ int checkDisplaceValidation(){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
-	//return; //LRT For test use
 	static int count = 0;
 
 	StartGetADBySpi();
@@ -648,7 +675,7 @@ void Pwm_ISR_Thread(void)
 
 
 	ReadAnalogValue();
-
+/*
 	Check_Current();
 	Check_A_Q_Current();
 	Check_A_X_Current();
@@ -656,21 +683,20 @@ void Pwm_ISR_Thread(void)
 	Check_B_X_Current();
 	Check_C_Q_Current();
 	Check_C_X_Current();
+*/
+    ReadADBySpi();
+
+    gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = gAnalog16bit.force;
+    gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
 		SwitchDirection();
+		gforwardOverLimit = 0;
+		gbackwardOverLimit = 0;
 	}
 	else{
 		DisablePwmOutput();
 	}
-
-	ReadADBySpi();
-
-	//TODO add force and displacement limit protection
-
-
-	gSysMonitorVar.anolog.singleB.var[ForceValue].value = gAnalog16bit.force;
-	gSysMonitorVar.anolog.singleB.var[DisplacementValue].value = (int)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	CalForceSpeedAccel();
 }

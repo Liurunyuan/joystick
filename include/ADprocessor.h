@@ -198,20 +198,26 @@ enum MULTCH_PWERBRD_ANAL_IDX
 
 enum SNGL_PWERBRD_ANAL_IDX
 {
-	ForceValue = 0,		//0
-	BusCurrentPos,		//1
-	Power28V_M,			//2
-	BridgeCurrentB,		//3
-	BusCurrentB,		//4
-	Power28V,			//5
-	BridgeCurrentA,		//6
-	BusCurrentA,		//7
-	DisplacementValue,	//8
-	BridgeCurrentC,		//9
-	BusCurrentC,		//10
-	TotalChannel		//11
+	ForceValue = 0,		     //0
+	BusCurrentPos,		     //1
+	Power28V_M,			     //2
+	BridgeCurrentB,		     //3
+	BusCurrentB,	         //4
+	Power28V,			     //5
+	BridgeCurrentA,		     //6
+	BusCurrentA,		     //7
+	DisplacementValue,	     //8
+	BridgeCurrentC,		     //9
+	BusCurrentC,		     //10
+	TotalChannel,            //11
 };
 
+enum AD16BIT_CHANNEL
+{
+    ForceValue_16bit = 0,          //0
+    DisplacementValue_16bit,       //1
+    AD16bit_Total,                 //2
+};
 
 typedef int (*UV)(void);
 
@@ -235,11 +241,11 @@ struct SingleAnalogVar
 
 /********************系统模拟量数据结构**************************/
 typedef struct _AnalogVar{
-	int64 value;
-	int max;
-	int max2nd;
-	int min;
-	int min2nd;
+	Uint16 value;
+	Uint16 max;
+	Uint16 max2nd;
+	Uint16 min;
+	Uint16 min2nd;
 	int count_max;
 	int count_min;
 	UV updateValue;
@@ -249,9 +255,9 @@ typedef struct _SingleChannelA{
 	AnalogVar var[TotalChannel];
 }SingleChannelA;
 
-typedef struct _SingleChannelB{
-	AnalogVar var[TotalChannel];
-}SingleChannelB;
+typedef struct _AD16bit_Channel{
+    AnalogVar var[AD16bit_Total];
+}AD16bit_Channel;
 
 typedef struct _MultiChannelA{
 	AnalogVar var[TOTAL_CTRLBRD_MULTI_ANAL];
@@ -261,7 +267,7 @@ typedef struct _MultiChannelA{
 typedef struct _SysAnalogVar{
 	SingleChannelA single;
 	MultiChannelA multi[2];
-	SingleChannelB singleB;
+	AD16bit_Channel AD_16bit;
 }SysAnalogVar;
 
 /**********************系统数字量数据结构****************************/
@@ -307,6 +313,7 @@ int IsCommonAnalogValueAbnormal(void);
 extern SysMonitorVar gSysMonitorVar;
 
 extern const UV funcptr[];
-extern const int anologMaxMinInit[][4];
+extern const Uint16 anologMaxMinInit[][4];
+extern const Uint16 AD16bitMaxMinInit[][4];
 
 #endif

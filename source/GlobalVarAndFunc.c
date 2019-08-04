@@ -5,7 +5,7 @@
 #include <string.h>
 #include "PWM_ISR.h"
 
-Uint32 gECapCount;
+Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
 KeyValue gKeyValue = {0};
 SYSINFO gSysInfo = {0};
@@ -16,6 +16,9 @@ CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
 
 ANOLOG16BIT gAnalog16bit = {0};
+
+int gforwardOverLimit = 0;
+int gbackwardOverLimit = 0;
 
 void InitForceDisplaceCurve(void){
 

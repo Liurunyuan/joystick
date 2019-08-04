@@ -270,6 +270,9 @@ extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 
 extern ANOLOG16BIT gAnalog16bit;
 
+extern int gforwardOverLimit;
+extern int gbackwardOverLimit;
+
 
 void InitSysState(void);
 void InitConfigParameter(void);

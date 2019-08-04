@@ -227,6 +227,18 @@ void Init_gSysMonitorVar() {
 	}
 	gSysMonitorVar.digit.multi.var[8].valueN = 55;
 	gSysMonitorVar.digit.multi.var[8].valueP = 55;
+
+	for (index = 0; index < AD16bit_Total; ++index) {
+	    gSysMonitorVar.anolog.AD_16bit.var[index].max =
+	            AD16bitMaxMinInit[index][0];
+	    gSysMonitorVar.anolog.AD_16bit.var[index].max2nd =
+	            AD16bitMaxMinInit[index][1];
+	    gSysMonitorVar.anolog.AD_16bit.var[index].min =
+	            AD16bitMaxMinInit[index][2];
+	    gSysMonitorVar.anolog.AD_16bit.var[index].min2nd =
+	            AD16bitMaxMinInit[index][3];
+	}
+
 	for (index = 0; index < 12; ++index) {
 	}
 }
