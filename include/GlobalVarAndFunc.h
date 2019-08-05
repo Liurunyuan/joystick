@@ -34,7 +34,7 @@ typedef struct{
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
 	Uint16 sdoStatus;
-	Uint16 duty;
+	int16 duty;
 }SYSINFO;
 
 
@@ -92,10 +92,10 @@ typedef union{
 }SYSWARNING;
 /*************************************/
 typedef struct{
-	Uint16 a : 1;
+	Uint16 overCurrent : 1;
 	Uint16 rs422RxQFull : 1;
-	Uint16 c : 1;
-	Uint16 d : 1;
+	Uint16 overBusVoltage : 1;
+	Uint16 overTemperature : 1;
 	Uint16 e : 1;
 	Uint16 f : 1;
 	Uint16 g : 1;
@@ -251,6 +251,11 @@ typedef struct{
 
 }FORCE_DISPLACE_CURVE;
 
+typedef struct{
+    int64 displace;
+    int64 force;
+}ANOLOG16BIT;
+
 
 
 extern Uint32 gECapCount;
@@ -263,12 +268,24 @@ extern SYSCURRENTSTATE gSysCurrentState;
 extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 
+extern ANOLOG16BIT gAnalog16bit;
+
+extern int gforwardOverLimit;
+extern int gbackwardOverLimit;
+
 
 void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 void UpdateForceDisplaceCurve(void);
+void EnablePwmOutput(void);
+void DisablePwmOutput(void);
+
+void StateMachine(void);
+void ClearFault(void);
+void Enable_PWMD_BK(void);
+void Disable_PWMD_BK(void);
 
 
 #endif

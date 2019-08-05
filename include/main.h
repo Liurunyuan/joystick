@@ -10,6 +10,7 @@
 
 
 #define TOOGLE_WATCHDOG		GpioDataRegs.GPBTOGGLE.bit.GPIO51
+#define POWER_BOARD_TOOGLE_WATCHDOG 	GpioDataRegs.GPATOGGLE.bit.GPIO7
 #define TRUE 				1
 #define FALSE				0
 

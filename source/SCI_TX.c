@@ -20,7 +20,8 @@ void GetTorqueCurve(int a, int b, int c){
 	gRx422TxVar[0].value = 500;
 }
 void GetMotorSpeedCurve(int a, int b, int c){
-	gRx422TxVar[1].value = (int)real2;
+	//gRx422TxVar[1].value = (int)real2;
+	gRx422TxVar[1].value = (int)(gKeyValue.motorSpeed);
 }
 void GetDisplacementCurve(int a, int b, int c){
 	gRx422TxVar[2].value = (int)(gKeyValue.displacement);
@@ -53,7 +54,7 @@ void InitgRx422TxEnableFlag(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2019Äê1ÔÂ5ÈÕÏÂÎç3:58:19
+ *Date:		   2019ï¿½ï¿½1ï¿½ï¿½5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3:58:19
  **************************************************************/
 	int index;
 
@@ -69,7 +70,7 @@ void InitgRx422TxEnableFlag(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2019Äê1ÔÂ5ÈÕÏÂÎç3:55:13
+ *Date:		   2019ï¿½ï¿½1ï¿½ï¿½5ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3:55:13
  **************************************************************/
 void InitgRx422TxVar(void) {
 
@@ -241,7 +242,7 @@ void PackRS422TxData(void){
 			crc = calCrc(crc, tmp, 3);
 		}
 
-		//TODO ´íÎóÐÅÏ¢£¬±¨¾¯ÐÅÏ¢Ò»Ö±·¢ËÍ
+		//TODO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢Ò»Ö±ï¿½ï¿½ï¿½ï¿½
 	}
 
 	if(count == 0){
@@ -350,7 +351,7 @@ void RS422A_Transmit(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ15ÈÕÏÂÎç9:02:53
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:02:53
  **************************************************************/
 void TransmitRS422ShakeHandMsg(void){
 
@@ -387,7 +388,7 @@ void TransmitRS422ShakeHandMsg(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ15ÈÕÏÂÎç9:03:08
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:03:08
  **************************************************************/
 void ShakeHandWithUpperComputer(void){
 

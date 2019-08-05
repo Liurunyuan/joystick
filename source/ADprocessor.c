@@ -4,36 +4,34 @@
 #include "ADprocessor.h"
 
 SysMonitorVar gSysMonitorVar;
-Uint16 real4 = 0;
-Uint16 real6 = 0;
 
 /********update anolog variable value******************************/
-//int updateForceValue(void){return GET_FORCE_SGN;}
-//int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}
-//int updatePower28V_M(void){return GET_28V_M;}
-//int updateBridgeCurrentB(void){return GET_B_BRIDGE_CURRENT;}
-//int updateBusCurrentB(void){return GET_B_BUS_CURRENT;}
-//int updatePower28V(void){return GET_28V;}
-//int updateBridgeCurrentA(void){return GET_A_BRIDGE_CURRENT;}
-//int updateBusCurrentA(void){return GET_A_BUS_CURRENT;}
-//int updateDisplacementValue(void){return GET_DISPLACEMENT_SGN;}
-//int updateBridgeCurrentC(void){return GET_C_BRIDGE_CURRENT;}
-//int updateBusCurrentC(void){return GET_C_BUS_CURRENT;}
+int updateForceValue(void){return GET_FORCE_SGN;}
+int updateBusCurrentP(void){return GET_BUS_CURRENT_P;}
+int updatePower28V_M(void){return GET_28V_M;}
+int updateBridgeCurrentB(void){return GET_B_BRIDGE_CURRENT;}
+int updateBusCurrentB(void){return GET_B_BUS_CURRENT;}
+int updatePower28V(void){return GET_28V;}
+int updateBridgeCurrentA(void){return GET_A_BRIDGE_CURRENT;}
+int updateBusCurrentA(void){return GET_A_BUS_CURRENT;}
+int updateDisplacementValue(void){return GET_DISPLACEMENT_SGN;}
+int updateBridgeCurrentC(void){return GET_C_BRIDGE_CURRENT;}
+int updateBusCurrentC(void){return GET_C_BUS_CURRENT;}
 /******************************************************************/
 
 
 /********update anolog variable value******************************/
-int updateForceValue(void){return DMABuf1[0];}
-int updateBusCurrentP(void){return DMABuf1[1];}
-int updatePower28V_M(void){return DMABuf1[2];}
-int updateBridgeCurrentB(void){return DMABuf1[3];}
-int updateBusCurrentB(void){return DMABuf1[4];}
-int updatePower28V(void){return DMABuf1[5];}
-int updateBridgeCurrentA(void){return DMABuf1[6];}
-int updateBusCurrentA(void){return DMABuf1[7];}
-int updateDisplacementValue(void){return DMABuf1[8];}
-int updateBridgeCurrentC(void){return DMABuf1[9];}
-int updateBusCurrentC(void){return DMABuf1[10];}
+//int updateForceValue(void){return DMABuf1[0];}
+//int updateBusCurrentP(void){return DMABuf1[1];}
+//int updatePower28V_M(void){return DMABuf1[4];}
+//int updateBridgeCurrentB(void){return DMABuf1[3];}
+//int updateBusCurrentB(void){return DMABuf1[2];}
+//int updatePower28V(void){return DMABuf1[10];}
+//int updateBridgeCurrentA(void){return DMABuf1[6];}
+//int updateBusCurrentA(void){return DMABuf1[7];}
+//int updateDisplacementValue(void){return DMABuf1[8];}
+//int updateBridgeCurrentC(void){return DMABuf1[9];}
+//int updateBusCurrentC(void){return DMABuf1[5];}
 /******************************************************************/
 
 const UV funcptr[] = {
@@ -52,22 +50,32 @@ const UV funcptr[] = {
 
 };
 
-const int anologMaxMinInit[][2] = {
-		{0,0},
-		{1,0},
-		{2,0},
-		{3,0},
-		{4,0},
-		{5,0},
-		{6,0},
-		{7,0},
-		{8,0},
-		{9,0},
-		{10,0}
+const Uint16 anologMaxMinInit[][4] = {
+        //{max,2ndmax,min,2ndmin}
+		{0,0,0,0},
+		{1,0,0,0},
+		{2870,0,2548,0},
+		{3,0,0,0},
+		{4,0,0,0},
+		{3500,0,3000,0},
+		{6,0,0,0},
+		{7,0,0,0},
+		{2690,2400,861,1000},
+		{9,0,0,0},
+		{10,0,0,0},
+		{11,0,0,0}
 };
+
+const Uint16 AD16bitMaxMinInit[][4] = {
+        //{max,2ndmax,min,2ndmin}
+        {0,0,0,0},
+        {42294,40000,13378,15000},
+        {2,0,0,0}
+};
+
 /**************************************************************
  *Name:						UpdatePowerBoardAnalogInput
- *Function:					¸üÐÂ¹¦ÂÊ°åÊäÈëÄ£ÄâÁ¿
+ *Function:					ï¿½ï¿½ï¿½Â¹ï¿½ï¿½Ê°ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -84,16 +92,16 @@ void UpdateSingleAnalogInput(void){
 }
 /**************************************************************
  *Name:						IsSingleAnalogValueAbnormal
- *Function:					ÅÐ¶¨µ¥Í¨µÀÄ£ÄâÁ¿ÊÇ·ñÔ½½ç
+ *Function:					ï¿½Ð¶ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Ô½ï¿½ï¿½
  *Input:					none
- *Output:					return 1±íÃ÷Ô½½ç return 0±íÃ÷Ã»ÓÐÔ½½ç
+ *Output:					return 1ï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ return 0ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ô½ï¿½ï¿½
  *Author:					Simon
  *Date:						2018.8.2
  **************************************************************/
 int IsSingleAnalogValueAbnormal(void){
 	int index;
 	int ret = 1;
-	for(index = 0; index <= TotalChannel; ++index){
+	for(index = 0; index < TotalChannel; ++index){
 		if((gSysMonitorVar.anolog.single.var[index].value > gSysMonitorVar.anolog.single.var[index].max) ||
 				(gSysMonitorVar.anolog.single.var[index].value < gSysMonitorVar.anolog.single.var[index].min)) {
 			ret = 0;
@@ -107,7 +115,7 @@ int IsSingleAnalogValueAbnormal(void){
  *Input:	   void
  *Output:	   int
  *Author:	   Simon
- *Date:		   2018Äê12ÔÂ18ÈÕÏÂÎç9:02:38
+ *Date:		   2018ï¿½ï¿½12ï¿½ï¿½18ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:02:38
  **************************************************************/
 int IsCommonAnalogValueAbnormal(void){
 
@@ -118,9 +126,9 @@ int IsCommonAnalogValueAbnormal(void){
 }
 /**************************************************************
  *Name:						AdcConversionUnStable
- *Function:					ÅÐ¶¨Ä£ÄâÁ¿¶àÍ¨µÀÇÐ»»ÒÔ¼°×ª»»ÊÇ·ñÎÈ¶¨
+ *Function:					ï¿½Ð¶ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ô¼ï¿½×ªï¿½ï¿½ï¿½Ç·ï¿½ï¿½È¶ï¿½
  *Input:					none
- *Output:					return 1±íÃ÷±¾´Î²»ÎÈ¶¨ return 0±íÃ÷×ª»»ÒÑ¾­ÎÈ¶¨
+ *Output:					return 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î²ï¿½ï¿½È¶ï¿½ return 0ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½È¶ï¿½
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
@@ -138,9 +146,9 @@ int AdcConversionUnStable() {
 }
 /**************************************************************
  *Name:						AnologChannelChange
- *Function:					Ä£ÄâÁ¿¶àÍ¨µÀµØÖ·¸Ä±ä
- *Input:					ÉÏ´Î¶àÍ¨µÀÄ£ÄâÁ¿µØÖ·Öµ
- *Output:					·µ»Ø¶àÍ¨µÀÄ£ÄâÁ¿µØÖ·Öµ
+ *Function:					Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½Ö·ï¿½Ä±ï¿½
+ *Input:					ï¿½Ï´Î¶ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·Öµ
+ *Output:					ï¿½ï¿½ï¿½Ø¶ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·Öµ
  *Author:					Simon
  *Date:						2018.7.30
  **************************************************************/
@@ -154,8 +162,8 @@ Uint16 AnalogChannelChange(Uint16 address){
 }
 /**************************************************************
  *Name:						ReadChannelAdcValue
- *Function:					¶ÁÈ¡DSPµÄADC×ª»»½á¹û
- *Input:					Í¨µÀÖµ
+ *Function:					ï¿½ï¿½È¡DSPï¿½ï¿½ADC×ªï¿½ï¿½ï¿½ï¿½ï¿½
+ *Input:					Í¨ï¿½ï¿½Öµ
  *Output:					none
  *Author:					Simon
  *Date:						2018.7.30
@@ -166,8 +174,8 @@ void ReadChannelAdcValue(Uint16 index){
 }
 /**************************************************************
  *Name:						SwitchAnalogChannel
- *Function:					ÇÐ»»¶àÍ¨µÀÄ£ÄâÁ¿µÄµØÖ·Öµ
- *Input:					±¾´ÎÒªÉèÖÃµÄ¶àÍ¨µÀÄ£ÄâÁ¿µÄµØÖ·Öµ
+ *Function:					ï¿½Ð»ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·Öµ
+ *Input:					ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ÃµÄ¶ï¿½Í¨ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·Öµ
  *Output:					none
  *Author:					Simon
  *Date:						2018.7.30
@@ -222,7 +230,7 @@ void SwitchAnalogChannel(Uint16 address){
 }
 /**************************************************************
  *Name:						AnalogValueInspect
- *Function:					Ä£ÄâÁ¿¶àÍ¨µÀÑ²¼ìº¯Êý
+ *Function:					Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ñ²ï¿½ìº¯ï¿½ï¿½
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -246,7 +254,7 @@ void AnalogValueInspect(void){
 }
 /**************************************************************
  *Name:						DigitalValueInspect
- *Function:					Êý×ÖÁ¿¶àÍ¨µÀÑ²¼ìº¯Êý
+ *Function:					ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ñ²ï¿½ìº¯ï¿½ï¿½
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -276,10 +284,8 @@ void DigitalValueInspect(void){
 			break;
 		case GETDATA:
 			if(gSysMonitorVar.digit.multi.var[channel].valueP !=0 && gSysMonitorVar.digit.multi.var[channel].valueP != 1){
-				real4++;
 			}
 			if(	gSysMonitorVar.digit.multi.var[channel].valueN !=0 && 	gSysMonitorVar.digit.multi.var[channel].valueN !=1){
-				real6++;
 			}
 //			gSysMonitorVar.digit.multi.var[channel].valueP = GpioDataRegs.GPBDAT.bit.GPIO59;
 //			gSysMonitorVar.digit.multi.var[channel].valueN = GpioDataRegs.GPBDAT.bit.GPIO60;
@@ -318,7 +324,7 @@ void UpdateSingleDigitInput(void){
 }
 /**************************************************************
  *Name:						ReadAnalogValue
- *Function:					¸üÐÂÏµÍ³Ä£ÄâÁ¿µÄ×ª»»Öµ
+ *Function:					ï¿½ï¿½ï¿½ï¿½ÏµÍ³Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Öµ
  *Input:					none
  *Output:					none
  *Author:					Simon
@@ -334,12 +340,12 @@ void ReadAnalogValue(void){
 
     }
 
-//	UpdateSingleAnalogInput();
+	//UpdateSingleAnalogInput();
 	AnalogValueInspect();
 }
 /**************************************************************
  *Name:						ReadDigitalValue
- *Function:					¸üÐÂÏµÍ³Êý×ÖÁ¿µÄ×ª»»Öµ
+ *Function:					ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Öµ
  *Input:					none
  *Output:					none
  *Author:					Simon

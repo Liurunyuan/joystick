@@ -11,16 +11,8 @@
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
-Uint16 real = 0;
-Uint16 realbak = 0;
-Uint16 real2 = 0;
+
 Uint16 real3 = 0;
-
-Uint16 real5 = 0;
-
-
-int16 countreal = 0;
-Uint16 zz[400] = {0};
 
 void UpdateKeyValue(void) {
 
@@ -32,6 +24,58 @@ void UpdateKeyValue(void) {
 	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 }
 
+/*
+void DisablePwm1(void){
+	//EALLOW;
+	//EPwm1Regs.AQCSFRC.bit.CSFA = 1;
+	//EPwm1Regs.AQCSFRC.bit.CSFB = 2;
+	//EPwm1Regs.TZFRC.bit.OST = 1;
+	//EDIS;
+
+	EPwm1Regs.AQCSFRC.all = 0x0009;
+}
+void DisablePwm2(void){
+	//EALLOW;
+	//EPwm2Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm2Regs.AQCSFRC.bit.CSFB = 1;
+	//EPwm2Regs.TZFRC.bit.OST = 1;
+	//EDIS;
+	EPwm2Regs.AQCSFRC.all = 0x0009;
+}
+void DisablePwm3(void){
+	//EALLOW;
+	//EPwm3Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm3Regs.AQCSFRC.bit.CSFB = 1;
+	//EPwm3Regs.TZFRC.bit.OST = 1;
+	//EDIS;
+
+	EPwm3Regs.AQCSFRC.all = 0x0009;
+}
+void EnablePwm1(void){
+	//EALLOW;
+	//EPwm1Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm1Regs.AQCSFRC.bit.CSFB = 3;
+	//EPwm1Regs.TZCLR.all = 0x003f;
+	//EDIS;
+	EPwm1Regs.AQCSFRC.all = 0x000f;
+}
+void EnablePwm2(void){
+	//EALLOW;
+	//EPwm2Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm2Regs.AQCSFRC.bit.CSFB = 3;
+	//EPwm2Regs.TZCLR.all = 0x003f;
+	//EDIS;
+	EPwm2Regs.AQCSFRC.all = 0x000f;
+}
+void EnablePwm3(void){
+	//EALLOW;
+	//EPwm3Regs.AQCSFRC.bit.CSFA = 2;
+	//EPwm3Regs.AQCSFRC.bit.CSFB = 3;
+	//EPwm3Regs.TZCLR.all = 0x003f;
+	//EDIS;
+	EPwm3Regs.AQCSFRC.all = 0x000f;
+}
+*/
 /**************************************************************
  *Name:						CalForceSpeedAccel
  *Function:
@@ -40,6 +84,7 @@ void UpdateKeyValue(void) {
  *Author:					Simon
  *Date:						2018.10.28
  **************************************************************/
+
 void CalForceSpeedAccel(void) {
 
 	static int count = 0;
@@ -47,7 +92,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue_16bit].value, gSysMonitorVar.anolog.single.var[DisplacementValue_16bit].value, count);
 	++count;
 
 	if(count >= DATA_AMOUNT){
@@ -55,6 +100,7 @@ void CalForceSpeedAccel(void) {
 		count = 0;
 	}
 }
+
 /**************************************************************
  *Name:						GetCurrentHallValue
  *Function:
@@ -63,6 +109,7 @@ void CalForceSpeedAccel(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
+
 Uint16 GetCurrentHallValue(void){
 
 	Uint16 temp;
@@ -70,131 +117,214 @@ Uint16 GetCurrentHallValue(void){
 	Uint16 b;
 	Uint16 c;
 
-	c = GpioDataRegs.GPADAT.bit.GPIO27;
+	a = GpioDataRegs.GPADAT.bit.GPIO27;
 	b = GpioDataRegs.GPBDAT.bit.GPIO48;
-	a = GpioDataRegs.GPBDAT.bit.GPIO49;
+	c = GpioDataRegs.GPBDAT.bit.GPIO49;
 
-	temp = ((c << 2) + (b << 1) + a);
+	temp = ((a << 2) + (b << 1) + c);
 
 	if(temp < 1 || temp >6){
 		gSysState.erro.bit.software = 1;
 	}
 	return temp;
 }
+
 /**************************************************************
  *Name:		   CPositiveToBNegtive
  *Comment:
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:16:27
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:16:27
  **************************************************************/
+/*
 inline void CPositiveToBNegtive(void) {
 
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
-	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.all = 9;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+	DisablePwm1();
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
 	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+	EnablePwm2();
+	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   CPositiveToANegtive
  *Comment:
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:16:55
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:16:55
  **************************************************************/
+/*
 inline void CPositiveToANegtive(void) {
 
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
-	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.all = 9;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+
+	DisablePwm2();
+	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EnablePwm1();
+	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   BPositiveToANegtive
  *Comment:
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:04
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:04
  **************************************************************/
+/*
 inline void BPositiveToANegtive(void) {
 
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
-	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.all = 9;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+	DisablePwm3();
+	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm2Regs.CMPA.half.CMPA = duty_p;
+	EPwm1Regs.CMPA.half.CMPA = duty_n;
+	EnablePwm2();
+	EnablePwm1();
 }
+*/
 /**************************************************************
  *Name:		   BPositiveToCNegtive
  *Comment:
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:14
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:14
  **************************************************************/
+/*
 inline void BPositiveToCNegtive(void) {
 
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
-	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
+//	EPwm3Regs.AQCSFRC.all = 9;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+
+	DisablePwm1();
+	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm2Regs.CMPA.half.CMPA = duty_p;
+	EPwm3Regs.CMPA.half.CMPA = duty_n;
+	EnablePwm2();
+	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   APositiveToCNegtive
  *Comment:
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:26
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:26
  **************************************************************/
+/*
 inline void APositiveToCNegtive(void) {
 
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
+//	EPwm2Regs.AQCSFRC.all = 9;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
+
+//	EPwm1Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+	DisablePwm2();
+	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = duty_p;
+	EPwm3Regs.CMPA.half.CMPA = duty_n;
+	EnablePwm1();
+	EnablePwm3();
 }
+*/
 /**************************************************************
  *Name:		   APositiveToBNegtive
  *Comment:
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:37
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:37
  **************************************************************/
+/*
 inline void APositiveToBNegtive(void) {
 
-	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
-	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
-}
+//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
+//	EPwm1Regs.AQCSFRC.all = 9;
+//	EALLOW;
+//	EPwm1Regs.TZFRC.bit.OST = 1;
+//	EDIS;
+//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
+//
+//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
+//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
 
+//	EPwm2Regs.AQCSFRC.all = 0x000f;
+//	EPwm3Regs.AQCSFRC.all = 0x000f;
+	DisablePwm3();
+	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
+	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
+	EPwm1Regs.CMPA.half.CMPA = duty_p;
+	EPwm2Regs.CMPA.half.CMPA = duty_n;
+
+	EnablePwm1();
+	EnablePwm2();
+}
+*/
 /**************************************************************
  *Name:						SwitchDirection
  *Function:
@@ -204,62 +334,323 @@ inline void APositiveToBNegtive(void) {
  *Date:						2018.10.31
  **************************************************************/
 void SwitchDirection(void){
+	int t_duty_temp;
+	Uint16 t_duty_p;
+	Uint16 t_duty_n;
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
 	gSysInfo.currentHallPosition = GetCurrentHallValue();
+
+	t_duty_temp = gSysInfo.duty;
+
+	//t_duty_temp = 100;
+
+	if(t_duty_temp > EPWM2_TIMER_HALF_TBPRD) t_duty_temp = EPWM2_TIMER_HALF_TBPRD;
+	else if(t_duty_temp < -( EPWM2_TIMER_HALF_TBPRD )) t_duty_temp = -( EPWM2_TIMER_HALF_TBPRD );
+	t_duty_p = (Uint16)(EPWM2_TIMER_HALF_TBPRD + t_duty_temp);
+	t_duty_n = (Uint16)(EPWM2_TIMER_HALF_TBPRD - t_duty_temp);
+
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
-		case 4://C+ ---------------> B-
-			//±¾ÏîÄ¿µç»ú»á½øÐÐÕý×ªºÍ·´×ª¡£ËùÒÔÐèÒªÅÐ¶ÏHALLÏàÁÚÁ½¸öÎ»ÖÃÊÇ·ñÒ»Ñù¡£
-			if((4 == gSysInfo.lastTimeHalllPosition )
-				|| (5 == gSysInfo.lastTimeHalllPosition)
-				|| (6 == gSysInfo.lastTimeHalllPosition)){
+		case 3://A+ ---------------> C-
+			//ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Í·ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ð¶ï¿½HALLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ç·ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
 
-				CPositiveToBNegtive();
-			}
-			break;
-		case 6://C+ ---------------> A-
-			if((6 == gSysInfo.lastTimeHalllPosition )
-				|| (4 == gSysInfo.lastTimeHalllPosition)
-				|| (2 == gSysInfo.lastTimeHalllPosition)){
-
-				CPositiveToANegtive();
-			}
-			break;
-		case 2://B+ ---------------> A-
-			if((2 == gSysInfo.lastTimeHalllPosition )
-				|| (6 == gSysInfo.lastTimeHalllPosition)
-				|| (3 == gSysInfo.lastTimeHalllPosition)){
-
-				BPositiveToANegtive();
-			}
-			break;
-		case 3://B+ ---------------> C-
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
 				|| (1 == gSysInfo.lastTimeHalllPosition)){
-				BPositiveToCNegtive();
+
+				//APositiveToCNegtive();
+				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+				EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
 			break;
-		case 1://A+ ---------------> C-
+		case 1://B+ ---------------> C-
 			if((1 == gSysInfo.lastTimeHalllPosition )
 				|| (3 == gSysInfo.lastTimeHalllPosition)
 				|| (5 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToCNegtive();
+				//BPositiveToCNegtive();
+				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+				EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
 			break;
-		case 5://A+ ---------------> B-
+		case 5://B+ ---------------> A-
 			if((5 == gSysInfo.lastTimeHalllPosition )
 				|| (1 == gSysInfo.lastTimeHalllPosition)
 				|| (4 == gSysInfo.lastTimeHalllPosition)){
 
-				APositiveToBNegtive();
+				//BPositiveToANegtive();
+				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+				EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+			}
+			break;
+		case 4://C+ ---------------> A-
+			if((4 == gSysInfo.lastTimeHalllPosition )
+				|| (5 == gSysInfo.lastTimeHalllPosition)
+				|| (6 == gSysInfo.lastTimeHalllPosition)){
+
+				//CPositiveToANegtive();
+				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+				EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+			}
+			break;
+		case 6://C+ ---------------> B-
+			if((6 == gSysInfo.lastTimeHalllPosition )
+				|| (4 == gSysInfo.lastTimeHalllPosition)
+				|| (2 == gSysInfo.lastTimeHalllPosition)){
+
+				//CPositiveToBNegtive();
+				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+				EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+			}
+			break;
+		case 2://A+ ---------------> B-
+			if((2 == gSysInfo.lastTimeHalllPosition )
+				|| (6 == gSysInfo.lastTimeHalllPosition)
+				|| (3 == gSysInfo.lastTimeHalllPosition)){
+
+				//APositiveToBNegtive();
+				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+				EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+				EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 			}
 			break;
 		default:
 			gSysState.erro.bit.software = TRUE;
+			DisablePwmOutput();
 			break;
 	}
+}
+
+
+inline void Check_Current(){
+	Uint16 currentRef = 0;
+	Uint16 absDeltaCurrent;
+
+	absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentPos].value) - currentRef);
+
+	if(absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentPos].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	    DisablePwmOutput();
+	    gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_A_Q_Current(){
+	Uint16 q_A_currentRef = 0;
+	Uint16 q_A_absDeltaCurrent;
+
+	q_A_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentA].value) - q_A_currentRef);
+
+	if(q_A_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentA].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentA].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentA].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentA].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentA].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_A_X_Current(){
+	Uint16 x_A_currentRef = 0;
+	Uint16 x_A_absDeltaCurrent;
+
+	x_A_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentA].value) - x_A_currentRef);
+
+	if(x_A_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentA].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_B_Q_Current(){
+	Uint16 q_B_currentRef = 0;
+	Uint16 q_B_absDeltaCurrent;
+
+	q_B_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentB].value) - q_B_currentRef);
+
+	if(q_B_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentB].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentB].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentB].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentB].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentB].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_B_X_Current(){
+	Uint16 x_B_currentRef = 0;
+	Uint16 x_B_absDeltaCurrent;
+
+	x_B_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentB].value) - x_B_currentRef);
+
+	if(x_B_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentB].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_C_Q_Current(){
+	Uint16 q_C_currentRef = 0;
+	Uint16 q_C_absDeltaCurrent;
+
+	q_C_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentC].value) - q_C_currentRef);
+
+	if(q_C_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentC].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentC].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentC].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentC].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentC].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_C_X_Current(){
+	Uint16 x_C_currentRef = 0;
+	Uint16 x_C_absDeltaCurrent;
+
+	x_C_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentC].value) - x_C_currentRef);
+
+	if(x_C_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentC].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+int checkDisplaceValidation(){
+    if(gSysInfo.duty > 0){
+        if(gforwardOverLimit == 1){
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
+                return 1;
+            }
+            else{
+                gforwardOverLimit = 1;
+                return 0;
+            }
+        }
+        else{
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
+                return 1;
+            }
+            else{
+                gforwardOverLimit = 1;
+                return 0;
+            }
+        }
+    }
+    else if(gSysInfo.duty < 0){
+        if(gbackwardOverLimit == 1){
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
+                return 1;
+            }
+            else{
+                gbackwardOverLimit = 1;
+                return 0;
+            }
+        }
+        else{
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
+                return 1;
+            }
+            else{
+                gbackwardOverLimit = 1;
+                return 0;
+            }
+        }
+    }
+    else{
+        return 1;
+    }
 }
 
 /**************************************************************
@@ -284,20 +675,28 @@ void Pwm_ISR_Thread(void)
 
 
 	ReadAnalogValue();
+/*
+	Check_Current();
+	Check_A_Q_Current();
+	Check_A_X_Current();
+	Check_B_Q_Current();
+	Check_B_X_Current();
+	Check_C_Q_Current();
+	Check_C_X_Current();
+*/
+    ReadADBySpi();
 
-	if(IsSingleAnalogValueAbnormal() == True){
-		//TODO  ²»×Å¼±µÄÁ¿·Å½øÖ÷Ñ­»·£¬ÕâÀïÖ»ÅÐ¶ÏµçÁ÷ÒÔ¼°¸ßËÙ
+    gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = gAnalog16bit.force;
+    gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
+
+	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
+		SwitchDirection();
+		gforwardOverLimit = 0;
+		gbackwardOverLimit = 0;
 	}
-	SwitchDirection();
-	ReadADBySpi();
-
-	if(real2 > 400){
-		++countreal;
-		real5 = real2;
+	else{
+		DisablePwmOutput();
 	}
-
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
 
 	CalForceSpeedAccel();
 }

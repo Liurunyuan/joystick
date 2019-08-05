@@ -76,11 +76,11 @@ void EnableInterrupts()
 	// Enable Interrupts at the CPU level 
 	//PieCtrlRegs.PIEIER1.bit.INTx1 = 1;//ADC中断,16通道转换完成后来中断
 	PieCtrlRegs.PIEIER1.bit.INTx7 = 1;//定时器0中断。
-	PieCtrlRegs.PIEIER2.bit.INTx1= 1;//TZ_FAULTB触发
+//	PieCtrlRegs.PIEIER2.bit.INTx1= 1;//TZ_FAULTB触发
 	//PieCtrlRegs.PIEIER2.bit.INTx2= 1;//TZ_FAULTA触发//
 	//PieCtrlRegs.PIEIER2.bit.INTx3= 1;//IKA_BJ触发//
 	//PieCtrlRegs.PIEIER2.bit.INTx4= 1;//IKB_BJ触发//
-	PieCtrlRegs.PIEIER2.bit.INTx6 = 1;//应急开关触发
+//	PieCtrlRegs.PIEIER2.bit.INTx6 = 1;//应急开关触发
 	PieCtrlRegs.PIEIER3.bit.INTx1 = 1;//ePWM1中断
 
 	PieCtrlRegs.PIEIER4.bit.INTx4 = 1;//ECAP4

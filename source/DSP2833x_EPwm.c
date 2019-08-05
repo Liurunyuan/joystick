@@ -43,8 +43,8 @@ void InitEPwmGpio(void)
    InitEPwm1Gpio();
    InitEPwm2Gpio();
    InitEPwm3Gpio();
-   InitEPwm4Gpio();
-   InitEPwm5Gpio();
+   //InitEPwm4Gpio();
+   //InitEPwm5Gpio();
    //InitEPwm6Gpio();
 }
 
@@ -197,14 +197,14 @@ void InitEPwm1()
 {
 	EALLOW;
 	//EPwm1Regs.TZSEL.bit.CBC1=1;//使能TZ3周期触发联防中断
-	EPwm1Regs.TZSEL.bit.OSHT2=1;
-	EPwm1Regs.TZSEL.bit.OSHT3=1;//使能TZ3周期触发联防中断,目前A通道只用到TZ2与TZ3两个触发引脚，其余的先屏蔽
+//	EPwm1Regs.TZSEL.bit.OSHT2=1;
+//	EPwm1Regs.TZSEL.bit.OSHT3=1;//使能TZ3周期触发联防中断,目前A通道只用到TZ2与TZ3两个触发引脚，其余的先屏蔽
 	//EPwm1Regs.TZSEL.bit.CBC4=1;
 	//EPwm1Regs.TZSEL.bit.CBC5=1;//使能TZ3周期触发联防中断
 	//EPwm1Regs.TZSEL.bit.CBC6=1;
-	EPwm1Regs.TZCTL.bit.TZA=1;//发生错误时PWMA输出高阻态
-	EPwm1Regs.TZCTL.bit.TZB=1;//发生错误时PWMB输出高阻态
-	EPwm1Regs.TZEINT.bit.OST=1;//使能CBC中断
+	EPwm1Regs.TZCTL.bit.TZA=2;//发生错误时PWMA输出低电平
+	EPwm1Regs.TZCTL.bit.TZB=2;//发生错误时PWMB输出低电平
+//	EPwm1Regs.TZEINT.bit.OST=1;//使能CBC中断
 	EDIS;
 
 	EPwm1Regs.TBPRD = EPWM1_TIMER_TBPRD;
@@ -222,8 +222,8 @@ void InitEPwm1()
 	EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD;
 	EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;
 	EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;
-	//EPwm1Regs.AQCTLB.bit.CAU = AQ_SET;
-	//EPwm1Regs.AQCTLB.bit.CAD = AQ_CLEAR;
+	EPwm1Regs.AQCTLB.bit.CAU = AQ_CLEAR;
+	EPwm1Regs.AQCTLB.bit.CAD = AQ_SET;
 	EPwm1Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;
 	EPwm1Regs.ETSEL.bit.INTEN = 1;
 	EPwm1Regs.ETPS.bit.INTPRD = ET_1ST;
@@ -232,19 +232,22 @@ void InitEPwm1()
 	EPwm1Regs.ETSEL.bit.SOCASEL = ET_CTR_PRD;
 	EPwm1Regs.ETPS.bit.SOCAPRD = 1;
 
-	EPwm1Regs.DBCTL.all = 0xb;
+//	EPwm1Regs.DBCTL.all = 0x000b;
+	EPwm1Regs.DBCTL.bit.IN_MODE = 2;//EPWMxA rising edge delay , EPWMXB falling edge delay
+	EPwm1Regs.DBCTL.bit.POLSEL = 2;  //EPWMxB  invert
+	EPwm1Regs.DBCTL.bit.OUT_MODE = 3;
 	EPwm1Regs.DBRED = 60;//180==1.5us
 	EPwm1Regs.DBFED = 60;//180==1.5us
 }
 void InitEPwm2()
 {
-	/*EALLOW;
-	EPwm2Regs.TZSEL.bit.OSHT2=1;
-	EPwm2Regs.TZSEL.bit.OSHT3=1;
-	EPwm2Regs.TZCTL.bit.TZA=1;
-	EPwm2Regs.TZCTL.bit.TZB=1;
-	EPwm2Regs.TZEINT.bit.OST=1;
-	EDIS;*/
+	EALLOW;
+//	EPwm2Regs.TZSEL.bit.OSHT2=1;
+//	EPwm2Regs.TZSEL.bit.OSHT3=1;
+	EPwm2Regs.TZCTL.bit.TZA=2;
+	EPwm2Regs.TZCTL.bit.TZB=2;
+//	EPwm2Regs.TZEINT.bit.OST=1;
+	EDIS;
 
 	EPwm2Regs.TBPRD = EPWM2_TIMER_TBPRD;
 	EPwm2Regs.TBPHS.half.TBPHS = 0x0000;
@@ -261,27 +264,30 @@ void InitEPwm2()
 	EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD;
 	EPwm2Regs.AQCTLA.bit.CAU = AQ_CLEAR;
 	EPwm2Regs.AQCTLA.bit.CAD = AQ_SET;
-	//EPwm2Regs.AQCTLB.bit.CAU = AQ_SET;
-	//EPwm2Regs.AQCTLB.bit.CAD = AQ_CLEAR;
+	EPwm2Regs.AQCTLB.bit.CAU = AQ_CLEAR;
+	EPwm2Regs.AQCTLB.bit.CAD = AQ_SET;
 	EPwm2Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;
 	EPwm2Regs.ETSEL.bit.INTEN = 1;
 	EPwm2Regs.ETPS.bit.INTPRD = ET_1ST;
 
 
-	EPwm2Regs.DBCTL.all = 0xb;
+//	EPwm2Regs.DBCTL.all = 0xb;
+	EPwm2Regs.DBCTL.bit.IN_MODE = 2;//EPWMxA rising edge delay , EPWMXB falling edge delay
+	EPwm2Regs.DBCTL.bit.POLSEL = 2;  //EPWMxB  invert
+	EPwm2Regs.DBCTL.bit.OUT_MODE = 3;
 	EPwm2Regs.DBRED = 60;
 	EPwm2Regs.DBFED = 60;
 }
 
 void InitEPwm3()
 {
-	/*EALLOW;
-	EPwm3Regs.TZSEL.bit.OSHT2=1;
-	EPwm3Regs.TZSEL.bit.OSHT3=1;
-	EPwm3Regs.TZCTL.bit.TZA=1;
-	EPwm3Regs.TZCTL.bit.TZB=1;
-	EPwm3Regs.TZEINT.bit.OST=1;
-	EDIS;*/
+	EALLOW;
+//	EPwm3Regs.TZSEL.bit.OSHT2=1;
+//	EPwm3Regs.TZSEL.bit.OSHT3=1;
+	EPwm3Regs.TZCTL.bit.TZA=2;
+	EPwm3Regs.TZCTL.bit.TZB=2;
+//	EPwm3Regs.TZEINT.bit.OST=1;
+	EDIS;
 
 	EPwm3Regs.TBPRD = EPWM2_TIMER_TBPRD;
 	EPwm3Regs.TBPHS.half.TBPHS = 0x0000;
@@ -298,14 +304,17 @@ void InitEPwm3()
 	EPwm3Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO_PRD;
 	EPwm3Regs.AQCTLA.bit.CAU = AQ_CLEAR;
 	EPwm3Regs.AQCTLA.bit.CAD = AQ_SET;
-	//EPwm3Regs.AQCTLB.bit.CAU = AQ_SET;
-	//EPwm3Regs.AQCTLB.bit.CAD = AQ_CLEAR;
+	EPwm3Regs.AQCTLB.bit.CAU = AQ_CLEAR;
+	EPwm3Regs.AQCTLB.bit.CAD = AQ_SET;
 	EPwm3Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;
 	EPwm3Regs.ETSEL.bit.INTEN = 1;
 	EPwm3Regs.ETPS.bit.INTPRD = ET_1ST;
 
 
-	EPwm3Regs.DBCTL.all = 0xb;
+//	EPwm3Regs.DBCTL.all = 0xb;
+	EPwm3Regs.DBCTL.bit.IN_MODE = 2;//EPWMxA rising edge delay , EPWMXB falling edge delay
+	EPwm3Regs.DBCTL.bit.POLSEL = 2;  //EPWMxB  invert
+	EPwm3Regs.DBCTL.bit.OUT_MODE = 3;
 	EPwm3Regs.DBRED = 60;
 	EPwm3Regs.DBFED = 60;
 }

@@ -3,9 +3,9 @@
 #include "public.h"
 #include "GlobalVarAndFunc.h"
 #include <string.h>
+#include "PWM_ISR.h"
 
-
-Uint32 gECapCount;
+Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
 KeyValue gKeyValue = {0};
 SYSINFO gSysInfo = {0};
@@ -14,6 +14,11 @@ SYSPARA gSysPara = {0};
 SYSCURRENTSTATE gSysCurrentState = {0};
 CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
+
+ANOLOG16BIT gAnalog16bit = {0};
+
+int gforwardOverLimit = 0;
+int gbackwardOverLimit = 0;
 
 void InitForceDisplaceCurve(void){
 
@@ -185,7 +190,7 @@ void InitConfigParameter(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç12:40:11
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½12:40:11
  **************************************************************/
 void InitSysState(void){
 	gSysState.alarm.all 	= 0;
@@ -208,7 +213,7 @@ void InitSysState(void){
  *Input:	   const double, double, double
  *Output:	   double
  *Author:	   Simon
- *Date:		   2019Äê1ÔÂ2ÈÕÏÂÎç9:57:12
+ *Date:		   2019ï¿½ï¿½1ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:57:12
  **************************************************************/
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
@@ -216,11 +221,11 @@ double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double Measur
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
-	static double x_last;
+	static double x_last = 0;
 	double x_mid = x_last;
 	double x_now;
 
-	static double p_last;
+	static double p_last = 0;
 	double p_mid;
 	double p_now;
 
@@ -243,11 +248,11 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
-	static double x_last;
+	static double x_last = 0;
 	double x_mid = x_last;
 	double x_now;
 
-	static double p_last;
+	static double p_last = 0;
 	double p_mid;
 	double p_now;
 
@@ -265,3 +270,66 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
+
+
+void Enable_KZ_P_DSP(void){
+	GpioDataRegs.GPASET.bit.GPIO31 = 1;
+}
+void Disable_KZ_P_DSP(void){
+	GpioDataRegs.GPACLEAR.bit.GPIO31 = 1;
+}
+
+void Enable_KZ_N_DSP(void){
+	GpioDataRegs.GPCCLEAR.bit.GPIO86 = 1;
+}
+void Disable_KZ_N_DSP(void){
+	GpioDataRegs.GPCSET.bit.GPIO86 = 1;
+}
+
+void EnablePwmOutput(void){
+	//gSysInfo.currentHallPosition = GetCurrentHallValue();
+	//gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
+
+	GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1;
+	Enable_KZ_P_DSP();
+	Enable_KZ_N_DSP();
+}
+void DisablePwmOutput(void){
+	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
+	//GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1; //For temp use
+	Disable_KZ_P_DSP();
+	Disable_KZ_N_DSP();
+	EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+	EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+	EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+}
+void StateMachine(void){
+	//gConfigPara.stateCommand = 1; // For TEMP Test
+	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){
+		EnablePwmOutput();
+	}
+	else{
+		DisablePwmOutput();
+	}
+}
+
+void ClearFault(void){
+	int i = 0;
+
+	GpioDataRegs.GPACLEAR.bit.GPIO9 = 1;
+	//TODO delay for some time, need to verify
+	for(i = 0; i < 1000; ++i){
+		asm(" NOP");
+	}
+	GpioDataRegs.GPASET.bit.GPIO9 = 1;
+}
+
+void Enable_PWMD_BK(void){
+	GpioDataRegs.GPACLEAR.bit.GPIO6 = 1;
+}
+void Disable_PWMD_BK(void){
+	GpioDataRegs.GPASET.bit.GPIO9 = 1;
+}
+
+
+
