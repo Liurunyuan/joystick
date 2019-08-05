@@ -11,15 +11,8 @@
 FeedbackVarBuf feedbackVarBuf;
 void ForceAndDisplaceProcess(int count);
 
-Uint16 real = 0;
-Uint16 realbak = 0;
-Uint16 real2 = 0;
+
 Uint16 real3 = 0;
-
-Uint16 real5 = 0;
-
-
-int16 countreal = 0;
 
 void UpdateKeyValue(void) {
 
@@ -99,7 +92,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue].value, gSysMonitorVar.anolog.single.var[DisplacementValue].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue_16bit].value, gSysMonitorVar.anolog.single.var[DisplacementValue_16bit].value, count);
 	++count;
 
 	if(count >= DATA_AMOUNT){
@@ -142,7 +135,7 @@ Uint16 GetCurrentHallValue(void){
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:16:27
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:16:27
  **************************************************************/
 /*
 inline void CPositiveToBNegtive(void) {
@@ -172,7 +165,7 @@ inline void CPositiveToBNegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:16:55
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:16:55
  **************************************************************/
 /*
 inline void CPositiveToANegtive(void) {
@@ -203,7 +196,7 @@ inline void CPositiveToANegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:04
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:04
  **************************************************************/
 /*
 inline void BPositiveToANegtive(void) {
@@ -235,7 +228,7 @@ inline void BPositiveToANegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:14
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:14
  **************************************************************/
 /*
 inline void BPositiveToCNegtive(void) {
@@ -269,7 +262,7 @@ inline void BPositiveToCNegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:26
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:26
  **************************************************************/
 /*
 inline void APositiveToCNegtive(void) {
@@ -301,7 +294,7 @@ inline void APositiveToCNegtive(void) {
  *Input:	   void
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ25ÈÕÏÂÎç1:17:37
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½25ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1:17:37
  **************************************************************/
 /*
 inline void APositiveToBNegtive(void) {
@@ -348,6 +341,9 @@ void SwitchDirection(void){
 	gSysInfo.currentHallPosition = GetCurrentHallValue();
 
 	t_duty_temp = gSysInfo.duty;
+
+	//t_duty_temp = 100;
+
 	if(t_duty_temp > EPWM2_TIMER_HALF_TBPRD) t_duty_temp = EPWM2_TIMER_HALF_TBPRD;
 	else if(t_duty_temp < -( EPWM2_TIMER_HALF_TBPRD )) t_duty_temp = -( EPWM2_TIMER_HALF_TBPRD );
 	t_duty_p = (Uint16)(EPWM2_TIMER_HALF_TBPRD + t_duty_temp);
@@ -356,7 +352,7 @@ void SwitchDirection(void){
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 3://A+ ---------------> C-
-			//±¾ÏîÄ¿µç»ú»á½øÐÐÕý×ªºÍ·´×ª¡£ËùÒÔÐèÒªÅÐ¶ÏHALLÏàÁÚÁ½¸öÎ»ÖÃÊÇ·ñÒ»Ñù¡£
+			//ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Í·ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ð¶ï¿½HALLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ç·ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
 
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
@@ -442,6 +438,221 @@ void SwitchDirection(void){
 	}
 }
 
+
+inline void Check_Current(){
+	Uint16 currentRef = 0;
+	Uint16 absDeltaCurrent;
+
+	absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentPos].value) - currentRef);
+
+	if(absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentPos].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+	    DisablePwmOutput();
+	    gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_A_Q_Current(){
+	Uint16 q_A_currentRef = 0;
+	Uint16 q_A_absDeltaCurrent;
+
+	q_A_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentA].value) - q_A_currentRef);
+
+	if(q_A_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentA].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentA].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentA].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentA].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentA].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_A_X_Current(){
+	Uint16 x_A_currentRef = 0;
+	Uint16 x_A_absDeltaCurrent;
+
+	x_A_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentA].value) - x_A_currentRef);
+
+	if(x_A_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentA].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentA].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_B_Q_Current(){
+	Uint16 q_B_currentRef = 0;
+	Uint16 q_B_absDeltaCurrent;
+
+	q_B_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentB].value) - q_B_currentRef);
+
+	if(q_B_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentB].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentB].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentB].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentB].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentB].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_B_X_Current(){
+	Uint16 x_B_currentRef = 0;
+	Uint16 x_B_absDeltaCurrent;
+
+	x_B_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentB].value) - x_B_currentRef);
+
+	if(x_B_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentB].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentB].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_C_Q_Current(){
+	Uint16 q_C_currentRef = 0;
+	Uint16 q_C_absDeltaCurrent;
+
+	q_C_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BusCurrentC].value) - q_C_currentRef);
+
+	if(q_C_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BusCurrentC].max) {
+		++gSysMonitorVar.anolog.single.var[BusCurrentC].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BusCurrentC].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BusCurrentC].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BusCurrentC].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BusCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+inline void Check_C_X_Current(){
+	Uint16 x_C_currentRef = 0;
+	Uint16 x_C_absDeltaCurrent;
+
+	x_C_absDeltaCurrent = abs((gSysMonitorVar.anolog.single.var[BridgeCurrentC].value) - x_C_currentRef);
+
+	if(x_C_absDeltaCurrent > gSysMonitorVar.anolog.single.var[BridgeCurrentC].max) {
+		++gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max;
+	}
+	else{
+		if(gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max > 0)
+			--gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max;
+		else{
+			gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max = 0;
+		}
+	}
+
+	if(gSysMonitorVar.anolog.single.var[BridgeCurrentC].count_max > CURRENT_ABNORMAL_COUNT){
+		// TODO generate alarm message and disable PWM output
+        DisablePwmOutput();
+        gSysState.alarm.bit.overCurrent = 1;
+	}
+}
+
+int checkDisplaceValidation(){
+    if(gSysInfo.duty > 0){
+        if(gforwardOverLimit == 1){
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
+                return 1;
+            }
+            else{
+                gforwardOverLimit = 1;
+                return 0;
+            }
+        }
+        else{
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
+                return 1;
+            }
+            else{
+                gforwardOverLimit = 1;
+                return 0;
+            }
+        }
+    }
+    else if(gSysInfo.duty < 0){
+        if(gbackwardOverLimit == 1){
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
+                return 1;
+            }
+            else{
+                gbackwardOverLimit = 1;
+                return 0;
+            }
+        }
+        else{
+            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
+                return 1;
+            }
+            else{
+                gbackwardOverLimit = 1;
+                return 0;
+            }
+        }
+    }
+    else{
+        return 1;
+    }
+}
+
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -452,7 +663,6 @@ void SwitchDirection(void){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
-	//return; //LRT For test use
 	static int count = 0;
 
 	StartGetADBySpi();
@@ -465,26 +675,28 @@ void Pwm_ISR_Thread(void)
 
 
 	ReadAnalogValue();
+/*
+	Check_Current();
+	Check_A_Q_Current();
+	Check_A_X_Current();
+	Check_B_Q_Current();
+	Check_B_X_Current();
+	Check_C_Q_Current();
+	Check_C_X_Current();
+*/
+    ReadADBySpi();
 
-	if(IsSingleAnalogValueAbnormal() == True){
-		//TODO  ²»×Å¼±µÄÁ¿·Å½øÖ÷Ñ­»·£¬ÕâÀïÖ»ÅÐ¶ÏµçÁ÷ÒÔ¼°¸ßËÙ
-	}
-	if(gConfigPara.stateCommand == 1){
+    gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = gAnalog16bit.force;
+    gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
+
+	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
 		SwitchDirection();
+		gforwardOverLimit = 0;
+		gbackwardOverLimit = 0;
 	}
 	else{
 		DisablePwmOutput();
 	}
-
-	ReadADBySpi();
-
-	if(real2 > 400){
-		++countreal;
-		real5 = real2;
-	}
-
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = real;
-	gSysMonitorVar.anolog.single.var[DisplacementValue].value = (int)(KalmanFilter(real, KALMAN_Q, KALMAN_R));
 
 	CalForceSpeedAccel();
 }

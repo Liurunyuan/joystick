@@ -5,6 +5,12 @@
 /*Switch the analog channel, plus 1 every time*/
 void Pwm_ISR_Thread(void);
 
+enum COMPARE
+{
+    LESS_THAN = 0,
+    LARGE_THAN
+};
+
 
 typedef struct _FeedbackVarBuf{
 
@@ -20,12 +26,7 @@ typedef struct _FeedbackVarBuf{
 }FeedbackVarBuf;
 
 extern FeedbackVarBuf feedbackVarBuf;
-extern Uint16 real;
-extern Uint16 real2;
 extern Uint16 real3;
-extern Uint16 real4;
-extern Uint16 real5;
-extern Uint16 real6;
 extern Uint16 GetCurrentHallValue(void);
 
 void UpdateKeyValue(void);
