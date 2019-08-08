@@ -18,6 +18,7 @@
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
 #include "GlobalVarAndFunc.h"
+#include "PID.h"
 
 Uint16 currentRefCollect[100] = {0};
 Uint16 voltageRefCollect[100] = {0};
@@ -277,6 +278,8 @@ void InitGlobalVar(void){
 	InitgRx422TxEnableFlag();
 	gKeyValue.displacement = 10;
 	gKeyValue.lock = 0;
+	gSysInfo.ddtmax = 1;
+	gSysInfo.dutyAddInterval = 3;
 }
 /**************************************************************
  *Name:		   RS422Unpack

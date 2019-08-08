@@ -6,6 +6,7 @@
 #include "Filter_Alg.h"
 #include "SPIprocess.h"
 #include "GlobalVarAndFunc.h"
+#include "PID.h"
 
 
 FeedbackVarBuf feedbackVarBuf;
@@ -653,6 +654,80 @@ int checkDisplaceValidation(){
     }
 }
 
+void checkForceDirection(){
+            if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value > 32810){
+                gforwardForce = 0;
+                gbackwardForce = 1;
+                gNoExternalForce = 0;
+            }
+            else if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value < 32770){
+                gforwardForce = 1;
+                gbackwardForce = 0;
+                gNoExternalForce = 0;
+            }
+            else{
+                gforwardForce = 0;
+                gbackwardForce = 0;
+                gNoExternalForce = 1;
+            }
+}
+
+void TargetDutyGradualChange(int targetduty){
+    static int count = 0;
+
+    ++count;
+    if(count < gSysInfo.dutyAddInterval){
+        return;
+    }
+    count = 0;
+    checkForceDirection();
+    if(gNoExternalForce == 1){
+        gSysInfo.currentDuty = 0;
+    }
+    else if(gforwardForce == 1){
+        gSysInfo.currentDuty = targetduty;
+        /*
+        if(gSysInfo.currentDuty < targetduty){
+            gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
+        }
+        else if(gSysInfo.currentDuty > targetduty){
+
+        }
+        else{
+            //nothing need change
+        }
+        */
+    }
+    else if(gbackwardForce == 1){
+        gSysInfo.currentDuty = 0-targetduty;
+        /*
+        if(gSysInfo.currentDuty < targetduty){
+
+        }
+        else if(gSysInfo.currentDuty > targetduty){
+            gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
+        }
+        else{
+            //nothing need change
+        }
+        */
+
+    }
+    else{
+
+    }
+
+   // OverCurrentSoftProtect();
+    //need to change the threshold value of the next line
+    if (gSysInfo.currentDuty > 750) {
+        gSysInfo.currentDuty = 750;
+    }
+    else if (gSysInfo.currentDuty < -750) {
+        gSysInfo.currentDuty = -750;
+    }
+    gSysInfo.duty = gSysInfo.currentDuty;
+}
+
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -690,6 +765,7 @@ void Pwm_ISR_Thread(void)
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
+	    TargetDutyGradualChange(gConfigPara.outerKp);
 		SwitchDirection();
 		gforwardOverLimit = 0;
 		gbackwardOverLimit = 0;

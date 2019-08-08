@@ -69,7 +69,7 @@ const Uint16 anologMaxMinInit[][4] = {
 const Uint16 AD16bitMaxMinInit[][4] = {
         //{max,2ndmax,min,2ndmin}
         {0,0,0,0},
-        {42294,40000,13378,15000},
+        {42294,40000,13378,14000},
         {2,0,0,0}
 };
 

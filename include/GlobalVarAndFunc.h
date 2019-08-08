@@ -35,6 +35,9 @@ typedef struct{
 	Uint16 lastTimeHalllPosition;
 	Uint16 sdoStatus;
 	int16 duty;
+	int16 currentDuty;
+	int16 ddtmax;
+	int16 dutyAddInterval;
 }SYSINFO;
 
 
@@ -272,6 +275,9 @@ extern ANOLOG16BIT gAnalog16bit;
 
 extern int gforwardOverLimit;
 extern int gbackwardOverLimit;
+extern int gforwardForce;
+extern int gbackwardForce;
+extern int gNoExternalForce;
 
 
 void InitSysState(void);
