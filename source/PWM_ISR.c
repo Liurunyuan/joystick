@@ -93,7 +93,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue_16bit].value, gSysMonitorVar.anolog.single.var[DisplacementValue_16bit].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value, count);
 	++count;
 
 	if(count >= DATA_AMOUNT){
@@ -611,7 +611,7 @@ inline void Check_C_X_Current(){
 int checkDisplaceValidation(){
     if(gSysInfo.duty > 0){
         if(gforwardOverLimit == 1){
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
+            if(gKeyValue.displacement > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
                 return 1;
             }
             else{
@@ -620,7 +620,7 @@ int checkDisplaceValidation(){
             }
         }
         else{
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
+            if(gKeyValue.displacement > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
                 return 1;
             }
             else{
@@ -631,7 +631,7 @@ int checkDisplaceValidation(){
     }
     else if(gSysInfo.duty < 0){
         if(gbackwardOverLimit == 1){
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
+            if(gKeyValue.displacement < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
                 return 1;
             }
             else{
@@ -640,7 +640,7 @@ int checkDisplaceValidation(){
             }
         }
         else{
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
+            if(gKeyValue.displacement < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
                 return 1;
             }
             else{
@@ -654,71 +654,44 @@ int checkDisplaceValidation(){
     }
 }
 
-void checkForceDirection(){
+int checkForceDirection(){
             if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value > 32810){
                 gforwardForce = 0;
                 gbackwardForce = 1;
                 gNoExternalForce = 0;
+                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32810;
             }
-            else if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value < 32770){
+            else if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value < 32707){
                 gforwardForce = 1;
                 gbackwardForce = 0;
                 gNoExternalForce = 0;
+                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32707;
             }
             else{
                 gforwardForce = 0;
                 gbackwardForce = 0;
                 gNoExternalForce = 1;
+                return 0;
             }
 }
 
-void TargetDutyGradualChange(int targetduty){
-    static int count = 0;
+void ForceCloseLoop(double forceKp){
+    int forceCloseLoopPWM;
 
-    ++count;
-    if(count < gSysInfo.dutyAddInterval){
-        return;
-    }
-    count = 0;
-    checkForceDirection();
+    forceCloseLoopPWM = forceKp * checkForceDirection();
     if(gNoExternalForce == 1){
         gSysInfo.currentDuty = 0;
     }
     else if(gforwardForce == 1){
-        gSysInfo.currentDuty = targetduty;
-        /*
-        if(gSysInfo.currentDuty < targetduty){
-            gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
-        }
-        else if(gSysInfo.currentDuty > targetduty){
-
-        }
-        else{
-            //nothing need change
-        }
-        */
+        gSysInfo.currentDuty = forceCloseLoopPWM;
     }
     else if(gbackwardForce == 1){
-        gSysInfo.currentDuty = 0-targetduty;
-        /*
-        if(gSysInfo.currentDuty < targetduty){
-
-        }
-        else if(gSysInfo.currentDuty > targetduty){
-            gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
-        }
-        else{
-            //nothing need change
-        }
-        */
+        gSysInfo.currentDuty = forceCloseLoopPWM;
 
     }
     else{
 
     }
-
-   // OverCurrentSoftProtect();
-    //need to change the threshold value of the next line
     if (gSysInfo.currentDuty > 750) {
         gSysInfo.currentDuty = 750;
     }
@@ -765,7 +738,7 @@ void Pwm_ISR_Thread(void)
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
-	    TargetDutyGradualChange(gConfigPara.outerKp);
+	    ForceCloseLoop(-0.0085);
 		SwitchDirection();
 		gforwardOverLimit = 0;
 		gbackwardOverLimit = 0;
