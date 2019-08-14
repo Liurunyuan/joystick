@@ -241,7 +241,7 @@ struct SingleAnalogVar
 
 /********************系统模拟量数据结构**************************/
 typedef struct _AnalogVar{
-	int32 value;
+	Uint16 value;
 	Uint16 max;
 	Uint16 max2nd;
 	Uint16 min;

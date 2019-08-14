@@ -253,8 +253,8 @@ typedef struct{
 }FORCE_DISPLACE_CURVE;
 
 typedef struct{
-    int64 displace;
-    int64 force;
+    Uint16 displace;
+    Uint16 force;
 }ANOLOG16BIT;
 
 

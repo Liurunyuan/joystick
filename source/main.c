@@ -278,8 +278,6 @@ void InitGlobalVar(void){
 	InitgRx422TxEnableFlag();
 	gKeyValue.displacement = 10;
 	gKeyValue.lock = 0;
-	gSysInfo.ddtmax = 1;
-	gSysInfo.dutyAddInterval = 3;
 }
 /**************************************************************
  *Name:		   RS422Unpack
