@@ -615,6 +615,7 @@ int checkDisplaceValidation(){
                 return 1;
             }
             else{
+                gCheckStartForceForwardMargin = 1;
                 gforwardOverLimit = 1;
                 return 0;
             }
@@ -624,6 +625,7 @@ int checkDisplaceValidation(){
                 return 1;
             }
             else{
+                gCheckStartForceForwardMargin = 1;
                 gforwardOverLimit = 1;
                 return 0;
             }
@@ -635,6 +637,7 @@ int checkDisplaceValidation(){
                 return 1;
             }
             else{
+                gCheckStartForceBackwardMargin = 1;
                 gbackwardOverLimit = 1;
                 return 0;
             }
@@ -644,6 +647,7 @@ int checkDisplaceValidation(){
                 return 1;
             }
             else{
+                gCheckStartForceBackwardMargin = 1;
                 gbackwardOverLimit = 1;
                 return 0;
             }
@@ -654,51 +658,8 @@ int checkDisplaceValidation(){
     }
 }
 
-int checkForceDirection(){
-            if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value > 32810){
-                gforwardForce = 0;
-                gbackwardForce = 1;
-                gNoExternalForce = 0;
-                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32810;
-            }
-            else if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value < 32707){
-                gforwardForce = 1;
-                gbackwardForce = 0;
-                gNoExternalForce = 0;
-                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32707;
-            }
-            else{
-                gforwardForce = 0;
-                gbackwardForce = 0;
-                gNoExternalForce = 1;
-                return 0;
-            }
-}
-
-void ForceCloseLoop(double forceKp){
-    int forceCloseLoopPWM;
-
-    forceCloseLoopPWM = forceKp * checkForceDirection();
-    if(gNoExternalForce == 1){
-        gSysInfo.currentDuty = 0;
-    }
-    else if(gforwardForce == 1){
-        gSysInfo.currentDuty = forceCloseLoopPWM;
-    }
-    else if(gbackwardForce == 1){
-        gSysInfo.currentDuty = forceCloseLoopPWM;
-
-    }
-    else{
-
-    }
-    if (gSysInfo.currentDuty > 750) {
-        gSysInfo.currentDuty = 750;
-    }
-    else if (gSysInfo.currentDuty < -750) {
-        gSysInfo.currentDuty = -750;
-    }
-    gSysInfo.duty = gSysInfo.currentDuty;
+int checkStartForceMargin(){
+    if(gKeyValue.displacement )
 }
 
 /**************************************************************
@@ -738,7 +699,6 @@ void Pwm_ISR_Thread(void)
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
-	    ForceCloseLoop(-0.0085);
 		SwitchDirection();
 		gforwardOverLimit = 0;
 		gbackwardOverLimit = 0;

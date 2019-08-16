@@ -25,7 +25,8 @@ void GetMotorSpeedCurve(int a, int b, int c){
 	gRx422TxVar[1].value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
 }
 void GetDisplacementCurve(int a, int b, int c){
-	gRx422TxVar[2].value = (int)(gKeyValue.displacement);
+	//gRx422TxVar[2].value = (int)(gKeyValue.displacement);
+    gRx422TxVar[2].value = (gSysInfo.duty)*50;
 }
 void GetMotorCurrentCurve(int a, int b, int c){
 	gRx422TxVar[3].value = gSysMonitorVar.anolog.single.var[BusCurrentA].value;

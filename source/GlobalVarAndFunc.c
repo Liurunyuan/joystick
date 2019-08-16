@@ -19,6 +19,8 @@ ANOLOG16BIT gAnalog16bit = {0};
 
 int gforwardOverLimit = 0;
 int gbackwardOverLimit = 0;
+int gCheckStartForceForwardMargin = 0;
+int gCheckStartForceBackwardMargin = 0;
 int gforwardForce = 0;
 int gbackwardForce = 0;
 int gNoExternalForce = 0;
