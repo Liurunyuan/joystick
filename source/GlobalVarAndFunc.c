@@ -40,17 +40,20 @@ typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 void InitGlobalVarAndFunc(void){
 	gSysInfo.ddtmax = 1;
 	gSysInfo.dutyAddInterval = 2;
+	gSysInfo.targetDuty = 0;
 }
 
 void IRNullDisAndNoForce(int a,  int b){
 	/*stick is in the range of the null displacement and no external force on the it */
 	/*so decide what we should do */
+	gSysInfo.targetDuty = 0;
 
 } 
 
 void IRNullDisAndForwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is forward */
 	/*so decidde what we should do here */
+	gSysInfo.targetDuty = 50;
 
 }
 
@@ -59,6 +62,7 @@ void IRNullDisAndBackwardForce(int a, int b){
 	/*so decidde what we should do here */
 
 }
+	gSysInfo.targetDuty = -50;
 
 void OORThresholdDisBackward(int a, int b){
 	/*stick is out of the range of the bakcward threshold displacement*/

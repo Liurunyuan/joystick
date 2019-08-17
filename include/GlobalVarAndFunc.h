@@ -102,6 +102,7 @@ typedef struct{
 	int16 currentDuty;
 	int16 dutyAddInterval;
 	int16 ddtmax;
+	int16 targetDuty;
 }SYSINFO;
 
 

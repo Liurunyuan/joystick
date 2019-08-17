@@ -716,10 +716,9 @@ void Pwm_ISR_Thread(void)
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = gAnalog16bit.force;
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
-	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
+	if((gConfigPara.stateCommand == 1) && (gStickState.ThresholdBackwardState == IR_BACKWARD_NULL_DIS_VAL)
+	&& (gStickState.ThresholdForwaredState == IR_FORWARD_NULL_DIS_VAL)){
 		SwitchDirection();
-		gforwardOverLimit = 0;
-		gbackwardOverLimit = 0;
 	}
 	else{
 		DisablePwmOutput();
