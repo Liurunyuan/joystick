@@ -103,8 +103,8 @@ void Timer0_ISR_Thread(void){
         }
 
         gSysInfo.controlFuncIndex |= gExternalForceState.ForceState;
-        gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
-        gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
+        gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState || gStickState.NullDistanceBackwardState) << 2; 
+        gSysInfo.controlFuncIndex |= (gStickState.ThresholdForwaredState || gStickState.ThresholdForwaredState) << 3; 
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
 

@@ -106,8 +106,8 @@ const int controlIndexFuncMap[] = {
 	0,//10
 	0,//11
 	3,//12
-	4,//13
-	5,//14
+	3,//13
+	3,//14
 	0//15
 };
 
@@ -172,11 +172,11 @@ void checkNullDisBack(int value){
 	switch (gStickState.NullDistanceBackwardState)
 	{
 	case INIT_NULL_DIS:
-		if(gStickState.value < OOR_BACKWARD_NULL_DIS_VAL){
+		if(gStickState.value >= OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
 			gSysStateMachineNumber |= BIT_3;
 		}
-		else if(gStickState.value >= OOR_BACKWARD_NULL_DIS_VAL){
+		else if(gStickState.value < OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
 			gSysStateMachineNumber &= ~BIT_3;
 		}
@@ -186,14 +186,14 @@ void checkNullDisBack(int value){
 		break;
 
 	case OOR_NULL_DIS:
-		if(gStickState.value > IR_BACKWARD_NULL_DIS_VAL){
+		if(gStickState.value < IR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
 			gSysStateMachineNumber &= ~BIT_3;
 		}
 		break;
 
 	case IR_NULL_DIS:
-		if(gStickState.value < OOR_BACKWARD_NULL_DIS_VAL){
+		if(gStickState.value > OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
 			gSysStateMachineNumber |= BIT_3;
 		}
@@ -209,11 +209,11 @@ void checkNullDisFor(int value){
 	switch (gStickState.NullDistanceForwardState)
 	{
 	case INIT_NULL_DIS:
-		if(gStickState.value < OOR_FORWARD_NULL_DIS_VAL){
+		if(gStickState.value >= OOR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = IR_NULL_DIS;
 			gSysStateMachineNumber &= ~BIT_2;
 		}
-		else if(gStickState.value > OOR_FORWARD_NULL_DIS_VAL){
+		else if(gStickState.value < OOR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = OOR_NULL_DIS;
 			gSysStateMachineNumber |= BIT_2;
 		}
@@ -223,14 +223,14 @@ void checkNullDisFor(int value){
 		break;
 
 	case OOR_NULL_DIS:
-		if(gStickState.value < IR_FORWARD_NULL_DIS_VAL){
+		if(gStickState.value > IR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = IR_NULL_DIS;
 			gSysStateMachineNumber &= ~BIT_2;
 		}
 		break;
 
 	case IR_NULL_DIS:
-		if(gStickState.value > OOR_FORWARD_NULL_DIS_VAL){
+		if(gStickState.value < OOR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = OOR_NULL_DIS;
 			gSysStateMachineNumber |= BIT_2;
 		}
@@ -245,24 +245,24 @@ void checkThresholdDisBack(int value){
 	switch (gStickState.ThresholdBackwardState)
 	{
 	case INIT_THRESHOLD_DIS:
-		if(gStickState.value < OOR_BACKWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value >= OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
 			gSysStateMachineNumber |= BIT_5;
 		}
-		else if(gStickState.value >= OOR_BACKWARD_THRESHOLD_DIS_VAL){
+		else if(gStickState.value < OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
 			gSysStateMachineNumber &= ~BIT_5;
 		}
 		break;
 	case OOR_THRESHOLD_DIS:
-		if(gStickState.value > IR_BACKWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value < IR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
 			gSysStateMachineNumber &= ~BIT_5;
 		}
 		break;
 
 	case IR_THRESHOLD_DIS:
-		if(gStickState.value < OOR_BACKWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value > OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
 			gSysStateMachineNumber |= BIT_5;
 		}
@@ -276,24 +276,24 @@ void checkThresholdDisFor(int value){
 	switch (gStickState.ThresholdForwaredState)
 	{
 	case INIT_THRESHOLD_DIS:
-		if(gStickState.value < OOR_FORWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value >= OOR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = IR_THRESHOLD_DIS;
 			gSysStateMachineNumber &= ~BIT_4;
 		}
-		else if(gStickState.value >= OOR_FORWARD_THRESHOLD_DIS_VAL){
+		else if(gStickState.value < OOR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = OOR_THRESHOLD_DIS;
 			gSysStateMachineNumber |= BIT_4;
 		}
 		break;
 	case OOR_THRESHOLD_DIS:
-		if(gStickState.value < IR_FORWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value > IR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = IR_THRESHOLD_DIS;
 			gSysStateMachineNumber &= ~BIT_4;
 		}
 		break;
 
 	case IR_THRESHOLD_DIS:
-		if(gStickState.value > OOR_FORWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value < OOR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = OOR_THRESHOLD_DIS;
 			gSysStateMachineNumber |= BIT_4;
 		}
