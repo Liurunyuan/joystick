@@ -329,11 +329,11 @@ typedef struct{
 
 /************************joystick displacement state **********************/
 
-#define OOR_FORWARD_NULL_DIS_VAL 			(1)
-#define IR_FORWARD_NULL_DIS_VAL				(1)
+#define OOR_FORWARD_NULL_DIS_VAL 			(35000)
+#define IR_FORWARD_NULL_DIS_VAL				(33000)
 
-#define OOR_BACKWARD_NULL_DIS_VAL			(1)
-#define IR_BACKWARD_NULL_DIS_VAL			(1)
+#define OOR_BACKWARD_NULL_DIS_VAL			(18000)
+#define IR_BACKWARD_NULL_DIS_VAL			(20000)
 
 #define OOR_FORWARD_THRESHOLD_DIS_VAL		(42294)
 #define IR_FORWARD_THRESHOLD_DIS_VAL		(40000)
@@ -368,8 +368,8 @@ enum eThreasholdDistancedState{
 
 /***********************Force state*******************************/
 
-#define FORWARD_FORCE_VALUE (32707)
-#define BACKWARD_FORCE_VALUE (32810) 
+#define FORWARD_FORCE_VALUE (12707)
+#define BACKWARD_FORCE_VALUE (52810) 
 
 typedef struct _EXTFORCESTATE
 {
@@ -431,6 +431,7 @@ void ClearFault(void);
 void Enable_PWMD_BK(void);
 void Disable_PWMD_BK(void);
 void ControleStateMachineSwitch(int value);
+void InitGlobalVarAndFunc(void);
 
 
 #endif

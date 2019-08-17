@@ -91,7 +91,7 @@ void Timer0_ISR_Thread(void){
         gStickState.updateThresholdDisBackwardState(0);
         gStickState.updateThresholdDisForwardState(0);
 
-        gExternalForceState.value = gKeyValue.force;
+        gExternalForceState.value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
         gExternalForceState.updateForceState(0);
 
         if(gStickState.ThresholdBackwardState == OOR_BACKWARD_THRESHOLD_DIS_VAL
@@ -105,7 +105,6 @@ void Timer0_ISR_Thread(void){
         gSysInfo.controlFuncIndex |= gExternalForceState.ForceState;
         gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
         gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
-
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
 

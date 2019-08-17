@@ -276,6 +276,7 @@ void InitGlobalVar(void){
 	InitConfigParameter();
 	InitgRx422TxVar();
 	InitgRx422TxEnableFlag();
+	InitGlobalVarAndFunc();
 	gKeyValue.displacement = 10;
 	gKeyValue.lock = 0;
 }

@@ -36,12 +36,17 @@ int gbackwardForce = 0;
 int gNoExternalForce = 0;
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
+void InitStickState(void);
 
 void InitGlobalVarAndFunc(void){
 	gSysInfo.ddtmax = 1;
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
 	gSysInfo.controlFuncIndex = 0;
+	gSysInfo.targetDuty = 0;
+
+	InitSysState();
+	InitStickState();
 }
 
 void IRNullDisAndNoForce(int a,  int b){
@@ -168,12 +173,12 @@ void checkNullDisBack(int value){
 	{
 	case INIT_NULL_DIS:
 		if(gStickState.value < OOR_BACKWARD_NULL_DIS_VAL){
-			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
-			gSysStateMachineNumber &= ~BIT_3;
-		}
-		else if(gStickState.value >= OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
 			gSysStateMachineNumber |= BIT_3;
+		}
+		else if(gStickState.value >= OOR_BACKWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
+			gSysStateMachineNumber &= ~BIT_3;
 		}
 		else{
 
@@ -181,14 +186,14 @@ void checkNullDisBack(int value){
 		break;
 
 	case OOR_NULL_DIS:
-		if(gStickState.value < IR_BACKWARD_NULL_DIS_VAL){
+		if(gStickState.value > IR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
 			gSysStateMachineNumber &= ~BIT_3;
 		}
 		break;
 
 	case IR_NULL_DIS:
-		if(gStickState.value > OOR_BACKWARD_NULL_DIS_VAL){
+		if(gStickState.value < OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
 			gSysStateMachineNumber |= BIT_3;
 		}
@@ -241,27 +246,23 @@ void checkThresholdDisBack(int value){
 	{
 	case INIT_THRESHOLD_DIS:
 		if(gStickState.value < OOR_BACKWARD_THRESHOLD_DIS_VAL){
-			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
-			gSysStateMachineNumber &= ~BIT_5;
-		}
-		else if(gStickState.value >= OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
 			gSysStateMachineNumber |= BIT_5;
 		}
-		else{
-
+		else if(gStickState.value >= OOR_BACKWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
+			gSysStateMachineNumber &= ~BIT_5;
 		}
-		/* code */
 		break;
 	case OOR_THRESHOLD_DIS:
-		if(gStickState.value < IR_BACKWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value > IR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
 			gSysStateMachineNumber &= ~BIT_5;
 		}
 		break;
 
 	case IR_THRESHOLD_DIS:
-		if(gStickState.value > OOR_BACKWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value < OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
 			gSysStateMachineNumber |= BIT_5;
 		}
