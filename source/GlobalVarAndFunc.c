@@ -147,17 +147,30 @@ void ControleStateMachineSwitch(int value){
 		}
 	}
 }
+/******************************
+ * 		bit6	0:									1: 	
+ * 		bit5	0: Backward Threshold displacement in range								1: Backward Threshold displacement out of range 	
+ * 		bit4	0: Forward Threshold displacement in range								1: Forward Threshold displacement out of range 	
+ * 		bit3	0: Backward Null displacement in range									1: Backward Null displacement out of range 	
+ * 		bit2	0: Forward Null displacement in ragne									1: Forward Null displacement out of range 	
+ * 		bit1	0:									1: 	
+ * 		bit0	0:									1: 	
+ * 
+ * 		bit1 and bit0 --> 0: No external force		1: Backward external force		2: Forward external force
+ */
 
 void checkNullDisBack(int value){
 
 	switch (gStickState.NullDistanceBackwardState)
 	{
 	case INIT_NULL_DIS:
-		if(gStickState.value < IR_BACKWARD_NULL_DIS_VAL){
+		if(gStickState.value < OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
+			gSysStateMachineNumber &= ~BIT_3;
 		}
-		else if(gStickState.value > OOR_BACKWARD_NULL_DIS_VAL){
+		else if(gStickState.value >= OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
+			gSysStateMachineNumber |= BIT_3;
 		}
 		else{
 
@@ -167,12 +180,14 @@ void checkNullDisBack(int value){
 	case OOR_NULL_DIS:
 		if(gStickState.value < IR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
+			gSysStateMachineNumber &= ~BIT_3;
 		}
 		break;
 
 	case IR_NULL_DIS:
 		if(gStickState.value > OOR_BACKWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
+			gSysStateMachineNumber |= BIT_3;
 		}
 		break;
 
@@ -186,11 +201,13 @@ void checkNullDisFor(int value){
 	switch (gStickState.NullDistanceForwardState)
 	{
 	case INIT_NULL_DIS:
-		if(gStickState.value < IR_FORWARD_NULL_DIS_VAL){
+		if(gStickState.value < OOR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = IR_NULL_DIS;
+			gSysStateMachineNumber &= ~BIT_2;
 		}
 		else if(gStickState.value > OOR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = OOR_NULL_DIS;
+			gSysStateMachineNumber |= BIT_2;
 		}
 		else{
 
@@ -200,12 +217,14 @@ void checkNullDisFor(int value){
 	case OOR_NULL_DIS:
 		if(gStickState.value < IR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = IR_NULL_DIS;
+			gSysStateMachineNumber &= ~BIT_2;
 		}
 		break;
 
 	case IR_NULL_DIS:
 		if(gStickState.value > OOR_FORWARD_NULL_DIS_VAL){
 			gStickState.NullDistanceForwardState = OOR_NULL_DIS;
+			gSysStateMachineNumber |= BIT_2;
 		}
 		break;
 	
@@ -218,11 +237,13 @@ void checkThresholdDisBack(int value){
 	switch (gStickState.ThresholdBackwardState)
 	{
 	case INIT_THRESHOLD_DIS:
-		if(gStickState.value < IR_BACKWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value < OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
+			gSysStateMachineNumber &= ~BIT_5;
 		}
-		else if(gStickState.value > OOR_BACKWARD_THRESHOLD_DIS_VAL){
+		else if(gStickState.value >= OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
+			gSysStateMachineNumber |= BIT_5;
 		}
 		else{
 
@@ -232,12 +253,14 @@ void checkThresholdDisBack(int value){
 	case OOR_THRESHOLD_DIS:
 		if(gStickState.value < IR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
+			gSysStateMachineNumber &= ~BIT_5;
 		}
 		break;
 
 	case IR_THRESHOLD_DIS:
 		if(gStickState.value > OOR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
+			gSysStateMachineNumber |= BIT_5;
 		}
 		break;
 	default:
@@ -249,26 +272,26 @@ void checkThresholdDisFor(int value){
 	switch (gStickState.ThresholdForwaredState)
 	{
 	case INIT_THRESHOLD_DIS:
-		if(gStickState.value < IR_FORWARD_THRESHOLD_DIS_VAL){
+		if(gStickState.value < OOR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = IR_THRESHOLD_DIS;
+			gSysStateMachineNumber &= ~BIT_4;
 		}
-		else if(gStickState.value > OOR_FORWARD_THRESHOLD_DIS_VAL){
+		else if(gStickState.value >= OOR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = OOR_THRESHOLD_DIS;
+			gSysStateMachineNumber |= BIT_4;
 		}
-		else{
-
-		}
-		/* code */
 		break;
 	case OOR_THRESHOLD_DIS:
 		if(gStickState.value < IR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = IR_THRESHOLD_DIS;
+			gSysStateMachineNumber &= ~BIT_4;
 		}
 		break;
 
 	case IR_THRESHOLD_DIS:
 		if(gStickState.value > OOR_FORWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdForwaredState = OOR_THRESHOLD_DIS;
+			gSysStateMachineNumber |= BIT_4;
 		}
 		break;
 	default:
@@ -286,31 +309,47 @@ void checkExternalForce(int value){
 
 		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
+			gSysStateMachineNumber |= BIT_0;
+			gSysStateMachineNumber &= ~BIT_1;
 		}
 		else if (gExternalForceState.value  < FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
+			gSysStateMachineNumber &= ~BIT_0;
+			gSysStateMachineNumber |= BIT_1;
 		}
 		else{
 			gExternalForceState.ForceState = NO_FORCE;
+			gSysStateMachineNumber &= ~BIT_0;
+			gSysStateMachineNumber &= ~BIT_1;
 		}
 		break;
 	case FORWARD_FORCE:
 		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
+			gSysStateMachineNumber |= BIT_0;
+			gSysStateMachineNumber &= ~BIT_1;
 		}
 		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
+			gSysStateMachineNumber &= ~BIT_0;
+			gSysStateMachineNumber |= BIT_1;
 		}
 		else{
 			gExternalForceState.ForceState = NO_FORCE;
+			gSysStateMachineNumber &= ~BIT_0;
+			gSysStateMachineNumber &= ~BIT_1;
 		}
 		break;
 	case BACKWARD_FORCE:
 		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
+			gSysStateMachineNumber |= BIT_0;
+			gSysStateMachineNumber &= ~BIT_1;
 		}
 		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
+			gSysStateMachineNumber &= ~BIT_0;
+			gSysStateMachineNumber |= BIT_1;
 		}
 		else{
 			gExternalForceState.ForceState = NO_FORCE;
@@ -322,9 +361,13 @@ void checkExternalForce(int value){
 		}
 		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
+			gSysStateMachineNumber &= ~BIT_0;
+			gSysStateMachineNumber |= BIT_1;
 		}
 		else{
 			gExternalForceState.ForceState = NO_FORCE;
+			gSysStateMachineNumber &= ~BIT_0;
+			gSysStateMachineNumber &= ~BIT_1;
 		}
 		break;
 	default:
