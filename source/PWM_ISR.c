@@ -717,6 +717,7 @@ void Pwm_ISR_Thread(void)
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
+		TargetDutyGradualChange(gSysInfo.targetDuty);
 		SwitchDirection();
 	}
 	else{

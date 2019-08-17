@@ -146,6 +146,9 @@ void ControleStateMachineSwitch(int value){
 			controlStateMahchineInterface[mapValue](0, 0);
 		}
 	}
+	else{
+		//TODO generate alarm msg, something wrong
+	}
 }
 /******************************
  * 		bit6	0:									1: 	
