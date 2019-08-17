@@ -20,6 +20,8 @@ ANOLOG16BIT gAnalog16bit = {0};
 
 STICKSTATE gStickState = {0};
 
+EXTFORCESTATE gExternalForceState = {0};
+
 int gforwardOverLimit = 0;
 int gbackwardOverLimit = 0;
 int gCheckStartForceForwardMargin = 0;
@@ -159,6 +161,59 @@ void checkThresholdDisFor(int value){
 
 
 
+void checkExternalForce(int value){
+	/*need to decide if need to enable debouce feature */
+	switch (gExternalForceState.ForceState)
+	{
+	case INIT_FORCE:
+
+		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = BACKWARD_FORCE;
+		}
+		else if (gExternalForceState.value  < FORWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = FORWARD_FORCE;
+		}
+		else{
+			gExternalForceState.ForceState = NO_FORCE;
+		}
+		break;
+	case FORWARD_FORCE:
+		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = BACKWARD_FORCE;
+		}
+		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = FORWARD_FORCE;
+		}
+		else{
+			gExternalForceState.ForceState = NO_FORCE;
+		}
+		break;
+	case BACKWARD_FORCE:
+		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = BACKWARD_FORCE;
+		}
+		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = FORWARD_FORCE;
+		}
+		else{
+			gExternalForceState.ForceState = NO_FORCE;
+		}
+		break;
+	case NO_FORCE:
+		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = BACKWARD_FORCE;
+		}
+		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
+			gExternalForceState.ForceState = FORWARD_FORCE;
+		}
+		else{
+			gExternalForceState.ForceState = NO_FORCE;
+		}
+		break;
+	default:
+		break;
+	}
+}
 
 void InitStickState(void){
 	gStickState.NullDistanceBackwardState = INIT_NULL_DIS;
@@ -172,6 +227,9 @@ void InitStickState(void){
 
 	gStickState.updateThresholdDisBackwardState = checkThresholdDisBack;
 	gStickState.updateThresholdDisForwardState = checkThresholdDisFor;
+
+	gExternalForceState.ForceState = INIT_FORCE;
+	gExternalForceState.updateForceState = checkExternalForce;
 
 }
 

@@ -259,7 +259,7 @@ typedef struct{
 
 
 
-/******joystick displacement state **********************/
+/************************joystick displacement state **********************/
 
 #define OOR_FORWARD_NULL_DIS_VAL 			(1)
 #define IR_FORWARD_NULL_DIS_VAL				(1)
@@ -298,11 +298,27 @@ enum eThreasholdDistancedState{
 	INIT_THRESHOLD_DIS
 };
 
+/***********************Force state*******************************/
+
+#define FORWARD_FORCE_VALUE (1)
+#define BACKWARD_FORCE_VALUE (1) 
+
+typedef struct _EXTFORCESTATE
+{
+	int ForceState;
+	UPDATESTATE updateForceState;
+	Uint16 value;
+}EXTFORCESTATE;
+
+enum eForceState{
+	FORWARD_FORCE = 0,
+	BACKWARD_FORCE = 1,
+	NO_FORCE = 2,
+	INIT_FORCE
+};
 
 
-
-
-/*******************************************************/
+/*****************************************************************/
 extern STICKSTATE gStickState;
 
 extern Uint32 gECapCount;
