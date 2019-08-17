@@ -17,6 +17,9 @@ FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
 
 ANOLOG16BIT gAnalog16bit = {0};
 
+
+STICKSTATE gStickState = {0};
+
 int gforwardOverLimit = 0;
 int gbackwardOverLimit = 0;
 int gCheckStartForceForwardMargin = 0;
@@ -24,6 +27,153 @@ int gCheckStartForceBackwardMargin = 0;
 int gforwardForce = 0;
 int gbackwardForce = 0;
 int gNoExternalForce = 0;
+
+
+void checkNullDisBack(int value){
+
+	switch (gStickState.NullDistanceBackwardState)
+	{
+	case INIT_NULL_DIS:
+		if(gStickState.value < IR_BACKWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
+		}
+		else if(gStickState.value > OOR_BACKWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
+		}
+		else{
+
+		}
+		break;
+
+	case OOR_NULL_DIS:
+		if(gStickState.value < IR_BACKWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceBackwardState = IR_NULL_DIS;
+		}
+		break;
+
+	case IR_NULL_DIS:
+		if(gStickState.value > OOR_BACKWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceBackwardState = OOR_NULL_DIS;
+		}
+		break;
+
+	default:
+		break;
+	}
+}
+
+void checkNullDisFor(int value){
+
+	switch (gStickState.NullDistanceForwardState)
+	{
+	case INIT_NULL_DIS:
+		if(gStickState.value < IR_FORWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceForwardState = IR_NULL_DIS;
+		}
+		else if(gStickState.value > OOR_FORWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceForwardState = OOR_NULL_DIS;
+		}
+		else{
+
+		}
+		break;
+
+	case OOR_NULL_DIS:
+		if(gStickState.value < IR_FORWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceForwardState = IR_NULL_DIS;
+		}
+		break;
+
+	case IR_NULL_DIS:
+		if(gStickState.value > OOR_FORWARD_NULL_DIS_VAL){
+			gStickState.NullDistanceForwardState = OOR_NULL_DIS;
+		}
+		break;
+	
+	default:
+		break;
+	}
+}
+
+void checkThresholdDisBack(int value){
+	switch (gStickState.ThresholdBackwardState)
+	{
+	case INIT_THRESHOLD_DIS:
+		if(gStickState.value < IR_BACKWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
+		}
+		else if(gStickState.value > OOR_BACKWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
+		}
+		else{
+
+		}
+		/* code */
+		break;
+	case OOR_THRESHOLD_DIS:
+		if(gStickState.value < IR_BACKWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
+		}
+		break;
+
+	case IR_THRESHOLD_DIS:
+		if(gStickState.value > OOR_BACKWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdBackwardState = OOR_THRESHOLD_DIS;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void checkThresholdDisFor(int value){
+	switch (gStickState.ThresholdForwaredState)
+	{
+	case INIT_THRESHOLD_DIS:
+		if(gStickState.value < IR_FORWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdForwaredState = IR_THRESHOLD_DIS;
+		}
+		else if(gStickState.value > OOR_FORWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdForwaredState = OOR_THRESHOLD_DIS;
+		}
+		else{
+
+		}
+		/* code */
+		break;
+	case OOR_THRESHOLD_DIS:
+		if(gStickState.value < IR_FORWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdForwaredState = IR_THRESHOLD_DIS;
+		}
+		break;
+
+	case IR_THRESHOLD_DIS:
+		if(gStickState.value > OOR_FORWARD_THRESHOLD_DIS_VAL){
+			gStickState.ThresholdForwaredState = OOR_THRESHOLD_DIS;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+
+
+
+void InitStickState(void){
+	gStickState.NullDistanceBackwardState = INIT_NULL_DIS;
+	gStickState.NullDistanceForwardState  = INIT_NULL_DIS;
+
+	gStickState.ThresholdBackwardState = INIT_THRESHOLD_DIS;
+	gStickState.ThresholdForwaredState = INIT_THRESHOLD_DIS;
+
+	gStickState.updateNullDisBackwardState = checkNullDisBack;
+	gStickState.updateNullDisForwardState = checkNullDisFor;
+
+	gStickState.updateThresholdDisBackwardState = checkThresholdDisBack;
+	gStickState.updateThresholdDisForwardState = checkThresholdDisFor;
+
+}
 
 void InitForceDisplaceCurve(void){
 

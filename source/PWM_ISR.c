@@ -659,7 +659,8 @@ int checkDisplaceValidation(){
 }
 
 int checkStartForceMargin(){
-    if(gKeyValue.displacement )
+//    if(gKeyValue.displacement )
+    return 0;
 }
 
 /**************************************************************

@@ -7,6 +7,7 @@
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
 #include "Filter_Alg.h"
+#include "ADprocessor.h"
 #include <stdio.h>
 
 #define N (300)
@@ -82,11 +83,13 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
-		if(/*empty distance*/){
+//		if(/*empty distance*/){
+		if(0){
 		    ForceCloseLoop(-0.0085);
 		    //force close loop
 		}
-		else if(/*less than least start force distance*/){
+//		else if(/*less than least start force distance*/){
+		else if(0){
 		    //displace close loop
 		}
 		else{

@@ -259,6 +259,52 @@ typedef struct{
 
 
 
+/******joystick displacement state **********************/
+
+#define OOR_FORWARD_NULL_DIS_VAL 			(1)
+#define IR_FORWARD_NULL_DIS_VAL				(1)
+
+#define OOR_BACKWARD_NULL_DIS_VAL			(1)
+#define IR_BACKWARD_NULL_DIS_VAL			(1)
+
+#define OOR_FORWARD_THRESHOLD_DIS_VAL		(1)
+#define IR_FORWARD_THRESHOLD_DIS_VAL		(1)
+
+#define OOR_BACKWARD_THRESHOLD_DIS_VAL		(1)
+#define IR_BACKWARD_THRESHOLD_DIS_VAL		(1)
+
+typedef void (*UPDATESTATE)(int value);
+
+typedef struct _STICKSTATE{
+	int NullDistanceForwardState;
+	int NullDistanceBackwardState;
+	int ThresholdForwaredState;
+	int ThresholdBackwardState;
+	UPDATESTATE updateNullDisForwardState;
+	UPDATESTATE updateNullDisBackwardState;
+	UPDATESTATE updateThresholdDisForwardState;
+	UPDATESTATE updateThresholdDisBackwardState;
+	Uint16 value;
+}STICKSTATE;
+
+enum eNullDistancedState{
+	IR_NULL_DIS = 0, 
+	OOR_NULL_DIS = 1,
+	INIT_NULL_DIS
+};
+enum eThreasholdDistancedState{
+	IR_THRESHOLD_DIS = 0,
+	OOR_THRESHOLD_DIS = 1,
+	INIT_THRESHOLD_DIS
+};
+
+
+
+
+
+/*******************************************************/
+extern STICKSTATE gStickState;
+
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
@@ -276,6 +322,13 @@ extern int gbackwardOverLimit;
 extern int gforwardForce;
 extern int gbackwardForce;
 extern int gNoExternalForce;
+
+
+
+
+extern int gCheckStartForceForwardMargin;
+extern int gCheckStartForceBackwardMargin;
+
 
 
 void InitSysState(void);
