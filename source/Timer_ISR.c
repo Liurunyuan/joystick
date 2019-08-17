@@ -106,6 +106,9 @@ void Timer0_ISR_Thread(void){
         gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
         gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
 
+
+        ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
+
 		clearSum();
 		gKeyValue.lock = 0;
         gSysInfo.controlFuncIndex = 0;

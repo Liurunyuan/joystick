@@ -335,11 +335,11 @@ typedef struct{
 #define OOR_BACKWARD_NULL_DIS_VAL			(1)
 #define IR_BACKWARD_NULL_DIS_VAL			(1)
 
-#define OOR_FORWARD_THRESHOLD_DIS_VAL		(1)
-#define IR_FORWARD_THRESHOLD_DIS_VAL		(1)
+#define OOR_FORWARD_THRESHOLD_DIS_VAL		(42294)
+#define IR_FORWARD_THRESHOLD_DIS_VAL		(40000)
 
-#define OOR_BACKWARD_THRESHOLD_DIS_VAL		(1)
-#define IR_BACKWARD_THRESHOLD_DIS_VAL		(1)
+#define OOR_BACKWARD_THRESHOLD_DIS_VAL		(13378)
+#define IR_BACKWARD_THRESHOLD_DIS_VAL		(14000)
 
 typedef void (*UPDATESTATE)(int value);
 
@@ -368,8 +368,8 @@ enum eThreasholdDistancedState{
 
 /***********************Force state*******************************/
 
-#define FORWARD_FORCE_VALUE (1)
-#define BACKWARD_FORCE_VALUE (1) 
+#define FORWARD_FORCE_VALUE (32707)
+#define BACKWARD_FORCE_VALUE (32810) 
 
 typedef struct _EXTFORCESTATE
 {
