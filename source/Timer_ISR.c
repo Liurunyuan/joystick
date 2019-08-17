@@ -93,18 +93,14 @@ void Timer0_ISR_Thread(void){
 
         gExternalForceState.value = gKeyValue.force;
         gExternalForceState.updateForceState(0);
-//		if(/*empty distance*/){
-		if(0){
-		    ForceCloseLoop(-0.0085);
-		    //force close loop
-		}
-//		else if(/*less than least start force distance*/){
-		else if(0){
-		    //displace close loop
-		}
-		else{
 
-		}
+        if(gStickState.ThresholdBackwardState == OOR_BACKWARD_THRESHOLD_DIS_VAL
+        || gStickState.ThresholdForwaredState == OOR_FORWARD_THRESHOLD_DIS_VAL){
+            gSysState.warning.bit.a = 1;
+        }
+        else{
+            gSysState.warning.bit.a = 0;
+        }
 		clearSum();
 		gKeyValue.lock = 0;
 	}

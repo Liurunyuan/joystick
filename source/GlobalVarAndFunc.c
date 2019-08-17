@@ -60,25 +60,29 @@ void IRNullDisAndForwardForce(int a, int b){
 void IRNullDisAndBackwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is backward */
 	/*so decidde what we should do here */
+    gSysInfo.targetDuty = -50;
 
 }
-	gSysInfo.targetDuty = -50;
+
 
 void OORThresholdDisBackward(int a, int b){
 	/*stick is out of the range of the bakcward threshold displacement*/
 	/*so decidde what we should do here */
+	gSysInfo.targetDuty = 0;
 
 }
 
 void OORThresholdDisForward(int a, int b){
 	/*stick is out of the range of the forward threshold displacement*/
 	/*so decidde what we should do here */
+	gSysInfo.targetDuty = 0;
 
 }
 
 void OORThresholdDis(int a, int b){
 	/*stick is out of range of the threshold displacement */
 	/*this functin may not need to use */
+	gSysInfo.targetDuty = 0;
 
 }
 
