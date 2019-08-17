@@ -83,6 +83,13 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
+
+        /*type may need to conversion here */
+        gStickState.value = gKeyValue.displacement;
+        gStickState.updateNullDisBackwardState(0);
+        gStickState.updateNullDisForwardState(0);
+        gStickState.updateThresholdDisBackwardState(0);
+        gStickState.updateThresholdDisForwardState(0);
 //		if(/*empty distance*/){
 		if(0){
 		    ForceCloseLoop(-0.0085);
