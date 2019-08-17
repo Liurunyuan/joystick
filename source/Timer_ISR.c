@@ -101,8 +101,14 @@ void Timer0_ISR_Thread(void){
         else{
             gSysState.warning.bit.a = 0;
         }
+
+        gSysInfo.controlFuncIndex |= gExternalForceState.ForceState;
+        gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
+        gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState & gStickState.NullDistanceBackwardState) << 2; 
+
 		clearSum();
 		gKeyValue.lock = 0;
+        gSysInfo.controlFuncIndex = 0;
 	}
 }
 /**************************************************************

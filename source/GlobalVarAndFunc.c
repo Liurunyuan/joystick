@@ -41,6 +41,7 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.ddtmax = 1;
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
+	gSysInfo.controlFuncIndex = 0;
 }
 
 void IRNullDisAndNoForce(int a,  int b){
@@ -86,12 +87,31 @@ void OORThresholdDis(int a, int b){
 
 }
 
+const int controlIndexFuncMap[] = {
+	0,//0
+	2,//1
+	1,//2
+	0,//3
+	0,//4
+	0,//5
+	0,//6
+	0,//7
+	0,//8
+	0,//9
+	0,//10
+	0,//11
+	3,//12
+	4,//13
+	5,//14
+	0//15
+};
+
 
 const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
-	0,
-	0,
-	0,
-	0,
+	IRNullDisAndNoForce,
+	IRNullDisAndForwardForce,
+	IRNullDisAndBackwardForce,
+	OORThresholdDis,
 	0,
 	0,
 	0,
@@ -117,6 +137,16 @@ const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
 	0,
 	0
 };
+
+void ControleStateMachineSwitch(int value){
+	int mapValue = controlIndexFuncMap[value];
+
+	if(mapValue < (sizeof(controlStateMahchineInterface) / sizeof(controlStateMahchineInterface[0]))){
+		if(controlStateMahchineInterface[mapValue]){
+			controlStateMahchineInterface[mapValue](0, 0);
+		}
+	}
+}
 
 void checkNullDisBack(int value){
 

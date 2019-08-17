@@ -103,6 +103,7 @@ typedef struct{
 	int16 dutyAddInterval;
 	int16 ddtmax;
 	int16 targetDuty;
+	int controlFuncIndex;
 }SYSINFO;
 
 
@@ -429,6 +430,7 @@ void StateMachine(void);
 void ClearFault(void);
 void Enable_PWMD_BK(void);
 void Disable_PWMD_BK(void);
+void ControleStateMachineSwitch(int value);
 
 
 #endif
