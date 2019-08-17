@@ -100,6 +100,8 @@ typedef struct{
 	Uint16 sdoStatus;
 	int16 duty;
 	int16 currentDuty;
+	int16 dutyAddInterval;
+	int16 ddtmax;
 }SYSINFO;
 
 

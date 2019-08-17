@@ -37,6 +37,11 @@ int gNoExternalForce = 0;
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
+void InitGlobalVarAndFunc(void){
+	gSysInfo.ddtmax = 1;
+	gSysInfo.dutyAddInterval = 2;
+}
+
 void IRNullDisAndNoForce(int a,  int b){
 	/*stick is in the range of the null displacement and no external force on the it */
 	/*so decide what we should do */
