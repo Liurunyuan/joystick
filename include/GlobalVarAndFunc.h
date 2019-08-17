@@ -39,6 +39,35 @@
 #define BIT_30 (0x40000000)
 #define BIT_31 (0x80000000)
 
+enum CONTROL_STATE_MACHINE{
+	IR_NULL_DIS_AND_NO_FORCE = 0,
+	IR_NULL_DIS_AND_FORWARD_FORCE = 0,
+	OOR_NULL_DIS_AND_NO_FORCE = 0,
+	THREE = 3,
+	FOUR = 4,
+	FIVE = 5,
+	SIX = 6,
+	SEVEN = 7,
+	EGIGHT = 8,
+	NINE = 9,
+	TEN = 10,
+	ELVENEN = 11,
+	TWELVE = 12,
+	THRITEEN = 13,
+	FOURTEEN = 14,
+	FIFTEEN = 15,
+	SIXTEEN = 16,
+	SEVENTEEN = 17,
+	EIGHTTEEN = 18,
+	NINETEEN = 19,
+	TWENTY = 20,
+	TWENTY_ONE = 21,
+	TEWENTY_TWO = 22,
+	END
+};
+
+
+
 typedef Uint16 bool;
 
 typedef struct{
@@ -346,9 +375,9 @@ typedef struct _EXTFORCESTATE
 }EXTFORCESTATE;
 
 enum eForceState{
-	FORWARD_FORCE = 0,
+	NO_FORCE = 0,
 	BACKWARD_FORCE = 1,
-	NO_FORCE = 2,
+	FORWARD_FORCE = 2,
 	INIT_FORCE
 };
 
@@ -374,6 +403,8 @@ extern int gbackwardOverLimit;
 extern int gforwardForce;
 extern int gbackwardForce;
 extern int gNoExternalForce;
+
+extern Uint32 gSysStateMachineNumber;
 
 
 

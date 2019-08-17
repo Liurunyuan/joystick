@@ -5,6 +5,9 @@
 #include <string.h>
 #include "PWM_ISR.h"
 
+
+
+
 Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
 KeyValue gKeyValue = {0};
@@ -14,6 +17,8 @@ SYSPARA gSysPara = {0};
 SYSCURRENTSTATE gSysCurrentState = {0};
 CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
+
+Uint32 gSysStateMachineNumber = 0;
 
 ANOLOG16BIT gAnalog16bit = {0};
 
@@ -30,6 +35,75 @@ int gforwardForce = 0;
 int gbackwardForce = 0;
 int gNoExternalForce = 0;
 
+typedef void (*CONTROLSTATEMACHINE)(int a,int b);
+
+void IRNullDisAndNoForce(int a,  int b){
+	/*stick is in the range of the null displacement and no external force on the it */
+	/*so decide what we should do */
+
+} 
+
+void IRNullDisAndForwardForce(int a, int b){
+	/*stick is in the range of the null displacement and the external force is forward */
+	/*so decidde what we should do here */
+
+}
+
+void IRNullDisAndBackwardForce(int a, int b){
+	/*stick is in the range of the null displacement and the external force is backward */
+	/*so decidde what we should do here */
+
+}
+
+void OORThresholdDisBackward(int a, int b){
+	/*stick is out of the range of the bakcward threshold displacement*/
+	/*so decidde what we should do here */
+
+}
+
+void OORThresholdDisForward(int a, int b){
+	/*stick is out of the range of the forward threshold displacement*/
+	/*so decidde what we should do here */
+
+}
+
+void OORThresholdDis(int a, int b){
+	/*stick is out of range of the threshold displacement */
+	/*this functin may not need to use */
+
+}
+
+
+const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0
+};
 
 void checkNullDisBack(int value){
 
@@ -230,6 +304,8 @@ void InitStickState(void){
 
 	gExternalForceState.ForceState = INIT_FORCE;
 	gExternalForceState.updateForceState = checkExternalForce;
+
+	gSysStateMachineNumber = 0;
 
 }
 
