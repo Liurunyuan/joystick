@@ -320,6 +320,7 @@ enum eForceState{
 
 /*****************************************************************/
 extern STICKSTATE gStickState;
+extern EXTFORCESTATE gExternalForceState;
 
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;

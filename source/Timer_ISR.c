@@ -90,6 +90,9 @@ void Timer0_ISR_Thread(void){
         gStickState.updateNullDisForwardState(0);
         gStickState.updateThresholdDisBackwardState(0);
         gStickState.updateThresholdDisForwardState(0);
+
+        gExternalForceState.value = gKeyValue.force;
+        gExternalForceState.updateForceState(0);
 //		if(/*empty distance*/){
 		if(0){
 		    ForceCloseLoop(-0.0085);
