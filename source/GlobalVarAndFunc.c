@@ -751,7 +751,7 @@ int FindDisplacement(int a){
 
 #define  DEBOUNCE (100)
 
-int CheckStickSetion(int val){
+int CheckStickSetion(Uint16 val){
 	if(val >= TH0){
 		return 0;
 	}
