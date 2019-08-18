@@ -25,21 +25,22 @@ void UpdateKeyValue(void) {
 	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 }
 void TargetDutyGradualChange(int targetduty){
-	static int count = 0;
+	// static int count = 0;
 
-	++count;
-	if(count < gSysInfo.dutyAddInterval){
-		return;
-	}
-	count = 0;
+	//++count;
+	// if(count < gSysInfo.dutyAddInterval){
+	// 	return;
+	// }
+	// count = 0;
 
-	if(gSysInfo.currentDuty > targetduty){
-		gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
-	}
-	else if(gSysInfo.currentDuty < targetduty){
-		gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
-	}
-	gSysInfo.duty = gSysInfo.currentDuty;
+	// if(gSysInfo.currentDuty > targetduty){
+	// 	gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
+	// }
+	// else if(gSysInfo.currentDuty < targetduty){
+	// 	gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
+	// }
+	//gSysInfo.duty = gSysInfo.currentDuty;
+	gSysInfo.duty = targetduty; 
 }
 
 /*

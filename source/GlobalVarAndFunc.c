@@ -43,7 +43,6 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
 	gSysInfo.controlFuncIndex = 0;
-	gSysInfo.targetDuty = 0;
 
 	InitSysState();
 	InitStickState();
@@ -59,15 +58,17 @@ void IRNullDisAndNoForce(int a,  int b){
 void IRNullDisAndForwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is forward */
 	/*so decidde what we should do here */
-	gSysInfo.targetDuty = 50;
-
+	int32 tmp;
+	tmp = (int32)((30587.0 - gExternalForceState.value)* 0.0085);
+	gSysInfo.targetDuty = tmp; 
 }
 
 void IRNullDisAndBackwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is backward */
 	/*so decidde what we should do here */
-    gSysInfo.targetDuty = -50;
-
+	int32 tmp;
+	tmp = (int32)((30787.0 - gExternalForceState.value)* 0.0085);
+	gSysInfo.targetDuty = tmp; 
 }
 
 
