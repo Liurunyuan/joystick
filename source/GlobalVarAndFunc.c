@@ -43,6 +43,7 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
 	gSysInfo.controlFuncIndex = 0;
+	gSysInfo.currentStickDisSection = INIT_SECTION;
 
 	InitSysState();
 	InitStickState();
@@ -258,6 +259,7 @@ void checkThresholdDisBack(int value){
 	case OOR_THRESHOLD_DIS:
 		if(gStickState.value < IR_BACKWARD_THRESHOLD_DIS_VAL){
 			gStickState.ThresholdBackwardState = IR_THRESHOLD_DIS;
+
 			gSysStateMachineNumber &= ~BIT_5;
 		}
 		break;
@@ -384,11 +386,17 @@ void InitStickState(void){
 	gStickState.NullDistanceBackwardState = INIT_NULL_DIS;
 	gStickState.NullDistanceForwardState  = INIT_NULL_DIS;
 
+	gStickState.StartForceBackwardState = INIT_START_FORCE_DIS; 
+	gStickState.StartForceForwardState = INIT_START_FORCE_DIS;
+
 	gStickState.ThresholdBackwardState = INIT_THRESHOLD_DIS;
 	gStickState.ThresholdForwaredState = INIT_THRESHOLD_DIS;
 
 	gStickState.updateNullDisBackwardState = checkNullDisBack;
 	gStickState.updateNullDisForwardState = checkNullDisFor;
+
+	gStickState.updateStartForceBackwardState = 0;
+	gStickState.updateStartForceDisBackwardState = 0;
 
 	gStickState.updateThresholdDisBackwardState = checkThresholdDisBack;
 	gStickState.updateThresholdDisForwardState = checkThresholdDisFor;
@@ -709,6 +717,128 @@ void Enable_PWMD_BK(void){
 }
 void Disable_PWMD_BK(void){
 	GpioDataRegs.GPASET.bit.GPIO9 = 1;
+}
+
+int FindDisplacement(int a){
+	int index;
+
+	for(index = 0; index < 8; ++index){
+		if((a & (0x01 << index)) == 1){
+			/*find the first value 1 */
+			return index;
+		}
+	}
+	/*Not find, generate alarm if need */
+
+	return -1;
+}
+         /* 40000                                                     30000                                                       10000
+         *  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
+         *  |                                                          |
+         *  |Threshold|         ODE     | StartForce   | Null          | Null          | StartForce    |    ODE         |Threshold|
+         *  |---------|-----------------|--------------|---------------|---------------|---------------|----------------|---------|
+         *  |--bit0---|-------bit1------|--bit2--------|----bit3-------|------bit4-----|-----bit5------|-----bit6-------|---bit7--|
+         *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
+		 */
+#define  TH0 (40000)
+#define  TH1 (35000)
+#define  TH2 (30000)
+#define  TH3 (25000)
+#define  TH4 (20000)
+#define  TH5 (15000)
+#define  TH6 (10000)
+
+
+#define  DEBOUNCE (100)
+
+int CheckStickSetion(int val){
+	if(val >= TH0){
+		return 0;
+	}
+	else if(val >= TH1){
+		return 1;
+	}
+	else if(val >= TH2){
+		return 2;
+	}
+	else if(val >= TH3){
+		return 3;
+	}
+	else if(val >= TH4){
+		return 4;
+	}
+	else if(val >= TH5){
+		return 5;
+	}
+	else if(val >= TH6){
+		return 6;
+	}
+	else{
+		return 7;
+	}
+}
+         /* 40000                                                     30000                                                       10000
+         *  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
+         *  |                                                          |
+         *  |Threshold|         ODE     | StartForce   | Null          | Null          | StartForce    |    ODE         |Threshold|
+         *  |---------|-----------------|--------------|---------------|---------------|---------------|----------------|---------|
+         *  |--bit0---|-------bit1------|--bit2--------|----bit3-------|------bit4-----|-----bit5------|-----bit6-------|---bit7--|
+         *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
+		 */
+
+
+
+int LocateStickDisSection(void){
+	switch (gSysInfo.currentStickDisSection)
+	{
+	case INIT_SECTION: 
+		gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		break;
+	case 0:
+		if(gStickState.value  < (TH0 - DEBOUNCE)){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	case 1:
+		if((gStickState.value  < (TH1 - DEBOUNCE)) || (gStickState.value > (TH0 + DEBOUNCE))){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	case 2:
+		if((gStickState.value  < (TH2 - DEBOUNCE)) || (gStickState.value > (TH1 + DEBOUNCE))){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	case 3:
+		if((gStickState.value  < (TH3 - DEBOUNCE)) || (gStickState.value > (TH2 + DEBOUNCE))){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	case 4:
+		if((gStickState.value  < (TH4 - DEBOUNCE)) || (gStickState.value > (TH3 + DEBOUNCE))){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	case 5:
+		if((gStickState.value  < (TH5 - DEBOUNCE)) || (gStickState.value > (TH4 + DEBOUNCE))){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	case 6:
+		if((gStickState.value  < (TH6 - DEBOUNCE)) || (gStickState.value > (TH5 + DEBOUNCE))){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	case 7:
+		if(gStickState.value > (TH6 + DEBOUNCE)){
+			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		break;
+	
+	default:
+		break;
+	}
+	return gSysInfo.currentStickDisSection;
 }
 
 

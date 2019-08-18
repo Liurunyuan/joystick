@@ -39,6 +39,19 @@
 #define BIT_30 (0x40000000)
 #define BIT_31 (0x80000000)
 
+enum eSTICK_DIS_SECTION{
+	SECTION0 = 0,
+	SECTION1 = 1,
+	SECTION2 = 2,
+	SECTION3 = 3,
+	SECTION4 = 4,
+	SECTION5 = 5,
+	SECTION6 = 6,
+	SECTION7 = 7,
+	INIT_SECTION 
+};
+
+
 enum CONTROL_STATE_MACHINE{
 	IR_NULL_DIS_AND_NO_FORCE = 0,
 	IR_NULL_DIS_AND_FORWARD_FORCE = 0,
@@ -104,6 +117,7 @@ typedef struct{
 	int16 ddtmax;
 	int16 targetDuty;
 	int controlFuncIndex;
+	int currentStickDisSection;
 }SYSINFO;
 
 
@@ -329,11 +343,22 @@ typedef struct{
 
 /************************joystick displacement state **********************/
 
+#define BASE_ZERO_DIS						(27836)
+
 #define OOR_FORWARD_NULL_DIS_VAL 			(18000)
 #define IR_FORWARD_NULL_DIS_VAL				(20000)
 
 #define OOR_BACKWARD_NULL_DIS_VAL			(35000)
 #define IR_BACKWARD_NULL_DIS_VAL			(33000)
+
+
+#define OOR_FORWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define OOR_FORWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define OOR_BACKWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define OOR_BACKWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define IR_FORKWARD_START_FORCE_DIS_VAL		(0)
+#define OOR_BACKWARD_START_FORCE_DIS_VAL	(0)
+#define IR_BACKWARD_START_FORCE_DIS_VAL		(0)
 
 #define OOR_FORWARD_THRESHOLD_DIS_VAL		(13000)
 #define IR_FORWARD_THRESHOLD_DIS_VAL		(15000)
@@ -346,10 +371,16 @@ typedef void (*UPDATESTATE)(int value);
 typedef struct _STICKSTATE{
 	int NullDistanceForwardState;
 	int NullDistanceBackwardState;
+	int StartForceForwardState;
+	int StartForceBackwardState;
 	int ThresholdForwaredState;
 	int ThresholdBackwardState;
 	UPDATESTATE updateNullDisForwardState;
 	UPDATESTATE updateNullDisBackwardState;
+
+	UPDATESTATE updateStartForceDisBackwardState;
+	UPDATESTATE updateStartForceBackwardState;
+
 	UPDATESTATE updateThresholdDisForwardState;
 	UPDATESTATE updateThresholdDisBackwardState;
 	Uint16 value;
@@ -359,6 +390,12 @@ enum eNullDistancedState{
 	IR_NULL_DIS = 0, 
 	OOR_NULL_DIS = 1,
 	INIT_NULL_DIS
+};
+enum eStartForceDistancedState{
+	IR_START_FORCE_DIS = 0, 
+	OOR_START_FORCE_DIS = 1,
+	INIT_START_FORCE_DIS
+	
 };
 enum eThreasholdDistancedState{
 	IR_THRESHOLD_DIS = 0,
@@ -432,6 +469,7 @@ void Enable_PWMD_BK(void);
 void Disable_PWMD_BK(void);
 void ControleStateMachineSwitch(int value);
 void InitGlobalVarAndFunc(void);
+int LocateStickDisSection(void);
 
 
 #endif
