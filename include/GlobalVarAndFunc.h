@@ -4,6 +4,83 @@
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.2)
 
+
+
+#define BIT_0 (0x00000001)
+#define BIT_1 (0x00000002)
+#define BIT_2 (0x00000004)
+#define BIT_3 (0x00000008)
+#define BIT_4 (0x00000010)
+#define BIT_5 (0x00000020)
+#define BIT_6 (0x00000040)
+#define BIT_7 (0x00000080)
+#define BIT_8 (0x00000100)
+#define BIT_9 (0x00000200)
+#define BIT_10 (0x00000400)
+#define BIT_11 (0x00000800)
+#define BIT_12 (0x00001000)
+#define BIT_13 (0x00002000)
+#define BIT_14 (0x00004000)
+#define BIT_15 (0x00008000)
+#define BIT_16 (0x00010000)
+#define BIT_17 (0x00020000)
+#define BIT_18 (0x00040000)
+#define BIT_19 (0x00080000)
+#define BIT_20 (0x00100000)
+#define BIT_21 (0x00200000)
+#define BIT_22 (0x00400000)
+#define BIT_23 (0x00800000)
+#define BIT_24 (0x01000000)
+#define BIT_25 (0x02000000)
+#define BIT_26 (0x04000000)
+#define BIT_27 (0x08000000)
+#define BIT_28 (0x10000000)
+#define BIT_29 (0x20000000)
+#define BIT_30 (0x40000000)
+#define BIT_31 (0x80000000)
+
+enum eSTICK_DIS_SECTION{
+	SECTION0 = 0,
+	SECTION1 = 1,
+	SECTION2 = 2,
+	SECTION3 = 3,
+	SECTION4 = 4,
+	SECTION5 = 5,
+	SECTION6 = 6,
+	SECTION7 = 7,
+	INIT_SECTION 
+};
+
+
+enum CONTROL_STATE_MACHINE{
+	IR_NULL_DIS_AND_NO_FORCE = 0,
+	IR_NULL_DIS_AND_FORWARD_FORCE = 0,
+	OOR_NULL_DIS_AND_NO_FORCE = 0,
+	THREE = 3,
+	FOUR = 4,
+	FIVE = 5,
+	SIX = 6,
+	SEVEN = 7,
+	EGIGHT = 8,
+	NINE = 9,
+	TEN = 10,
+	ELVENEN = 11,
+	TWELVE = 12,
+	THRITEEN = 13,
+	FOURTEEN = 14,
+	FIFTEEN = 15,
+	SIXTEEN = 16,
+	SEVENTEEN = 17,
+	EIGHTTEEN = 18,
+	NINETEEN = 19,
+	TWENTY = 20,
+	TWENTY_ONE = 21,
+	TEWENTY_TWO = 22,
+	END
+};
+
+
+
 typedef Uint16 bool;
 
 typedef struct{
@@ -35,6 +112,12 @@ typedef struct{
 	Uint16 lastTimeHalllPosition;
 	Uint16 sdoStatus;
 	int16 duty;
+	int16 currentDuty;
+	int16 dutyAddInterval;
+	int16 ddtmax;
+	int16 targetDuty;
+	int controlFuncIndex;
+	int currentStickDisSection;
 }SYSINFO;
 
 
@@ -252,11 +335,100 @@ typedef struct{
 }FORCE_DISPLACE_CURVE;
 
 typedef struct{
-    int64 displace;
-    int64 force;
+    Uint16 displace;
+    Uint16 force;
 }ANOLOG16BIT;
 
 
+
+/************************joystick displacement state **********************/
+
+#define BASE_ZERO_DIS						(27836)
+
+#define OOR_FORWARD_NULL_DIS_VAL 			(18000)
+#define IR_FORWARD_NULL_DIS_VAL				(20000)
+
+#define OOR_BACKWARD_NULL_DIS_VAL			(35000)
+#define IR_BACKWARD_NULL_DIS_VAL			(33000)
+
+
+#define OOR_FORWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define OOR_FORWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define OOR_BACKWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define OOR_BACKWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
+#define IR_FORKWARD_START_FORCE_DIS_VAL		(0)
+#define OOR_BACKWARD_START_FORCE_DIS_VAL	(0)
+#define IR_BACKWARD_START_FORCE_DIS_VAL		(0)
+
+#define OOR_FORWARD_THRESHOLD_DIS_VAL		(13000)
+#define IR_FORWARD_THRESHOLD_DIS_VAL		(15000)
+
+#define OOR_BACKWARD_THRESHOLD_DIS_VAL		(42000)
+#define IR_BACKWARD_THRESHOLD_DIS_VAL		(40000)
+
+typedef void (*UPDATESTATE)(int value);
+
+typedef struct _STICKSTATE{
+	int NullDistanceForwardState;
+	int NullDistanceBackwardState;
+	int StartForceForwardState;
+	int StartForceBackwardState;
+	int ThresholdForwaredState;
+	int ThresholdBackwardState;
+	UPDATESTATE updateNullDisForwardState;
+	UPDATESTATE updateNullDisBackwardState;
+
+	UPDATESTATE updateStartForceDisBackwardState;
+	UPDATESTATE updateStartForceBackwardState;
+
+	UPDATESTATE updateThresholdDisForwardState;
+	UPDATESTATE updateThresholdDisBackwardState;
+	Uint16 value;
+}STICKSTATE;
+
+enum eNullDistancedState{
+	IR_NULL_DIS = 0, 
+	OOR_NULL_DIS = 1,
+	INIT_NULL_DIS
+};
+enum eStartForceDistancedState{
+	IR_START_FORCE_DIS = 0, 
+	OOR_START_FORCE_DIS = 1,
+	INIT_START_FORCE_DIS
+	
+};
+enum eThreasholdDistancedState{
+	IR_THRESHOLD_DIS = 0,
+	OOR_THRESHOLD_DIS = 1,
+	INIT_THRESHOLD_DIS
+};
+
+/***********************Force state*******************************/
+
+#define FORWARD_FORCE_VALUE (30587.0)
+#define BACKWARD_FORCE_VALUE (30787.0)
+
+#define FOWARD_START_FORCE (1500)
+#define BACKWARD_START_FORCE (60000)
+
+typedef struct _EXTFORCESTATE
+{
+	int ForceState;
+	UPDATESTATE updateForceState;
+	Uint16 value;
+}EXTFORCESTATE;
+
+enum eForceState{
+	NO_FORCE = 0,
+	BACKWARD_FORCE = 1,
+	FORWARD_FORCE = 2,
+	INIT_FORCE
+};
+
+
+/*****************************************************************/
+extern STICKSTATE gStickState;
+extern EXTFORCESTATE gExternalForceState;
 
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
@@ -272,6 +444,18 @@ extern ANOLOG16BIT gAnalog16bit;
 
 extern int gforwardOverLimit;
 extern int gbackwardOverLimit;
+extern int gforwardForce;
+extern int gbackwardForce;
+extern int gNoExternalForce;
+
+extern Uint32 gSysStateMachineNumber;
+
+
+
+
+extern int gCheckStartForceForwardMargin;
+extern int gCheckStartForceBackwardMargin;
+
 
 
 void InitSysState(void);
@@ -286,6 +470,9 @@ void StateMachine(void);
 void ClearFault(void);
 void Enable_PWMD_BK(void);
 void Disable_PWMD_BK(void);
+void ControleStateMachineSwitch(int value);
+void InitGlobalVarAndFunc(void);
+int LocateStickDisSection(void);
 
 
 #endif

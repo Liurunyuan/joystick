@@ -18,6 +18,7 @@
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
 #include "GlobalVarAndFunc.h"
+#include "PID.h"
 
 Uint16 currentRefCollect[100] = {0};
 Uint16 voltageRefCollect[100] = {0};
@@ -275,6 +276,7 @@ void InitGlobalVar(void){
 	InitConfigParameter();
 	InitgRx422TxVar();
 	InitgRx422TxEnableFlag();
+	InitGlobalVarAndFunc();
 	gKeyValue.displacement = 10;
 	gKeyValue.lock = 0;
 }

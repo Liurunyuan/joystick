@@ -7,11 +7,58 @@
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
 #include "Filter_Alg.h"
+#include "ADprocessor.h"
 #include <stdio.h>
 
 #define N (300)
 #define RS422STATUSCHECK (1000)
 
+int checkForceDirection(){
+            if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value > 32810){
+                gforwardForce = 0;
+                gbackwardForce = 1;
+                gNoExternalForce = 0;
+                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32810;
+            }
+            else if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value < 32707){
+                gforwardForce = 1;
+                gbackwardForce = 0;
+                gNoExternalForce = 0;
+                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32707;
+            }
+            else{
+                gforwardForce = 0;
+                gbackwardForce = 0;
+                gNoExternalForce = 1;
+                return 0;
+            }
+}
+
+void ForceCloseLoop(double forceKp){
+    int forceCloseLoopPWM;
+
+    forceCloseLoopPWM = forceKp * checkForceDirection();
+    if(gNoExternalForce == 1){
+        gSysInfo.currentDuty = 0;
+    }
+    else if(gforwardForce == 1){
+        gSysInfo.currentDuty = forceCloseLoopPWM;
+    }
+    else if(gbackwardForce == 1){
+        gSysInfo.currentDuty = forceCloseLoopPWM;
+
+    }
+    else{
+
+    }
+    if (gSysInfo.currentDuty > 750) {
+        gSysInfo.currentDuty = 750;
+    }
+    else if (gSysInfo.currentDuty < -750) {
+        gSysInfo.currentDuty = -750;
+    }
+    gSysInfo.duty = gSysInfo.currentDuty;
+}
 
 
 /***************************************************************
@@ -36,8 +83,56 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
+
+        /*type may need to conversion here */
+        gStickState.value = gKeyValue.displacement;
+        //gStickState.updateNullDisBackwardState(0);
+        //gStickState.updateNullDisForwardState(0);
+        //gStickState.updateThresholdDisBackwardState(0);
+        //gStickState.updateThresholdDisForwardState(0);
+
+        gExternalForceState.value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
+        gExternalForceState.updateForceState(0);
+        /******************************
+         * 
+         * 40000                                                     30000                                                       10000
+         *  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
+         *  |                                                          |
+         *  |Threshold|         ODE     | StartForce   | Null          | Null          | StartForce    |    ODE         |Threshold|
+         *  |---------|-----------------|--------------|---------------|---------------|---------------|----------------|---------|
+         *  |--bit0---|-------bit1------|--bit2--------|----bit3-------|------bit4-----|-----bit5------|-----bit6-------|---bit7--|
+         * 
+         * 1:OOR    0:IR
+         * 
+         * I want to delete the external force state in the bit0 adn bit1.
+         * just use the controlfuncindex to record the displacement state.
+         * Foward state:
+         * Use bit0 to indicate if the displacement is out of range of Threshold section
+         * Use bit1 to indicate if the displacement is out of range of ODE section
+         * Use bit2 to indicate if the displacement is out of range of StartForce section 
+         * Use bit3 to indicate if the displacement is out of range of Null section
+         * 
+         * we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
+         */
+
+        //gSysInfo.controlFuncIndex |= gExternalForceState.ForceState;
+        //gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState || gStickState.NullDistanceBackwardState) << 2; 
+        //gSysInfo.controlFuncIndex |= (gStickState.ThresholdForwaredState || gStickState.ThresholdForwaredState) << 3; 
+        gSysInfo.controlFuncIndex = LocateStickDisSection();
+
+        ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
+
+        if(gSysInfo.controlFuncIndex == SECTION0
+        || gSysInfo.controlFuncIndex == SECTION7){
+            gSysState.warning.bit.a = 1;
+        }
+        else{
+            gSysState.warning.bit.a = 0;
+        }
+
 		clearSum();
 		gKeyValue.lock = 0;
+        gSysInfo.controlFuncIndex = 0;
 	}
 }
 /**************************************************************
