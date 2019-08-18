@@ -18,9 +18,9 @@ Uint16 real3 = 0;
 void UpdateKeyValue(void) {
 
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
-	gKeyValue.displacement = funcParaDisplacement.a * 100 + funcParaDisplacement.b * 10 + funcParaDisplacement.c;
+	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
 
-	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 10 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
+	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.5 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
 	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
 	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
 }
@@ -111,7 +111,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*DIS_DIMENSION_K+DIS_DIMENSION_B), count);
 	++count;
 
 	if(count >= DATA_AMOUNT){

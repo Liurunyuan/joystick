@@ -4,6 +4,8 @@
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.2)
 
+#define DIS_DIMENSION_K (0.0007527)
+#define DIS_DIMENSION_B (-7.813)
 
 
 #define BIT_0 (0x00000001)

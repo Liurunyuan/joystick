@@ -17,7 +17,7 @@ RS422TXQUE gRS422TxQue = {0};
 
 
 void GetTorqueCurve(int a, int b, int c){
-	gRx422TxVar[0].value = 500;
+	gRx422TxVar[0].value = gKeyValue.motorSpeed;
 }
 void GetMotorSpeedCurve(int a, int b, int c){
 	//gRx422TxVar[1].value = (int)real2;
@@ -26,7 +26,8 @@ void GetMotorSpeedCurve(int a, int b, int c){
 }
 void GetDisplacementCurve(int a, int b, int c){
 	//gRx422TxVar[2].value = (int)(gKeyValue.displacement);
-    gRx422TxVar[2].value = (gSysInfo.duty)*50;
+//    gRx422TxVar[2].value = (gSysInfo.duty)*50;
+    gRx422TxVar[2].value = (int16)(gKeyValue.motorSpeed*1000);
 }
 void GetMotorCurrentCurve(int a, int b, int c){
 	gRx422TxVar[3].value = gSysMonitorVar.anolog.single.var[BusCurrentA].value;
