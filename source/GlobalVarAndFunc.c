@@ -740,13 +740,13 @@ int FindDisplacement(int a){
          *  |--bit0---|-------bit1------|--bit2--------|----bit3-------|------bit4-----|-----bit5------|-----bit6-------|---bit7--|
          *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 		 */
-#define  TH0 (40000)
+#define  TH0 (50000)
 #define  TH1 (35000)
 #define  TH2 (30000)
 #define  TH3 (25000)
 #define  TH4 (20000)
 #define  TH5 (15000)
-#define  TH6 (10000)
+#define  TH6 (11000)
 
 
 #define  DEBOUNCE (100)
@@ -773,8 +773,11 @@ int CheckStickSetion(int val){
 	else if(val >= TH6){
 		return 6;
 	}
-	else{
+	else if(val < TH6){
 		return 7;
+	}
+	else{
+		return 8;
 	}
 }
          /* 40000                                                     30000                                                       10000
