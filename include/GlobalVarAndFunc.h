@@ -405,8 +405,11 @@ enum eThreasholdDistancedState{
 
 /***********************Force state*******************************/
 
-#define FORWARD_FORCE_VALUE (30587)
-#define BACKWARD_FORCE_VALUE (30787) 
+#define FORWARD_FORCE_VALUE (30587.0)
+#define BACKWARD_FORCE_VALUE (30787.0)
+
+#define FOWARD_START_FORCE (1500)
+#define BACKWARD_START_FORCE (60000)
 
 typedef struct _EXTFORCESTATE
 {

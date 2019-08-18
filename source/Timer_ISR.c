@@ -93,14 +93,6 @@ void Timer0_ISR_Thread(void){
 
         gExternalForceState.value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
         gExternalForceState.updateForceState(0);
-
-        //if(gStickState.ThresholdBackwardState == OOR_BACKWARD_THRESHOLD_DIS_VAL
-        //|| gStickState.ThresholdForwaredState == OOR_FORWARD_THRESHOLD_DIS_VAL){
-         //   gSysState.warning.bit.a = 1;
-        //}
-        //else{
-         //   gSysState.warning.bit.a = 0;
-        //}
         /******************************
          * 
          * 40000                                                     30000                                                       10000
@@ -129,6 +121,14 @@ void Timer0_ISR_Thread(void){
         gSysInfo.controlFuncIndex = LocateStickDisSection();
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
+
+        if(gSysInfo.controlFuncIndex == SECTION0
+        || gSysInfo.controlFuncIndex == SECTION7){
+            gSysState.warning.bit.a = 1;
+        }
+        else{
+            gSysState.warning.bit.a = 0;
+        }
 
 		clearSum();
 		gKeyValue.lock = 0;
