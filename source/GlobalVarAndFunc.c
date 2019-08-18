@@ -146,11 +146,11 @@ const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
 };
 
 void ControleStateMachineSwitch(int value){
-	int mapValue = controlIndexFuncMap[value];
+	//int mapValue = controlIndexFuncMap[value];
 
-	if(mapValue < (sizeof(controlStateMahchineInterface) / sizeof(controlStateMahchineInterface[0]))){
-		if(controlStateMahchineInterface[mapValue]){
-			controlStateMahchineInterface[mapValue](0, 0);
+	if(value < (sizeof(controlStateMahchineInterface) / sizeof(controlStateMahchineInterface[0]))){
+		if(controlStateMahchineInterface[value]){
+			controlStateMahchineInterface[value](0, 0);
 		}
 	}
 	else{
