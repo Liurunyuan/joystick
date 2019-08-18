@@ -6,6 +6,7 @@
 #include "Filter_Alg.h"
 #include "SPIprocess.h"
 #include "GlobalVarAndFunc.h"
+#include "PID.h"
 
 
 FeedbackVarBuf feedbackVarBuf;
@@ -22,6 +23,24 @@ void UpdateKeyValue(void) {
 	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 10 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
 	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
 	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+}
+void TargetDutyGradualChange(int targetduty){
+	// static int count = 0;
+
+	//++count;
+	// if(count < gSysInfo.dutyAddInterval){
+	// 	return;
+	// }
+	// count = 0;
+
+	// if(gSysInfo.currentDuty > targetduty){
+	// 	gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
+	// }
+	// else if(gSysInfo.currentDuty < targetduty){
+	// 	gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
+	// }
+	//gSysInfo.duty = gSysInfo.currentDuty;
+	gSysInfo.duty = targetduty; 
 }
 
 /*
@@ -92,7 +111,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.single.var[ForceValue_16bit].value, gSysMonitorVar.anolog.single.var[DisplacementValue_16bit].value, count);
+	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value, count);
 	++count;
 
 	if(count >= DATA_AMOUNT){
@@ -610,19 +629,21 @@ inline void Check_C_X_Current(){
 int checkDisplaceValidation(){
     if(gSysInfo.duty > 0){
         if(gforwardOverLimit == 1){
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
+            if(gKeyValue.displacement > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
                 return 1;
             }
             else{
+                gCheckStartForceForwardMargin = 1;
                 gforwardOverLimit = 1;
                 return 0;
             }
         }
         else{
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
+            if(gKeyValue.displacement > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
                 return 1;
             }
             else{
+                gCheckStartForceForwardMargin = 1;
                 gforwardOverLimit = 1;
                 return 0;
             }
@@ -630,19 +651,21 @@ int checkDisplaceValidation(){
     }
     else if(gSysInfo.duty < 0){
         if(gbackwardOverLimit == 1){
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
+            if(gKeyValue.displacement < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
                 return 1;
             }
             else{
+                gCheckStartForceBackwardMargin = 1;
                 gbackwardOverLimit = 1;
                 return 0;
             }
         }
         else{
-            if(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
+            if(gKeyValue.displacement < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
                 return 1;
             }
             else{
+                gCheckStartForceBackwardMargin = 1;
                 gbackwardOverLimit = 1;
                 return 0;
             }
@@ -651,6 +674,11 @@ int checkDisplaceValidation(){
     else{
         return 1;
     }
+}
+
+int checkStartForceMargin(){
+//    if(gKeyValue.displacement )
+    return 0;
 }
 
 /**************************************************************
@@ -689,10 +717,9 @@ void Pwm_ISR_Thread(void)
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = gAnalog16bit.force;
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
-	if((gConfigPara.stateCommand == 1) && checkDisplaceValidation()){
+	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
+		TargetDutyGradualChange(gSysInfo.targetDuty);
 		SwitchDirection();
-		gforwardOverLimit = 0;
-		gbackwardOverLimit = 0;
 	}
 	else{
 		DisablePwmOutput();
