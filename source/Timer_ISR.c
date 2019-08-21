@@ -9,6 +9,7 @@
 #include "Filter_Alg.h"
 #include "ADprocessor.h"
 #include <stdio.h>
+#include <math.h>
 
 #define N (300)
 #define RS422STATUSCHECK (1000)
@@ -69,6 +70,9 @@ void ForceCloseLoop(double forceKp){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+double force_Joystick;
+double cos_value;
+double angle;
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
@@ -90,8 +94,12 @@ void Timer0_ISR_Thread(void){
         //gStickState.updateNullDisForwardState(0);
         //gStickState.updateThresholdDisBackwardState(0);
         //gStickState.updateThresholdDisForwardState(0);
+        angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
+        cos_value = cos(angle*PI/180.0);
+        force_Joystick = ((gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * FORCE_DIMENSION_K + FORCE_DIMENSION_B)*(0.045/0.14))/cos_value;
+        //gExternalForceState.value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
 
-        gExternalForceState.value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
+        gExternalForceState.value = force_Joystick;
         gExternalForceState.updateForceState(0);
         /******************************
          * 

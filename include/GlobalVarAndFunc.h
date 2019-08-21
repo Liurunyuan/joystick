@@ -6,6 +6,9 @@
 
 #define DIS_DIMENSION_K (0.0007527)
 #define DIS_DIMENSION_B (-7.813)
+#define FORCE_DIMENSION_K (0.014027)
+#define FORCE_DIMENSION_B (-459.6276)
+#define PI (3.14149265)
 
 
 #define BIT_0 (0x00000001)
@@ -385,7 +388,8 @@ typedef struct _STICKSTATE{
 
 	UPDATESTATE updateThresholdDisForwardState;
 	UPDATESTATE updateThresholdDisBackwardState;
-	Uint16 value;
+	//Uint16 value;
+	double value;
 }STICKSTATE;
 
 enum eNullDistancedState{
@@ -407,17 +411,18 @@ enum eThreasholdDistancedState{
 
 /***********************Force state*******************************/
 
-#define FORWARD_FORCE_VALUE (30587.0)
-#define BACKWARD_FORCE_VALUE (30787.0)
+#define FORWARD_FORCE_VALUE (-0.5)
+#define BACKWARD_FORCE_VALUE (0.5)
 
-#define FOWARD_START_FORCE (1500)
-#define BACKWARD_START_FORCE (60000)
+#define FOWARD_START_FORCE (-50)
+#define BACKWARD_START_FORCE (50)
 
 typedef struct _EXTFORCESTATE
 {
 	int ForceState;
 	UPDATESTATE updateForceState;
-	Uint16 value;
+	//Uint16 value;
+	double value;
 }EXTFORCESTATE;
 
 enum eForceState{

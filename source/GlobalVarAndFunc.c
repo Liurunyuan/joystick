@@ -6,15 +6,23 @@
 #include "PWM_ISR.h"
 
 
-#define  TH0 (50000.0)
-#define  TH1 (27500.0)
-#define  TH2 (27000.0)
-#define  TH3 (25000.0)
-#define  TH4 (23000.0)
-#define  TH5 (22500.0)
-#define  TH6 (11000.0)
+//#define  TH0 (50000.0)
+//#define  TH1 (27500.0)
+//#define  TH2 (27000.0)
+//#define  TH3 (25000.0)
+//#define  TH4 (23000.0)
+//#define  TH5 (22500.0)
+//#define  TH6 (11000.0)
 
-#define  DEBOUNCE (100)
+#define  TH0 (31.0)
+#define  TH1 (19.0)
+#define  TH2 (18.0)
+#define  TH3 (16.0)
+#define  TH4 (14.0)
+#define  TH5 (13.0)
+#define  TH6 (1.0)
+
+#define  DEBOUNCE (0.3)
 
 Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
@@ -68,7 +76,7 @@ void IRNullDisAndForwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is forward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 0.0085);
+	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 10);
 	gSysInfo.targetDuty = tmp; 
 }
 
@@ -76,7 +84,7 @@ void IRNullDisAndBackwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is backward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 0.0085);
+	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 10);
 	gSysInfo.targetDuty = tmp; 
 }
 
@@ -121,7 +129,7 @@ void IRStartForceSecAndNoForce_sec2(int a,  int b){
     /*stick is in the range of the null displacement and no external force on the it */
     /*so decide what we should do */
     int32 tmp;
-    tmp = (int32)((TH2 - gStickState.value)* 0.085);
+    tmp = (int32)((TH2 - gStickState.value)* 85);
     tmp = -tmp;
     gSysInfo.targetDuty = tmp;
 
@@ -131,7 +139,7 @@ void IRStartForceSecAndNoForce_sec5(int a,  int b){
     /*stick is in the range of the null displacement and no external force on the it */
     /*so decide what we should do */
     int32 tmp;
-    tmp = (int32)((TH4 - gStickState.value)* 0.085);
+    tmp = (int32)((TH4 - gStickState.value)* 85);
     tmp = -tmp;
     gSysInfo.targetDuty = tmp;
 
@@ -145,7 +153,7 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
         IRNullDisAndForwardForce(0,0);
     }
     else{
-        tmp = (int32)((TH4 - gStickState.value)* 0.085);
+        tmp = (int32)((TH4 - gStickState.value)* 85);
         tmp = -tmp;
         gSysInfo.targetDuty = tmp;
     }
@@ -159,7 +167,7 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
         IRNullDisAndBackwardForce(0,0);
     }
     else{
-        tmp = (int32)((TH2 - gStickState.value)* 0.085);
+        tmp = (int32)((TH2 - gStickState.value)* 85);
         tmp = -tmp;
         gSysInfo.targetDuty = tmp;
     }
@@ -906,7 +914,7 @@ int FindDisplacement(int a){
          *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 		 */
 
-int CheckStickSetion(Uint16 val){
+int CheckStickSetion(double val){
 	if(val >= TH0){
 		return 0;
 	}

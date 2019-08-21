@@ -103,8 +103,8 @@ void EnablePwm3(void){
  *Author:					Simon
  *Date:						2018.10.28
  **************************************************************/
-
 void CalForceSpeedAccel(void) {
+
 
 	static int count = 0;
 
