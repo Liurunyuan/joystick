@@ -4,25 +4,17 @@
 #include "GlobalVarAndFunc.h"
 #include <string.h>
 #include "PWM_ISR.h"
+#include "PID.h"
 
+//#define  TH0 (-18.0)
+//#define  TH1 (-4.0)
+//#define  TH2 (-3.0)
+//#define  TH3 (0.0)
+//#define  TH4 (2.0)
+//#define  TH5 (3.0)
+//#define  TH6 (10.0)
 
-//#define  TH0 (50000.0)
-//#define  TH1 (27500.0)
-//#define  TH2 (27000.0)
-//#define  TH3 (25000.0)
-//#define  TH4 (23000.0)
-//#define  TH5 (22500.0)
-//#define  TH6 (11000.0)
-
-#define  TH0 (31.0)
-#define  TH1 (19.0)
-#define  TH2 (18.0)
-#define  TH3 (16.0)
-#define  TH4 (14.0)
-#define  TH5 (13.0)
-#define  TH6 (1.0)
-
-#define  DEBOUNCE (0.3)
+#define  DEBOUNCE (0.15)
 
 Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
@@ -60,6 +52,14 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
+	gSysInfo.TH0 = -18.0;
+	gSysInfo.TH1 = -15.0;
+	gSysInfo.TH2 = -10.0;
+	gSysInfo.TH3 = 0.0;
+	gSysInfo.TH4 = 8.0;
+	gSysInfo.TH5 = 9.0;
+	gSysInfo.TH6 = 10.0;
+	gSysInfo.Ki_Threshold = 100;
 
 	InitSysState();
 	InitStickState();
@@ -76,7 +76,7 @@ void IRNullDisAndForwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is forward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 10);
+	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 500);
 	gSysInfo.targetDuty = tmp; 
 }
 
@@ -84,7 +84,7 @@ void IRNullDisAndBackwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is backward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 10);
+	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 500);
 	gSysInfo.targetDuty = tmp; 
 }
 
@@ -117,20 +117,14 @@ void OORThresholdDis(int a, int b){
 *  |--bit0---|-------bit1------|--bit2--------|----bit3-------|------bit4-----|-----bit5------|-----bit6-------|---bit7--|
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 */
-//#define  TH0 (50000)
-//#define  TH1 (35000)
-//#define  TH2 (30000)
-//#define  TH3 (25000)
-//#define  TH4 (20000)
-//#define  TH5 (15000)
-//#define  TH6 (11000)
 
 void IRStartForceSecAndNoForce_sec2(int a,  int b){
     /*stick is in the range of the null displacement and no external force on the it */
     /*so decide what we should do */
     int32 tmp;
-    tmp = (int32)((TH2 - gStickState.value)* 85);
-    tmp = -tmp;
+    tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
+    //tmp = (int32)(displace_PidOutput(gSysInfo.TH2, gStickState.value));
+    //tmp = -tmp;
     gSysInfo.targetDuty = tmp;
 
 }
@@ -139,8 +133,9 @@ void IRStartForceSecAndNoForce_sec5(int a,  int b){
     /*stick is in the range of the null displacement and no external force on the it */
     /*so decide what we should do */
     int32 tmp;
-    tmp = (int32)((TH4 - gStickState.value)* 85);
-    tmp = -tmp;
+    tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
+    //tmp = (int32)(displace_PidOutput(gSysInfo.TH4, gStickState.value));
+    //tmp = -tmp;
     gSysInfo.targetDuty = tmp;
 
 }
@@ -153,8 +148,9 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
         IRNullDisAndForwardForce(0,0);
     }
     else{
-        tmp = (int32)((TH4 - gStickState.value)* 85);
-        tmp = -tmp;
+        //tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
+        tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
+        //tmp = -tmp;
         gSysInfo.targetDuty = tmp;
     }
 }
@@ -167,8 +163,9 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
         IRNullDisAndBackwardForce(0,0);
     }
     else{
-        tmp = (int32)((TH2 - gStickState.value)* 85);
-        tmp = -tmp;
+        tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
+        //tmp = (int32)(displace_PidOutput(gSysInfo.TH2, gStickState.value));
+        //tmp = -tmp;
         gSysInfo.targetDuty = tmp;
     }
 }
@@ -195,6 +192,7 @@ const int controlIndexFuncMap[] = {
 void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+    //gSysInfo.sek = 0;
     gSysInfo.targetDuty = 0;
 
 }
@@ -202,6 +200,7 @@ void sec0_threshold_rear(int a, int b){
 void sec1_ODE_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+    //gSysInfo.sek = 0;
     gSysInfo.targetDuty = 0;
 
 }
@@ -209,6 +208,7 @@ void sec1_ODE_rear(int a, int b){
 void sec2_StartForce_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+    //gSysInfo.sek = 0;
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
@@ -232,6 +232,7 @@ void sec2_StartForce_rear(int a, int b){
 void sec3_Null_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+   // gSysInfo.sek = 0;
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
@@ -254,6 +255,7 @@ void sec3_Null_rear(int a, int b){
 void sec4_Null_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+    //gSysInfo.sek = 0;
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
@@ -275,6 +277,7 @@ void sec4_Null_front(int a, int b){
 void sec5_StartForce_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+    //gSysInfo.sek = 0;
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
@@ -297,12 +300,14 @@ void sec5_StartForce_front(int a, int b){
 void sec6_ODE_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+    //gSysInfo.sek = 0;
     gSysInfo.targetDuty = 0;
 
 }
 void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
+    //gSysInfo.sek = 0;
     gSysInfo.targetDuty = 0;
 
 }
@@ -576,6 +581,9 @@ void InitStickState(void){
 
 	gExternalForceState.ForceState = INIT_FORCE;
 	gExternalForceState.updateForceState = checkExternalForce;
+
+	gStickState.value = 0;
+	gExternalForceState.value = 0;
 
 	gSysStateMachineNumber = 0;
 
@@ -915,28 +923,28 @@ int FindDisplacement(int a){
 		 */
 
 int CheckStickSetion(double val){
-	if(val >= TH0){
+	if(val <= gSysInfo.TH0){
 		return 0;
 	}
-	else if(val >= TH1){
+	else if(val <= gSysInfo.TH1){
 		return 1;
 	}
-	else if(val >= TH2){
+	else if(val <= gSysInfo.TH2){
 		return 2;
 	}
-	else if(val >= TH3){
+	else if(val <= gSysInfo.TH3){
 		return 3;
 	}
-	else if(val >= TH4){
+	else if(val <= gSysInfo.TH4){
 		return 4;
 	}
-	else if(val >= TH5){
+	else if(val <= gSysInfo.TH5){
 		return 5;
 	}
-	else if(val >= TH6){
+	else if(val <= gSysInfo.TH6){
 		return 6;
 	}
-	else if(val < TH6){
+	else if(val > gSysInfo.TH6){
 		return 7;
 	}
 	else{
@@ -961,43 +969,49 @@ int LocateStickDisSection(void){
 		gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		break;
 	case 0:
-		if(gStickState.value  < (TH0 - DEBOUNCE)){
+		if(gStickState.value  < (gSysInfo.TH0 - DEBOUNCE)){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		else{
+		    gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 1:
-		if((gStickState.value  < (TH1 - DEBOUNCE)) || (gStickState.value > (TH0 + DEBOUNCE))){
+		if((gStickState.value  < (gSysInfo.TH1 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH0 + DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 2:
-		if((gStickState.value  < (TH2 - DEBOUNCE)) || (gStickState.value > (TH1 + DEBOUNCE))){
+		if((gStickState.value  < (gSysInfo.TH2 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH1 + DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 3:
-		if((gStickState.value  < (TH3 - DEBOUNCE)) || (gStickState.value > (TH2 + DEBOUNCE))){
+		if((gStickState.value  < (gSysInfo.TH3 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH2 + DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 4:
-		if((gStickState.value  < (TH4 - DEBOUNCE)) || (gStickState.value > (TH3 + DEBOUNCE))){
+		if((gStickState.value  < (gSysInfo.TH4 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH3 + DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 5:
-		if((gStickState.value  < (TH5 - DEBOUNCE)) || (gStickState.value > (TH4 + DEBOUNCE))){
+		if((gStickState.value  < (gSysInfo.TH5 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH4 + DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 6:
-		if((gStickState.value  < (TH6 - DEBOUNCE)) || (gStickState.value > (TH5 + DEBOUNCE))){
+		if((gStickState.value  < (gSysInfo.TH6 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH5 + DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 7:
-		if(gStickState.value > (TH6 + DEBOUNCE)){
+		if(gStickState.value > (gSysInfo.TH6 + DEBOUNCE)){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+		}
+		else{
+		    gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	

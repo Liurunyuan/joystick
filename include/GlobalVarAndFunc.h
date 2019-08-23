@@ -4,8 +4,8 @@
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.2)
 
-#define DIS_DIMENSION_K (0.0007527)
-#define DIS_DIMENSION_B (-7.813)
+#define DIS_DIMENSION_K (-0.0007527)
+#define DIS_DIMENSION_B (19.813)
 #define FORCE_DIMENSION_K (0.014027)
 #define FORCE_DIMENSION_B (-459.6276)
 #define PI (3.14149265)
@@ -123,6 +123,16 @@ typedef struct{
 	int16 targetDuty;
 	int controlFuncIndex;
 	int currentStickDisSection;
+	int64 Ki_Threshold;
+	int64 sek;
+	double TH0;
+	double TH1;
+	double TH2;
+	double TH3;
+	double TH4;
+	double TH5;
+	double TH6;
+	double zeroForce;
 }SYSINFO;
 
 

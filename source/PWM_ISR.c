@@ -691,13 +691,7 @@ int checkStartForceMargin(){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
-	static int count = 0;
-
 	StartGetADBySpi();
-
-	if(count >= 400){
-		count = 0;
-	}
 
 	ReadDigitalValue();
 
@@ -713,6 +707,14 @@ void Pwm_ISR_Thread(void)
 	Check_C_X_Current();
 */
     ReadADBySpi();
+//    if(count < 10){
+//        ++count;
+//        gSysInfo.zeroForce = gAnalog16bit.force;
+//    }
+//    else{
+//
+//    }
+
 
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = gAnalog16bit.force;
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));

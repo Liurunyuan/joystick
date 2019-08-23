@@ -76,7 +76,8 @@ double angle;
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
-
+	static double zero_force_SUM = 0;
+	static int zero_count = 0;
 	++count;
 
 	if(count > N){
@@ -97,9 +98,16 @@ void Timer0_ISR_Thread(void){
         angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
         cos_value = cos(angle*PI/180.0);
         force_Joystick = ((gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * FORCE_DIMENSION_K + FORCE_DIMENSION_B)*(0.045/0.14))/cos_value;
+        if(zero_count < 10){
+            zero_force_SUM = zero_force_SUM + force_Joystick;
+            ++zero_count;
+        }
+        else{
+            gSysInfo.zeroForce = zero_force_SUM/10;
+        }
         //gExternalForceState.value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
 
-        gExternalForceState.value = force_Joystick;
+        gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
         gExternalForceState.updateForceState(0);
         /******************************
          * 
