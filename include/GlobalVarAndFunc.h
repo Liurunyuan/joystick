@@ -384,21 +384,6 @@ typedef struct{
 typedef void (*UPDATESTATE)(int value);
 
 typedef struct _STICKSTATE{
-	int NullDistanceForwardState;
-	int NullDistanceBackwardState;
-	int StartForceForwardState;
-	int StartForceBackwardState;
-	int ThresholdForwaredState;
-	int ThresholdBackwardState;
-	UPDATESTATE updateNullDisForwardState;
-	UPDATESTATE updateNullDisBackwardState;
-
-	UPDATESTATE updateStartForceDisBackwardState;
-	UPDATESTATE updateStartForceBackwardState;
-
-	UPDATESTATE updateThresholdDisForwardState;
-	UPDATESTATE updateThresholdDisBackwardState;
-	//Uint16 value;
 	double value;
 }STICKSTATE;
 
@@ -465,15 +450,8 @@ extern int gforwardForce;
 extern int gbackwardForce;
 extern int gNoExternalForce;
 
-extern Uint32 gSysStateMachineNumber;
-
-
-
-
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
-
-
 
 void InitSysState(void);
 void InitConfigParameter(void);

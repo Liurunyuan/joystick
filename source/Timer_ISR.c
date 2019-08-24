@@ -88,16 +88,13 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
-
         /*type may need to conversion here */
         gStickState.value = gKeyValue.displacement;
-        //gStickState.updateNullDisBackwardState(0);
-        //gStickState.updateNullDisForwardState(0);
-        //gStickState.updateThresholdDisBackwardState(0);
-        //gStickState.updateThresholdDisForwardState(0);
+
         angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
         cos_value = cos(angle*PI/180.0);
         force_Joystick = ((gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * FORCE_DIMENSION_K + FORCE_DIMENSION_B)*(0.045/0.14))/cos_value;
+
         if(zero_count < 10){
             zero_force_SUM = zero_force_SUM + force_Joystick;
             ++zero_count;
@@ -105,7 +102,6 @@ void Timer0_ISR_Thread(void){
         else{
             gSysInfo.zeroForce = zero_force_SUM/10;
         }
-        //gExternalForceState.value = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
 
         gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
         gExternalForceState.updateForceState(0);
