@@ -345,8 +345,6 @@ typedef struct{
 	double b_N[10];
 
 	int maxPoints;
-
-
 }FORCE_DISPLACE_CURVE;
 
 typedef struct{
@@ -354,27 +352,22 @@ typedef struct{
     Uint16 force;
 }ANOLOG16BIT;
 
-
-
+typedef void (*UPDATESTATE)(int value);
 /************************joystick displacement state **********************/
 typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
 /***********************Force state*******************************/
-
 #define FORWARD_FORCE_VALUE (-0.5)
 #define BACKWARD_FORCE_VALUE (0.5)
 
 #define FOWARD_START_FORCE (-50)
 #define BACKWARD_START_FORCE (50)
 
-typedef void (*UPDATESTATE)(int value);
-
 typedef struct _EXTFORCESTATE
 {
-	int ForceState;
+	int ForceState; //eForceState
 	UPDATESTATE updateForceState;
-	//Uint16 value;
 	double value;
 }EXTFORCESTATE;
 
@@ -384,8 +377,6 @@ enum eForceState{
 	FORWARD_FORCE = 2,
 	INIT_FORCE
 };
-
-
 /*****************************************************************/
 extern STICKSTATE gStickState;
 extern EXTFORCESTATE gExternalForceState;

@@ -62,31 +62,18 @@ void Timer0_ISR_Thread(void){
 
         gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
         gExternalForceState.updateForceState(0);
-        /******************************
-         * 
-         * 40000                                                     30000                                                       10000
-         *  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
-         *  |                                                          |
-         *  |Threshold|         ODE     | StartForce   | Null          | Null          | StartForce    |    ODE         |Threshold|
-         *  |---------|-----------------|--------------|---------------|---------------|---------------|----------------|---------|
-         *  |--bit0---|-------bit1------|--bit2--------|----bit3-------|------bit4-----|-----bit5------|-----bit6-------|---bit7--|
-         * 
-         * 1:OOR    0:IR
-         * 
-         * I want to delete the external force state in the bit0 adn bit1.
-         * just use the controlfuncindex to record the displacement state.
-         * Foward state:
-         * Use bit0 to indicate if the displacement is out of range of Threshold section
-         * Use bit1 to indicate if the displacement is out of range of ODE section
-         * Use bit2 to indicate if the displacement is out of range of StartForce section 
-         * Use bit3 to indicate if the displacement is out of range of Null section
-         * 
-         * we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
-         */
-
-        //gSysInfo.controlFuncIndex |= gExternalForceState.ForceState;
-        //gSysInfo.controlFuncIndex |= (gStickState.NullDistanceForwardState || gStickState.NullDistanceBackwardState) << 2; 
-        //gSysInfo.controlFuncIndex |= (gStickState.ThresholdForwaredState || gStickState.ThresholdForwaredState) << 3; 
+/******************************
+* -20mm                                                     0mm                                                      12mm 
+*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
+*  |                                                          |
+*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
+*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
+*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
+*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
+* 
+* 
+* we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
+*/
         gSysInfo.controlFuncIndex = LocateStickDisSection();
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
