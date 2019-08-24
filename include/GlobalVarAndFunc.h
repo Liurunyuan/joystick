@@ -1,6 +1,13 @@
 #ifndef _GLOBAL_VAR_AND_FUNC_H
 #define _GLOBAL_VAR_AND_FUNC_H
 
+
+#define INCLUDE_FEATURE 1
+#define EXCLUDE_FEATURE 0
+
+#define MACHINE_FRICTION INCLUDE_FEATURE
+
+
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.2)
 
@@ -361,8 +368,8 @@ typedef struct _STICKSTATE{
 #define FORWARD_FORCE_VALUE (-0.5)
 #define BACKWARD_FORCE_VALUE (0.5)
 
-#define FOWARD_START_FORCE (-50)
-#define BACKWARD_START_FORCE (50)
+#define FOWARD_START_FORCE (-10)
+#define BACKWARD_START_FORCE (5)
 
 typedef struct _EXTFORCESTATE
 {

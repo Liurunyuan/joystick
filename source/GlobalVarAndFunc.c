@@ -42,9 +42,9 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
-	gSysInfo.TH0 = -18.0;
-	gSysInfo.TH1 = -15.0;
-	gSysInfo.TH2 = -10.0;
+	gSysInfo.TH0 = -9.0;
+	gSysInfo.TH1 = -5.0;
+	gSysInfo.TH2 = -4.0;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 3.0;
 	gSysInfo.TH5 = 4.0;
@@ -147,8 +147,11 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
 		// else{
         // 	tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
 		// }
-
+#if(MACHINE_FRICTION == INCLUDE_FEATURE)
+        tmp = -10;//if duty set to 0, you need 22N to push the stick move 
+#elif
         tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
+#endif
         //tmp = -tmp;
         gSysInfo.targetDuty = tmp;
     }
@@ -162,9 +165,10 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
         IRNullDisAndBackwardForce(0,0);
     }
     else{
-        tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
+        //tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
         //tmp = (int32)(displace_PidOutput(gSysInfo.TH2, gStickState.value));
         //tmp = -tmp;
+		tmp = 10;
         gSysInfo.targetDuty = tmp;
     }
 }
@@ -192,6 +196,7 @@ void sec2_StartForce_rear(int a, int b){
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
+		//gSysInfo.targetDuty = 10; 
         IRStartForceSecAndNoForce_sec2(0,0);
         break;
 
@@ -261,10 +266,12 @@ void sec5_StartForce_front(int a, int b){
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
+        //gSysInfo.targetDuty = -10;
         IRStartForceSecAndNoForce_sec5(0,0);
         break;
 
     case BACKWARD_FORCE:
+        //gSysInfo.targetDuty = -10;
         IRNullDisAndBackwardForce(0,0);
         break;
 
