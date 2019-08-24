@@ -392,8 +392,8 @@ inline void Check_Power28V(){
 void Start_main_loop(void){
 
 	FeedWatchDog();
+
 	StateMachine();
-//	UpdateForceDisplaceCurve();
 
 	Check_Power28V_M();
 
@@ -407,7 +407,6 @@ void Start_main_loop(void){
 
 	ClearRS422RxOverFlow();
 	//TODO need to implement
-
 }
 
 /***************************************************************
@@ -426,6 +425,8 @@ void main(void) {
 	Init_Peripheral();
 
 	InitGlobalVar();
+
+	UpdateForceDisplaceCurve();
 	/*interrupt init*/
 	DisablePwmOutput();
 	SET_DIGIT_SER_LOAD_HIGH;

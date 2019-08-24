@@ -151,15 +151,15 @@ void PidProcess(void){
 	CalculateTargetSpeed();
 	CalculateTargeDisplace();
 
-	RKT(0,gKeyValue.displacement,gKeyValue.motorSpeed,0.1);
+	RKT(0,gKeyValue.displacement,gKeyValue.motorSpeed,0.25);
 
 	UpdateAccErr();
 	UpdateSpeedErr();
 	UpdateDisplacementErr();
 }
 //F - K1 * dy/dt - K2 * y = m * dy2/dt2
-//FÍâ - K×èÄá * dy/dt - Kµ¯ * y = m * dy2/dt2
-//Áîz = dy/dt
+//Fï¿½ï¿½ - Kï¿½ï¿½ï¿½ï¿½ * dy/dt - Kï¿½ï¿½ * y = m * dy2/dt2
+//ï¿½ï¿½z = dy/dt
 //=====>
 double function(double x0, double y0, double z0, double h){
 	double K11;
@@ -172,9 +172,9 @@ double function(double x0, double y0, double z0, double h){
 	double K23;
 	double K24;
 
-	double a = 0;//a = f×èÄá/m
-	double b = 0;//b = fµ¯»É/m
-	double c = 0;//c = -fÍâÁ¦/m
+	double a = 0;//a = fï¿½ï¿½ï¿½ï¿½/m
+	double b = 0;//b = fï¿½ï¿½ï¿½ï¿½/m
+	double c = 0;//c = -fï¿½ï¿½ï¿½ï¿½/m
 
 
 	double y1;
@@ -222,7 +222,7 @@ double function(double x0, double y0, double z0, double h){
  *Input:	   void
  *Output:	   int
  *Author:	   Simon
- *Date:		   2018Äê12ÔÂ18ÈÕÏÂÎç9:05:27
+ *Date:		   2018ï¿½ï¿½12ï¿½ï¿½18ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:05:27
  **************************************************************/
 int RKT(double x, double y, double z, double h){
 	int ret = 0;
@@ -233,7 +233,7 @@ int RKT(double x, double y, double z, double h){
 	double z0 = z;
 	double h0 = h;
 
-	for(i = 0; i < 10; ++i){
+	for(i = 0; i < 1; ++i){
 		function(x0, y0, z0, h0);
 		//TODO update value of y
 		//TODO update value of z

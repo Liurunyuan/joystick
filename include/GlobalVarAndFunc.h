@@ -248,57 +248,57 @@ typedef struct{
 }SYSCURRENTSTATE;
 
 typedef struct{
-	int LF_MaxForce;
-	int LF_Force1;
-	int LF_Force2;
-	int LF_Force3;
-	int LF_Force4;
-	int LF_Force5;
-	int LF_Force6;
-	int LF_Force7;
-	int LF_Force8;
-	int LF_Force9;
+	double LF_MaxForce;
+	double LF_Force1;
+	double LF_Force2;
+	double LF_Force3;
+	double LF_Force4;
+	double LF_Force5;
+	double LF_Force6;
+	double LF_Force7;
+	double LF_Force8;
+	double LF_Force9;
 
 
-	int RB_Force1;
-	int RB_Force2;
-	int RB_Force3;
-	int RB_Force4;
-	int RB_Force5;
-	int RB_Force6;
-	int RB_Force7;
-	int RB_Force8;
-	int RB_Force9;
-	int RB_MaxForce;
+	double RB_Force1;
+	double RB_Force2;
+	double RB_Force3;
+	double RB_Force4;
+	double RB_Force5;
+	double RB_Force6;
+	double RB_Force7;
+	double RB_Force8;
+	double RB_Force9;
+	double RB_MaxForce;
 
-	int LF_MaxDistance;
-	int LF_Distance1;
-	int LF_Distance2;
-	int LF_Distance3;
-	int LF_Distance4;
-	int LF_Distance5;
-	int LF_Distance6;
-	int LF_Distance7;
-	int LF_Distance8;
-	int LF_Distance9;
+	double LF_MaxDistance;
+	double LF_Distance1;
+	double LF_Distance2;
+	double LF_Distance3;
+	double LF_Distance4;
+	double LF_Distance5;
+	double LF_Distance6;
+	double LF_Distance7;
+	double LF_Distance8;
+	double LF_Distance9;
 
 
-	int RB_Distance1;
-	int RB_Distance2;
-	int RB_Distance3;
-	int RB_Distance4;
-	int RB_Distance5;
-	int RB_Distance6;
-	int RB_Distance7;
-	int RB_Distance8;
-	int RB_Distance9;
-	int RB_MaxDistance;
+	double RB_Distance1;
+	double RB_Distance2;
+	double RB_Distance3;
+	double RB_Distance4;
+	double RB_Distance5;
+	double RB_Distance6;
+	double RB_Distance7;
+	double RB_Distance8;
+	double RB_Distance9;
+	double RB_MaxDistance;
 
-	int LF_StartForce;
-	int RB_StartForce;
+	double LF_StartForce;
+	double RB_StartForce;
 
-	int LF_FrontFriction;
-	int LF_RearFriction;
+	double LF_FrontFriction;
+	double LF_RearFriction;
 	int RB_FrontFriction;
 	int RB_RearFriction;
 
@@ -341,10 +341,10 @@ typedef struct{
 
 
 typedef struct{
-	int springForceP[10];
-	int springForceN[10];
-	int displacementP[10];
-	int displacementN[10];
+	double springForceP[10];
+	double springForceN[10];
+	double displacementP[10];
+	double displacementN[10];
 
 	double K_spring_forceP[10];
 	double b_P[10];
@@ -368,7 +368,7 @@ typedef struct _STICKSTATE{
 #define FORWARD_FORCE_VALUE (-0.5)
 #define BACKWARD_FORCE_VALUE (0.5)
 
-#define FOWARD_START_FORCE (-10)
+#define FOWARD_START_FORCE (-5)
 #define BACKWARD_START_FORCE (5)
 
 typedef struct _EXTFORCESTATE
