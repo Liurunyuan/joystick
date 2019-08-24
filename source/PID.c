@@ -10,6 +10,7 @@ volatile int gTargetSpeed = 500;
 void InitPidVar(void){
 //  gPidPara.kp = 450;
 //  gPidPara.ki = 500;
+    //gPidPara.kp_displace = 100;
     gPidPara.kp_displace = 100;
     gPidPara.ki_displace = 0;
     gPidPara.kd_displace = 0;
@@ -26,9 +27,9 @@ void InitPidVar(void){
 
 int32 displace_PidOutput(double targetVal, double controlVar){
     int32 pidOutput = 0;
-//    double ek1;
+    double ek1;
 
-//    ek1 = (targetVal - controlVar);
+    ek1 = (targetVal - controlVar);
 //    if((ek1 > -gSysInfo.Ki_Threshold) && (ek1 < gSysInfo.Ki_Threshold))
 //    {
 //        if(((ek1 > 0) && (gSysInfo.sek < 1171)) || ((ek1 < 0) && (gSysInfo.sek > -1171)))
@@ -40,10 +41,9 @@ int32 displace_PidOutput(double targetVal, double controlVar){
 //    {
 //        gSysInfo.sek = 0;
 //    }
-//    pidOutput = (int16)(ek1 * gPidPara.kp_displace) + (int16)(((gSysInfo.sek >> 8) * gPidPara.ki_displace) >> 11);
-//    pidOutput = (int32)(ek1 * gPidPara.kp_displace);
-
-    pidOutput = (int32)((targetVal - controlVar)* 100);
+    //pidOutput = (int32)(ek1 * gPidPara.kp_displace) + (int16)(((gSysInfo.sek >> 8) * gPidPara.ki_displace) >> 11);
+    pidOutput = (int32)((ek1 * gPidPara.kp_displace) + (gExternalForceState.value * 3));
+    //pidOutput = (int32)(ek1 * gPidPara.kp_displace);
 
     if(pidOutput > 750){
         pidOutput = 750;

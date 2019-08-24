@@ -6,7 +6,7 @@
 #include "PWM_ISR.h"
 #include "PID.h"
 
-#define  DEBOUNCE (0.15)
+#define  DEBOUNCE (0.10)
 
 Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
@@ -46,8 +46,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.TH1 = -15.0;
 	gSysInfo.TH2 = -10.0;
 	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 8.0;
-	gSysInfo.TH5 = 9.0;
+	gSysInfo.TH4 = 3.0;
+	gSysInfo.TH5 = 4.0;
 	gSysInfo.TH6 = 10.0;
 	gSysInfo.Ki_Threshold = 100;
 
@@ -140,6 +140,14 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
     }
     else{
         //tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
+
+		// if(gStickState.value > (gSysInfo.TH4 + ((gSysInfo.TH5 - gSysInfo.TH4)/2))){
+        // 	tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
+		// }
+		// else{
+        // 	tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
+		// }
+
         tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
         //tmp = -tmp;
         gSysInfo.targetDuty = tmp;
@@ -285,14 +293,14 @@ void sec7_threshold_front(int a, int b){
 }
 
 const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
-    sec0_threshold_rear,              	//0
-	sec3_Null_rear, 					//1
-	sec2_StartForce_rear,              	//2
-	sec3_Null_rear, 					//3
-	sec4_Null_front,					//4
-	sec5_StartForce_front,              //5
-	sec4_Null_front,					//6
-	sec7_threshold_front               	//7
+    sec0_threshold_rear,              	//0:	Rear OOR
+	sec3_Null_rear, 					//1:	Rear ODE 
+	sec2_StartForce_rear,              	//2:	Rear Start force
+	sec3_Null_rear, 					//3:	Rear Null displacement
+	sec4_Null_front,					//4:	Front Null displacement
+	sec5_StartForce_front,              //5:	Front Start force
+	sec4_Null_front,					//6:	Front ODE
+	sec7_threshold_front               	//7:	Front OOR
 };
 
 void ControleStateMachineSwitch(int value){
@@ -611,7 +619,6 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 	x_mid = x_last;
 	p_mid = p_last + Q;
 
-
 	kg = p_mid / (p_mid + R);
 	x_now = x_mid + kg * (ResrcData - x_mid);
 	p_now = (1 - kg) * p_mid;
@@ -681,19 +688,6 @@ void Disable_PWMD_BK(void){
 	GpioDataRegs.GPASET.bit.GPIO9 = 1;
 }
 
-int FindDisplacement(int a){
-	int index;
-
-	for(index = 0; index < 8; ++index){
-		if((a & (0x01 << index)) == 1){
-			/*find the first value 1 */
-			return index;
-		}
-	}
-	/*Not find, generate alarm if need */
-
-	return -1;
-}
 /* 
 * -20mm                                                     0mm                                                      12mm 
 *  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
