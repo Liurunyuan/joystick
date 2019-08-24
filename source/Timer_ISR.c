@@ -52,6 +52,9 @@ void Timer0_ISR_Thread(void){
         if(zero_count < 10){
             zero_force_SUM = zero_force_SUM + force_Joystick;
             ++zero_count;
+		    clearSum();
+		    gKeyValue.lock = 0;
+            return;
         }
         else{
             gSysInfo.zeroForce = zero_force_SUM/10;
