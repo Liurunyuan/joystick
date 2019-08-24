@@ -14,53 +14,6 @@
 #define N (300)
 #define RS422STATUSCHECK (1000)
 
-int checkForceDirection(){
-            if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value > 32810){
-                gforwardForce = 0;
-                gbackwardForce = 1;
-                gNoExternalForce = 0;
-                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32810;
-            }
-            else if(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value < 32707){
-                gforwardForce = 1;
-                gbackwardForce = 0;
-                gNoExternalForce = 0;
-                return gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value - 32707;
-            }
-            else{
-                gforwardForce = 0;
-                gbackwardForce = 0;
-                gNoExternalForce = 1;
-                return 0;
-            }
-}
-
-void ForceCloseLoop(double forceKp){
-    int forceCloseLoopPWM;
-
-    forceCloseLoopPWM = forceKp * checkForceDirection();
-    if(gNoExternalForce == 1){
-        gSysInfo.currentDuty = 0;
-    }
-    else if(gforwardForce == 1){
-        gSysInfo.currentDuty = forceCloseLoopPWM;
-    }
-    else if(gbackwardForce == 1){
-        gSysInfo.currentDuty = forceCloseLoopPWM;
-
-    }
-    else{
-
-    }
-    if (gSysInfo.currentDuty > 750) {
-        gSysInfo.currentDuty = 750;
-    }
-    else if (gSysInfo.currentDuty < -750) {
-        gSysInfo.currentDuty = -750;
-    }
-    gSysInfo.duty = gSysInfo.currentDuty;
-}
-
 
 /***************************************************************
  *Name:						Timer0_ISR_Thread
@@ -70,14 +23,16 @@ void ForceCloseLoop(double forceKp){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
-double force_Joystick;
-double cos_value;
-double angle;
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
+
+    double force_Joystick;
+    double cos_value;
+    double angle;
+
 	++count;
 
 	if(count > N){
@@ -88,7 +43,6 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
-        /*type may need to conversion here */
         gStickState.value = gKeyValue.displacement;
 
         angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;

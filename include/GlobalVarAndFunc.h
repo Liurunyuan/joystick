@@ -357,53 +357,9 @@ typedef struct{
 
 
 /************************joystick displacement state **********************/
-
-#define BASE_ZERO_DIS						(27836)
-
-#define OOR_FORWARD_NULL_DIS_VAL 			(18000)
-#define IR_FORWARD_NULL_DIS_VAL				(20000)
-
-#define OOR_BACKWARD_NULL_DIS_VAL			(35000)
-#define IR_BACKWARD_NULL_DIS_VAL			(33000)
-
-
-#define OOR_FORWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define OOR_FORWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define OOR_BACKWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define OOR_BACKWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define IR_FORKWARD_START_FORCE_DIS_VAL		(0)
-#define OOR_BACKWARD_START_FORCE_DIS_VAL	(0)
-#define IR_BACKWARD_START_FORCE_DIS_VAL		(0)
-
-#define OOR_FORWARD_THRESHOLD_DIS_VAL		(13000)
-#define IR_FORWARD_THRESHOLD_DIS_VAL		(15000)
-
-#define OOR_BACKWARD_THRESHOLD_DIS_VAL		(42000)
-#define IR_BACKWARD_THRESHOLD_DIS_VAL		(40000)
-
-typedef void (*UPDATESTATE)(int value);
-
 typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
-
-enum eNullDistancedState{
-	IR_NULL_DIS = 0, 
-	OOR_NULL_DIS = 1,
-	INIT_NULL_DIS
-};
-enum eStartForceDistancedState{
-	IR_START_FORCE_DIS = 0, 
-	OOR_START_FORCE_DIS = 1,
-	INIT_START_FORCE_DIS
-	
-};
-enum eThreasholdDistancedState{
-	IR_THRESHOLD_DIS = 0,
-	OOR_THRESHOLD_DIS = 1,
-	INIT_THRESHOLD_DIS
-};
-
 /***********************Force state*******************************/
 
 #define FORWARD_FORCE_VALUE (-0.5)
@@ -411,6 +367,8 @@ enum eThreasholdDistancedState{
 
 #define FOWARD_START_FORCE (-50)
 #define BACKWARD_START_FORCE (50)
+
+typedef void (*UPDATESTATE)(int value);
 
 typedef struct _EXTFORCESTATE
 {
