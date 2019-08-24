@@ -5,6 +5,7 @@
 #include <string.h>
 #include "PWM_ISR.h"
 #include "PID.h"
+#include "Ctl_Strategy.h"
 
 #define  DEBOUNCE (0.10)
 
@@ -185,8 +186,9 @@ void sec1_ODE_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
-    gSysInfo.targetDuty = 0;
-
+    //PidProcess();
+	OnlyWithSpringRear();
+    //gSysInfo.targetDuty = 0;
 }
 
 void sec2_StartForce_rear(int a, int b){
@@ -288,7 +290,15 @@ void sec6_ODE_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
-    gSysInfo.targetDuty = 0;
+//#if(ONLY_SPRING == INCLUDE_FEATURE)
+	//k = findSpringForceK(y0);
+	//kb = findSpringForceB(z0);
+    //gSysInfo.sek = 0;
+//#elseif
+    //PidProcess();
+	OnlyWithSpringFront();
+//#endif
+    //gSysInfo.targetDuty = 0;
 
 }
 void sec7_threshold_front(int a, int b){
@@ -301,12 +311,12 @@ void sec7_threshold_front(int a, int b){
 
 const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
     sec0_threshold_rear,              	//0:	Rear OOR
-	sec3_Null_rear, 					//1:	Rear ODE 
+	sec1_ODE_rear, 					//1:	Rear ODE 
 	sec2_StartForce_rear,              	//2:	Rear Start force
 	sec3_Null_rear, 					//3:	Rear Null displacement
 	sec4_Null_front,					//4:	Front Null displacement
 	sec5_StartForce_front,              //5:	Front Start force
-	sec4_Null_front,					//6:	Front ODE
+	sec6_ODE_front,					//6:	Front ODE
 	sec7_threshold_front               	//7:	Front OOR
 };
 
@@ -490,7 +500,7 @@ void InitConfigParameter(void){
 	gConfigPara.LF_Distance7 = 8;
 	gConfigPara.LF_Distance8 = 9;
 	gConfigPara.LF_Distance9 = 9.5;
-	gConfigPara.LF_MaxDistance = 10;
+	gConfigPara.LF_MaxDistance = 10.15;
 
 	gConfigPara.RB_Distance1 = -2;
 	gConfigPara.RB_Distance2 = -3;
@@ -501,7 +511,7 @@ void InitConfigParameter(void){
 	gConfigPara.RB_Distance7 = -7.5;
 	gConfigPara.RB_Distance8 = -8;
 	gConfigPara.RB_Distance9 = -8.5;
-	gConfigPara.RB_MaxDistance = -9;
+	gConfigPara.RB_MaxDistance = -9.15;
 
 	gConfigPara.LF_StartForce = 0;
 	gConfigPara.RB_StartForce = 0;
@@ -514,7 +524,7 @@ void InitConfigParameter(void){
 	gConfigPara.LF_EmptyDistance = 0;
 	gConfigPara.RB_EmptyDistance = 0;
 
-	gConfigPara.dampingFactor = 0;
+	gConfigPara.dampingFactor = 2;
 
 	gConfigPara.naturalVibrationFreq = 0;
 
@@ -564,7 +574,7 @@ void InitSysState(void){
 
 	gSysPara.k_dampForce = 0;
 	gSysPara.k_springForce = 0;
-	gSysPara.mass = 0;
+	gSysPara.mass = 1;
 
 	gSysCurrentState.accTarget = 0;
 	gSysCurrentState.dampForce = 0;

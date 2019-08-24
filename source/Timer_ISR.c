@@ -8,6 +8,7 @@
 #include "PWM_ISR.h"
 #include "Filter_Alg.h"
 #include "ADprocessor.h"
+#include "Ctl_Strategy.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -85,6 +86,7 @@ void Timer0_ISR_Thread(void){
         else{
             gSysState.warning.bit.a = 0;
         }
+
 
 		clearSum();
 		gKeyValue.lock = 0;

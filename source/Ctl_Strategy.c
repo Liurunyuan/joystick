@@ -11,14 +11,13 @@
 
 
 double findSpringForceK(double displace){
-	double springForce = 0;
+	double springForce = -1;
 	int index;
 	if(displace >= 0){
 		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
 
-			if(displace < gForceAndDisplaceCurve.displacementP[index] &&
-					displace >= gForceAndDisplaceCurve.displacementP[index - 1]){
-				springForce = gForceAndDisplaceCurve.K_spring_forceP[index - 1];
+			if((displace <= gForceAndDisplaceCurve.displacementP[index]) && (displace >= gForceAndDisplaceCurve.displacementP[index - 1])){
+				springForce = gForceAndDisplaceCurve.K_spring_forceP[index];
 				return springForce;
 			}
 		}
@@ -27,9 +26,8 @@ double findSpringForceK(double displace){
 	{
 		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
 
-			if(displace < gForceAndDisplaceCurve.displacementN[index] &&
-					displace >= gForceAndDisplaceCurve.displacementN[index - 1]){
-				springForce = gForceAndDisplaceCurve.K_spring_forceN[index - 1];
+			if((displace >= gForceAndDisplaceCurve.displacementN[index]) && (displace <= gForceAndDisplaceCurve.displacementN[index - 1])){
+				springForce = gForceAndDisplaceCurve.K_spring_forceN[index];
 				return springForce;
 			}
 		}
@@ -37,6 +35,32 @@ double findSpringForceK(double displace){
 
 	//TODO generate alarm, because the displacement is out of range
 	return springForce;
+}
+double findSpringForceB(double displace){
+	double springForceB = -1;
+	int index;
+	if(displace >= 0){
+		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
+
+			if((displace <= gForceAndDisplaceCurve.displacementP[index]) && (displace >= gForceAndDisplaceCurve.displacementP[index - 1])){
+				springForceB = gForceAndDisplaceCurve.b_P[index];
+				return springForceB;
+			}
+		}
+	}
+	else
+	{
+		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
+
+			if((displace >= gForceAndDisplaceCurve.displacementN[index]) && (displace <= gForceAndDisplaceCurve.displacementN[index - 1])){
+				springForceB = gForceAndDisplaceCurve.b_N[index];
+				return springForceB;
+			}
+		}
+	}
+
+	//TODO generate alarm, because the displacement is out of range
+	return springForceB;
 }
 /**************************************************************
  *Name:		   CalculateSpringForce
@@ -133,6 +157,36 @@ inline void UpdateSpeedErr(void) {
 inline void UpdateDisplacementErr(void) {
 	gSysCurrentState.errDisplacement = gSysCurrentState.displaceTarget - gKeyValue.displacement;
 }
+void OnlyWithSpringRear(void){
+	double k;
+	double kb;
+	double y;
+	int tmp;
+
+	k = findSpringForceK(gStickState.value);
+	kb = findSpringForceB(gStickState.value);
+
+	y =  -1 * (k * gStickState.value + kb);
+
+	tmp = (int32)((y - gExternalForceState.value) * 20);
+	gSysInfo.targetDuty = y + tmp;
+}
+
+void OnlyWithSpringFront(void){
+	double k;
+	double kb;
+	double y;
+	int tmp;
+
+	k = findSpringForceK(gStickState.value);
+	kb = findSpringForceB(gStickState.value);
+
+	y = -1 *(k * gStickState.value + kb);
+
+	tmp = (int32)((y - gExternalForceState.value) * 20);
+	gSysInfo.targetDuty = y + tmp;
+	
+}
 /**************************************************************
  *Name:		   PidProcess
  *Comment:
@@ -143,19 +197,19 @@ inline void UpdateDisplacementErr(void) {
  **************************************************************/
 void PidProcess(void){
 
-	CalculateSpringForce();
-	CalculateDampForce();
-	CalculateTargetAcc();
+	//CalculateSpringForce();
+	//CalculateDampForce();
+	//CalculateTargetAcc();
 
-	CalculateTargetAcc();
-	CalculateTargetSpeed();
-	CalculateTargeDisplace();
+	//CalculateTargetAcc();
+	//CalculateTargetSpeed();
+	//CalculateTargeDisplace();
 
-	RKT(0,gKeyValue.displacement,gKeyValue.motorSpeed,0.25);
+	RKT(0,gKeyValue.displacement,gKeyValue.motorSpeed,0.01);
 
-	UpdateAccErr();
-	UpdateSpeedErr();
-	UpdateDisplacementErr();
+	//UpdateAccErr();
+	//UpdateSpeedErr();
+	//UpdateDisplacementErr();
 }
 //F - K1 * dy/dt - K2 * y = m * dy2/dt2
 //F�� - K���� * dy/dt - K�� * y = m * dy2/dt2
@@ -182,16 +236,23 @@ double function(double x0, double y0, double z0, double h){
 	double a1;
 
 	double k;
+	double kb;
+
 
 //	a = gSysPara.k_dampForce/gSysPara.mass;
 //	b = gSysPara.k_springForce / gSysPara.mass;
 //	c = gKeyValue.force / gSysPara.mass;
 
-	k = findSpringForceK(gSysMonitorVar.anolog.single.var[DisplacementValue].value);
+	//k = findSpringForceK(y0);
+	//kb = findSpringForceB(y0);
+	//gSysPara.k_springForce = k;
+	//gSysPara.k_dampForce = kb;
+	//gSysPara.mass = k/(4); 
 
-	a = 2 * gConfigPara.dampingFactor * sqrt(k / gSysPara.mass);
-	b =	(k * gKeyValue.displacement)/gSysPara.mass;
-	c =	gKeyValue.force / gSysPara.mass;
+	//a = 2 * gConfigPara.dampingFactor * sqrt(k / gSysPara.mass);
+	a = 2 * gConfigPara.dampingFactor * 2;
+	b =	((k * y0) + kb)/gSysPara.mass;
+	c =	(-gKeyValue.force) / gSysPara.mass;
 
 	K11 = z0;
 	K21 = c - (a * z0) - (b * y0);
@@ -233,7 +294,7 @@ int RKT(double x, double y, double z, double h){
 	double z0 = z;
 	double h0 = h;
 
-	for(i = 0; i < 1; ++i){
+	for(i = 0; i < 2; ++i){
 		function(x0, y0, z0, h0);
 		//TODO update value of y
 		//TODO update value of z
