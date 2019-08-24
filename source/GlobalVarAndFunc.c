@@ -734,7 +734,7 @@ int CheckStickSetion(double val){
 	}
 }
 /* 
-* -20mm                                                     0mm                                                      12mm 
+* -20mm                                                      0mm                                                      12mm 
 *  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
 *  |                                                          |
 *  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
@@ -750,7 +750,7 @@ int LocateStickDisSection(void){
 		gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		break;
 	case 0:
-		if(gStickState.value  < (gSysInfo.TH0 - DEBOUNCE)){
+		if(gStickState.value  > (gSysInfo.TH0 + DEBOUNCE)){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		else{
@@ -758,41 +758,38 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 1:
-		if((gStickState.value  < (gSysInfo.TH1 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH0 + DEBOUNCE))){
+		if((gStickState.value  > (gSysInfo.TH1 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH0 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 2:
-		if((gStickState.value  < (gSysInfo.TH2 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH1 + DEBOUNCE))){
+		if((gStickState.value  > (gSysInfo.TH2 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH1 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 3:
-		if((gStickState.value  < (gSysInfo.TH3 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH2 + DEBOUNCE))){
+		if((gStickState.value  > (gSysInfo.TH3 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH2 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 4:
-		if((gStickState.value  < (gSysInfo.TH4 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH3 + DEBOUNCE))){
+		if((gStickState.value  > (gSysInfo.TH4 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH3 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 5:
-		if((gStickState.value  < (gSysInfo.TH5 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH4 + DEBOUNCE))){
+		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 6:
-		if((gStickState.value  < (gSysInfo.TH6 - DEBOUNCE)) || (gStickState.value > (gSysInfo.TH5 + DEBOUNCE))){
+		if((gStickState.value  > (gSysInfo.TH6 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH5 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	case 7:
-		if(gStickState.value > (gSysInfo.TH6 + DEBOUNCE)){
+		if(gStickState.value < (gSysInfo.TH6 - DEBOUNCE)){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		}
-		else{
-		    gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
 		break;
 	
