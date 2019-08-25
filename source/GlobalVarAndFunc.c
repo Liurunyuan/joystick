@@ -384,10 +384,10 @@ void checkRotateDirection(int value){
 			}
 			break;
 		case STOP_DIRECTION:
-			if(gKeyValue.motorSpeed > 0.01){
+			if(gKeyValue.motorSpeed > 0.03){
 				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
 			}
-			else if(gKeyValue.motorSpeed < -0.01){
+			else if(gKeyValue.motorSpeed < -0.03){
 				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
 			}
 			else{
