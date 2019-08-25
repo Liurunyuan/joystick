@@ -366,8 +366,8 @@ typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
 /***********************Force state*******************************/
-#define FORWARD_FORCE_VALUE (0.5)
-#define BACKWARD_FORCE_VALUE (-0.5)
+#define FORWARD_FORCE_VALUE (0.25)
+#define BACKWARD_FORCE_VALUE (-0.25)
 
 #define FOWARD_START_FORCE (5)
 #define BACKWARD_START_FORCE (-5)
@@ -414,6 +414,7 @@ void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
+double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 void UpdateForceDisplaceCurve(void);
 void EnablePwmOutput(void);
 void DisablePwmOutput(void);

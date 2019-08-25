@@ -47,7 +47,8 @@ void Timer0_ISR_Thread(void){
         gStickState.value = gKeyValue.displacement;
 
         angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
-        cos_value = cos(angle*PI/180.0);
+        //cos_value = cos(angle*PI/180.0);
+        cos_value = 1; 
         force_Joystick = -1*(((gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * FORCE_DIMENSION_K + FORCE_DIMENSION_B)*(0.045/0.14))/cos_value);
 
         if(zero_count < 10){

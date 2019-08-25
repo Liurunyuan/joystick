@@ -168,7 +168,7 @@ void OnlyWithSpringRear(void){
 
 	y =  k * gStickState.value + kb;
 
-	tmp = (int32)((y - gExternalForceState.value) * 20);
+	tmp = (int32)((y - gExternalForceState.value) * 10);
 	tmp = -tmp;
 	gSysInfo.targetDuty = y + tmp;
 }
@@ -184,7 +184,7 @@ void OnlyWithSpringFront(void){
 
 	y = k * gStickState.value + kb;
 
-	tmp = (int32)((y - gExternalForceState.value) * 20);
+	tmp = (int32)((y - gExternalForceState.value) * 10);
 	tmp = -tmp;
 	gSysInfo.targetDuty = y + tmp;
 	

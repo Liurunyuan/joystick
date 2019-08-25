@@ -45,9 +45,9 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	gSysInfo.TH0 = -9.2;
 	gSysInfo.TH1 = -2.0;
-	gSysInfo.TH2 = -1.0;
+	gSysInfo.TH2 = -1.5;
 	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 1.0;
+	gSysInfo.TH4 = 1.5;
 	gSysInfo.TH5 = 2.0;
 	gSysInfo.TH6 = 10.2;
 	gSysInfo.Ki_Threshold = 100;
@@ -59,6 +59,10 @@ void InitGlobalVarAndFunc(void){
 void IRNullDisAndNoForce(int a,  int b){
 	/*stick is in the range of the null displacement and no external force on the it */
 	/*so decide what we should do */
+	int32 tmp;
+	tmp = (int32)((-3 * gExternalForceState.value)* 250);
+	tmp = -tmp;
+	gSysInfo.targetDuty = tmp; 
 	gSysInfo.targetDuty = 0;
 
 } 
@@ -67,18 +71,22 @@ void IRNullDisAndForwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is forward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 500);
+	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 250);
 	tmp = -tmp;
+	tmp = tmp + 50;
 	gSysInfo.targetDuty = tmp; 
+	//gSysInfo.targetDuty = 100; 
 }
 
 void IRNullDisAndBackwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is backward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 500);
+	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 250);
 	tmp = -tmp;
+	tmp = tmp - 50;
 	gSysInfo.targetDuty = tmp; 
+	//gSysInfo.targetDuty = -100; 
 }
 
 
@@ -351,21 +359,21 @@ void checkExternalForce(int value){
 		}
 		break;
 	case FORWARD_FORCE:
-		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
-			gExternalForceState.ForceState = BACKWARD_FORCE;
-		}
-		else if(gExternalForceState.value > FORWARD_FORCE_VALUE){
+		if(gExternalForceState.value > (FORWARD_FORCE_VALUE - 0.15)){
 			gExternalForceState.ForceState = FORWARD_FORCE;
+		}
+		else if(gExternalForceState.value < BACKWARD_FORCE_VALUE + 0.15){
+			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
 		else{
 			gExternalForceState.ForceState = NO_FORCE;
 		}
 		break;
 	case BACKWARD_FORCE:
-		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
+		if(gExternalForceState.value < (BACKWARD_FORCE_VALUE + 0.15)){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value > FORWARD_FORCE_VALUE){
+		else if(gExternalForceState.value > (FORWARD_FORCE_VALUE - 0.15)){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -493,7 +501,7 @@ void InitConfigParameter(void){
 	gConfigPara.RB_Force9 = -45;
 	gConfigPara.RB_MaxForce = -50;
 
-	gConfigPara.LF_Distance1 = 2;
+	gConfigPara.LF_Distance1 = 0;
 	gConfigPara.LF_Distance2 = 3;
 	gConfigPara.LF_Distance3 = 4;
 	gConfigPara.LF_Distance4 = 5;
@@ -504,7 +512,7 @@ void InitConfigParameter(void){
 	gConfigPara.LF_Distance9 = 9.5;
 	gConfigPara.LF_MaxDistance = 10.15;
 
-	gConfigPara.RB_Distance1 = -2;
+	gConfigPara.RB_Distance1 = -0;
 	gConfigPara.RB_Distance2 = -3;
 	gConfigPara.RB_Distance3 = -4;
 	gConfigPara.RB_Distance4 = -5;
@@ -637,6 +645,34 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 
 	x_mid = x_last;
 	p_mid = p_last + Q;
+
+	kg = p_mid / (p_mid + R);
+	x_now = x_mid + kg * (ResrcData - x_mid);
+	p_now = (1 - kg) * p_mid;
+	p_last = p_now;
+	x_last = x_now;
+
+	return x_now;
+}
+double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
+{
+
+	double R = MeasureNoise_R;
+	double Q = ProcessNiose_Q;
+
+	static double x_last = 0;
+	double x_mid = x_last;
+	double x_now;
+
+	static double p_last = 0;
+	double p_mid;
+	double p_now;
+
+	double kg;
+
+	x_mid = x_last;
+	p_mid = p_last + Q;
+
 
 	kg = p_mid / (p_mid + R);
 	x_now = x_mid + kg * (ResrcData - x_mid);
