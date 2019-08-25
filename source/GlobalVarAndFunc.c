@@ -25,6 +25,7 @@ ANOLOG16BIT gAnalog16bit = {0};
 STICKSTATE gStickState = {0};
 
 EXTFORCESTATE gExternalForceState = {0};
+ROTATEDIRECTION gRotateDirection = {0};
 
 int gforwardOverLimit = 0;
 int gbackwardOverLimit = 0;
@@ -36,6 +37,7 @@ int gNoExternalForce = 0;
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 void InitStickState(void);
+void checkRotateDirection(int value);
 
 void InitGlobalVarAndFunc(void){
 	gSysInfo.ddtmax = 1;
@@ -54,6 +56,9 @@ void InitGlobalVarAndFunc(void){
 
 	InitSysState();
 	InitStickState();
+
+	gRotateDirection.rotateDirection = INIT_DIRECTION;
+	gRotateDirection.updateRotateDirection = checkRotateDirection;
 }
 
 void IRNullDisAndNoForce(int a,  int b){
@@ -342,6 +347,59 @@ void ControleStateMachineSwitch(int value){
 	}
 }
 
+void checkRotateDirection(int value){
+	switch(gRotateDirection.rotateDirection)
+	{
+		case INIT_DIRECTION:
+			if(gKeyValue.motorSpeed > 0.01){
+				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
+			}
+			else if(gKeyValue.motorSpeed < -0.01){
+				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
+			}
+			else{
+				gRotateDirection.rotateDirection = STOP_DIRECTION;
+			}
+			break;
+		case BACKWARD_DIRECTION:
+			if(gKeyValue.motorSpeed < 0.05 && gKeyValue.motorSpeed > -0.001){
+				gRotateDirection.rotateDirection = STOP_DIRECTION;
+			}
+			else if(gKeyValue.motorSpeed > 0.05){
+				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
+			}
+			else{
+
+			}
+			break;
+		case FORWARD_DIRECTION:
+			if(gKeyValue.motorSpeed < 0.001 && gKeyValue.motorSpeed > -0.05){
+				gRotateDirection.rotateDirection = STOP_DIRECTION;
+			}
+			else if(gKeyValue.motorSpeed < -0.05){
+				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
+			}
+			else{
+
+			}
+			break;
+		case STOP_DIRECTION:
+			if(gKeyValue.motorSpeed > 0.01){
+				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
+			}
+			else if(gKeyValue.motorSpeed < -0.01){
+				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
+			}
+			else{
+				gRotateDirection.rotateDirection = STOP_DIRECTION;
+			}
+
+			break;
+		default:
+			break;
+	}
+}
+
 void checkExternalForce(int value){
 	/*need to decide if need to enable debouce feature */
 	switch (gExternalForceState.ForceState)
@@ -526,10 +584,10 @@ void InitConfigParameter(void){
 	gConfigPara.LF_StartForce = 0;
 	gConfigPara.RB_StartForce = 0;
 
-	gConfigPara.LF_FrontFriction = 0;
-	gConfigPara.LF_RearFriction = 0;
-	gConfigPara.RB_FrontFriction = 0;
-	gConfigPara.RB_RearFriction = 0;
+	gConfigPara.LF_FrontFriction = 3;
+	gConfigPara.LF_RearFriction = 3;
+	gConfigPara.RB_FrontFriction = 3;
+	gConfigPara.RB_RearFriction = 3;
 
 	gConfigPara.LF_EmptyDistance = 0;
 	gConfigPara.RB_EmptyDistance = 0;

@@ -44,6 +44,7 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
+        gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
 
         angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;

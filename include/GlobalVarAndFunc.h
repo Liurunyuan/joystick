@@ -386,8 +386,22 @@ enum eForceState{
 	INIT_FORCE
 };
 /*****************************************************************/
+
+typedef struct _ROTATEDIRECTION{
+	int rotateDirection;
+	UPDATESTATE updateRotateDirection;
+}ROTATEDIRECTION;
+
+enum eRotateDirection{
+	STOP_DIRECTION = 0,
+	BACKWARD_DIRECTION  =1,
+	FORWARD_DIRECTION = 2,
+	INIT_DIRECTION
+};
+
 extern STICKSTATE gStickState;
 extern EXTFORCESTATE gExternalForceState;
+extern ROTATEDIRECTION gRotateDirection;
 
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;

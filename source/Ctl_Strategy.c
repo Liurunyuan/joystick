@@ -162,11 +162,21 @@ void OnlyWithSpringRear(void){
 	double kb;
 	double y;
 	int tmp;
+	int friction;
 
 	k = findSpringForceK(gStickState.value);
 	kb = findSpringForceB(gStickState.value);
 
-	y =  k * gStickState.value + kb;
+	if(gKeyValue.motorSpeed > 0.07){
+		friction = gConfigPara.LF_RearFriction;
+	}
+	else if(gKeyValue.motorSpeed < 0.07){
+		friction = gConfigPara.LF_RearFriction;
+	}
+
+	y =  k * gStickState.value + kb + friction;
+
+
 	gSysPara.k_dampForce = y;
 
 	tmp = (int32)((y - gExternalForceState.value) * 10);
@@ -179,11 +189,24 @@ void OnlyWithSpringFront(void){
 	double kb;
 	double y;
 	int tmp;
+	int friction;
 
 	k = findSpringForceK(gStickState.value);
 	kb = findSpringForceB(gStickState.value);
 
-	y = k * gStickState.value + kb;
+	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+		friction = gConfigPara.LF_RearFriction;
+		y = k * gStickState.value + kb + friction;
+	}
+	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+		friction = gConfigPara.LF_RearFriction;
+		y = k * gStickState.value + kb - friction;
+	}
+	else{
+		y = k * gStickState.value + kb;
+	}
+
+	//y = k * gStickState.value + kb + friction;
 	gSysPara.k_dampForce = y;
 
 	tmp = (int32)((y - gExternalForceState.value) * 10);
