@@ -167,6 +167,7 @@ void OnlyWithSpringRear(void){
 	kb = findSpringForceB(gStickState.value);
 
 	y =  k * gStickState.value + kb;
+	gSysPara.k_dampForce = y;
 
 	tmp = (int32)((y - gExternalForceState.value) * 10);
 	tmp = -tmp;
@@ -183,6 +184,7 @@ void OnlyWithSpringFront(void){
 	kb = findSpringForceB(gStickState.value);
 
 	y = k * gStickState.value + kb;
+	gSysPara.k_dampForce = y;
 
 	tmp = (int32)((y - gExternalForceState.value) * 10);
 	tmp = -tmp;
