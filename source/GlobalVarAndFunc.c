@@ -68,6 +68,7 @@ void IRNullDisAndForwardForce(int a, int b){
 	/*so decidde what we should do here */
 	int32 tmp;
 	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 500);
+	tmp = -tmp;
 	gSysInfo.targetDuty = tmp; 
 }
 
@@ -76,6 +77,7 @@ void IRNullDisAndBackwardForce(int a, int b){
 	/*so decidde what we should do here */
 	int32 tmp;
 	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 500);
+	tmp = -tmp;
 	gSysInfo.targetDuty = tmp; 
 }
 
@@ -136,7 +138,7 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
     /*stick is in the range of the null displacement and the external force is forward */
     /*so decidde what we should do here */
     int32 tmp;
-    if(gExternalForceState.value < FOWARD_START_FORCE){
+    if(gExternalForceState.value > FOWARD_START_FORCE){
         IRNullDisAndForwardForce(0,0);
     }
     else{
@@ -162,7 +164,7 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
     /*stick is in the range of the null displacement and the external force is backward */
     /*so decidde what we should do here */
     int32 tmp;
-    if(gExternalForceState.value > BACKWARD_START_FORCE){
+    if(gExternalForceState.value < BACKWARD_START_FORCE){
         IRNullDisAndBackwardForce(0,0);
     }
     else{
@@ -338,10 +340,10 @@ void checkExternalForce(int value){
 	{
 	case INIT_FORCE:
 
-		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if (gExternalForceState.value  < FORWARD_FORCE_VALUE){
+		else if (gExternalForceState.value  > FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -349,10 +351,10 @@ void checkExternalForce(int value){
 		}
 		break;
 	case FORWARD_FORCE:
-		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
+		else if(gExternalForceState.value > FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -360,10 +362,10 @@ void checkExternalForce(int value){
 		}
 		break;
 	case BACKWARD_FORCE:
-		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
+		else if(gExternalForceState.value > FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -371,10 +373,10 @@ void checkExternalForce(int value){
 		}
 		break;
 	case NO_FORCE:
-		if(gExternalForceState.value > BACKWARD_FORCE_VALUE){
+		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value < FORWARD_FORCE_VALUE){
+		else if(gExternalForceState.value > FORWARD_FORCE_VALUE){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
