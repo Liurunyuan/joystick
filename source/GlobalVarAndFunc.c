@@ -52,7 +52,7 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.TH4 = 1.5;
 	gSysInfo.TH5 = 2.0;
 	gSysInfo.TH6 = 10.2;
-	gSysInfo.Ki_Threshold = 100;
+	gSysInfo.Ki_Threshold = 6;
 
 	InitSysState();
 	InitStickState();

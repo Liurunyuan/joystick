@@ -131,8 +131,8 @@ typedef struct{
 	int16 targetDuty;
 	int controlFuncIndex;
 	int currentStickDisSection;
-	int64 Ki_Threshold;
-	int64 sek;
+	int16 Ki_Threshold;
+	int16 sek;
 	double TH0;
 	double TH1;
 	double TH2;

@@ -20,8 +20,8 @@ void GetTorqueCurve(int a, int b, int c){
 	//gRx422TxVar[0].value = gKeyValue.motorSpeed;
 	//gRx422TxVar[0].value = (int16)(gExternalForceState.value*100);
     //gRx422TxVar[0].value = (gStickState.value * 100) + 3000;
-    //gRx422TxVar[0].value = (gSysPara.k_dampForce * 100) + 3000;
-    gRx422TxVar[0].value = gRotateDirection.rotateDirection* 1000;
+    gRx422TxVar[0].value = (gSysPara.k_dampForce * 100) + 3000;
+    //gRx422TxVar[0].value = gRotateDirection.rotateDirection* 1000;
 
 }
 void GetMotorSpeedCurve(int a, int b, int c){

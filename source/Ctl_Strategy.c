@@ -5,6 +5,7 @@
 #include "GlobalVarAndFunc.h"
 #include "ADprocessor.h"
 #include <math.h>
+#include "PID.h"
 
 #define ITEGRATION_TIMES (6)
 
@@ -196,6 +197,7 @@ void OnlyWithSpringFront(void){
 
 	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
 		friction = gConfigPara.LF_RearFriction;
+		friction = 0;
 		y = k * gStickState.value + kb + friction;
 	}
 	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
@@ -209,7 +211,9 @@ void OnlyWithSpringFront(void){
 	//y = k * gStickState.value + kb + friction;
 	gSysPara.k_dampForce = y;
 
-	tmp = (int32)((y - gExternalForceState.value) * 10);
+	tmp = force_PidOutput(y, gExternalForceState.value);
+
+	//tmp = (int32)((y - gExternalForceState.value) * 10);
 	tmp = -tmp;
 	gSysInfo.targetDuty = y + tmp;
 	
