@@ -1,3 +1,13 @@
+/***************************0.0.2*******************************/
+Version Number: 0.0.2
+Date: 2019/8/27
+Author:Simon
+
+What new: 
+	1. Spring force closed loop
+	2. Friction force
+	3. Damp force closed loop
+	4. Add default force and displacement curve
 /***************************0.0.1*******************************/
 Version Number: 0.0.1
 Date: 2019/8/18
