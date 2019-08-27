@@ -306,8 +306,8 @@ typedef struct{
 	int LF_EmptyDistance;
 	int RB_EmptyDistance;
 
-	int dampingFactor;
-	int naturalVibrationFreq;
+	double dampingFactor;
+	double naturalVibrationFreq;
 
 	int equivalentMass;
 	int LF_TrimRange;

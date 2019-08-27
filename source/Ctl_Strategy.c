@@ -191,21 +191,35 @@ void OnlyWithSpringFront(void){
 	double y;
 	int tmp;
 	int friction;
+	int damp_force;
+	double acceleration;
+	double spring_force;
 
 	k = findSpringForceK(gStickState.value);
 	kb = findSpringForceB(gStickState.value);
 
+    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+        friction = gConfigPara.LF_RearFriction;
+    }
+    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+        friction = gConfigPara.LF_FrontFriction;
+    }
+    else{
+        friction = 0;
+    }
+
+	spring_force = k * gStickState.value + kb;
+	damp_force = (2 * gConfigPara.dampingFactor * k * 4 * gKeyValue.motorSpeed) / (gConfigPara.naturalVibrationFreq); // 4 * gKeyValue.motorSpeed is to transfer unit of speed to m/s
+	acceleration = (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq * (gExternalForceState.value - damp_force - spring_force - friction)) / k;
+
 	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-		friction = gConfigPara.LF_RearFriction;
-		friction = 0;
-		y = k * gStickState.value + kb + friction;
+		y = spring_force + friction + damp_force;
 	}
 	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-		friction = gConfigPara.LF_RearFriction;
-		y = k * gStickState.value + kb - friction;
+		y = spring_force - friction - damp_force;
 	}
 	else{
-		y = k * gStickState.value + kb;
+		y = spring_force;
 	}
 
 	//y = k * gStickState.value + kb + friction;

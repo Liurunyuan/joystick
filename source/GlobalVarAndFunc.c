@@ -592,9 +592,9 @@ void InitConfigParameter(void){
 	gConfigPara.LF_EmptyDistance = 0;
 	gConfigPara.RB_EmptyDistance = 0;
 
-	gConfigPara.dampingFactor = 2;
+	gConfigPara.dampingFactor = 0.5;
 
-	gConfigPara.naturalVibrationFreq = 0;
+	gConfigPara.naturalVibrationFreq = 10.0;
 
 	gConfigPara.equivalentMass = 0;
 
