@@ -3,12 +3,19 @@
 
 
 #ifdef TEN_POINTS
-#define SUMX 45L
-#define SUMXPOW2 285L
-#define SUMXPOW3 2025L
-#define SUMXPOW4 15333L
-#define SUMXPOW5 120825L
-#define SUMXPOW6 978405L
+//#define SUMX 45L
+//#define SUMXPOW2 285L
+//#define SUMXPOW3 2025L
+//#define SUMXPOW4 15333L
+//#define SUMXPOW5 120825L
+//#define SUMXPOW6 978405L
+
+#define SUMX (1.125)
+#define SUMXPOW2 (0.178125)
+#define SUMXPOW3 (0.031641)
+#define SUMXPOW4 (0.005989)
+#define SUMXPOW5 (0.001180)
+#define SUMXPOW6 (0.000239)
 #endif
 
 #ifdef TWENTY_POINTS
@@ -98,12 +105,14 @@ void CalFuncPara(double force, double displace, int count){
 
 //	force = force / 100.0;
 //	displace = displace / 100.0;
-	sumParaDisplacement.sum_XY += count * displace;
-	sumParaDisplacement.sum_Xpow2Y += count * count * displace;
+
+    double tmpCount = count * 0.025;
+	sumParaDisplacement.sum_XY += tmpCount * displace;
+	sumParaDisplacement.sum_Xpow2Y += tmpCount * tmpCount * displace;
 	sumParaDisplacement.sum_Y += displace;
 
-	sumParaForce.sum_XY += count * force;
-	sumParaForce.sum_Xpow2Y += count*count * force;
+	sumParaForce.sum_XY += tmpCount * force;
+	sumParaForce.sum_Xpow2Y += tmpCount*tmpCount * force;
 	sumParaForce.sum_Y += force;
 
 //	if(count >= (DATA_AMOUNT - 1)){

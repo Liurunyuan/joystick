@@ -1,9 +1,22 @@
 #ifndef _GLOBAL_VAR_AND_FUNC_H
 #define _GLOBAL_VAR_AND_FUNC_H
 
+
+#define INCLUDE_FEATURE 1
+#define EXCLUDE_FEATURE 0
+
+#define MACHINE_FRICTION 	INCLUDE_FEATURE
+#define ONLY_SPRING 	 	EXCLUDE_FEATURE
+
+
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.2)
 
+#define DIS_DIMENSION_K (-0.0007527)
+#define DIS_DIMENSION_B (19.813)
+#define FORCE_DIMENSION_K (0.014027)
+#define FORCE_DIMENSION_B (-459.6276)
+#define PI (3.14149265)
 
 
 #define BIT_0 (0x00000001)
@@ -118,6 +131,16 @@ typedef struct{
 	int16 targetDuty;
 	int controlFuncIndex;
 	int currentStickDisSection;
+	int16 Ki_Threshold;
+	int16 sek;
+	double TH0;
+	double TH1;
+	double TH2;
+	double TH3;
+	double TH4;
+	double TH5;
+	double TH6;
+	double zeroForce;
 }SYSINFO;
 
 
@@ -226,65 +249,65 @@ typedef struct{
 }SYSCURRENTSTATE;
 
 typedef struct{
-	int LF_MaxForce;
-	int LF_Force1;
-	int LF_Force2;
-	int LF_Force3;
-	int LF_Force4;
-	int LF_Force5;
-	int LF_Force6;
-	int LF_Force7;
-	int LF_Force8;
-	int LF_Force9;
+	double LF_MaxForce;
+	double LF_Force1;
+	double LF_Force2;
+	double LF_Force3;
+	double LF_Force4;
+	double LF_Force5;
+	double LF_Force6;
+	double LF_Force7;
+	double LF_Force8;
+	double LF_Force9;
 
 
-	int RB_Force1;
-	int RB_Force2;
-	int RB_Force3;
-	int RB_Force4;
-	int RB_Force5;
-	int RB_Force6;
-	int RB_Force7;
-	int RB_Force8;
-	int RB_Force9;
-	int RB_MaxForce;
+	double RB_Force1;
+	double RB_Force2;
+	double RB_Force3;
+	double RB_Force4;
+	double RB_Force5;
+	double RB_Force6;
+	double RB_Force7;
+	double RB_Force8;
+	double RB_Force9;
+	double RB_MaxForce;
 
-	int LF_MaxDistance;
-	int LF_Distance1;
-	int LF_Distance2;
-	int LF_Distance3;
-	int LF_Distance4;
-	int LF_Distance5;
-	int LF_Distance6;
-	int LF_Distance7;
-	int LF_Distance8;
-	int LF_Distance9;
+	double LF_MaxDistance;
+	double LF_Distance1;
+	double LF_Distance2;
+	double LF_Distance3;
+	double LF_Distance4;
+	double LF_Distance5;
+	double LF_Distance6;
+	double LF_Distance7;
+	double LF_Distance8;
+	double LF_Distance9;
 
 
-	int RB_Distance1;
-	int RB_Distance2;
-	int RB_Distance3;
-	int RB_Distance4;
-	int RB_Distance5;
-	int RB_Distance6;
-	int RB_Distance7;
-	int RB_Distance8;
-	int RB_Distance9;
-	int RB_MaxDistance;
+	double RB_Distance1;
+	double RB_Distance2;
+	double RB_Distance3;
+	double RB_Distance4;
+	double RB_Distance5;
+	double RB_Distance6;
+	double RB_Distance7;
+	double RB_Distance8;
+	double RB_Distance9;
+	double RB_MaxDistance;
 
-	int LF_StartForce;
-	int RB_StartForce;
+	double LF_StartForce;
+	double RB_StartForce;
 
-	int LF_FrontFriction;
-	int LF_RearFriction;
+	double LF_FrontFriction;
+	double LF_RearFriction;
 	int RB_FrontFriction;
 	int RB_RearFriction;
 
 	int LF_EmptyDistance;
 	int RB_EmptyDistance;
 
-	int dampingFactor;
-	int naturalVibrationFreq;
+	double dampingFactor;
+	double naturalVibrationFreq;
 
 	int equivalentMass;
 	int LF_TrimRange;
@@ -319,10 +342,10 @@ typedef struct{
 
 
 typedef struct{
-	int springForceP[10];
-	int springForceN[10];
-	int displacementP[10];
-	int displacementN[10];
+	double springForceP[10];
+	double springForceN[10];
+	double displacementP[10];
+	double displacementN[10];
 
 	double K_spring_forceP[10];
 	double b_P[10];
@@ -330,8 +353,6 @@ typedef struct{
 	double b_N[10];
 
 	int maxPoints;
-
-
 }FORCE_DISPLACE_CURVE;
 
 typedef struct{
@@ -339,83 +360,23 @@ typedef struct{
     Uint16 force;
 }ANOLOG16BIT;
 
-
-
-/************************joystick displacement state **********************/
-
-#define BASE_ZERO_DIS						(27836)
-
-#define OOR_FORWARD_NULL_DIS_VAL 			(18000)
-#define IR_FORWARD_NULL_DIS_VAL				(20000)
-
-#define OOR_BACKWARD_NULL_DIS_VAL			(35000)
-#define IR_BACKWARD_NULL_DIS_VAL			(33000)
-
-
-#define OOR_FORWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define OOR_FORWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define OOR_BACKWARD_START_FORCE_DIS_VAL_MAX	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define OOR_BACKWARD_START_FORCE_DIS_VAL_MIN	(OOR_FORWARD_NULL_DIS_VAL + 100)
-#define IR_FORKWARD_START_FORCE_DIS_VAL		(0)
-#define OOR_BACKWARD_START_FORCE_DIS_VAL	(0)
-#define IR_BACKWARD_START_FORCE_DIS_VAL		(0)
-
-#define OOR_FORWARD_THRESHOLD_DIS_VAL		(13000)
-#define IR_FORWARD_THRESHOLD_DIS_VAL		(15000)
-
-#define OOR_BACKWARD_THRESHOLD_DIS_VAL		(42000)
-#define IR_BACKWARD_THRESHOLD_DIS_VAL		(40000)
-
 typedef void (*UPDATESTATE)(int value);
-
+/************************joystick displacement state **********************/
 typedef struct _STICKSTATE{
-	int NullDistanceForwardState;
-	int NullDistanceBackwardState;
-	int StartForceForwardState;
-	int StartForceBackwardState;
-	int ThresholdForwaredState;
-	int ThresholdBackwardState;
-	UPDATESTATE updateNullDisForwardState;
-	UPDATESTATE updateNullDisBackwardState;
-
-	UPDATESTATE updateStartForceDisBackwardState;
-	UPDATESTATE updateStartForceBackwardState;
-
-	UPDATESTATE updateThresholdDisForwardState;
-	UPDATESTATE updateThresholdDisBackwardState;
-	Uint16 value;
+	double value;
 }STICKSTATE;
-
-enum eNullDistancedState{
-	IR_NULL_DIS = 0, 
-	OOR_NULL_DIS = 1,
-	INIT_NULL_DIS
-};
-enum eStartForceDistancedState{
-	IR_START_FORCE_DIS = 0, 
-	OOR_START_FORCE_DIS = 1,
-	INIT_START_FORCE_DIS
-	
-};
-enum eThreasholdDistancedState{
-	IR_THRESHOLD_DIS = 0,
-	OOR_THRESHOLD_DIS = 1,
-	INIT_THRESHOLD_DIS
-};
-
 /***********************Force state*******************************/
+#define FORWARD_FORCE_VALUE (0.25)
+#define BACKWARD_FORCE_VALUE (-0.25)
 
-#define FORWARD_FORCE_VALUE (30587.0)
-#define BACKWARD_FORCE_VALUE (30787.0)
-
-#define FOWARD_START_FORCE (1500)
-#define BACKWARD_START_FORCE (60000)
+#define FOWARD_START_FORCE (5)
+#define BACKWARD_START_FORCE (-5)
 
 typedef struct _EXTFORCESTATE
 {
-	int ForceState;
+	int ForceState; //eForceState
 	UPDATESTATE updateForceState;
-	Uint16 value;
+	double value;
 }EXTFORCESTATE;
 
 enum eForceState{
@@ -424,11 +385,23 @@ enum eForceState{
 	FORWARD_FORCE = 2,
 	INIT_FORCE
 };
-
-
 /*****************************************************************/
+
+typedef struct _ROTATEDIRECTION{
+	int rotateDirection;
+	UPDATESTATE updateRotateDirection;
+}ROTATEDIRECTION;
+
+enum eRotateDirection{
+	STOP_DIRECTION = 0,
+	BACKWARD_DIRECTION  =1,
+	FORWARD_DIRECTION = 2,
+	INIT_DIRECTION
+};
+
 extern STICKSTATE gStickState;
 extern EXTFORCESTATE gExternalForceState;
+extern ROTATEDIRECTION gRotateDirection;
 
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
@@ -448,20 +421,14 @@ extern int gforwardForce;
 extern int gbackwardForce;
 extern int gNoExternalForce;
 
-extern Uint32 gSysStateMachineNumber;
-
-
-
-
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
-
-
 
 void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
+double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 void UpdateForceDisplaceCurve(void);
 void EnablePwmOutput(void);
 void DisablePwmOutput(void);
