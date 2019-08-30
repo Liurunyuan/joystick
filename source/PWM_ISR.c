@@ -22,7 +22,8 @@ void UpdateKeyValue(void) {
 
 	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.5 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
 	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
-	gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+	//gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+	gKeyValue.motorAccel = KalmanFilterSpeed(((2 * funcParaDisplacement.a)/1000), KALMAN_Q, KALMAN_R);
 }
 void TargetDutyGradualChange(int targetduty){
 	// static int count = 0;
