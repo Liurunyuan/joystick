@@ -390,6 +390,8 @@ enum eForceState{
 typedef struct _ROTATEDIRECTION{
 	int rotateDirection;
 	UPDATESTATE updateRotateDirection;
+	int debounceCount_1;
+	int debounceCount_2;
 }ROTATEDIRECTION;
 
 enum eRotateDirection{
