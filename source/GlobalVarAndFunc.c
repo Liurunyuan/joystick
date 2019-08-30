@@ -59,6 +59,8 @@ void InitGlobalVarAndFunc(void){
 
 	gRotateDirection.rotateDirection = INIT_DIRECTION;
 	gRotateDirection.updateRotateDirection = checkRotateDirection;
+	gRotateDirection.debounceCount_1 = 0;
+	gRotateDirection.debounceCount_2 = 0;
 }
 
 void IRNullDisAndNoForce(int a,  int b){
@@ -193,7 +195,12 @@ void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
-    gSysInfo.targetDuty = 0;
+    if(gExternalForceState.ForceState == FORWARD_FORCE){
+            IRNullDisAndForwardForce(0,0);
+        }
+        else{
+            gSysInfo.targetDuty = 0;
+        }
 
 }
 
@@ -320,7 +327,13 @@ void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
-    gSysInfo.targetDuty = 0;
+    if(gExternalForceState.ForceState == BACKWARD_FORCE){
+        IRNullDisAndBackwardForce(0,0);
+    }
+    else{
+        gSysInfo.targetDuty = 0;
+    }
+
 
 }
 
@@ -351,10 +364,10 @@ void checkRotateDirection(int value){
 	switch(gRotateDirection.rotateDirection)
 	{
 		case INIT_DIRECTION:
-			if(gKeyValue.motorSpeed > 0.01){
+			if(gKeyValue.motorSpeed > 0.0025){
 				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
 			}
-			else if(gKeyValue.motorSpeed < -0.01){
+			else if(gKeyValue.motorSpeed < -0.0025){
 				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
 			}
 			else{
@@ -362,33 +375,63 @@ void checkRotateDirection(int value){
 			}
 			break;
 		case BACKWARD_DIRECTION:
-			if(gKeyValue.motorSpeed < 0.05 && gKeyValue.motorSpeed > -0.001){
-				gRotateDirection.rotateDirection = STOP_DIRECTION;
+			if(gKeyValue.motorSpeed > -0.02){
+			    gRotateDirection.debounceCount_1++;
+			    gRotateDirection.debounceCount_2 = 0;
+			    if(gRotateDirection.debounceCount_1 > 10){
+			        gRotateDirection.rotateDirection = STOP_DIRECTION;
+			        gRotateDirection.debounceCount_1 = 0;
+			    }
 			}
-			else if(gKeyValue.motorSpeed > 0.05){
-				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
-			}
-			else{
-
-			}
+//			else if(gKeyValue.motorSpeed > 0.02){
+//                gRotateDirection.debounceCount_2++;
+//                gRotateDirection.debounceCount_1 = 0;
+//                if(gRotateDirection.debounceCount_2 > 10){
+//                    gRotateDirection.rotateDirection = STOP_DIRECTION;
+//                    gRotateDirection.debounceCount_2 = 0;
+//                }
+//			}
+//			else{
+//
+//			}
 			break;
 		case FORWARD_DIRECTION:
-			if(gKeyValue.motorSpeed < 0.001 && gKeyValue.motorSpeed > -0.05){
-				gRotateDirection.rotateDirection = STOP_DIRECTION;
+			if(gKeyValue.motorSpeed < 0.02){
+                gRotateDirection.debounceCount_1++;
+                gRotateDirection.debounceCount_2 = 0;
+                if(gRotateDirection.debounceCount_1 > 10){
+                    gRotateDirection.rotateDirection = STOP_DIRECTION;
+                    gRotateDirection.debounceCount_1 = 0;
+                }
 			}
-			else if(gKeyValue.motorSpeed < -0.05){
-				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
-			}
-			else{
-
-			}
+//			else if(gKeyValue.motorSpeed < -0.02){
+//                gRotateDirection.debounceCount_2++;
+//                gRotateDirection.debounceCount_1 = 0;
+//                if(gRotateDirection.debounceCount_2 > 10){
+//                    gRotateDirection.rotateDirection = STOP_DIRECTION;
+//                    gRotateDirection.debounceCount_2 = 0;
+//                }
+//			}
+//			else{
+//
+//			}
 			break;
 		case STOP_DIRECTION:
 			if(gKeyValue.motorSpeed > 0.03){
-				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
+                gRotateDirection.debounceCount_1++;
+                gRotateDirection.debounceCount_2 = 0;
+                if(gRotateDirection.debounceCount_1 > 10){
+                    gRotateDirection.rotateDirection = FORWARD_DIRECTION;
+                    gRotateDirection.debounceCount_1 = 0;
+                }
 			}
 			else if(gKeyValue.motorSpeed < -0.03){
-				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
+                gRotateDirection.debounceCount_2++;
+                gRotateDirection.debounceCount_1 = 0;
+                if(gRotateDirection.debounceCount_2 > 10){
+                    gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
+                    gRotateDirection.debounceCount_2 = 0;
+                }
 			}
 			else{
 				gRotateDirection.rotateDirection = STOP_DIRECTION;
@@ -592,9 +635,9 @@ void InitConfigParameter(void){
 	gConfigPara.LF_EmptyDistance = 0;
 	gConfigPara.RB_EmptyDistance = 0;
 
-	gConfigPara.dampingFactor = 0.5;
+	gConfigPara.dampingFactor = 1;
 
-	gConfigPara.naturalVibrationFreq = 10.0;
+	gConfigPara.naturalVibrationFreq = 20.0;
 
 	gConfigPara.equivalentMass = 0;
 
