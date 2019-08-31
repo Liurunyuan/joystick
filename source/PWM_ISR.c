@@ -20,10 +20,15 @@ void UpdateKeyValue(void) {
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
 	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
 
+	//gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.5 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
+#if(LINEAR_SPEED_METHOD == INCLUDE_FEATURE)
+	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25)/0.25, KALMAN_Q, KALMAN_R); 
+#else
 	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.5 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
+#endif
 	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
 	//gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
-	gKeyValue.motorAccel = KalmanFilterSpeed(((2 * funcParaDisplacement.a)/1000), KALMAN_Q, KALMAN_R);
+	gKeyValue.motorAccel = KalmanFilterAccel(((2 * funcParaDisplacement.a)/1000), KALMAN_Q, KALMAN_R);
 }
 void TargetDutyGradualChange(int targetduty){
 	// static int count = 0;
