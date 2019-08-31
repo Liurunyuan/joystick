@@ -697,12 +697,12 @@ int checkStartForceMargin(){
  **************************************************************/
 void Pwm_ISR_Thread(void)
 {
-	StartGetADBySpi();
+	//StartGetADBySpi();
 
-	ReadDigitalValue();
+	//ReadDigitalValue();
 
 
-	ReadAnalogValue();
+	//ReadAnalogValue();
 /*
 	Check_Current();
 	Check_A_Q_Current();
@@ -712,7 +712,7 @@ void Pwm_ISR_Thread(void)
 	Check_C_Q_Current();
 	Check_C_X_Current();
 */
-    ReadADBySpi();
+    //ReadADBySpi();
 //    if(count < 10){
 //        ++count;
 //        gSysInfo.zeroForce = gAnalog16bit.force;
@@ -720,10 +720,12 @@ void Pwm_ISR_Thread(void)
 //    else{
 //
 //    }
+	ReadADBySpiNTimes(1);
 
 
     //gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = gAnalog16bit.force;
-    gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(KalmanFilterForce(gAnalog16bit.force,50,50));
+    //gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(KalmanFilterForce(gAnalog16bit.force,50,50));
+    gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(gAnalog16bit.force);
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
