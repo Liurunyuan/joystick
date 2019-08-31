@@ -5,8 +5,9 @@
 #define INCLUDE_FEATURE 1
 #define EXCLUDE_FEATURE 0
 
-#define MACHINE_FRICTION 	INCLUDE_FEATURE
-#define ONLY_SPRING 	 	EXCLUDE_FEATURE
+#define MACHINE_FRICTION 		INCLUDE_FEATURE
+#define ONLY_SPRING 	 		EXCLUDE_FEATURE
+#define LINEAR_SPEED_METHOD 	EXCLUDE_FEATURE
 
 
 #define KALMAN_Q  (1.1)
@@ -431,6 +432,7 @@ void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
+double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 void UpdateForceDisplaceCurve(void);
 void EnablePwmOutput(void);
 void DisablePwmOutput(void);

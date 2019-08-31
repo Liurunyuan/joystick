@@ -17,11 +17,12 @@ RS422TXQUE gRS422TxQue = {0};
 
 
 void GetTorqueCurve(int a, int b, int c){
-    gRx422TxVar[0].value = (gSysPara.k_dampForce * 100) + 3000;
+    //gRx422TxVar[0].value = (gSysPara.k_dampForce * 100) + 3000;
+    gRx422TxVar[0].value = (gKeyValue.displacement * 100) + 5000;
 
 }
 void GetMotorSpeedCurve(int a, int b, int c){
-    gRx422TxVar[1].value = (gKeyValue.motorSpeed * 1000) + 3000;
+    gRx422TxVar[1].value = (gKeyValue.motorSpeed * 10000) + 3000;
     //gRx422TxVar[1].value = (gExternalForceState.value * 100) + 3000;
 }
 void GetDisplacementCurve(int a, int b, int c){
