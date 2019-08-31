@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define N (300)
+#define N (100)
 #define RS422STATUSCHECK (1000)
 
 
