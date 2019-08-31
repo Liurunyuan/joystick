@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define N (100)
+#define N (150)
 #define RS422STATUSCHECK (1000)
 
 
@@ -30,6 +30,7 @@ void Timer0_ISR_Thread(void){
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
 
+
     double force_Joystick;
     double cos_value;
     double angle;
@@ -44,6 +45,9 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
+
+        gDebug[0]++;
+
         gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
 

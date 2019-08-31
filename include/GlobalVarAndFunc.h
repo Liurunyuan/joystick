@@ -6,12 +6,14 @@
 #define EXCLUDE_FEATURE 0
 
 #define MACHINE_FRICTION 		INCLUDE_FEATURE
-#define ONLY_SPRING 	 		EXCLUDE_FEATURE
-#define LINEAR_SPEED_METHOD 	INCLUDE_FEATURE
+#define ONLY_SPRING 	 		INCLUDE_FEATURE
+#define LINEAR_SPEED_METHOD 	EXCLUDE_FEATURE
+#define SPEED_CLOSED_LOOP 		INCLUDE_FEATURE
+#define TEN_AVERAGE 			EXCLUDE_FEATURE
 
 
 #define KALMAN_Q  (1.1)
-#define KALMAN_R  (157.2)
+#define KALMAN_R  (157.1)
 
 #define DIS_DIMENSION_K (-0.0007527)
 #define DIS_DIMENSION_B (19.813)
@@ -402,6 +404,14 @@ enum eRotateDirection{
 	INIT_DIRECTION
 };
 
+#define ARRAYSIZE (10)
+typedef struct _TENAVE{
+	double displaceArray[ARRAYSIZE];
+	double forceArray[ARRAYSIZE];
+	double displaceArrayBak[ARRAYSIZE];
+	double forceArrayBak[ARRAYSIZE];
+}TENAVE;
+
 extern STICKSTATE gStickState;
 extern EXTFORCESTATE gExternalForceState;
 extern ROTATEDIRECTION gRotateDirection;
@@ -417,6 +427,7 @@ extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 
 extern ANOLOG16BIT gAnalog16bit;
+extern TENAVE gTenAverageArray;
 
 extern int gforwardOverLimit;
 extern int gbackwardOverLimit;
@@ -426,6 +437,8 @@ extern int gNoExternalForce;
 
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
+extern Uint16 gtestdata[300];
+extern double gDebug[2];
 
 void InitSysState(void);
 void InitConfigParameter(void);
@@ -444,6 +457,7 @@ void Disable_PWMD_BK(void);
 void ControleStateMachineSwitch(int value);
 void InitGlobalVarAndFunc(void);
 int LocateStickDisSection(void);
+double TenDisplaceElemntAverage(void);
 
 
 #endif

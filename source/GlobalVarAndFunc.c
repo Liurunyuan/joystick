@@ -9,6 +9,9 @@
 
 #define  DEBOUNCE (0.10)
 
+Uint16 gtestdata[300] = {0};
+double gDebug[2] = {0};
+
 Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
 KeyValue gKeyValue = {0};
@@ -18,6 +21,7 @@ SYSPARA gSysPara = {0};
 SYSCURRENTSTATE gSysCurrentState = {0};
 CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
+TENAVE gTenAverageArray = {0};
 
 ANOLOG16BIT gAnalog16bit = {0};
 
@@ -209,8 +213,12 @@ void sec1_ODE_rear(int a, int b){
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
     //PidProcess();
+
+#if(ONLY_SPRING == INCLUDE_FEATURE)
 	OnlyWithSpringRear();
-    //gSysInfo.targetDuty = 0;
+#else
+    gSysInfo.targetDuty = 0;
+#endif
 }
 
 void sec2_StartForce_rear(int a, int b){
@@ -312,16 +320,11 @@ void sec6_ODE_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
-//#if(ONLY_SPRING == INCLUDE_FEATURE)
-	//k = findSpringForceK(y0);
-	//kb = findSpringForceB(z0);
-    //gSysInfo.sek = 0;
-//#elseif
-    //PidProcess();
+#if(ONLY_SPRING == INCLUDE_FEATURE)
 	OnlyWithSpringFront();
-//#endif
-    //gSysInfo.targetDuty = 0;
-
+#else
+    //PidProcess();
+#endif
 }
 void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
@@ -975,5 +978,47 @@ int LocateStickDisSection(void){
 	return gSysInfo.currentStickDisSection;
 }
 
+double TenDisplaceElemntAverage(void){
+	//double ret = 0;
+	//int i;
+	//double k[5];
+	// double max = 0;
+	// double min = 0;
+	// double sum = 0;
+
+	// k[0] =  (gTenAverageArray.displaceArray[5] - gTenAverageArray.displaceArray[0])/0.125;
+	// sum = max = min = k[0];
+
+	// for(i = 1; i < 5; ++i){
+	// 	k[i] =  (gTenAverageArray.displaceArray[5 + i] - gTenAverageArray.displaceArray[i])/0.125;
+	// 	if(k[i] > max){
+	// 		max = k[i];
+	// 	}
+	// 	if(k[i] < min){
+	// 		min = k[i];
+	// 	}
+	// 	sum += k[i];
+	// }
+
+	double ret = 0;
+	int i;
+	double sum = 0;
+
+	double k[10];
 
 
+	for(i = 0; i < 10; ++i){
+		k[i] = (gTenAverageArray.displaceArray[i] - gTenAverageArray.displaceArrayBak[i]) / 0.25;
+		sum += k[i];
+	}
+
+	ret = sum / 10;
+	if(ret < 0.02684 && ret > -0.02684){
+		ret = 0;
+	}
+
+	for(i = 0; i < 10; ++i){
+		gTenAverageArray.displaceArrayBak[i] = gTenAverageArray.displaceArray[i];
+	}
+	return ret;
+}
