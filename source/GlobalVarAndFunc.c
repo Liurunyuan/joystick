@@ -203,16 +203,8 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
 
 void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
-    /*so decidde what we should do here */
-    //gSysInfo.sek = 0;
-    if(gExternalForceState.ForceState == FORWARD_FORCE){
-            //IRNullDisAndForwardForce(0,0);
+	/*just output a force to let the stick go to zero state */
         gSysInfo.targetDuty = 80;
-    }
-    else{
-        gSysInfo.targetDuty = 80;
-    }
-
 }
 
 void sec1_ODE_rear(int a, int b){
@@ -335,17 +327,8 @@ void sec6_ODE_front(int a, int b){
 }
 void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
-    /*so decidde what we should do here */
-    //gSysInfo.sek = 0;
-    if(gExternalForceState.ForceState == BACKWARD_FORCE){
-        //IRNullDisAndBackwardForce(0,0);
+	/*just output a force to let the stick go to zero state */
         gSysInfo.targetDuty = -80;
-    }
-    else{
-        gSysInfo.targetDuty = -80;
-    }
-
-
 }
 
 const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
