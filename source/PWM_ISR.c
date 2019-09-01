@@ -706,10 +706,8 @@ int checkStartForceMargin(){
 void Pwm_ISR_Thread(void)
 {
 	StartGetADBySpi();
-	static int c = 0;
 
 	//ReadDigitalValue();
-
 
 	//ReadAnalogValue();
 /*
@@ -722,22 +720,10 @@ void Pwm_ISR_Thread(void)
 	Check_C_X_Current();
 */
     ReadADBySpi();
-//	ReadADBySpiNTimes(1);
-
 
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(KalmanFilterForce(gAnalog16bit.force,50,50));
     //gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(gAnalog16bit.force);
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
-
-	//gtestdata[c] = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value;
-	//gtestdata[c] = gAnalog16bit.displace; 
-	//gtestdata[c] = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
-
-	++c;
-	if(c >= 300){
-		c=0;
-	}
-
 
 	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
 		TargetDutyGradualChange(gSysInfo.targetDuty);
