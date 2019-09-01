@@ -437,16 +437,9 @@ extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
 
-extern int gforwardOverLimit;
-extern int gbackwardOverLimit;
-extern int gforwardForce;
-extern int gbackwardForce;
-extern int gNoExternalForce;
 
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
-extern Uint16 gtestdata[300];
-extern double gDebug[2];
 
 void InitSysState(void);
 void InitConfigParameter(void);

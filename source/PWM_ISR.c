@@ -640,61 +640,6 @@ inline void Check_C_X_Current(){
 	}
 }
 
-int checkDisplaceValidation(){
-    if(gSysInfo.duty > 0){
-        if(gforwardOverLimit == 1){
-            if(gKeyValue.displacement > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
-                return 1;
-            }
-            else{
-                gCheckStartForceForwardMargin = 1;
-                gforwardOverLimit = 1;
-                return 0;
-            }
-        }
-        else{
-            if(gKeyValue.displacement > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
-                return 1;
-            }
-            else{
-                gCheckStartForceForwardMargin = 1;
-                gforwardOverLimit = 1;
-                return 0;
-            }
-        }
-    }
-    else if(gSysInfo.duty < 0){
-        if(gbackwardOverLimit == 1){
-            if(gKeyValue.displacement < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
-                return 1;
-            }
-            else{
-                gCheckStartForceBackwardMargin = 1;
-                gbackwardOverLimit = 1;
-                return 0;
-            }
-        }
-        else{
-            if(gKeyValue.displacement < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
-                return 1;
-            }
-            else{
-                gCheckStartForceBackwardMargin = 1;
-                gbackwardOverLimit = 1;
-                return 0;
-            }
-        }
-    }
-    else{
-        return 1;
-    }
-}
-
-int checkStartForceMargin(){
-//    if(gKeyValue.displacement )
-    return 0;
-}
-
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function

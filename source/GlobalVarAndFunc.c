@@ -9,8 +9,9 @@
 
 #define  DEBOUNCE (0.10)
 
-Uint16 gtestdata[300] = {0};
-double gDebug[2] = {0};
+void InitStickState(void);
+void checkRotateDirection(int value);
+void checkAcceleration(int value);
 
 Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
@@ -22,28 +23,13 @@ SYSCURRENTSTATE gSysCurrentState = {0};
 CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
 TENAVE gTenAverageArray = {0};
-
 ANOLOG16BIT gAnalog16bit = {0};
-
-
 STICKSTATE gStickState = {0};
-
 EXTFORCESTATE gExternalForceState = {0};
 ROTATEDIRECTION gRotateDirection = {0};
 ACCELDIRECTION gAccelDirection = {0};
 
-int gforwardOverLimit = 0;
-int gbackwardOverLimit = 0;
-int gCheckStartForceForwardMargin = 0;
-int gCheckStartForceBackwardMargin = 0;
-int gforwardForce = 0;
-int gbackwardForce = 0;
-int gNoExternalForce = 0;
-
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
-void InitStickState(void);
-void checkRotateDirection(int value);
-void checkAcceleration(int value);
 
 void InitGlobalVarAndFunc(void){
 	gSysInfo.ddtmax = 1;
@@ -106,27 +92,6 @@ void IRNullDisAndBackwardForce(int a, int b){
 	//gSysInfo.targetDuty = -100; 
 }
 
-
-void OORThresholdDisBackward(int a, int b){
-	/*stick is out of the range of the bakcward threshold displacement*/
-	/*so decidde what we should do here */
-	gSysInfo.targetDuty = 0;
-
-}
-
-void OORThresholdDisForward(int a, int b){
-	/*stick is out of the range of the forward threshold displacement*/
-	/*so decidde what we should do here */
-	gSysInfo.targetDuty = 0;
-
-}
-
-void OORThresholdDis(int a, int b){
-	/*stick is out of range of the threshold displacement */
-	/*this functin may not need to use */
-	gSysInfo.targetDuty = 0;
-
-}
 /* 
 * -20mm                                                     0mm                                                      12mm 
 *  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
@@ -167,20 +132,11 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
         IRNullDisAndForwardForce(0,0);
     }
     else{
-        //tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
-
-		// if(gStickState.value > (gSysInfo.TH4 + ((gSysInfo.TH5 - gSysInfo.TH4)/2))){
-        // 	tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
-		// }
-		// else{
-        // 	tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
-		// }
 #if(MACHINE_FRICTION == INCLUDE_FEATURE)
         tmp = -10;//if duty set to 0, you need 22N to push the stick move 
 #elif
         tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
 #endif
-        //tmp = -tmp;
         gSysInfo.targetDuty = tmp;
     }
 }
@@ -193,9 +149,6 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
         IRNullDisAndBackwardForce(0,0);
     }
     else{
-        //tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
-        //tmp = (int32)(displace_PidOutput(gSysInfo.TH2, gStickState.value));
-        //tmp = -tmp;
 		tmp = 10;
         gSysInfo.targetDuty = tmp;
     }
@@ -1020,27 +973,6 @@ int LocateStickDisSection(void){
 }
 
 double TenDisplaceElemntAverage(void){
-	//double ret = 0;
-	//int i;
-	//double k[5];
-	// double max = 0;
-	// double min = 0;
-	// double sum = 0;
-
-	// k[0] =  (gTenAverageArray.displaceArray[5] - gTenAverageArray.displaceArray[0])/0.125;
-	// sum = max = min = k[0];
-
-	// for(i = 1; i < 5; ++i){
-	// 	k[i] =  (gTenAverageArray.displaceArray[5 + i] - gTenAverageArray.displaceArray[i])/0.125;
-	// 	if(k[i] > max){
-	// 		max = k[i];
-	// 	}
-	// 	if(k[i] < min){
-	// 		min = k[i];
-	// 	}
-	// 	sum += k[i];
-	// }
-
 	double ret = 0;
 	int i;
 	double sum = 0;
