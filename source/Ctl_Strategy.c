@@ -221,9 +221,9 @@ void OnlyWithSpringFront(void){
 	}
 	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
 	inertial_force = mass * gKeyValue.motorAccel;
-	spring_force = 0;
-	damp_force = 0;
-	friction = 0;
+	//spring_force = 0;
+	//damp_force = 0;
+	//friction = 0;
 
 	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
 	    velocity_force = friction + damp_force;
