@@ -206,11 +206,12 @@ void sec0_threshold_rear(int a, int b){
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
     if(gExternalForceState.ForceState == FORWARD_FORCE){
-            IRNullDisAndForwardForce(0,0);
-        }
-        else{
-            gSysInfo.targetDuty = 0;
-        }
+            //IRNullDisAndForwardForce(0,0);
+        gSysInfo.targetDuty = 80;
+    }
+    else{
+        gSysInfo.targetDuty = 80;
+    }
 
 }
 
@@ -337,10 +338,11 @@ void sec7_threshold_front(int a, int b){
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
     if(gExternalForceState.ForceState == BACKWARD_FORCE){
-        IRNullDisAndBackwardForce(0,0);
+        //IRNullDisAndBackwardForce(0,0);
+        gSysInfo.targetDuty = -80;
     }
     else{
-        gSysInfo.targetDuty = 0;
+        gSysInfo.targetDuty = -80;
     }
 
 

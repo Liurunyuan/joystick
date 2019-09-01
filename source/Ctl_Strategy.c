@@ -196,6 +196,17 @@ void OnlyWithSpringFront(void){
 	double mass;
 	double inertial_force;
 	double velocity_force;
+	double B = 0; 
+
+	if(gExternalForceState.ForceState == BACKWARD_FORCE){
+		B = -40;
+	}
+	else if(gExternalForceState.ForceState == FORWARD_FORCE){
+		B = 40;
+	}
+	else{
+		B = 0;
+	}
 
 	k = findSpringForceK(gStickState.value);
 	kb = findSpringForceB(gStickState.value);
@@ -248,7 +259,7 @@ void OnlyWithSpringFront(void){
 
 	tmp = force_PidOutput(y, gExternalForceState.value);
 	tmp = -tmp;
-	gSysInfo.targetDuty = y + tmp;
+	gSysInfo.targetDuty = (1.01 * y + B) + tmp;
 	
 }
 /**************************************************************

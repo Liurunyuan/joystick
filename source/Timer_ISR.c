@@ -84,13 +84,13 @@ void Timer0_ISR_Thread(void){
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
 
-        if(gSysInfo.controlFuncIndex == SECTION0
-        || gSysInfo.controlFuncIndex == SECTION7){
-            gSysState.warning.bit.a = 1;
-        }
-        else{
-            gSysState.warning.bit.a = 0;
-        }
+        // if(gSysInfo.controlFuncIndex == SECTION0
+        // || gSysInfo.controlFuncIndex == SECTION7){
+        //     gSysState.warning.bit.a = 1;
+        // }
+        // else{
+        //     gSysState.warning.bit.a = 0;
+        // }
 
 
 		clearSum();
