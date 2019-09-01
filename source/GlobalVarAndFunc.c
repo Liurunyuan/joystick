@@ -52,11 +52,11 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	gSysInfo.TH0 = -19.2;
-	gSysInfo.TH1 = -18.5;
-	gSysInfo.TH2 = -17.5;
-	gSysInfo.TH3 = -16.0;
-	gSysInfo.TH4 = -15.5;
-	gSysInfo.TH5 = -14.5;
+	gSysInfo.TH1 = -2.0;
+	gSysInfo.TH2 = -1.5;
+	gSysInfo.TH3 = 0.0;
+	gSysInfo.TH4 = 1.5;
+	gSysInfo.TH5 = 2.5;
 	gSysInfo.TH6 = 11.2;
 	gSysInfo.Ki_Threshold = 6;
 

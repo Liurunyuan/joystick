@@ -221,9 +221,6 @@ void OnlyWithSpringFront(void){
 	}
 	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
 	inertial_force = mass * gKeyValue.motorAccel;
-	//inertial_force = 240 * gKeyValue.motorAccel / 16;
-	gDebug[0] = mass;
-	//inertial_force = 0;
 	spring_force = 0;
 	damp_force = 0;
 	friction = 0;

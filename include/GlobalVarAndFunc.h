@@ -369,8 +369,8 @@ typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
 /***********************Force state*******************************/
-#define FORWARD_FORCE_VALUE (0.95)
-#define BACKWARD_FORCE_VALUE (-0.95)
+#define FORWARD_FORCE_VALUE (0.25)
+#define BACKWARD_FORCE_VALUE (-0.25)
 
 #define FOWARD_START_FORCE (5)
 #define BACKWARD_START_FORCE (-5)
