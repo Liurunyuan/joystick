@@ -17,7 +17,7 @@ Uint16 real3 = 0;
 
 void UpdateKeyValue(void) {
 	static int calSpeedCnt = 0;
-	static double bakSpeed = 0;
+//	static double bakSpeed = 0;
 
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
 	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;

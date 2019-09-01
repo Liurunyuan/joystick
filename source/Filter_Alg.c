@@ -100,7 +100,7 @@ void clearSumSpeed(void) {
 	sumParaSpeed.sum_Y = 0;
 }
 FuncPara calFuncParaSpeed(SumPara sumPara){
-	double temp,temp0,temp1,temp2;
+	double temp,temp0,temp1;
 	FuncPara funcPara;
 
 	temp = (DATA_AMOUNT * sumParaSpeed.sum_Xpow2) - (sumParaSpeed.sum_X * sumParaSpeed.sum_X); 
@@ -147,7 +147,7 @@ FuncPara calFuncPara(SumPara sumPara){
 #endif
 
 #if(FIRST_ORDER)
-	double temp,temp0,temp1,temp2;
+	double temp,temp0,temp1;
 	FuncPara funcPara;
 
 	temp = (DATA_AMOUNT * sumPara.sum_Xpow2) - (sumPara.sum_X * sumPara.sum_X); 

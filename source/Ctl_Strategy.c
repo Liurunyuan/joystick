@@ -63,101 +63,7 @@ double findSpringForceB(double displace){
 	//TODO generate alarm, because the displacement is out of range
 	return springForceB;
 }
-/**************************************************************
- *Name:		   CalculateSpringForce
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:25
- **************************************************************/
-inline void CalculateSpringForce(void) {
-	//SpringForce = k * s
-	gSysCurrentState.springForce = gSysPara.k_springForce * gKeyValue.displacement;
-}
-/**************************************************************
- *Name:		   CalculateDampForce
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:25
- **************************************************************/
-inline void CalculateDampForce(void) {
-	//DampForce = k * v
-	gSysCurrentState.dampForce = gSysPara.k_dampForce *  gKeyValue.motorSpeed;
-}
-/**************************************************************
- *Name:		   CalculateTargetAcc
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:48
- **************************************************************/
-inline void CalculateTargetAcc(void) {
-	//a = (F - springForce - dampForce) / m
-	gSysCurrentState.accTarget = (gKeyValue.force - gSysCurrentState.springForce - gSysCurrentState.dampForce) / gSysPara.mass;
 
-}
-/**************************************************************
- *Name:		   CalculateTargetSpeed
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:59
- **************************************************************/
-inline void CalculateTargetSpeed(void) {
-
-	gSysCurrentState.speedTarget = gKeyValue.motorSpeed + gSysCurrentState.accTarget * 1;
-
-}
-/**************************************************************
- *Name:		   CalculateTargeDisplace
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:32:11
- **************************************************************/
-inline void CalculateTargeDisplace(void) {
-//TODO need to find a method to get the right target of displacement
-
-}
-/**************************************************************
- *Name:		   UpdateAccErr
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:32:46
- **************************************************************/
-inline void UpdateAccErr(void) {
-	gSysCurrentState.errAcc = gSysCurrentState.accTarget - gKeyValue.motorAccel;
-}
-/**************************************************************
- *Name:		   UpdateSpeedErr
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:32:57
- **************************************************************/
-inline void UpdateSpeedErr(void) {
-	gSysCurrentState.errSpeed = gSysCurrentState.speedTarget - gKeyValue.motorSpeed;
-}
-/**************************************************************
- *Name:		   UpdateDisplacementErr
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:33:07
- **************************************************************/
-inline void UpdateDisplacementErr(void) {
-	gSysCurrentState.errDisplacement = gSysCurrentState.displaceTarget - gKeyValue.displacement;
-}
 void OnlyWithSpringRear(void){
 	double k;
 	double kb;
@@ -318,8 +224,8 @@ double function(double x0, double y0, double z0, double h){
 //	b = gSysPara.k_springForce / gSysPara.mass;
 //	c = gKeyValue.force / gSysPara.mass;
 
-	//k = findSpringForceK(y0);
-	//kb = findSpringForceB(y0);
+	k = findSpringForceK(y0);
+	kb = findSpringForceB(y0);
 	//gSysPara.k_springForce = k;
 	//gSysPara.k_dampForce = kb;
 	//gSysPara.mass = k/(4); 
