@@ -17,15 +17,21 @@ RS422TXQUE gRS422TxQue = {0};
 
 
 void GetTorqueCurve(int a, int b, int c){
-    gRx422TxVar[0].value = (gSysPara.k_dampForce * 100) + 3000;
+    //gRx422TxVar[0].value = (gSysPara.k_dampForce * 100) + 3000;
+    gRx422TxVar[0].value = (gKeyValue.displacement * 100) + 5000;
+  	//gRx422TxVar[0].value = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value;
+    //gRx422TxVar[0].value = gAnalog16bit.displace;
 
 }
 void GetMotorSpeedCurve(int a, int b, int c){
-    gRx422TxVar[1].value = (gKeyValue.motorSpeed * 1000) + 3000;
+    //gRx422TxVar[1].value = (gKeyValue.motorSpeed * 40000) + 5000;
     //gRx422TxVar[1].value = (gExternalForceState.value * 100) + 3000;
+    gRx422TxVar[1].value = (gKeyValue.motorAccel * 100) + 5000;
 }
 void GetDisplacementCurve(int a, int b, int c){
-    gRx422TxVar[2].value = (gKeyValue.motorAccel * 1000) + 3000;
+    //gRx422TxVar[2].value = (gKeyValue.motorAccel * 10000) + 5000;
+	//gRx422TxVar[2].value = gAccelDirection.accelDirection;
+	gRx422TxVar[2].value = gSysInfo.targetDuty * 10 + 5000;
 }
 void GetMotorCurrentCurve(int a, int b, int c){
 	gRx422TxVar[3].value = gSysMonitorVar.anolog.single.var[BusCurrentA].value;
@@ -40,7 +46,7 @@ void GetTemperatureCurve(int a, int b, int c){
 	gRx422TxVar[5].value = 3000;
 }
 void GetMotorAccelCurve(int a, int b, int c){
-	gRx422TxVar[6].value = (int)(gKeyValue.motorAccel * 500);;
+	gRx422TxVar[6].value = (int)(gKeyValue.motorAccel * 500);
 }
 
 
@@ -103,7 +109,6 @@ void InitgRx422TxVar(void) {
  ****************************************************************/
 int RX422TXEnQueue(char e){
 	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
-		asm ("      ESTOP0");
 		return 0;
 	}
 
@@ -197,24 +202,19 @@ void PackRS422TxData(void){
 
 	if(count == 0){
 		if(RX422TXEnQueue(0x5a) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0x5a) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		lenPosition = gRS422TxQue.rear;
 		if(RX422TXEnQueue(0x05) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0xff) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0xff) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		updateTxEnableFlag();
@@ -229,15 +229,12 @@ void PackRS422TxData(void){
 			tmp[1] = gRx422TxVar[i].value >> 8;
 			tmp[2] = gRx422TxVar[i].value;
 			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
-				asm ("      ESTOP0");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value >> 8) == 0){
-				asm ("      ESTOP0");
 				return;
 			}
 			if(RX422TXEnQueue(gRx422TxVar[i].value) == 0){
-				asm ("      ESTOP0");
 				return;
 			}
 			crc = calCrc(crc, tmp, 3);
@@ -259,19 +256,15 @@ void PackRS422TxData(void){
 		crc = 0;
 		count = 0;
 		if(RX422TXEnQueue(crch) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(crcl) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 		if(RX422TXEnQueue(0xa5) == 0){
-			asm ("      ESTOP0");
 			return;
 		}
 	}

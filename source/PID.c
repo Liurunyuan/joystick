@@ -16,8 +16,8 @@ void InitPidVar(void){
     gPidPara.kd_displace = 0;
     //gPidPara.targetPid_displace = 0;  //é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·ç‰¡é”Ÿè§’ç™™IDé”Ÿæ–¤æ‹·é”Ÿè¡—ï¿½  ä»€ä¹ˆé”Ÿæ–¤æ‹·æ€�é”Ÿæ–¤æ‹·LUG
 
-    gPidPara.kp_force = 10;
-    gPidPara.ki_force = 1.2;
+    gPidPara.kp_force = 5;
+    gPidPara.ki_force = 0;
     gPidPara.kd_force = 0;
     //gPidPara.targetPid_force = 0;
 
@@ -73,6 +73,7 @@ int16 force_PidOutput(double targetVal, double controlVar){
         gSysInfo.sek = 0;
     }
     pidOutput = (int16)(ek1 * gPidPara.kp_force) + (int16)(gSysInfo.sek * gPidPara.ki_force);
+    //pidOutput = (int16)(ek1 * gPidPara.kp_force);
     //pidOutput = (int32)((ek1 * gPidPara.kp_force) + (gExternalForceState.value * 2));
     //pidOutput = (int32)(ek1 * gPidPara.kp_displace);
 

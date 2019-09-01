@@ -5,12 +5,15 @@
 #define INCLUDE_FEATURE 1
 #define EXCLUDE_FEATURE 0
 
-#define MACHINE_FRICTION 	INCLUDE_FEATURE
-#define ONLY_SPRING 	 	EXCLUDE_FEATURE
+#define MACHINE_FRICTION 		INCLUDE_FEATURE
+#define ONLY_SPRING 	 		INCLUDE_FEATURE
+#define LINEAR_SPEED_METHOD 	EXCLUDE_FEATURE
+#define SPEED_CLOSED_LOOP 		INCLUDE_FEATURE
+#define TEN_AVERAGE 			EXCLUDE_FEATURE
 
 
 #define KALMAN_Q  (1.1)
-#define KALMAN_R  (157.2)
+#define KALMAN_R  (157.1)
 
 #define DIS_DIMENSION_K (-0.0007527)
 #define DIS_DIMENSION_B (19.813)
@@ -394,6 +397,13 @@ typedef struct _ROTATEDIRECTION{
 	int debounceCount_2;
 }ROTATEDIRECTION;
 
+typedef struct _ACCELDIRECTION{
+    int accelDirection;
+    UPDATESTATE updateAccelDirection;
+    int debounceCount_1;
+    int debounceCount_2;
+}ACCELDIRECTION;
+
 enum eRotateDirection{
 	STOP_DIRECTION = 0,
 	BACKWARD_DIRECTION  =1,
@@ -401,9 +411,18 @@ enum eRotateDirection{
 	INIT_DIRECTION
 };
 
+#define ARRAYSIZE (10)
+typedef struct _TENAVE{
+	double displaceArray[ARRAYSIZE];
+	double forceArray[ARRAYSIZE];
+	double displaceArrayBak[ARRAYSIZE];
+	double forceArrayBak[ARRAYSIZE];
+}TENAVE;
+
 extern STICKSTATE gStickState;
 extern EXTFORCESTATE gExternalForceState;
 extern ROTATEDIRECTION gRotateDirection;
+extern ACCELDIRECTION gAccelDirection;
 
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;
@@ -416,6 +435,7 @@ extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 
 extern ANOLOG16BIT gAnalog16bit;
+extern TENAVE gTenAverageArray;
 
 extern int gforwardOverLimit;
 extern int gbackwardOverLimit;
@@ -425,12 +445,15 @@ extern int gNoExternalForce;
 
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
+extern Uint16 gtestdata[300];
+extern double gDebug[2];
 
 void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
+double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 void UpdateForceDisplaceCurve(void);
 void EnablePwmOutput(void);
 void DisablePwmOutput(void);
@@ -442,6 +465,7 @@ void Disable_PWMD_BK(void);
 void ControleStateMachineSwitch(int value);
 void InitGlobalVarAndFunc(void);
 int LocateStickDisSection(void);
+double TenDisplaceElemntAverage(void);
 
 
 #endif
