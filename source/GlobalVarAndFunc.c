@@ -9,6 +9,9 @@
 
 #define  DEBOUNCE (0.10)
 
+Uint16 gtestdata[300] = {0};
+double gDebug[2] = {0};
+
 Uint32 gECapCount = 0;
 RS422STATUS gRS422Status = {0};
 KeyValue gKeyValue = {0};
@@ -18,6 +21,7 @@ SYSPARA gSysPara = {0};
 SYSCURRENTSTATE gSysCurrentState = {0};
 CONFIGPARA gConfigPara = {0};
 FORCE_DISPLACE_CURVE gForceAndDisplaceCurve  = {0};
+TENAVE gTenAverageArray = {0};
 
 ANOLOG16BIT gAnalog16bit = {0};
 
@@ -26,6 +30,7 @@ STICKSTATE gStickState = {0};
 
 EXTFORCESTATE gExternalForceState = {0};
 ROTATEDIRECTION gRotateDirection = {0};
+ACCELDIRECTION gAccelDirection = {0};
 
 int gforwardOverLimit = 0;
 int gbackwardOverLimit = 0;
@@ -38,6 +43,7 @@ int gNoExternalForce = 0;
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 void InitStickState(void);
 void checkRotateDirection(int value);
+void checkAcceleration(int value);
 
 void InitGlobalVarAndFunc(void){
 	gSysInfo.ddtmax = 1;
@@ -45,13 +51,13 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
-	gSysInfo.TH0 = -9.2;
+	gSysInfo.TH0 = -19.2;
 	gSysInfo.TH1 = -2.0;
 	gSysInfo.TH2 = -1.5;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 1.5;
-	gSysInfo.TH5 = 2.0;
-	gSysInfo.TH6 = 10.2;
+	gSysInfo.TH5 = 2.5;
+	gSysInfo.TH6 = 11.2;
 	gSysInfo.Ki_Threshold = 6;
 
 	InitSysState();
@@ -59,6 +65,10 @@ void InitGlobalVarAndFunc(void){
 
 	gRotateDirection.rotateDirection = INIT_DIRECTION;
 	gRotateDirection.updateRotateDirection = checkRotateDirection;
+	gAccelDirection.accelDirection = INIT_DIRECTION;
+	gAccelDirection.updateAccelDirection = checkAcceleration;
+    gAccelDirection.debounceCount_1 = 0;
+    gAccelDirection.debounceCount_2 = 0;
 	gRotateDirection.debounceCount_1 = 0;
 	gRotateDirection.debounceCount_2 = 0;
 }
@@ -196,11 +206,12 @@ void sec0_threshold_rear(int a, int b){
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
     if(gExternalForceState.ForceState == FORWARD_FORCE){
-            IRNullDisAndForwardForce(0,0);
-        }
-        else{
-            gSysInfo.targetDuty = 0;
-        }
+            //IRNullDisAndForwardForce(0,0);
+        gSysInfo.targetDuty = 80;
+    }
+    else{
+        gSysInfo.targetDuty = 80;
+    }
 
 }
 
@@ -209,8 +220,12 @@ void sec1_ODE_rear(int a, int b){
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
     //PidProcess();
+
+#if(ONLY_SPRING == INCLUDE_FEATURE)
 	OnlyWithSpringRear();
-    //gSysInfo.targetDuty = 0;
+#else
+    gSysInfo.targetDuty = 0;
+#endif
 }
 
 void sec2_StartForce_rear(int a, int b){
@@ -312,26 +327,22 @@ void sec6_ODE_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
-//#if(ONLY_SPRING == INCLUDE_FEATURE)
-	//k = findSpringForceK(y0);
-	//kb = findSpringForceB(z0);
-    //gSysInfo.sek = 0;
-//#elseif
-    //PidProcess();
+#if(ONLY_SPRING == INCLUDE_FEATURE)
 	OnlyWithSpringFront();
-//#endif
-    //gSysInfo.targetDuty = 0;
-
+#else
+    //PidProcess();
+#endif
 }
 void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
     if(gExternalForceState.ForceState == BACKWARD_FORCE){
-        IRNullDisAndBackwardForce(0,0);
+        //IRNullDisAndBackwardForce(0,0);
+        gSysInfo.targetDuty = -80;
     }
     else{
-        gSysInfo.targetDuty = 0;
+        gSysInfo.targetDuty = -80;
     }
 
 
@@ -383,17 +394,6 @@ void checkRotateDirection(int value){
 			        gRotateDirection.debounceCount_1 = 0;
 			    }
 			}
-//			else if(gKeyValue.motorSpeed > 0.02){
-//                gRotateDirection.debounceCount_2++;
-//                gRotateDirection.debounceCount_1 = 0;
-//                if(gRotateDirection.debounceCount_2 > 10){
-//                    gRotateDirection.rotateDirection = STOP_DIRECTION;
-//                    gRotateDirection.debounceCount_2 = 0;
-//                }
-//			}
-//			else{
-//
-//			}
 			break;
 		case FORWARD_DIRECTION:
 			if(gKeyValue.motorSpeed < 0.02){
@@ -404,17 +404,6 @@ void checkRotateDirection(int value){
                     gRotateDirection.debounceCount_1 = 0;
                 }
 			}
-//			else if(gKeyValue.motorSpeed < -0.02){
-//                gRotateDirection.debounceCount_2++;
-//                gRotateDirection.debounceCount_1 = 0;
-//                if(gRotateDirection.debounceCount_2 > 10){
-//                    gRotateDirection.rotateDirection = STOP_DIRECTION;
-//                    gRotateDirection.debounceCount_2 = 0;
-//                }
-//			}
-//			else{
-//
-//			}
 			break;
 		case STOP_DIRECTION:
 			if(gKeyValue.motorSpeed > 0.03){
@@ -441,6 +430,78 @@ void checkRotateDirection(int value){
 		default:
 			break;
 	}
+}
+
+void checkAcceleration(int value){
+    switch(gAccelDirection.accelDirection)
+    {
+        case INIT_DIRECTION:
+            if(gKeyValue.motorAccel > 0.1){
+                gAccelDirection.accelDirection = FORWARD_DIRECTION;
+            }
+            else if(gAccelDirection.accelDirection < -0.1){
+                gAccelDirection.accelDirection = BACKWARD_DIRECTION;
+            }
+            else{
+                gAccelDirection.accelDirection = STOP_DIRECTION;
+            }
+            break;
+        case BACKWARD_DIRECTION:
+            if(gKeyValue.motorAccel > -0.04){
+                gAccelDirection.debounceCount_1++;
+                gAccelDirection.debounceCount_2 = 0;
+                if(gAccelDirection.debounceCount_1 > 4){
+                    gAccelDirection.accelDirection = STOP_DIRECTION;
+                    gAccelDirection.debounceCount_1 = 0;
+                }
+            }
+			else{
+                gAccelDirection.debounceCount_1 = 0;
+                gAccelDirection.debounceCount_2 = 0;
+
+			}
+            break;
+        case FORWARD_DIRECTION:
+            if(gKeyValue.motorAccel < 0.04){
+                gAccelDirection.debounceCount_1++;
+                gAccelDirection.debounceCount_2 = 0;
+                if(gAccelDirection.debounceCount_1 > 4){
+                    gAccelDirection.accelDirection = STOP_DIRECTION;
+                    gAccelDirection.debounceCount_1 = 0;
+                }
+            }
+			else{
+                gAccelDirection.debounceCount_1 = 0;
+                gAccelDirection.debounceCount_2 = 0;
+			}
+            break;
+        case STOP_DIRECTION:
+            if(gKeyValue.motorAccel > 0.4){
+                gAccelDirection.debounceCount_1++;
+                gAccelDirection.debounceCount_2 = 0;
+                if(gAccelDirection.debounceCount_1 > 8){
+                    gAccelDirection.accelDirection = FORWARD_DIRECTION;
+                    gAccelDirection.debounceCount_1 = 0;
+                }
+            }
+            else if(gKeyValue.motorAccel < -0.4){
+                gAccelDirection.debounceCount_2++;
+                gAccelDirection.debounceCount_1 = 0;
+                if(gAccelDirection.debounceCount_2 > 8){
+                    gAccelDirection.accelDirection = BACKWARD_DIRECTION;
+                    gAccelDirection.debounceCount_2 = 0;
+                }
+            }
+            else{
+                gAccelDirection.accelDirection = STOP_DIRECTION;
+                gAccelDirection.debounceCount_1 = 0;
+                gAccelDirection.debounceCount_2 = 0;
+            }
+
+            break;
+        default:
+            break;
+    }
 }
 
 void checkExternalForce(int value){
@@ -611,7 +672,7 @@ void InitConfigParameter(void){
 	gConfigPara.LF_Distance7 = 8;
 	gConfigPara.LF_Distance8 = 9;
 	gConfigPara.LF_Distance9 = 9.5;
-	gConfigPara.LF_MaxDistance = 10.15;
+	gConfigPara.LF_MaxDistance = 12;
 
 	gConfigPara.RB_Distance1 = -0;
 	gConfigPara.RB_Distance2 = -3;
@@ -622,7 +683,7 @@ void InitConfigParameter(void){
 	gConfigPara.RB_Distance7 = -7.5;
 	gConfigPara.RB_Distance8 = -8;
 	gConfigPara.RB_Distance9 = -8.5;
-	gConfigPara.RB_MaxDistance = -9.15;
+	gConfigPara.RB_MaxDistance = -20;
 
 	gConfigPara.LF_StartForce = 0;
 	gConfigPara.RB_StartForce = 0;
@@ -635,7 +696,7 @@ void InitConfigParameter(void){
 	gConfigPara.LF_EmptyDistance = 0;
 	gConfigPara.RB_EmptyDistance = 0;
 
-	gConfigPara.dampingFactor = 1;
+	gConfigPara.dampingFactor = 0.5;
 
 	gConfigPara.naturalVibrationFreq = 20.0;
 
@@ -784,6 +845,32 @@ double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double M
 	return x_now;
 }
 
+double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
+{
+	double R = MeasureNoise_R;
+	double Q = ProcessNiose_Q;
+
+	static double x_last = 0;
+	double x_mid = x_last;
+	double x_now;
+
+	static double p_last = 0;
+	double p_mid;
+	double p_now;
+
+	double kg;
+
+	x_mid = x_last;
+	p_mid = p_last + Q;
+
+	kg = p_mid / (p_mid + R);
+	x_now = x_mid + kg * (ResrcData - x_mid);
+	p_now = (1 - kg) * p_mid;
+	p_last = p_now;
+	x_last = x_now;
+
+	return x_now;
+}
 
 void Enable_KZ_P_DSP(void){
 	GpioDataRegs.GPASET.bit.GPIO31 = 1;
@@ -949,5 +1036,47 @@ int LocateStickDisSection(void){
 	return gSysInfo.currentStickDisSection;
 }
 
+double TenDisplaceElemntAverage(void){
+	//double ret = 0;
+	//int i;
+	//double k[5];
+	// double max = 0;
+	// double min = 0;
+	// double sum = 0;
+
+	// k[0] =  (gTenAverageArray.displaceArray[5] - gTenAverageArray.displaceArray[0])/0.125;
+	// sum = max = min = k[0];
+
+	// for(i = 1; i < 5; ++i){
+	// 	k[i] =  (gTenAverageArray.displaceArray[5 + i] - gTenAverageArray.displaceArray[i])/0.125;
+	// 	if(k[i] > max){
+	// 		max = k[i];
+	// 	}
+	// 	if(k[i] < min){
+	// 		min = k[i];
+	// 	}
+	// 	sum += k[i];
+	// }
+
+	double ret = 0;
+	int i;
+	double sum = 0;
+
+	double k[10];
 
 
+	for(i = 0; i < 10; ++i){
+		k[i] = (gTenAverageArray.displaceArray[i] - gTenAverageArray.displaceArrayBak[i]) / 0.25;
+		sum += k[i];
+	}
+
+	ret = sum / 10;
+	if(ret < 0.02684 && ret > -0.02684){
+		ret = 0;
+	}
+
+	for(i = 0; i < 10; ++i){
+		gTenAverageArray.displaceArrayBak[i] = gTenAverageArray.displaceArray[i];
+	}
+	return ret;
+}

@@ -6,6 +6,7 @@
 
 void StartGetADBySpi(void);
 void ReadADBySpi(void);
+void ReadADBySpiNTimes(int n);
 
 
 #endif
