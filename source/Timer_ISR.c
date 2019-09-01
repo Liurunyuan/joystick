@@ -30,7 +30,6 @@ void Timer0_ISR_Thread(void){
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
 
-
     double force_Joystick;
     double cos_value;
     double angle;
@@ -45,7 +44,6 @@ void Timer0_ISR_Thread(void){
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
 		UpdateKeyValue();
-
 
         gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
@@ -83,15 +81,6 @@ void Timer0_ISR_Thread(void){
         gSysInfo.controlFuncIndex = LocateStickDisSection();
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
-
-        // if(gSysInfo.controlFuncIndex == SECTION0
-        // || gSysInfo.controlFuncIndex == SECTION7){
-        //     gSysState.warning.bit.a = 1;
-        // }
-        // else{
-        //     gSysState.warning.bit.a = 0;
-        // }
-
 
 		clearSum();
 		gKeyValue.lock = 0;
