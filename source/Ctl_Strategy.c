@@ -195,6 +195,7 @@ void OnlyWithSpringFront(void){
 	double spring_force;
 	double mass;
 	double inertial_force;
+	double velocity_force;
 
 	k = findSpringForceK(gStickState.value);
 	kb = findSpringForceB(gStickState.value);
@@ -212,28 +213,43 @@ void OnlyWithSpringFront(void){
     }
 
 	spring_force = k * gStickState.value + kb;
-	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
-	inertial_force = mass * gKeyValue.motorAccel;
-	inertial_force = 0;
-	spring_force = 0;
-	damp_force = 0;
-
-	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-		y = spring_force + friction + damp_force + inertial_force;
-	}
-	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-		y = spring_force - friction + damp_force + inertial_force;
+	if(gKeyValue.motorSpeed >= 0){
+	    gKeyValue.motorSpeed = gKeyValue.motorSpeed;
 	}
 	else{
-		y = spring_force;
+	    gKeyValue.motorSpeed = -1 * gKeyValue.motorSpeed;
+	}
+	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
+	inertial_force = mass * gKeyValue.motorAccel;
+	//inertial_force = 240 * gKeyValue.motorAccel / 16;
+	gDebug[0] = mass;
+	//inertial_force = 0;
+	spring_force = 0;
+	damp_force = 0;
+	friction = 0;
+
+	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+	    velocity_force = friction + damp_force;
+	}
+	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+	    velocity_force = 0 - friction - damp_force;
+	}
+	else{
+	    velocity_force = 0;
 	}
 
-	//y = k * gStickState.value + kb + friction;
-	gSysPara.k_dampForce = y;
+	if(gAccelDirection.accelDirection == FORWARD_DIRECTION){
+	    inertial_force = -inertial_force;
+	}
+	else if(gAccelDirection.accelDirection == BACKWARD_DIRECTION){
+	    inertial_force = -inertial_force;
+	}
+	else{
+	    inertial_force = 0;
+	}
+	y = spring_force + velocity_force + inertial_force;
 
 	tmp = force_PidOutput(y, gExternalForceState.value);
-
-	//tmp = (int32)((y - gExternalForceState.value) * 10);
 	tmp = -tmp;
 	gSysInfo.targetDuty = y + tmp;
 	

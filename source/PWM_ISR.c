@@ -17,6 +17,7 @@ Uint16 real3 = 0;
 
 void UpdateKeyValue(void) {
 	static int calSpeedCnt = 0;
+	static double bakSpeed = 0;
 
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
 	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
@@ -36,14 +37,20 @@ void UpdateKeyValue(void) {
 	//gKeyValue.motorAccel = KalmanFilterAccel(((2 * funcParaDisplacement.a)/1000), KALMAN_Q, KALMAN_R);
 	//gKeyValue.motorAccel = KalmanFilterAccel(((2 * funcParaDisplacement.a)), 50, 50);
 	//gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
+/*disable temp */
 	CalFuncParaSpeed(gKeyValue.motorSpeed, calSpeedCnt);
 	++calSpeedCnt;
 	if(calSpeedCnt >= 10){
 		funcParaSpeed = calFuncParaSpeed(sumParaSpeed);
-		gKeyValue.motorAccel = KalmanFilterAccel(funcParaSpeed.b, 1, 150);
+		gKeyValue.motorAccel = KalmanFilterAccel(1000 * funcParaSpeed.b, 1, 150);
 		calSpeedCnt = 0;
 		clearSumSpeed();
+		gAccelDirection.updateAccelDirection(0);
 	}
+/*disable temp */
+	// gKeyValue.motorAccel = KalmanFilterAccel(((gKeyValue.motorSpeed - bakSpeed) * 1000)/0.25, 1, 150);
+	// bakSpeed = gKeyValue.motorSpeed;
+	// gAccelDirection.updateAccelDirection(0);
 }
 void TargetDutyGradualChange(int targetduty){
 	gSysInfo.duty = targetduty; 
@@ -119,7 +126,6 @@ void CalForceSpeedAccel(void) {
 	}
 	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*DIS_DIMENSION_K+DIS_DIMENSION_B), count);
 	//gTenAverageArray.displaceArray[count] = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value; 
-	gDebug[1]++;
 	++count;
 
 	if(count >= DATA_AMOUNT){

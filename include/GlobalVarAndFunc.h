@@ -369,8 +369,8 @@ typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
 /***********************Force state*******************************/
-#define FORWARD_FORCE_VALUE (0.25)
-#define BACKWARD_FORCE_VALUE (-0.25)
+#define FORWARD_FORCE_VALUE (0.95)
+#define BACKWARD_FORCE_VALUE (-0.95)
 
 #define FOWARD_START_FORCE (5)
 #define BACKWARD_START_FORCE (-5)
@@ -397,6 +397,13 @@ typedef struct _ROTATEDIRECTION{
 	int debounceCount_2;
 }ROTATEDIRECTION;
 
+typedef struct _ACCELDIRECTION{
+    int accelDirection;
+    UPDATESTATE updateAccelDirection;
+    int debounceCount_1;
+    int debounceCount_2;
+}ACCELDIRECTION;
+
 enum eRotateDirection{
 	STOP_DIRECTION = 0,
 	BACKWARD_DIRECTION  =1,
@@ -415,6 +422,7 @@ typedef struct _TENAVE{
 extern STICKSTATE gStickState;
 extern EXTFORCESTATE gExternalForceState;
 extern ROTATEDIRECTION gRotateDirection;
+extern ACCELDIRECTION gAccelDirection;
 
 extern Uint32 gECapCount;
 extern RS422STATUS gRS422Status;

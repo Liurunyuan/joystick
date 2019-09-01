@@ -46,7 +46,6 @@ void Timer0_ISR_Thread(void){
 		//calculate function parameter
 		UpdateKeyValue();
 
-        gDebug[0]++;
 
         gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
