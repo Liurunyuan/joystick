@@ -35,6 +35,10 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.ddtmax = 1;
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
+	gSysInfo.targetDuty_F = 0;
+	gSysInfo.targetDuty_V = 0;
+	gSysInfo.coe_Force = 1;
+	gSysInfo.coe_Velocity = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	gSysInfo.TH0 = -19.2;
@@ -42,9 +46,10 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.TH2 = -1.5;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 1.5;
-	gSysInfo.TH5 = 2.5;
+	gSysInfo.TH5 = 1.8;
 	gSysInfo.TH6 = 11.2;
-	gSysInfo.Ki_Threshold = 6;
+	gSysInfo.Ki_Threshold_f = 6;
+	gSysInfo.Ki_Threshold_v = 0.1;
 
 	InitSysState();
 	InitStickState();

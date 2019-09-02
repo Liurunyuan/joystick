@@ -132,10 +132,16 @@ typedef struct{
 	int16 dutyAddInterval;
 	int16 ddtmax;
 	int16 targetDuty;
+	int16 targetDuty_F;
+	int16 targetDuty_V;
+	double coe_Force;
+	double coe_Velocity;
 	int controlFuncIndex;
 	int currentStickDisSection;
-	int16 Ki_Threshold;
-	int16 sek;
+	int16 Ki_Threshold_f;
+	int16 sek_f;
+	double Ki_Threshold_v;
+	double sek_v;
 	double TH0;
 	double TH1;
 	double TH2;
