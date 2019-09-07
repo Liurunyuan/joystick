@@ -28,6 +28,7 @@ STICKSTATE gStickState = {0};
 EXTFORCESTATE gExternalForceState = {0};
 ROTATEDIRECTION gRotateDirection = {0};
 ACCELDIRECTION gAccelDirection = {0};
+double gDebug[3] = {0};
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
@@ -37,8 +38,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.targetDuty_F = 0;
 	gSysInfo.targetDuty_V = 0;
-	gSysInfo.coe_Force = 1;
-	gSysInfo.coe_Velocity = 0;
+	gSysInfo.coe_Force = 0;
+	gSysInfo.coe_Velocity = 1;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	gSysInfo.TH0 = -19.2;
@@ -46,10 +47,11 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.TH2 = -1.5;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 1.5;
-	gSysInfo.TH5 = 1.8;
+	gSysInfo.TH5 = 2.0;
 	gSysInfo.TH6 = 11.2;
 	gSysInfo.Ki_Threshold_f = 6;
 	gSysInfo.Ki_Threshold_v = 0.1;
+	gSysInfo.velocity_last = 0;
 
 	InitSysState();
 	InitStickState();
@@ -335,6 +337,11 @@ void checkRotateDirection(int value){
 			        gRotateDirection.debounceCount_1 = 0;
 			    }
 			}
+            else{
+                gRotateDirection.debounceCount_1 = 0;
+                gRotateDirection.debounceCount_2 = 0;
+
+            }
 			break;
 		case FORWARD_DIRECTION:
 			if(gKeyValue.motorSpeed < 0.02){
@@ -345,6 +352,11 @@ void checkRotateDirection(int value){
                     gRotateDirection.debounceCount_1 = 0;
                 }
 			}
+            else{
+                gRotateDirection.debounceCount_1 = 0;
+                gRotateDirection.debounceCount_2 = 0;
+
+            }
 			break;
 		case STOP_DIRECTION:
 			if(gKeyValue.motorSpeed > 0.03){
@@ -365,6 +377,8 @@ void checkRotateDirection(int value){
 			}
 			else{
 				gRotateDirection.rotateDirection = STOP_DIRECTION;
+				gRotateDirection.debounceCount_1 = 0;
+				gRotateDirection.debounceCount_2 = 0;
 			}
 
 			break;
@@ -465,7 +479,7 @@ void checkExternalForce(int value){
 		if(gExternalForceState.value > (FORWARD_FORCE_VALUE - 0.15)){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
-		else if(gExternalForceState.value < BACKWARD_FORCE_VALUE + 0.15){
+		else if(gExternalForceState.value < BACKWARD_FORCE_VALUE - 0.15){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
 		else{
@@ -476,7 +490,7 @@ void checkExternalForce(int value){
 		if(gExternalForceState.value < (BACKWARD_FORCE_VALUE + 0.15)){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value > (FORWARD_FORCE_VALUE - 0.15)){
+		else if(gExternalForceState.value > (FORWARD_FORCE_VALUE + 0.15)){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -484,10 +498,10 @@ void checkExternalForce(int value){
 		}
 		break;
 	case NO_FORCE:
-		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
+		if(gExternalForceState.value < BACKWARD_FORCE_VALUE - 0.15){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value > FORWARD_FORCE_VALUE){
+		else if(gExternalForceState.value > FORWARD_FORCE_VALUE + 0.15){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -904,11 +918,8 @@ int CheckStickSetion(double val){
 	else if(val <= gSysInfo.TH6){
 		return 6;
 	}
-	else if(val > gSysInfo.TH6){
-		return 7;
-	}
 	else{
-		return 8;
+		return 7;
 	}
 }
 /* 

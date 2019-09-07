@@ -150,6 +150,7 @@ typedef struct{
 	double TH5;
 	double TH6;
 	double zeroForce;
+	double velocity_last;
 }SYSINFO;
 
 
@@ -375,8 +376,8 @@ typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
 /***********************Force state*******************************/
-#define FORWARD_FORCE_VALUE (0.25)
-#define BACKWARD_FORCE_VALUE (-0.25)
+#define FORWARD_FORCE_VALUE (0.3)
+#define BACKWARD_FORCE_VALUE (-0.3)
 
 #define FOWARD_START_FORCE (5)
 #define BACKWARD_START_FORCE (-5)
@@ -439,6 +440,7 @@ extern SYSPARA gSysPara;
 extern SYSCURRENTSTATE gSysCurrentState;
 extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
+extern double gDebug[3];
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
