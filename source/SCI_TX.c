@@ -323,9 +323,9 @@ void RS422A_Transmit(void){
 		return;
 	}
 
-	//while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
-	//			&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
-	while((ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+	while((ScicRegs.SCIFFTX.bit.TXFFST != 16)
+				&& (ScibRegs.SCIFFTX.bit.TXFFST != 16)){
+	//while((ScibRegs.SCIFFTX.bit.TXFFST != 16)){
 		if(RS422TxQueLength() == 0)
 		{
 			return;
