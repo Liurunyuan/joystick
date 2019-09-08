@@ -38,8 +38,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.targetDuty_F = 0;
 	gSysInfo.targetDuty_V = 0;
-	gSysInfo.coe_Force = 0;
-	gSysInfo.coe_Velocity = 1;
+	gSysInfo.coe_Force = 0.6;
+	gSysInfo.coe_Velocity = 0.4;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	gSysInfo.TH0 = -19.2;
@@ -83,7 +83,7 @@ void IRNullDisAndForwardForce(int a, int b){
 	int32 tmp;
 	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 250);
 	tmp = -tmp;
-	tmp = tmp + 50;
+	//tmp = tmp + 20;
 	gSysInfo.targetDuty = tmp; 
 	//gSysInfo.targetDuty = 100; 
 }
@@ -94,7 +94,7 @@ void IRNullDisAndBackwardForce(int a, int b){
 	int32 tmp;
 	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 250);
 	tmp = -tmp;
-	tmp = tmp - 50;
+	//tmp = tmp - 20;
 	gSysInfo.targetDuty = tmp; 
 	//gSysInfo.targetDuty = -100; 
 }
@@ -618,7 +618,7 @@ void InitConfigParameter(void){
 	gConfigPara.RB_Force9 = -45;
 	gConfigPara.RB_MaxForce = -50;
 
-	gConfigPara.LF_Distance1 = 0;
+	gConfigPara.LF_Distance1 = 1.5;
 	gConfigPara.LF_Distance2 = 3;
 	gConfigPara.LF_Distance3 = 4;
 	gConfigPara.LF_Distance4 = 5;
@@ -629,7 +629,7 @@ void InitConfigParameter(void){
 	gConfigPara.LF_Distance9 = 9.5;
 	gConfigPara.LF_MaxDistance = 12;
 
-	gConfigPara.RB_Distance1 = -0;
+	gConfigPara.RB_Distance1 = -1.5;
 	gConfigPara.RB_Distance2 = -3;
 	gConfigPara.RB_Distance3 = -4;
 	gConfigPara.RB_Distance4 = -5;
@@ -967,6 +967,7 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 5:
+	    gSysInfo.sek_v = 0;
 		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
@@ -977,6 +978,7 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 7:
+	    gSysInfo.sek_v = 0;
 		if(gStickState.value < (gSysInfo.TH6 - DEBOUNCE)){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}

@@ -8,8 +8,8 @@ volatile PIDPARA gPidPara = {0};
 volatile int gTargetSpeed = 500;
 
 void InitPidVar(void){
-    gPidPara.kp_velocity = 1000;
-    gPidPara.ki_velocity = 250;
+    gPidPara.kp_velocity = 200;
+    gPidPara.ki_velocity = 50;
 
     gPidPara.kp_force = 5;
     gPidPara.ki_force = 0;

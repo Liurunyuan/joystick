@@ -183,15 +183,15 @@ void OnlyWithSpringFront(void){
 	    velocity_openLoop = 20;
 	}
 
-	velocity_closeLoop = 0;
-	//velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
+	//velocity_closeLoop = 0;
+	velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
 
 
-	gDebug[0] = gKeyValue.motorSpeed;
-	gDebug[1] = ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
-	gDebug[2] = velocity_openLoop;
+	gDebug[0] = velocity_openLoop;
+	gDebug[1] = velocity_closeLoop;
+	//gDebug[2] = velocity_openLoop;
 
-	gSysInfo.targetDuty_V = (int16)((20 * velocity_openLoop + B_V) + velocity_closeLoop);
+	gSysInfo.targetDuty_V = (int16)((25 * velocity_openLoop + B_V) + velocity_closeLoop);
 	gSysInfo.targetDuty_F = (int16)((1.01 * force_openLoop + B_F) + force_closeLoop);
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
 	
