@@ -939,6 +939,8 @@ int LocateStickDisSection(void){
 		gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		break;
 	case 0:
+	    gSysInfo.sek_v = 0;
+	    gSysInfo.velocity_last = 0;
 		if(gStickState.value  > (gSysInfo.TH0 + DEBOUNCE)){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
@@ -952,6 +954,8 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 2:
+	    gSysInfo.sek_v = 0;
+	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH2 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH1 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
@@ -968,6 +972,7 @@ int LocateStickDisSection(void){
 		break;
 	case 5:
 	    gSysInfo.sek_v = 0;
+	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
@@ -979,6 +984,7 @@ int LocateStickDisSection(void){
 		break;
 	case 7:
 	    gSysInfo.sek_v = 0;
+	    gSysInfo.velocity_last = 0;
 		if(gStickState.value < (gSysInfo.TH6 - DEBOUNCE)){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
