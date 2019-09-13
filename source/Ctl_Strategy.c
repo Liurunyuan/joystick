@@ -263,11 +263,11 @@ void OnlyWithSpringFront(void){
 
 
 	gDebug[0] = velocity_openLoop;
-	gDebug[1] = velocity_closeLoop;
+	gDebug[1] = force_openLoop;
 	//gDebug[2] = velocity_openLoop;
 
 	gSysInfo.targetDuty_V = (int16)((25 * velocity_openLoop + B_V) + velocity_closeLoop);
-	gSysInfo.targetDuty_F = (int16)((1.01 * force_openLoop + B_F) + force_closeLoop);
+	gSysInfo.targetDuty_F = (int16)((1.5 * force_openLoop + B_F) + force_closeLoop);
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
 	
 }

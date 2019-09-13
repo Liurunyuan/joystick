@@ -15,8 +15,8 @@
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
 
-#define DIS_DIMENSION_K (-0.0007527)
-#define DIS_DIMENSION_B (19.813)
+#define DIS_DIMENSION_K (-0.001559)  // PITCH:Forward 30721 Backward 51242
+#define DIS_DIMENSION_B (59.6805)    // ROLL: Left 24568 Right 45178
 #define FORCE_DIMENSION_K (0.014027)
 #define FORCE_DIMENSION_B (-459.6276)
 #define PI (3.14149265)

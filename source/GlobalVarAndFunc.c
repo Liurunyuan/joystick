@@ -48,7 +48,7 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 1.5;
 	gSysInfo.TH5 = 2.0;
-	gSysInfo.TH6 = 11.2;
+	gSysInfo.TH6 = 11.8;
 	gSysInfo.Ki_Threshold_f = 6;
 	gSysInfo.Ki_Threshold_v = 0.1;
 	gSysInfo.velocity_last = 0;
