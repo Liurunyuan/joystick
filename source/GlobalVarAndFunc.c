@@ -42,13 +42,13 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.coe_Velocity = 0.4;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
-	gSysInfo.TH0 = -19.2;
+	gSysInfo.TH0 = -19.2; //-17.8
 	gSysInfo.TH1 = -2.0;
 	gSysInfo.TH2 = -1.5;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 1.5;
 	gSysInfo.TH5 = 2.0;
-	gSysInfo.TH6 = 11.8;
+	gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 6;
 	gSysInfo.Ki_Threshold_v = 0.1;
 	gSysInfo.velocity_last = 0;
