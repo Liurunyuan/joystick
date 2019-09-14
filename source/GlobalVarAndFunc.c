@@ -33,6 +33,27 @@ double gDebug[3] = {0};
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
 void InitGlobalVarAndFunc(void){
+    // PITCH
+    if((GpioDataRegs.GPBDAT.bit.GPIO61 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO35 == 0)){
+        gSysInfo.DimL_K = -0.001559;
+        gSysInfo.DimL_B = 59.6805;
+        gSysInfo.TH0 = -19.2;
+        gSysInfo.TH6 = 11.8;
+    }
+    //ROLL
+    else if((GpioDataRegs.GPBDAT.bit.GPIO35 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO61 == 0)){
+        gSysInfo.DimL_K = -0.0017467;
+        gSysInfo.DimL_B = 60.9135;
+        gSysInfo.TH0 = -17.8;
+        gSysInfo.TH6 = 17.8;
+    }
+    else{
+        gSysInfo.DimL_K = 0;
+        gSysInfo.DimL_B = 0;
+        gSysInfo.TH0 = 0;
+        gSysInfo.TH6 = 0;
+        gSysState.warning.bit.b = 1;
+    }
 	gSysInfo.ddtmax = 1;
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
@@ -42,13 +63,13 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.coe_Velocity = 0.4;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
-	gSysInfo.TH0 = -19.2; //-17.8
+	//gSysInfo.TH0 = -19.2; //-17.8
 	gSysInfo.TH1 = -2.0;
 	gSysInfo.TH2 = -1.5;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 1.5;
 	gSysInfo.TH5 = 2.0;
-	gSysInfo.TH6 = 11.8; //17.8
+	//gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 6;
 	gSysInfo.Ki_Threshold_v = 0.1;
 	gSysInfo.velocity_last = 0;

@@ -15,8 +15,8 @@
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
 
-#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
-#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
+//#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
+//#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
 #define FORCE_DIMENSION_K (0.014027)
 #define FORCE_DIMENSION_B (-459.6276)
 #define PI (3.14149265)
@@ -124,6 +124,8 @@ typedef struct _KeyValue{
 }KeyValue;
 
 typedef struct{
+    double DimL_K; //dimension of length K
+    double DimL_B; //dimension of length B
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
 	Uint16 sdoStatus;

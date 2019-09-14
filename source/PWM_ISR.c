@@ -124,7 +124,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*DIS_DIMENSION_K+DIS_DIMENSION_B), count);
+	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
 	//gTenAverageArray.displaceArray[count] = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value; 
 	++count;
 
