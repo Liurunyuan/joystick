@@ -138,6 +138,10 @@ typedef struct{
 	int16 targetDuty_V;
 	double coe_Force;
 	double coe_Velocity;
+	double coe_Force_Max_ODE;
+	double coe_Force_Min_ODE;
+	double coe_Velocity_Max_ODE;
+	double coe_Velocity_Min_ODE;
 	int controlFuncIndex;
 	int currentStickDisSection;
 	int16 Ki_Threshold_f;
@@ -153,6 +157,30 @@ typedef struct{
 	double TH6;
 	double zeroForce;
 	double velocity_last;
+	double Force_Init2Pos_Thr;
+	double Force_Init2Neg_Thr;
+    double Accel_Init2Pos_Thr;
+    double Accel_Init2Neg_Thr;
+    double Velocity_Init2Pos_Thr;
+    double Velocity_Init2Neg_Thr;
+    double Force_Pos_Thr;
+    double Force_Neg_Thr;
+    double Force_Hysteresis;
+    double Accel_Pos_Thr;
+    double Accel_Neg_Thr;
+    double Accel_Zero2Pos_Thr;
+    double Accel_Zero2Neg_Thr;
+    double Accel_Hysteresis;
+    double Accel_Debounce_Cnt_1;
+    double Accel_Debounce_Cnt_2;
+    double Velocity_Pos_Thr;
+    double Velocity_Neg_Thr;
+    double Velocity_Zero2Pos_Thr;
+    double Velocity_Zero2Neg_Thr;
+    double Velocity_Hysteresis;
+    double Velocity_Debounce_Cnt_1;
+    double Velocity_Debounce_Cnt_2;
+
 }SYSINFO;
 
 
@@ -325,8 +353,8 @@ typedef struct{
 	int LF_TrimRange;
 	int RB_TrimRange;
 
-	int trimTarget;
-	int trimCommand;
+	int Trim_StepSize;
+	int Trim_Speed;
 
 	int timeDelay;
 	int stateCommand;
@@ -378,11 +406,11 @@ typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
 /***********************Force state*******************************/
-#define FORWARD_FORCE_VALUE (3)
-#define BACKWARD_FORCE_VALUE (-3)
+//#define FORWARD_FORCE_VALUE (3)
+//#define BACKWARD_FORCE_VALUE (-3)
 
-#define FOWARD_START_FORCE (5)
-#define BACKWARD_START_FORCE (-5)
+//#define FOWARD_START_FORCE (5)
+//#define BACKWARD_START_FORCE (-5)
 
 typedef struct _EXTFORCESTATE
 {

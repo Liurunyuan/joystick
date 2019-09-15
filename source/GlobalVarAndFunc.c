@@ -86,6 +86,33 @@ void InitGlobalVarAndFunc(void){
     gAccelDirection.debounceCount_2 = 0;
 	gRotateDirection.debounceCount_1 = 0;
 	gRotateDirection.debounceCount_2 = 0;
+	gSysInfo.Force_Init2Pos_Thr = 3;
+	gSysInfo.Force_Init2Pos_Thr = -3;
+	gSysInfo.Accel_Init2Pos_Thr = 0.1;
+	gSysInfo.Accel_Init2Neg_Thr = -0.1;
+	gSysInfo.Velocity_Init2Pos_Thr = 0.0025;
+	gSysInfo.Velocity_Init2Neg_Thr = -0.0025;
+	gSysInfo.Force_Pos_Thr = 3;
+	gSysInfo.Force_Neg_Thr = -3;
+	gSysInfo.Force_Hysteresis = 0.15;
+	gSysInfo.Accel_Pos_Thr = 0.04;
+    gSysInfo.Accel_Neg_Thr = -0.04;
+    gSysInfo.Accel_Zero2Pos_Thr = 0.4;
+    gSysInfo.Accel_Zero2Neg_Thr = -0.4;
+    gSysInfo.Accel_Hysteresis = 0;
+    gSysInfo.Accel_Debounce_Cnt_1 = 4;
+    gSysInfo.Accel_Debounce_Cnt_2 = 8;
+    gSysInfo.Velocity_Pos_Thr = 0.02;
+    gSysInfo.Velocity_Neg_Thr = -0.02;
+    gSysInfo.Velocity_Zero2Pos_Thr = 0.03;
+    gSysInfo.Velocity_Zero2Neg_Thr = -0.03;
+    gSysInfo.Velocity_Hysteresis = 0;
+    gSysInfo.Velocity_Debounce_Cnt_1 = 10;
+    gSysInfo.Velocity_Debounce_Cnt_2 = 10;
+    gSysInfo.coe_Force_Max_ODE = 0;
+    gSysInfo.coe_Force_Min_ODE = 0;
+    gSysInfo.coe_Velocity_Max_ODE = 0;
+    gSysInfo.coe_Velocity_Min_ODE = 0;
 }
 
 void IRNullDisAndNoForce(int a,  int b){
@@ -103,7 +130,7 @@ void IRNullDisAndForwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is forward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((FORWARD_FORCE_VALUE - gExternalForceState.value)* 250);
+	tmp = (int32)((gSysInfo.Force_Pos_Thr - gExternalForceState.value)* 250);
 	tmp = -tmp;
 	//tmp = tmp + 20;
 	gSysInfo.targetDuty = tmp; 
@@ -114,7 +141,7 @@ void IRNullDisAndBackwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is backward */
 	/*so decidde what we should do here */
 	int32 tmp;
-	tmp = (int32)((BACKWARD_FORCE_VALUE - gExternalForceState.value)* 250);
+	tmp = (int32)((gSysInfo.Force_Neg_Thr - gExternalForceState.value)* 250);
 	tmp = -tmp;
 	//tmp = tmp - 20;
 	gSysInfo.targetDuty = tmp; 
@@ -157,7 +184,7 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
     /*stick is in the range of the null displacement and the external force is forward */
     /*so decidde what we should do here */
     int32 tmp;
-    if(gExternalForceState.value > FOWARD_START_FORCE){
+    if(gExternalForceState.value > gConfigPara.LF_StartForce){
         IRNullDisAndForwardForce(0,0);
     }
     else{
@@ -174,7 +201,7 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
     /*stick is in the range of the null displacement and the external force is backward */
     /*so decidde what we should do here */
     int32 tmp;
-    if(gExternalForceState.value < BACKWARD_START_FORCE){
+    if(gExternalForceState.value < gConfigPara.RB_StartForce){
         IRNullDisAndBackwardForce(0,0);
     }
     else{
@@ -340,10 +367,10 @@ void checkRotateDirection(int value){
 	switch(gRotateDirection.rotateDirection)
 	{
 		case INIT_DIRECTION:
-			if(gKeyValue.motorSpeed > 0.0025){
+			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Init2Pos_Thr){
 				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
 			}
-			else if(gKeyValue.motorSpeed < -0.0025){
+			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
 				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
 			}
 			else{
@@ -351,10 +378,10 @@ void checkRotateDirection(int value){
 			}
 			break;
 		case BACKWARD_DIRECTION:
-			if(gKeyValue.motorSpeed > -0.02){
+			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Neg_Thr){
 			    gRotateDirection.debounceCount_1++;
 			    gRotateDirection.debounceCount_2 = 0;
-			    if(gRotateDirection.debounceCount_1 > 10){
+			    if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
 			        gRotateDirection.rotateDirection = STOP_DIRECTION;
 			        gRotateDirection.debounceCount_1 = 0;
 			    }
@@ -366,10 +393,10 @@ void checkRotateDirection(int value){
             }
 			break;
 		case FORWARD_DIRECTION:
-			if(gKeyValue.motorSpeed < 0.02){
+			if(gKeyValue.motorSpeed < gSysInfo.Velocity_Pos_Thr){
                 gRotateDirection.debounceCount_1++;
                 gRotateDirection.debounceCount_2 = 0;
-                if(gRotateDirection.debounceCount_1 > 10){
+                if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
                     gRotateDirection.rotateDirection = STOP_DIRECTION;
                     gRotateDirection.debounceCount_1 = 0;
                 }
@@ -381,18 +408,18 @@ void checkRotateDirection(int value){
             }
 			break;
 		case STOP_DIRECTION:
-			if(gKeyValue.motorSpeed > 0.03){
+			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Init2Pos_Thr){
                 gRotateDirection.debounceCount_1++;
                 gRotateDirection.debounceCount_2 = 0;
-                if(gRotateDirection.debounceCount_1 > 10){
+                if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_2){
                     gRotateDirection.rotateDirection = FORWARD_DIRECTION;
                     gRotateDirection.debounceCount_1 = 0;
                 }
 			}
-			else if(gKeyValue.motorSpeed < -0.03){
+			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
                 gRotateDirection.debounceCount_2++;
                 gRotateDirection.debounceCount_1 = 0;
-                if(gRotateDirection.debounceCount_2 > 10){
+                if(gRotateDirection.debounceCount_2 > gSysInfo.Velocity_Debounce_Cnt_2){
                     gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
                     gRotateDirection.debounceCount_2 = 0;
                 }
@@ -413,10 +440,10 @@ void checkAcceleration(int value){
     switch(gAccelDirection.accelDirection)
     {
         case INIT_DIRECTION:
-            if(gKeyValue.motorAccel > 0.1){
+            if(gKeyValue.motorAccel > gSysInfo.Accel_Init2Pos_Thr){
                 gAccelDirection.accelDirection = FORWARD_DIRECTION;
             }
-            else if(gAccelDirection.accelDirection < -0.1){
+            else if(gAccelDirection.accelDirection < gSysInfo.Accel_Init2Neg_Thr){
                 gAccelDirection.accelDirection = BACKWARD_DIRECTION;
             }
             else{
@@ -424,10 +451,10 @@ void checkAcceleration(int value){
             }
             break;
         case BACKWARD_DIRECTION:
-            if(gKeyValue.motorAccel > -0.04){
+            if(gKeyValue.motorAccel > gSysInfo.Accel_Neg_Thr){
                 gAccelDirection.debounceCount_1++;
                 gAccelDirection.debounceCount_2 = 0;
-                if(gAccelDirection.debounceCount_1 > 4){
+                if(gAccelDirection.debounceCount_1 > gSysInfo.Accel_Debounce_Cnt_1){
                     gAccelDirection.accelDirection = STOP_DIRECTION;
                     gAccelDirection.debounceCount_1 = 0;
                 }
@@ -439,10 +466,10 @@ void checkAcceleration(int value){
 			}
             break;
         case FORWARD_DIRECTION:
-            if(gKeyValue.motorAccel < 0.04){
+            if(gKeyValue.motorAccel < gSysInfo.Accel_Pos_Thr){
                 gAccelDirection.debounceCount_1++;
                 gAccelDirection.debounceCount_2 = 0;
-                if(gAccelDirection.debounceCount_1 > 4){
+                if(gAccelDirection.debounceCount_1 > gSysInfo.Accel_Debounce_Cnt_1){
                     gAccelDirection.accelDirection = STOP_DIRECTION;
                     gAccelDirection.debounceCount_1 = 0;
                 }
@@ -453,18 +480,18 @@ void checkAcceleration(int value){
 			}
             break;
         case STOP_DIRECTION:
-            if(gKeyValue.motorAccel > 0.4){
+            if(gKeyValue.motorAccel > gSysInfo.Accel_Zero2Pos_Thr){
                 gAccelDirection.debounceCount_1++;
                 gAccelDirection.debounceCount_2 = 0;
-                if(gAccelDirection.debounceCount_1 > 8){
+                if(gAccelDirection.debounceCount_1 > gSysInfo.Accel_Debounce_Cnt_2){
                     gAccelDirection.accelDirection = FORWARD_DIRECTION;
                     gAccelDirection.debounceCount_1 = 0;
                 }
             }
-            else if(gKeyValue.motorAccel < -0.4){
+            else if(gKeyValue.motorAccel < gSysInfo.Accel_Zero2Neg_Thr){
                 gAccelDirection.debounceCount_2++;
                 gAccelDirection.debounceCount_1 = 0;
-                if(gAccelDirection.debounceCount_2 > 8){
+                if(gAccelDirection.debounceCount_2 > gSysInfo.Accel_Debounce_Cnt_2){
                     gAccelDirection.accelDirection = BACKWARD_DIRECTION;
                     gAccelDirection.debounceCount_2 = 0;
                 }
@@ -487,10 +514,10 @@ void checkExternalForce(int value){
 	{
 	case INIT_FORCE:
 
-		if(gExternalForceState.value < BACKWARD_FORCE_VALUE){
+		if(gExternalForceState.value < gSysInfo.Force_Init2Neg_Thr){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if (gExternalForceState.value  > FORWARD_FORCE_VALUE){
+		else if (gExternalForceState.value  > gSysInfo.Force_Init2Pos_Thr){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -498,10 +525,10 @@ void checkExternalForce(int value){
 		}
 		break;
 	case FORWARD_FORCE:
-		if(gExternalForceState.value > (FORWARD_FORCE_VALUE - 0.15)){
+		if(gExternalForceState.value > (gSysInfo.Force_Pos_Thr - gSysInfo.Force_Hysteresis)){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
-		else if(gExternalForceState.value < BACKWARD_FORCE_VALUE - 0.15){
+		else if(gExternalForceState.value < gSysInfo.Force_Neg_Thr - gSysInfo.Force_Hysteresis){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
 		else{
@@ -509,10 +536,10 @@ void checkExternalForce(int value){
 		}
 		break;
 	case BACKWARD_FORCE:
-		if(gExternalForceState.value < (BACKWARD_FORCE_VALUE + 0.15)){
+		if(gExternalForceState.value < (gSysInfo.Force_Neg_Thr + gSysInfo.Force_Hysteresis)){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value > (FORWARD_FORCE_VALUE + 0.15)){
+		else if(gExternalForceState.value > (gSysInfo.Force_Pos_Thr + gSysInfo.Force_Hysteresis)){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -520,10 +547,10 @@ void checkExternalForce(int value){
 		}
 		break;
 	case NO_FORCE:
-		if(gExternalForceState.value < BACKWARD_FORCE_VALUE - 0.15){
+		if(gExternalForceState.value < gSysInfo.Force_Neg_Thr - gSysInfo.Force_Hysteresis){
 			gExternalForceState.ForceState = BACKWARD_FORCE;
 		}
-		else if(gExternalForceState.value > FORWARD_FORCE_VALUE + 0.15){
+		else if(gExternalForceState.value > gSysInfo.Force_Pos_Thr + gSysInfo.Force_Hysteresis){
 			gExternalForceState.ForceState = FORWARD_FORCE;
 		}
 		else{
@@ -551,7 +578,7 @@ void InitForceDisplaceCurve(void){
 void UpdateForceDisplaceCurve(void){
 	int index;
 
-	gForceAndDisplaceCurve.springForceP[0] = gConfigPara.LF_Force1;
+	gForceAndDisplaceCurve.springForceP[0] = gConfigPara.LF_StartForce;
 	gForceAndDisplaceCurve.springForceP[1] = gConfigPara.LF_Force2;
 	gForceAndDisplaceCurve.springForceP[2] = gConfigPara.LF_Force3;
 	gForceAndDisplaceCurve.springForceP[3] = gConfigPara.LF_Force4;
@@ -562,7 +589,7 @@ void UpdateForceDisplaceCurve(void){
 	gForceAndDisplaceCurve.springForceP[8] = gConfigPara.LF_Force9;
 	gForceAndDisplaceCurve.springForceP[9] = gConfigPara.LF_MaxForce;
 
-	gForceAndDisplaceCurve.springForceN[0] = gConfigPara.RB_Force1;
+	gForceAndDisplaceCurve.springForceN[0] = gConfigPara.RB_StartForce;
 	gForceAndDisplaceCurve.springForceN[1] = gConfigPara.RB_Force2;
 	gForceAndDisplaceCurve.springForceN[2] = gConfigPara.RB_Force3;
 	gForceAndDisplaceCurve.springForceN[3] = gConfigPara.RB_Force4;
@@ -573,7 +600,7 @@ void UpdateForceDisplaceCurve(void){
 	gForceAndDisplaceCurve.springForceN[8] = gConfigPara.RB_Force9;
 	gForceAndDisplaceCurve.springForceN[9] = gConfigPara.RB_MaxForce;
 
-	gForceAndDisplaceCurve.displacementP[0] = gConfigPara.LF_Distance1;
+	gForceAndDisplaceCurve.displacementP[0] = gConfigPara.LF_EmptyDistance;
 	gForceAndDisplaceCurve.displacementP[1] = gConfigPara.LF_Distance2;
 	gForceAndDisplaceCurve.displacementP[2] = gConfigPara.LF_Distance3;
 	gForceAndDisplaceCurve.displacementP[3] = gConfigPara.LF_Distance4;
@@ -585,7 +612,7 @@ void UpdateForceDisplaceCurve(void){
 	gForceAndDisplaceCurve.displacementP[9] = gConfigPara.LF_MaxDistance;
 
 
-	gForceAndDisplaceCurve.displacementN[0] = gConfigPara.RB_Distance1;
+	gForceAndDisplaceCurve.displacementN[0] = gConfigPara.RB_EmptyDistance;
 	gForceAndDisplaceCurve.displacementN[1] = gConfigPara.RB_Distance2;
 	gForceAndDisplaceCurve.displacementN[2] = gConfigPara.RB_Distance3;
 	gForceAndDisplaceCurve.displacementN[3] = gConfigPara.RB_Distance4;
@@ -662,8 +689,8 @@ void InitConfigParameter(void){
 	gConfigPara.RB_Distance9 = -8.5;
 	gConfigPara.RB_MaxDistance = -20;
 
-	gConfigPara.LF_StartForce = 0;
-	gConfigPara.RB_StartForce = 0;
+	gConfigPara.LF_StartForce = 5;
+	gConfigPara.RB_StartForce = -5;
 
 	gConfigPara.LF_FrontFriction = 3;
 	gConfigPara.LF_RearFriction = 3;
@@ -682,9 +709,9 @@ void InitConfigParameter(void){
 	gConfigPara.LF_TrimRange = 0;
 	gConfigPara.RB_TrimRange = 0;
 
-	gConfigPara.trimTarget = 0;
+	gConfigPara.Trim_StepSize = 0;
 
-	gConfigPara.trimCommand = 0;
+	gConfigPara.Trim_Speed = 0;
 
 	gConfigPara.timeDelay = 0;
 
@@ -1051,8 +1078,6 @@ void DigitalSignalPISO(void){
 
     for(i=0; i<8; i++){
         GpioDataRegs.GPBDAT.bit.GPIO52 = 1;
-        asm(" NOP");
-        asm(" NOP");
         GpioDataRegs.GPBDAT.bit.GPIO52 = 0;
         if(GpioDataRegs.GPBDAT.bit.GPIO59 == 1){
             //gPISO_165[i] |= (0x01<<(7-i));
@@ -1062,6 +1087,5 @@ void DigitalSignalPISO(void){
             //gPISO_165[i] &= ~(0x01<<(7-i));
             gPISO_165[i] = 0;
         }
-
     }
 }

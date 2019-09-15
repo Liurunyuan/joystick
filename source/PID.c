@@ -5,16 +5,22 @@
 #include "PID.h"
 
 volatile PIDPARA gPidPara = {0};
-volatile int gTargetSpeed = 500;
 
 void InitPidVar(void){
-    gPidPara.kp_velocity = 200;
-    gPidPara.ki_velocity = 50;
+    gPidPara.kp_velocity_ODE = 200;
+    gPidPara.ki_velocity_ODE = 50;
 
-    gPidPara.kp_force = 5;
-    gPidPara.ki_force = 0;
+    gPidPara.kp_force_ODE = 5;
+    gPidPara.ki_force_ODE = 0;
 
-    gTargetSpeed = 500;
+    gPidPara.K_F_ODE = 1.5;
+    gPidPara.B_F_ODE = 40;
+    gPidPara.K_F_NULL = 0;
+    gPidPara.B_F_NULL = 0;
+    gPidPara.K_V_ODE = 25;
+    gPidPara.B_V_ODE = 0;
+    gPidPara.K_V_NULL = 0;
+    gPidPara.B_V_NULL = 0;
 }
 
 
@@ -34,7 +40,7 @@ int16 velocity_PidOutput(double targetVal, double controlVar){
     {
         gSysInfo.sek_v = 0;
     }
-    pidOutput = (int16)(ek1 * gPidPara.kp_velocity) + (int16)(gSysInfo.sek_v * gPidPara.ki_velocity);
+    pidOutput = (int16)(ek1 * gPidPara.kp_velocity_ODE) + (int16)(gSysInfo.sek_v * gPidPara.ki_velocity_ODE);
 
     if(pidOutput > 750){
         pidOutput = 750;
@@ -62,7 +68,7 @@ int16 force_PidOutput(double targetVal, double controlVar){
     {
         gSysInfo.sek_f = 0;
     }
-    pidOutput = (int16)(ek1 * gPidPara.kp_force) + (int16)(gSysInfo.sek_f * gPidPara.ki_force);
+    pidOutput = (int16)(ek1 * gPidPara.kp_force_ODE) + (int16)(gSysInfo.sek_f * gPidPara.ki_force_ODE);
 
     if(pidOutput > 750){
         pidOutput = 750;

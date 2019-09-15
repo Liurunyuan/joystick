@@ -82,10 +82,10 @@ void OnlyWithSpringRear(void){
     double B_V = 0;
 
     if(gExternalForceState.ForceState == BACKWARD_FORCE){
-        B_F = -40;
+        B_F = -gPidPara.B_F_ODE;
     }
     else if(gExternalForceState.ForceState == FORWARD_FORCE){
-        B_F = 40;
+        B_F = gPidPara.B_F_ODE;
     }
     else{
         B_F = 0;
@@ -105,12 +105,15 @@ void OnlyWithSpringRear(void){
 
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
         friction = gConfigPara.RB_RearFriction;
+        B_V = gPidPara.B_V_ODE;
     }
     else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
         friction = gConfigPara.RB_FrontFriction;
+        B_V = -gPidPara.B_V_ODE;
     }
     else{
         friction = 0;
+        B_V = 0;
     }
 
     spring_force = k * gStickState.value + kb;
@@ -162,8 +165,8 @@ void OnlyWithSpringRear(void){
     gDebug[1] = velocity_closeLoop;
     gDebug[2] = mass;
 
-    gSysInfo.targetDuty_V = (int16)((25 * velocity_openLoop + B_V) + velocity_closeLoop);
-    gSysInfo.targetDuty_F = (int16)((1.01 * force_openLoop + B_F) + force_closeLoop);
+    gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
+    gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
     gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
 
 }
@@ -186,10 +189,10 @@ void OnlyWithSpringFront(void){
 	double B_V = 0;
 
 	if(gExternalForceState.ForceState == BACKWARD_FORCE){
-		B_F = -40;
+		B_F = -gPidPara.B_F_ODE;
 	}
 	else if(gExternalForceState.ForceState == FORWARD_FORCE){
-		B_F = 40;
+		B_F = gPidPara.B_F_ODE;
 	}
 	else{
 		B_F = 0;
@@ -209,12 +212,15 @@ void OnlyWithSpringFront(void){
 
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
         friction = gConfigPara.LF_RearFriction;
+        B_V = gPidPara.B_V_ODE;
     }
     else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
         friction = gConfigPara.LF_FrontFriction;
+        B_V = -gPidPara.B_V_ODE;
     }
     else{
         friction = 0;
+        B_V = 0;
     }
 
 	spring_force = k * gStickState.value + kb;
@@ -266,8 +272,8 @@ void OnlyWithSpringFront(void){
 	gDebug[1] = force_openLoop;
 	//gDebug[2] = velocity_openLoop;
 
-	gSysInfo.targetDuty_V = (int16)((25 * velocity_openLoop + B_V) + velocity_closeLoop);
-	gSysInfo.targetDuty_F = (int16)((1.5 * force_openLoop + B_F) + force_closeLoop);
+	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
+	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
 	
 }
