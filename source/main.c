@@ -399,6 +399,8 @@ void Start_main_loop(void){
 
 	Check_Power28V();
 
+	DigitalSignalPISO();
+
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}

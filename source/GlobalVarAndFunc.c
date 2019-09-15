@@ -29,6 +29,7 @@ EXTFORCESTATE gExternalForceState = {0};
 ROTATEDIRECTION gRotateDirection = {0};
 ACCELDIRECTION gAccelDirection = {0};
 double gDebug[3] = {0};
+int gPISO_165[8] = {0};
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
@@ -1039,4 +1040,28 @@ double TenDisplaceElemntAverage(void){
 		gTenAverageArray.displaceArrayBak[i] = gTenAverageArray.displaceArray[i];
 	}
 	return ret;
+}
+
+void DigitalSignalPISO(void){
+    int i = 0;
+
+    GpioDataRegs.GPBDAT.bit.GPIO53 = 1;
+    GpioDataRegs.GPBDAT.bit.GPIO53 = 0;
+    GpioDataRegs.GPBDAT.bit.GPIO53 = 1;
+
+    for(i=0; i<8; i++){
+        GpioDataRegs.GPBDAT.bit.GPIO52 = 1;
+        asm(" NOP");
+        asm(" NOP");
+        GpioDataRegs.GPBDAT.bit.GPIO52 = 0;
+        if(GpioDataRegs.GPBDAT.bit.GPIO59 == 1){
+            //gPISO_165[i] |= (0x01<<(7-i));
+            gPISO_165[i] = 1;
+        }
+        else{
+            //gPISO_165[i] &= ~(0x01<<(7-i));
+            gPISO_165[i] = 0;
+        }
+
+    }
 }

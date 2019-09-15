@@ -443,6 +443,7 @@ extern SYSCURRENTSTATE gSysCurrentState;
 extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 extern double gDebug[3];
+extern int gPISO_165[8];
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
@@ -469,6 +470,7 @@ void ControleStateMachineSwitch(int value);
 void InitGlobalVarAndFunc(void);
 int LocateStickDisSection(void);
 double TenDisplaceElemntAverage(void);
+void DigitalSignalPISO(void);
 
 
 #endif
