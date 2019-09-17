@@ -64,288 +64,288 @@ static void ShakeHandMsg(VAR16 a, int b, int c) {
 
 /*******************************************************/
 static void configPara1(VAR16 a, int b, int c) {
-	gConfigPara.dampingFactor = (int)a.value;
+	gConfigPara.dampingFactor = ((double)(a.value)) / 100;
 }
 static void configPara2(VAR16 a, int b, int c) {
-	gConfigPara.naturalVibrationFreq = (int)a.value;
+	gConfigPara.naturalVibrationFreq = ((double)(a.value)) / 100;
 }
 static void configPara3(VAR16 a, int b, int c) {
-	gConfigPara.LF_FrontFriction = (int)a.value;
+	gConfigPara.LF_FrontFriction = ((double)(a.value)) / 100;
 }
 static void configPara4(VAR16 a, int b, int c) {
-	gConfigPara.LF_RearFriction = (int)a.value;
+	gConfigPara.LF_RearFriction = ((double)(a.value)) / 100;
 }
 static void configPara5(VAR16 a, int b, int c) {
-	gConfigPara.RB_FrontFriction = (int)a.value;
+	gConfigPara.RB_FrontFriction = ((double)(a.value)) / 100;
 }
 static void configPara6(VAR16 a, int b, int c) {
-	gConfigPara.RB_RearFriction = (int)a.value;
+	gConfigPara.RB_RearFriction = ((double)(a.value)) / 100;
 }
 static void configPara7(VAR16 a, int b, int c) {
-	gConfigPara.LF_EmptyDistance = (int)a.value;
+	gConfigPara.LF_EmptyDistance = ((double)(a.value)) / 100;
 }
 static void configPara8(VAR16 a, int b, int c) {
-	gConfigPara.LF_StartForce = (int)a.value;
+	gConfigPara.LF_StartForce = ((double)(a.value)) / 100;
 }
 static void configPara9(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance1 = (int)a.value;
+	gConfigPara.LF_Distance1 = ((double)(a.value)) / 100;
 }
 static void configPara10(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force1 = (int)a.value;
+	gConfigPara.LF_Force1 = ((double)(a.value)) / 100;
 }
 /*******************************************************/
 static void configPara11(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance2 = (int)a.value;
+	gConfigPara.LF_Distance2 = ((double)(a.value)) / 100;
 }
 static void configPara12(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force2 = (int)a.value;
+	gConfigPara.LF_Force2 = ((double)(a.value)) / 100;
 }
 static void configPara13(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance3 = (int)a.value;
+	gConfigPara.LF_Distance3 = ((double)(a.value)) / 100;
 }
 static void configPara14(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force3 = (int)a.value;
+	gConfigPara.LF_Force3 = ((double)(a.value)) / 100;
 }
 static void configPara15(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance4 = (int)a.value;
+	gConfigPara.LF_Distance4 = ((double)(a.value)) / 100;
 }
 static void configPara16(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force4 = (int)a.value;
+	gConfigPara.LF_Force4 = ((double)(a.value)) / 100;
 }
 static void configPara17(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance5 = (int)a.value;
+	gConfigPara.LF_Distance5 = ((double)(a.value)) / 100;
 }
 static void configPara18(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force5 = (int)a.value;
+	gConfigPara.LF_Force5 = ((double)(a.value)) / 100;
 }
 static void configPara19(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance6 = (int)a.value;
+	gConfigPara.LF_Distance6 = ((double)(a.value)) / 100;
 }
 static void configPara20(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force6 = (int)a.value;
+	gConfigPara.LF_Force6 = ((double)(a.value)) / 100;
 }
 /*******************************************************/
 static void configPara21(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance7 = (int)a.value;
+	gConfigPara.LF_Distance7 = ((double)(a.value)) / 100;
 }
 static void configPara22(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force7 = (int)a.value;
+	gConfigPara.LF_Force7 = ((double)(a.value)) / 100;
 }
 static void configPara23(VAR16 a, int b, int c) {
-	gConfigPara.LF_Distance8 = (int)a.value;
+	gConfigPara.LF_Distance8 = ((double)(a.value)) / 100;
 }
 static void configPara24(VAR16 a, int b, int c) {
-	gConfigPara.LF_Force8 = (int)a.value;
+	gConfigPara.LF_Force8 = ((double)(a.value)) / 100;
 }
 static void configPara25(VAR16 a, int b, int c) {
-	gConfigPara.LF_MaxDistance = (int)a.value;
+	gConfigPara.LF_MaxDistance = ((double)(a.value)) / 100;
 }
 static void configPara26(VAR16 a, int b, int c) {
-	gConfigPara.LF_MaxForce = (int)a.value;
+	gConfigPara.LF_MaxForce = ((double)(a.value)) / 100;
 }
 static void configPara27(VAR16 a, int b, int c) {
-	gConfigPara.RB_EmptyDistance = (int)a.value;
+	gConfigPara.RB_EmptyDistance = ((double)(a.value)) / 100;
 }
 static void configPara28(VAR16 a, int b, int c) {
-	gConfigPara.RB_StartForce = (int)a.value;
+	gConfigPara.RB_StartForce = ((double)(a.value)) / 100;
 }
 static void configPara29(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance1 = (int)a.value;
+	gConfigPara.RB_Distance1 = ((double)(a.value)) / 100;
 }
 static void configPara30(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force1 = (int)a.value;
+	gConfigPara.RB_Force1 = ((double)(a.value)) / 100;
 }
 /**************************************************************/
 static void configPara31(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance2 = (int)a.value;
+	gConfigPara.RB_Distance2 = ((double)(a.value)) / 100;
 }
 static void configPara32(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force2 = (int)a.value;
+	gConfigPara.RB_Force2 = ((double)(a.value)) / 100;
 }
 static void configPara33(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance3 = (int)a.value;
+	gConfigPara.RB_Distance3 = ((double)(a.value)) / 100;
 }
 static void configPara34(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force3 = (int)a.value;
+	gConfigPara.RB_Force3 = ((double)(a.value)) / 100;
 }
 static void configPara35(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance4 = (int)a.value;
+	gConfigPara.RB_Distance4 = ((double)(a.value)) / 100;
 }
 static void configPara36(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force4 = (int)a.value;
+	gConfigPara.RB_Force4 = ((double)(a.value)) / 100;
 }
 static void configPara37(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance5 = (int)a.value;
+	gConfigPara.RB_Distance5 = ((double)(a.value)) / 100;
 }
 static void configPara38(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force5 = (int)a.value;
+	gConfigPara.RB_Force5 = ((double)(a.value)) / 100;
 }
 static void configPara39(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance6 = (int)a.value;
+	gConfigPara.RB_Distance6 = ((double)(a.value)) / 100;
 }
 static void configPara40(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force6 = (int)a.value;
+	gConfigPara.RB_Force6 = ((double)(a.value)) / 100;
 }
 /*****************************************************************/
 static void configPara41(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance7 = (int)a.value;
+	gConfigPara.RB_Distance7 = ((double)(a.value)) / 100;
 }
 static void configPara42(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force7 = (int)a.value;
+	gConfigPara.RB_Force7 = ((double)(a.value)) / 100;
 }
 /*****************************************************************/
 static void configPara43(VAR16 a, int b, int c) {
-	gConfigPara.RB_Distance8 = (int)a.value;
+	gConfigPara.RB_Distance8 = ((double)(a.value)) / 100;
 }
 static void configPara44(VAR16 a, int b, int c) {
-	gConfigPara.RB_Force8 = (int)a.value;
+	gConfigPara.RB_Force8 = ((double)(a.value)) / 100;
 }
 static void configPara45(VAR16 a, int b, int c) {
-	gConfigPara.RB_MaxDistance = (int)a.value;
+	gConfigPara.RB_MaxDistance = ((double)(a.value)) / 100;
 }
 static void configPara46(VAR16 a, int b, int c) {
-	gConfigPara.RB_MaxForce = (int)a.value;
+	gConfigPara.RB_MaxForce = ((double)(a.value)) / 100;
 }
 /*****************************************************************/
 static void configPara47(VAR16 a, int b, int c) {
-	gConfigPara.Trim_StepSize = (int)a.value;
+	gConfigPara.Trim_StepSize = ((double)(a.value)) / 100;
 }
 static void configPara48(VAR16 a, int b, int c) {
-	gConfigPara.Trim_Speed = (int)a.value;
+	gConfigPara.Trim_Speed = ((double)(a.value)) / 100;
 }
 /*****************************************************************/
 static void configPara49(VAR16 a, int b, int c) {
-	gConfigPara.timeDelay = (int)a.value;
+	gConfigPara.timeDelay = ((double)(a.value)) / 100;
 }
 static void configPara50(VAR16 a, int b, int c) {
-    gSysInfo.Force_Init2Pos_Thr = (int)a.value;
+    gSysInfo.Force_Init2Pos_Thr = ((double)(a.value)) / 100;
 }
 static void configPara51(VAR16 a, int b, int c) {
-    gSysInfo.Force_Init2Neg_Thr = (int)a.value;
+    gSysInfo.Force_Init2Neg_Thr = ((double)(a.value)) / 100;
 }
 static void configPara52(VAR16 a, int b, int c) {
-	gSysInfo.Accel_Init2Pos_Thr = (int)a.value;
+	gSysInfo.Accel_Init2Pos_Thr = ((double)(a.value)) / 100;
 }
 static void configPara53(VAR16 a, int b, int c) {
-	gSysInfo.Accel_Init2Neg_Thr = (int)a.value;
+	gSysInfo.Accel_Init2Neg_Thr = ((double)(a.value)) / 100;
 }
 static void configPara54(VAR16 a, int b, int c) {
-	gSysInfo.Velocity_Init2Pos_Thr = (int)a.value;
+	gSysInfo.Velocity_Init2Pos_Thr = ((double)(a.value)) / 1000000;
 }
 static void configPara55(VAR16 a, int b, int c) {
-	gSysInfo.Velocity_Init2Neg_Thr = (int)a.value;
+	gSysInfo.Velocity_Init2Neg_Thr = ((double)(a.value)) / 1000000;
 }
 static void configPara56(VAR16 a, int b, int c) {
-    gSysInfo.Force_Pos_Thr = (int)a.value;
+    gSysInfo.Force_Pos_Thr = ((double)(a.value)) / 100;
 }
 static void configPara57(VAR16 a, int b, int c) {
-    gSysInfo.Force_Neg_Thr = (int)a.value;
+    gSysInfo.Force_Neg_Thr = ((double)(a.value)) / 100;
 }
 /************************************************************/
 static void configPara58(VAR16 a, int b, int c) {
-    gSysInfo.Force_Hysteresis = (int)a.value;
+    gSysInfo.Force_Hysteresis = ((double)(a.value)) / 100;
 }
 static void configPara59(VAR16 a, int b, int c) {
-    gSysInfo.Accel_Pos_Thr = (int)a.value;
+    gSysInfo.Accel_Pos_Thr = ((double)(a.value)) / 100;
 }
 static void configPara60(VAR16 a, int b, int c) {
-    gSysInfo.Accel_Neg_Thr = (int)a.value;
+    gSysInfo.Accel_Neg_Thr = ((double)(a.value)) / 100;
 }
 static void configPara61(VAR16 a, int b, int c) {
-    gSysInfo.Accel_Zero2Pos_Thr = (int)a.value;
+    gSysInfo.Accel_Zero2Pos_Thr = ((double)(a.value)) / 100;
 }
 static void configPara62(VAR16 a, int b, int c) {
-    gSysInfo.Accel_Zero2Neg_Thr = (int)a.value;
+    gSysInfo.Accel_Zero2Neg_Thr = ((double)(a.value)) / 100;
 }
 static void configPara63(VAR16 a, int b, int c) {
-    gSysInfo.Accel_Hysteresis = (int)a.value;
+    gSysInfo.Accel_Hysteresis = ((double)(a.value)) / 100;
 }
 static void configPara64(VAR16 a, int b, int c) {
-    gSysInfo.Accel_Debounce_Cnt_1 = (int)a.value;
+    gSysInfo.Accel_Debounce_Cnt_1 = ((double)(a.value)) / 100;
 }
 static void configPara65(VAR16 a, int b, int c) {
-    gSysInfo.Accel_Debounce_Cnt_2 = (int)a.value;
+    gSysInfo.Accel_Debounce_Cnt_2 = ((double)(a.value)) / 100;
 }
 static void configPara66(VAR16 a, int b, int c) {
-    gSysInfo.Velocity_Pos_Thr = (int)a.value;
+    gSysInfo.Velocity_Pos_Thr = ((double)(a.value)) / 100;
 }
 static void configPara67(VAR16 a, int b, int c) {
-    gSysInfo.Velocity_Neg_Thr = (int)a.value;
+    gSysInfo.Velocity_Neg_Thr = ((double)(a.value)) / 100;
 }
 static void configPara68(VAR16 a, int b, int c) {
-    gSysInfo.Velocity_Zero2Pos_Thr = (int)a.value;
+    gSysInfo.Velocity_Zero2Pos_Thr = ((double)(a.value)) / 100;
 }
 static void configPara69(VAR16 a, int b, int c) {
-    gSysInfo.Velocity_Zero2Neg_Thr = (int)a.value;
+    gSysInfo.Velocity_Zero2Neg_Thr = ((double)(a.value)) / 100;
 }
 static void configPara70(VAR16 a, int b, int c) {
-    gSysInfo.Velocity_Hysteresis = (int)a.value;
+    gSysInfo.Velocity_Hysteresis = ((double)(a.value)) / 100;
 }
 static void configPara71(VAR16 a, int b, int c) {
-    gSysInfo.Velocity_Debounce_Cnt_1 = (int)a.value;
+    gSysInfo.Velocity_Debounce_Cnt_1 = ((double)(a.value)) / 100;
 }
 static void configPara72(VAR16 a, int b, int c) {
-    gSysInfo.Velocity_Debounce_Cnt_2 = (int)a.value;
+    gSysInfo.Velocity_Debounce_Cnt_2 = ((double)(a.value)) / 100;
 }
 static void configPara73(VAR16 a, int b, int c) {
-    gPidPara.kp_force_ODE = (int)a.value;
+    gPidPara.kp_force_ODE = ((double)(a.value)) / 100;
 }
 static void configPara74(VAR16 a, int b, int c) {
-    gPidPara.ki_force_ODE = (int)a.value;
+    gPidPara.ki_force_ODE = ((double)(a.value)) / 100;
 }
 static void configPara75(VAR16 a, int b, int c) {
-    gPidPara.kp_force_NULL = (int)a.value;
+    gPidPara.kp_force_NULL = ((double)(a.value)) / 100;
 }
 static void configPara76(VAR16 a, int b, int c) {
-    gPidPara.ki_force_NULL = (int)a.value;
+    gPidPara.ki_force_NULL = ((double)(a.value)) / 100;
 }
 static void configPara77(VAR16 a, int b, int c) {
-    gPidPara.kp_velocity_ODE = (int)a.value;
+    gPidPara.kp_velocity_ODE = ((double)(a.value)) / 100;
 }
 static void configPara78(VAR16 a, int b, int c) {
-    gPidPara.ki_velocity_ODE = (int)a.value;
+    gPidPara.ki_velocity_ODE = ((double)(a.value)) / 100;
 }
 static void configPara79(VAR16 a, int b, int c) {
-    gPidPara.kp_velocity_NULL = (int)a.value;
+    gPidPara.kp_velocity_NULL = ((double)(a.value)) / 100;
 }
 static void configPara80(VAR16 a, int b, int c) {
-    gPidPara.ki_velocity_NULL = (int)a.value;
+    gPidPara.ki_velocity_NULL = ((double)(a.value)) / 100;
 }
 static void configPara81(VAR16 a, int b, int c) {
-    gPidPara.K_F_ODE = (int)a.value;
+    gPidPara.K_F_ODE = ((double)(a.value)) / 100;
 }
 static void configPara82(VAR16 a, int b, int c) {
-    gPidPara.B_F_ODE = (int)a.value;
+    gPidPara.B_F_ODE = ((double)(a.value)) / 100;
 }
 static void configPara83(VAR16 a, int b, int c) {
-    gPidPara.K_F_NULL = (int)a.value;
+    gPidPara.K_F_NULL = ((double)(a.value)) / 100;
 }
 static void configPara84(VAR16 a, int b, int c) {
-    gPidPara.B_F_NULL = (int)a.value;
+    gPidPara.B_F_NULL = ((double)(a.value)) / 100;
 }
 static void configPara85(VAR16 a, int b, int c) {
-    gPidPara.K_V_ODE = (int)a.value;
+    gPidPara.K_V_ODE = ((double)(a.value)) / 100;
 }
 static void configPara86(VAR16 a, int b, int c) {
-    gPidPara.B_V_ODE = (int)a.value;
+    gPidPara.B_V_ODE = ((double)(a.value)) / 100;
 }
 static void configPara87(VAR16 a, int b, int c) {
-    gPidPara.K_V_NULL = (int)a.value;
+    gPidPara.K_V_NULL = ((double)(a.value)) / 100;
 }
 static void configPara88(VAR16 a, int b, int c) {
-    gPidPara.B_V_NULL = (int)a.value;
+    gPidPara.B_V_NULL = ((double)(a.value)) / 100;
 }
 static void configPara89(VAR16 a, int b, int c) {
-    gSysInfo.coe_Force_Max_ODE = (int)a.value;
+    gSysInfo.coe_Force_Max_ODE = ((double)(a.value)) / 100;
 }
 static void configPara90(VAR16 a, int b, int c) {
-    gSysInfo.coe_Force_Min_ODE = (int)a.value;
+    gSysInfo.coe_Force_Min_ODE = ((double)(a.value)) / 100;
 }
 static void configPara91(VAR16 a, int b, int c) {
-    gSysInfo.coe_Velocity_Max_ODE = (int)a.value;
+    gSysInfo.coe_Velocity_Max_ODE = ((double)(a.value)) / 100;
 }
 static void configPara92(VAR16 a, int b, int c) {
-    gSysInfo.coe_Velocity_Min_ODE = (int)a.value;
+    gSysInfo.coe_Velocity_Min_ODE = ((double)(a.value)) / 100;
 }
 static void systemStateCommand(VAR16 a, int b, int c){
 	gConfigPara.stateCommand = (int)a.value;

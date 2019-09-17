@@ -1074,11 +1074,19 @@ void DigitalSignalPISO(void){
 
     GpioDataRegs.GPBDAT.bit.GPIO53 = 1;
     GpioDataRegs.GPBDAT.bit.GPIO53 = 0;
+    asm(" NOP");
+    asm(" NOP");
     GpioDataRegs.GPBDAT.bit.GPIO53 = 1;
 
     for(i=0; i<8; i++){
         GpioDataRegs.GPBDAT.bit.GPIO52 = 1;
+        asm(" NOP");
+        asm(" NOP");
+        asm(" NOP");
         GpioDataRegs.GPBDAT.bit.GPIO52 = 0;
+        asm(" NOP");
+        asm(" NOP");
+        asm(" NOP");
         if(GpioDataRegs.GPBDAT.bit.GPIO59 == 1){
             //gPISO_165[i] |= (0x01<<(7-i));
             gPISO_165[i] = 1;
