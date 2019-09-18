@@ -31,6 +31,7 @@ ACCELDIRECTION gAccelDirection = {0};
 double gDebug[3] = {0};
 int gPISO_165[8] = {0};
 int gButtonCmd[6] = {0};
+int gButtonStatus[6] = {0};
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
@@ -114,7 +115,18 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.coe_Force_Min_ODE = 0;
     gSysInfo.coe_Velocity_Max_ODE = 0;
     gSysInfo.coe_Velocity_Min_ODE = 0;
+    gButtonStatus[0] = 2;
+    gButtonStatus[1] = 2;
+    gButtonStatus[2] = 2;
+    gButtonStatus[3] = 2;
+    gButtonStatus[4] = 2;
+    gButtonStatus[5] = 2;
+    gButtonCmd[0] = 0;
     gButtonCmd[1] = 0;
+    gButtonCmd[2] = 0;
+    gButtonCmd[3] = 0;
+    gButtonCmd[4] = 0;
+    gButtonCmd[5] = 0;
 }
 
 int checkPitchOrRoll(void){
@@ -1113,98 +1125,320 @@ void DigitalSignalPISO(void){
     }
 }
 
-void Button_Debounce(void){
-   // int j = 1;
-    static int count1 = 0;
-    static int count2 = 0;
-    static int count3 = 0;
-    static int count4 = 0;
-    static int count5 = 0;
-    static int count6 = 0;
+void Button_Debounce1(void){
+    static int count_pressed = 0;
+    static int count_release = 0;
 
-    if(gPISO_165[1] == 1){
-        count1 ++;
-    }
-    else{
-        count1 = 0;
-    }
-    if(count1 > 500){
-        gButtonCmd[TK9_TRIGGER] += 1;
-        count1 = 0;
-    }
-    else{
-        //gButtonCmd[TK9_TRIGGER] = 0;
-    }
+    switch(gButtonStatus[TK9_TRIGGER]){
+        case BTN_INIT:
+            if(gPISO_165[TK9_TRIGGER+1] == 1){
+                gButtonStatus[TK9_TRIGGER] = BTN_PRESSED;
+            }
+            else if(gPISO_165[TK9_TRIGGER+1] == 0){
+                gButtonStatus[TK9_TRIGGER] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[TK9_TRIGGER] = BTN_INIT;
+            }
+            break;
+        case BTN_RELEASE:
+            if(gPISO_165[TK9_TRIGGER+1] == 1){
+                count_pressed ++;
+            }
+            else{
+                count_pressed = 0;
+                gButtonStatus[TK9_TRIGGER] = BTN_RELEASE;
+            }
+            if(count_pressed > 20){
+                gButtonStatus[TK9_TRIGGER] = BTN_PRESSED;
+            }
+            else{
+                gButtonStatus[TK9_TRIGGER] = BTN_RELEASE;
+            }
 
-    if(gPISO_165[2] == 1){
-        count2 ++;
+            break;
+        case BTN_PRESSED:
+            if(gPISO_165[TK9_TRIGGER+1] == 0){
+                count_release ++;
+            }
+            else{
+                count_release = 0;
+                gButtonStatus[TK9_TRIGGER] = BTN_PRESSED;
+            }
+            if(count_release > 20){
+                gButtonCmd[TK9_TRIGGER] += 1;
+                gButtonStatus[TK9_TRIGGER] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[TK9_TRIGGER] = BTN_PRESSED;
+            }
+            break;
+        default:
+            break;
     }
-    else{
-        if(count2 > 700){
-            gButtonCmd[AK29_BUTTON] += 1;
-            count2 = 0;
-        }
-        else{
-            //gButtonCmd[AK29_BUTTON] = gButtonCmd[AK29_BUTTON];
-           // gButtonCmd[AK29_BUTTON] = 0;
-        }
-        count2 = 0;
-    }
+}
 
-    if(gPISO_165[3] == 1){
-        count3 ++;
-    }
-    else{
-        count3 = 0;
-    }
-    if(count3 == 700){
-        gButtonCmd[FWRD_SWITCH] += 1;
-        count3 = 0;
-    }
-    else{
-        gButtonCmd[FWRD_SWITCH] = gButtonCmd[FWRD_SWITCH];
-        //gButtonCmd[FWRD_SWITCH] = 0;
-    }
+void Button_Debounce2(void){
+    static int count_pressed = 0;
+    static int count_release = 0;
 
-    if(gPISO_165[4] == 1){
-        count4 ++;
-    }
-    else{
-        count4 = 0;
-    }
-    if(count4 > 300){
-        gButtonCmd[RGHT_SWITCH] += 1;
-        count4 = 0;
-    }
-    else{
-       // gButtonCmd[RGHT_SWITCH] = 0;
-    }
+    switch(gButtonStatus[AK29_BUTTON]){
+        case BTN_INIT:
+            if(gPISO_165[AK29_BUTTON+1] == 1){
+                gButtonStatus[AK29_BUTTON] = BTN_PRESSED;
+            }
+            else if(gPISO_165[AK29_BUTTON+1] == 0){
+                gButtonStatus[AK29_BUTTON] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[AK29_BUTTON] = BTN_INIT;
+            }
+            break;
+        case BTN_RELEASE:
+            if(gPISO_165[AK29_BUTTON+1] == 1){
+                count_pressed ++;
+            }
+            else{
+                count_pressed = 0;
+                gButtonStatus[AK29_BUTTON] = BTN_RELEASE;
+            }
+            if(count_pressed > 20){
+                gButtonStatus[AK29_BUTTON] = BTN_PRESSED;
+            }
+            else{
+                gButtonStatus[AK29_BUTTON] = BTN_RELEASE;
+            }
 
-    if(gPISO_165[5] == 1){
-        count5 ++;
+            break;
+        case BTN_PRESSED:
+            if(gPISO_165[AK29_BUTTON+1] == 0){
+                count_release ++;
+            }
+            else{
+                count_release = 0;
+                gButtonStatus[AK29_BUTTON] = BTN_PRESSED;
+            }
+            if(count_release > 20){
+                gButtonCmd[AK29_BUTTON] += 1;
+                gButtonStatus[AK29_BUTTON] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[AK29_BUTTON] = BTN_PRESSED;
+            }
+            break;
+        default:
+            break;
     }
-    else{
-        count5 = 0;
-    }
-    if(count5 > 300){
-        gButtonCmd[REAR_SWITCH] += 1;
-        count5 = 0;
-    }
-    else{
-        //gButtonCmd[REAR_SWITCH] = 0;
-    }
+}
 
-    if(gPISO_165[6] == 1){
-        count6 ++;
+void Button_Debounce3(void){
+    static int count_pressed = 0;
+    static int count_release = 0;
+
+    switch(gButtonStatus[FWRD_SWITCH]){
+        case BTN_INIT:
+            if(gPISO_165[FWRD_SWITCH+1] == 1){
+                gButtonStatus[FWRD_SWITCH] = BTN_PRESSED;
+            }
+            else if(gPISO_165[FWRD_SWITCH+1] == 0){
+                gButtonStatus[FWRD_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[FWRD_SWITCH] = BTN_INIT;
+            }
+            break;
+        case BTN_RELEASE:
+            if(gPISO_165[FWRD_SWITCH+1] == 1){
+                count_pressed ++;
+            }
+            else{
+                count_pressed = 0;
+                gButtonStatus[FWRD_SWITCH] = BTN_RELEASE;
+            }
+            if(count_pressed > 20){
+                gButtonStatus[FWRD_SWITCH] = BTN_PRESSED;
+            }
+            else{
+                gButtonStatus[FWRD_SWITCH] = BTN_RELEASE;
+            }
+
+            break;
+        case BTN_PRESSED:
+            if(gPISO_165[FWRD_SWITCH+1] == 0){
+                count_release ++;
+            }
+            else{
+                count_release = 0;
+                gButtonStatus[FWRD_SWITCH] = BTN_PRESSED;
+            }
+            if(count_release > 20){
+                gButtonCmd[FWRD_SWITCH] += 1;
+                gButtonStatus[FWRD_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[FWRD_SWITCH] = BTN_PRESSED;
+            }
+            break;
+        default:
+            break;
     }
-    else{
-        count6 = 0;
+}
+
+void Button_Debounce4(void){
+    static int count_pressed = 0;
+    static int count_release = 0;
+
+    switch(gButtonStatus[RGHT_SWITCH]){
+        case BTN_INIT:
+            if(gPISO_165[RGHT_SWITCH+1] == 1){
+                gButtonStatus[RGHT_SWITCH] = BTN_PRESSED;
+            }
+            else if(gPISO_165[RGHT_SWITCH+1] == 0){
+                gButtonStatus[RGHT_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[RGHT_SWITCH] = BTN_INIT;
+            }
+            break;
+        case BTN_RELEASE:
+            if(gPISO_165[RGHT_SWITCH+1] == 1){
+                count_pressed ++;
+            }
+            else{
+                count_pressed = 0;
+                gButtonStatus[RGHT_SWITCH] = BTN_RELEASE;
+            }
+            if(count_pressed > 20){
+                gButtonStatus[RGHT_SWITCH] = BTN_PRESSED;
+            }
+            else{
+                gButtonStatus[RGHT_SWITCH] = BTN_RELEASE;
+            }
+
+            break;
+        case BTN_PRESSED:
+            if(gPISO_165[RGHT_SWITCH+1] == 0){
+                count_release ++;
+            }
+            else{
+                count_release = 0;
+                gButtonStatus[RGHT_SWITCH] = BTN_PRESSED;
+            }
+            if(count_release > 20){
+                gButtonCmd[RGHT_SWITCH] += 1;
+                gButtonStatus[RGHT_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[RGHT_SWITCH] = BTN_PRESSED;
+            }
+            break;
+        default:
+            break;
     }
-    if(count6 > 300){
-        gButtonCmd[LEFT_SWITCH] += 1;
-        count6 = 0;
+}
+
+void Button_Debounce5(void){
+    static int count_pressed = 0;
+    static int count_release = 0;
+
+    switch(gButtonStatus[REAR_SWITCH]){
+        case BTN_INIT:
+            if(gPISO_165[REAR_SWITCH+1] == 1){
+                gButtonStatus[REAR_SWITCH] = BTN_PRESSED;
+            }
+            else if(gPISO_165[REAR_SWITCH+1] == 0){
+                gButtonStatus[REAR_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[REAR_SWITCH] = BTN_INIT;
+            }
+            break;
+        case BTN_RELEASE:
+            if(gPISO_165[REAR_SWITCH+1] == 1){
+                count_pressed ++;
+            }
+            else{
+                count_pressed = 0;
+                gButtonStatus[REAR_SWITCH] = BTN_RELEASE;
+            }
+            if(count_pressed > 20){
+                gButtonStatus[REAR_SWITCH] = BTN_PRESSED;
+            }
+            else{
+                gButtonStatus[REAR_SWITCH] = BTN_RELEASE;
+            }
+
+            break;
+        case BTN_PRESSED:
+            if(gPISO_165[REAR_SWITCH+1] == 0){
+                count_release ++;
+            }
+            else{
+                count_release = 0;
+                gButtonStatus[REAR_SWITCH] = BTN_PRESSED;
+            }
+            if(count_release > 20){
+                gButtonCmd[REAR_SWITCH] += 1;
+                gButtonStatus[REAR_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[REAR_SWITCH] = BTN_PRESSED;
+            }
+            break;
+        default:
+            break;
     }
-    else{
-        //gButtonCmd[LEFT_SWITCH] = 0;
+}
+
+void Button_Debounce6(void){
+    static int count_pressed = 0;
+    static int count_release = 0;
+
+    switch(gButtonStatus[LEFT_SWITCH]){
+        case BTN_INIT:
+            if(gPISO_165[LEFT_SWITCH+1] == 1){
+                gButtonStatus[LEFT_SWITCH] = BTN_PRESSED;
+            }
+            else if(gPISO_165[LEFT_SWITCH+1] == 0){
+                gButtonStatus[LEFT_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[LEFT_SWITCH] = BTN_INIT;
+            }
+            break;
+        case BTN_RELEASE:
+            if(gPISO_165[LEFT_SWITCH+1] == 1){
+                count_pressed ++;
+            }
+            else{
+                count_pressed = 0;
+                gButtonStatus[LEFT_SWITCH] = BTN_RELEASE;
+            }
+            if(count_pressed > 20){
+                gButtonStatus[LEFT_SWITCH] = BTN_PRESSED;
+            }
+            else{
+                gButtonStatus[LEFT_SWITCH] = BTN_RELEASE;
+            }
+
+            break;
+        case BTN_PRESSED:
+            if(gPISO_165[LEFT_SWITCH+1] == 0){
+                count_release ++;
+            }
+            else{
+                count_release = 0;
+                gButtonStatus[LEFT_SWITCH] = BTN_PRESSED;
+            }
+            if(count_release > 20){
+                gButtonCmd[LEFT_SWITCH] += 1;
+                gButtonStatus[LEFT_SWITCH] = BTN_RELEASE;
+            }
+            else{
+                gButtonStatus[LEFT_SWITCH] = BTN_PRESSED;
+            }
+            break;
+        default:
+            break;
     }
 }

@@ -70,16 +70,6 @@ enum eSTICK_DIS_SECTION{
 	INIT_SECTION 
 };
 
-enum TRIGGER{
-    TK9_TRIGGER = 0,
-    AK29_BUTTON,
-    FWRD_SWITCH,
-    RGHT_SWITCH,
-    REAR_SWITCH,
-    LEFT_SWITCH
-};
-
-
 enum CONTROL_STATE_MACHINE{
 	IR_NULL_DIS_AND_NO_FORCE = 0,
 	IR_NULL_DIS_AND_FORWARD_FORCE = 0,
@@ -439,6 +429,21 @@ enum eForceState{
 };
 /*****************************************************************/
 
+enum TRIGGER{
+    TK9_TRIGGER = 0,
+    AK29_BUTTON,
+    FWRD_SWITCH,
+    RGHT_SWITCH,
+    REAR_SWITCH,
+    LEFT_SWITCH
+};
+
+enum BTN_STAT{
+    BTN_RELEASE = 0,
+    BTN_PRESSED = 1,
+    BTN_INIT
+};
+
 typedef struct _ROTATEDIRECTION{
 	int rotateDirection;
 	UPDATESTATE updateRotateDirection;
@@ -485,6 +490,7 @@ extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 extern double gDebug[3];
 extern int gPISO_165[8];
 extern int gButtonCmd[6];
+extern int gButtonStatus[6];
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
@@ -513,7 +519,12 @@ void InitGlobalVarAndFunc(void);
 int LocateStickDisSection(void);
 double TenDisplaceElemntAverage(void);
 void DigitalSignalPISO(void);
-void Button_Debounce(void);
+void Button_Debounce1(void);
+void Button_Debounce2(void);
+void Button_Debounce3(void);
+void Button_Debounce4(void);
+void Button_Debounce5(void);
+void Button_Debounce6(void);
 
 
 #endif
