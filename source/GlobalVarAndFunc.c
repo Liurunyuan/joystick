@@ -30,19 +30,20 @@ ROTATEDIRECTION gRotateDirection = {0};
 ACCELDIRECTION gAccelDirection = {0};
 double gDebug[3] = {0};
 int gPISO_165[8] = {0};
+int gButtonCmd[6] = {0};
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
 void InitGlobalVarAndFunc(void){
     // PITCH
-    if((GpioDataRegs.GPBDAT.bit.GPIO61 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO35 == 0)){
+    if(checkPitchOrRoll() == PITCH){
         gSysInfo.DimL_K = -0.001559;
         gSysInfo.DimL_B = 59.6805;
         gSysInfo.TH0 = -19.2;
         gSysInfo.TH6 = 11.8;
     }
     //ROLL
-    else if((GpioDataRegs.GPBDAT.bit.GPIO35 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO61 == 0)){
+    else if(checkPitchOrRoll() == ROLL){
         gSysInfo.DimL_K = -0.0017467;
         gSysInfo.DimL_B = 60.9135;
         gSysInfo.TH0 = -17.8;
@@ -113,6 +114,24 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.coe_Force_Min_ODE = 0;
     gSysInfo.coe_Velocity_Max_ODE = 0;
     gSysInfo.coe_Velocity_Min_ODE = 0;
+    gButtonCmd[1] = 0;
+}
+
+int checkPitchOrRoll(void){
+    int board_type;
+    // PITCH
+    if((GpioDataRegs.GPBDAT.bit.GPIO61 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO35 == 0)){
+        board_type = PITCH;
+    }
+    //ROLL
+    else if((GpioDataRegs.GPBDAT.bit.GPIO35 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO61 == 0)){
+        board_type = ROLL;
+    }
+    else{
+        board_type = -1;
+        gSysState.warning.bit.b = 1;
+    }
+    return board_type;
 }
 
 void IRNullDisAndNoForce(int a,  int b){
@@ -1072,21 +1091,17 @@ double TenDisplaceElemntAverage(void){
 void DigitalSignalPISO(void){
     int i = 0;
 
-    GpioDataRegs.GPBDAT.bit.GPIO53 = 1;
+    //GpioDataRegs.GPBDAT.bit.GPIO53 = 1;
     GpioDataRegs.GPBDAT.bit.GPIO53 = 0;
-    asm(" NOP");
     asm(" NOP");
     GpioDataRegs.GPBDAT.bit.GPIO53 = 1;
 
     for(i=0; i<8; i++){
         GpioDataRegs.GPBDAT.bit.GPIO52 = 1;
         asm(" NOP");
-        asm(" NOP");
-        asm(" NOP");
         GpioDataRegs.GPBDAT.bit.GPIO52 = 0;
         asm(" NOP");
-        asm(" NOP");
-        asm(" NOP");
+
         if(GpioDataRegs.GPBDAT.bit.GPIO59 == 1){
             //gPISO_165[i] |= (0x01<<(7-i));
             gPISO_165[i] = 1;
@@ -1095,5 +1110,101 @@ void DigitalSignalPISO(void){
             //gPISO_165[i] &= ~(0x01<<(7-i));
             gPISO_165[i] = 0;
         }
+    }
+}
+
+void Button_Debounce(void){
+   // int j = 1;
+    static int count1 = 0;
+    static int count2 = 0;
+    static int count3 = 0;
+    static int count4 = 0;
+    static int count5 = 0;
+    static int count6 = 0;
+
+    if(gPISO_165[1] == 1){
+        count1 ++;
+    }
+    else{
+        count1 = 0;
+    }
+    if(count1 > 500){
+        gButtonCmd[TK9_TRIGGER] += 1;
+        count1 = 0;
+    }
+    else{
+        //gButtonCmd[TK9_TRIGGER] = 0;
+    }
+
+    if(gPISO_165[2] == 1){
+        count2 ++;
+    }
+    else{
+        if(count2 > 700){
+            gButtonCmd[AK29_BUTTON] += 1;
+            count2 = 0;
+        }
+        else{
+            //gButtonCmd[AK29_BUTTON] = gButtonCmd[AK29_BUTTON];
+           // gButtonCmd[AK29_BUTTON] = 0;
+        }
+        count2 = 0;
+    }
+
+    if(gPISO_165[3] == 1){
+        count3 ++;
+    }
+    else{
+        count3 = 0;
+    }
+    if(count3 == 700){
+        gButtonCmd[FWRD_SWITCH] += 1;
+        count3 = 0;
+    }
+    else{
+        gButtonCmd[FWRD_SWITCH] = gButtonCmd[FWRD_SWITCH];
+        //gButtonCmd[FWRD_SWITCH] = 0;
+    }
+
+    if(gPISO_165[4] == 1){
+        count4 ++;
+    }
+    else{
+        count4 = 0;
+    }
+    if(count4 > 300){
+        gButtonCmd[RGHT_SWITCH] += 1;
+        count4 = 0;
+    }
+    else{
+       // gButtonCmd[RGHT_SWITCH] = 0;
+    }
+
+    if(gPISO_165[5] == 1){
+        count5 ++;
+    }
+    else{
+        count5 = 0;
+    }
+    if(count5 > 300){
+        gButtonCmd[REAR_SWITCH] += 1;
+        count5 = 0;
+    }
+    else{
+        //gButtonCmd[REAR_SWITCH] = 0;
+    }
+
+    if(gPISO_165[6] == 1){
+        count6 ++;
+    }
+    else{
+        count6 = 0;
+    }
+    if(count6 > 300){
+        gButtonCmd[LEFT_SWITCH] += 1;
+        count6 = 0;
+    }
+    else{
+        //gButtonCmd[LEFT_SWITCH] = 0;
     }
 }

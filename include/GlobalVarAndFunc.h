@@ -21,6 +21,9 @@
 #define FORCE_DIMENSION_B (-459.6276)
 #define PI (3.14149265)
 
+#define ROLL 0
+#define PITCH 1
+
 
 #define BIT_0 (0x00000001)
 #define BIT_1 (0x00000002)
@@ -65,6 +68,15 @@ enum eSTICK_DIS_SECTION{
 	SECTION6 = 6,
 	SECTION7 = 7,
 	INIT_SECTION 
+};
+
+enum TRIGGER{
+    TK9_TRIGGER = 0,
+    AK29_BUTTON,
+    FWRD_SWITCH,
+    RGHT_SWITCH,
+    REAR_SWITCH,
+    LEFT_SWITCH
 };
 
 
@@ -472,6 +484,7 @@ extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
 extern double gDebug[3];
 extern int gPISO_165[8];
+extern int gButtonCmd[6];
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
@@ -480,6 +493,7 @@ extern TENAVE gTenAverageArray;
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
 
+int checkPitchOrRoll(void);
 void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
@@ -499,6 +513,7 @@ void InitGlobalVarAndFunc(void);
 int LocateStickDisSection(void);
 double TenDisplaceElemntAverage(void);
 void DigitalSignalPISO(void);
+void Button_Debounce(void);
 
 
 #endif

@@ -401,6 +401,8 @@ void Start_main_loop(void){
 
 	DigitalSignalPISO();
 
+	Button_Debounce();
+
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}
