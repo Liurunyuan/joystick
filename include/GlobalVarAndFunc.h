@@ -525,6 +525,6 @@ void Button_Debounce3(void);
 void Button_Debounce4(void);
 void Button_Debounce5(void);
 void Button_Debounce6(void);
-
+void Null_Displacement_Trim(void);
 
 #endif

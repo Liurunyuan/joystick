@@ -408,6 +408,8 @@ void Start_main_loop(void){
 	Button_Debounce5();
 	Button_Debounce6();
 
+	Null_Displacement_Trim();
+
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}

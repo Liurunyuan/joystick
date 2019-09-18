@@ -1203,6 +1203,7 @@ void Button_Debounce2(void){
                 gButtonStatus[AK29_BUTTON] = BTN_RELEASE;
             }
             if(count_pressed > 20){
+                gButtonCmd[AK29_BUTTON] = 1;
                 gButtonStatus[AK29_BUTTON] = BTN_PRESSED;
             }
             else{
@@ -1219,7 +1220,7 @@ void Button_Debounce2(void){
                 gButtonStatus[AK29_BUTTON] = BTN_PRESSED;
             }
             if(count_release > 20){
-                gButtonCmd[AK29_BUTTON] += 1;
+                gButtonCmd[AK29_BUTTON] = 0;
                 gButtonStatus[AK29_BUTTON] = BTN_RELEASE;
             }
             else{
@@ -1255,7 +1256,7 @@ void Button_Debounce3(void){
                 count_pressed = 0;
                 gButtonStatus[FWRD_SWITCH] = BTN_RELEASE;
             }
-            if(count_pressed > 20){
+            if(count_pressed > 30){
                 gButtonStatus[FWRD_SWITCH] = BTN_PRESSED;
             }
             else{
@@ -1271,7 +1272,7 @@ void Button_Debounce3(void){
                 count_release = 0;
                 gButtonStatus[FWRD_SWITCH] = BTN_PRESSED;
             }
-            if(count_release > 20){
+            if(count_release > 30){
                 gButtonCmd[FWRD_SWITCH] += 1;
                 gButtonStatus[FWRD_SWITCH] = BTN_RELEASE;
             }
@@ -1281,6 +1282,9 @@ void Button_Debounce3(void){
             break;
         default:
             break;
+    }
+    if(gButtonCmd[AK29_BUTTON] == 1){
+        gButtonCmd[FWRD_SWITCH] = 0;
     }
 }
 
@@ -1308,7 +1312,7 @@ void Button_Debounce4(void){
                 count_pressed = 0;
                 gButtonStatus[RGHT_SWITCH] = BTN_RELEASE;
             }
-            if(count_pressed > 20){
+            if(count_pressed > 30){
                 gButtonStatus[RGHT_SWITCH] = BTN_PRESSED;
             }
             else{
@@ -1324,7 +1328,7 @@ void Button_Debounce4(void){
                 count_release = 0;
                 gButtonStatus[RGHT_SWITCH] = BTN_PRESSED;
             }
-            if(count_release > 20){
+            if(count_release > 30){
                 gButtonCmd[RGHT_SWITCH] += 1;
                 gButtonStatus[RGHT_SWITCH] = BTN_RELEASE;
             }
@@ -1334,6 +1338,9 @@ void Button_Debounce4(void){
             break;
         default:
             break;
+    }
+    if(gButtonCmd[AK29_BUTTON] == 1){
+        gButtonCmd[RGHT_SWITCH] = 0;
     }
 }
 
@@ -1361,7 +1368,7 @@ void Button_Debounce5(void){
                 count_pressed = 0;
                 gButtonStatus[REAR_SWITCH] = BTN_RELEASE;
             }
-            if(count_pressed > 20){
+            if(count_pressed > 30){
                 gButtonStatus[REAR_SWITCH] = BTN_PRESSED;
             }
             else{
@@ -1377,7 +1384,7 @@ void Button_Debounce5(void){
                 count_release = 0;
                 gButtonStatus[REAR_SWITCH] = BTN_PRESSED;
             }
-            if(count_release > 20){
+            if(count_release > 30){
                 gButtonCmd[REAR_SWITCH] += 1;
                 gButtonStatus[REAR_SWITCH] = BTN_RELEASE;
             }
@@ -1387,6 +1394,9 @@ void Button_Debounce5(void){
             break;
         default:
             break;
+    }
+    if(gButtonCmd[AK29_BUTTON] == 1){
+        gButtonCmd[REAR_SWITCH] = 0;
     }
 }
 
@@ -1414,7 +1424,7 @@ void Button_Debounce6(void){
                 count_pressed = 0;
                 gButtonStatus[LEFT_SWITCH] = BTN_RELEASE;
             }
-            if(count_pressed > 20){
+            if(count_pressed > 30){
                 gButtonStatus[LEFT_SWITCH] = BTN_PRESSED;
             }
             else{
@@ -1430,7 +1440,7 @@ void Button_Debounce6(void){
                 count_release = 0;
                 gButtonStatus[LEFT_SWITCH] = BTN_PRESSED;
             }
-            if(count_release > 20){
+            if(count_release > 30){
                 gButtonCmd[LEFT_SWITCH] += 1;
                 gButtonStatus[LEFT_SWITCH] = BTN_RELEASE;
             }
@@ -1440,5 +1450,38 @@ void Button_Debounce6(void){
             break;
         default:
             break;
+    }
+    if(gButtonCmd[AK29_BUTTON] == 1){
+        gButtonCmd[LEFT_SWITCH] = 0;
+    }
+}
+
+void Null_Displacement_Trim(void){
+    double trim_sum;
+    if(checkPitchOrRoll() == PITCH){
+        trim_sum = (gButtonCmd[FWRD_SWITCH] - gButtonCmd[REAR_SWITCH]) * gConfigPara.Trim_StepSize;
+        if(trim_sum > 7){
+            trim_sum = 7;
+        }
+        else if(trim_sum < -12){
+            trim_sum = -12;
+        }
+        else{
+            trim_sum = trim_sum;
+        }
+        gSysInfo.DimL_B = 59.6805 - trim_sum;
+    }
+    else if(checkPitchOrRoll() == ROLL){
+        trim_sum = (gButtonCmd[LEFT_SWITCH] - gButtonCmd[RGHT_SWITCH]) * gConfigPara.Trim_StepSize;
+        if(trim_sum > 11){
+            trim_sum = 11;
+        }
+        else if(trim_sum < -11){
+            trim_sum = -11;
+        }
+        else{
+            trim_sum = trim_sum;
+        }
+        gSysInfo.DimL_B = 60.9135 - trim_sum;
     }
 }
