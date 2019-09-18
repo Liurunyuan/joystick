@@ -336,13 +336,15 @@ static void configPara88(VAR16 a, int b, int c) {
     gPidPara.B_V_NULL = ((double)(a.value)) / 100;
 }
 static void configPara89(VAR16 a, int b, int c) {
-    gSysInfo.coe_Force_Max_ODE = ((double)(a.value)) / 100;
+    //gSysInfo.coe_Force_Max_ODE = ((double)(a.value)) / 100;
+    gSysInfo.coe_Force = ((double)(a.value)) / 100;
 }
 static void configPara90(VAR16 a, int b, int c) {
     gSysInfo.coe_Force_Min_ODE = ((double)(a.value)) / 100;
 }
 static void configPara91(VAR16 a, int b, int c) {
-    gSysInfo.coe_Velocity_Max_ODE = ((double)(a.value)) / 100;
+    //gSysInfo.coe_Velocity_Max_ODE = ((double)(a.value)) / 100;
+    gSysInfo.coe_Velocity = ((double)(a.value)) / 100;
 }
 static void configPara92(VAR16 a, int b, int c) {
     gSysInfo.coe_Velocity_Min_ODE = ((double)(a.value)) / 100;
