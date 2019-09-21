@@ -182,6 +182,7 @@ typedef struct{
     double Velocity_Hysteresis;
     double Velocity_Debounce_Cnt_1;
     double Velocity_Debounce_Cnt_2;
+    int board_type;
 
 }SYSINFO;
 
@@ -499,7 +500,7 @@ extern TENAVE gTenAverageArray;
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
 
-int checkPitchOrRoll(void);
+void checkPitchOrRoll(void);
 void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);

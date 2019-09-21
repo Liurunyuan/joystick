@@ -7,7 +7,7 @@
 #include "PID.h"
 #include "Ctl_Strategy.h"
 
-#define  DEBOUNCE (0.10)
+#define  DEBOUNCE (0.05)
 
 void InitStickState(void);
 void checkRotateDirection(int value);
@@ -37,14 +37,15 @@ typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
 void InitGlobalVarAndFunc(void){
     // PITCH
-    if(checkPitchOrRoll() == PITCH){
+    checkPitchOrRoll();
+    if(gSysInfo.board_type == PITCH){
         gSysInfo.DimL_K = -0.001559;
         gSysInfo.DimL_B = 59.6805;
         gSysInfo.TH0 = -19.2;
         gSysInfo.TH6 = 11.8;
     }
     //ROLL
-    else if(checkPitchOrRoll() == ROLL){
+    else if(gSysInfo.board_type == ROLL){
         gSysInfo.DimL_K = -0.0017467;
         gSysInfo.DimL_B = 60.9135;
         gSysInfo.TH0 = -17.8;
@@ -67,11 +68,11 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -2.0;
-	gSysInfo.TH2 = -1.5;
+	gSysInfo.TH1 = -0.5;
+	gSysInfo.TH2 = -0.25;
 	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 1.5;
-	gSysInfo.TH5 = 2.0;
+	gSysInfo.TH4 = 0.25;
+	gSysInfo.TH5 = 0.5;
 	//gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 6;
 	gSysInfo.Ki_Threshold_v = 0.1;
@@ -129,21 +130,20 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[5] = 0;
 }
 
-int checkPitchOrRoll(void){
+void checkPitchOrRoll(void){
     int board_type;
     // PITCH
     if((GpioDataRegs.GPBDAT.bit.GPIO61 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO35 == 0)){
-        board_type = PITCH;
+        gSysInfo.board_type = PITCH;
     }
     //ROLL
     else if((GpioDataRegs.GPBDAT.bit.GPIO35 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO61 == 0)){
-        board_type = ROLL;
+        gSysInfo.board_type = ROLL;
     }
     else{
-        board_type = -1;
+        gSysInfo.board_type = -1;
         gSysState.warning.bit.b = 1;
     }
-    return board_type;
 }
 
 void IRNullDisAndNoForce(int a,  int b){
@@ -244,7 +244,26 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
 void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
-        gSysInfo.targetDuty = 80;
+    switch (gExternalForceState.ForceState)
+    {
+    case NO_FORCE:
+        //gSysInfo.targetDuty = -10;
+        OnlyWithSpringRear();
+        break;
+
+    case BACKWARD_FORCE:
+        //gSysInfo.targetDuty = -10;
+        gSysInfo.targetDuty = 46;
+        break;
+
+    case FORWARD_FORCE:
+        OnlyWithSpringRear();
+        break;
+
+    default:
+        break;
+    }
+//        gSysInfo.targetDuty = 80;
 }
 
 void sec1_ODE_rear(int a, int b){
@@ -368,7 +387,26 @@ void sec6_ODE_front(int a, int b){
 void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
-        gSysInfo.targetDuty = -80;
+    switch (gExternalForceState.ForceState)
+    {
+    case NO_FORCE:
+        //gSysInfo.targetDuty = -10;
+        OnlyWithSpringFront();
+        break;
+
+    case BACKWARD_FORCE:
+        //gSysInfo.targetDuty = -10;
+        OnlyWithSpringFront();
+        break;
+
+    case FORWARD_FORCE:
+        gSysInfo.targetDuty = -46;
+        break;
+
+    default:
+        break;
+    }
+//        gSysInfo.targetDuty = -80;
 }
 
 const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
@@ -676,60 +714,121 @@ void UpdateForceDisplaceCurve(void){
 }
 
 void InitConfigParameter(void){
-	gConfigPara.LF_Force1 = 5;
-	gConfigPara.LF_Force2 = 10;
-	gConfigPara.LF_Force3 = 15;
-	gConfigPara.LF_Force4 = 20;
-	gConfigPara.LF_Force5 = 25;
-	gConfigPara.LF_Force6 = 30;
-	gConfigPara.LF_Force7 = 35;
-	gConfigPara.LF_Force8 = 40;
-	gConfigPara.LF_Force9 = 45;
-	gConfigPara.LF_MaxForce = 50;
+    if(gSysInfo.board_type == PITCH){
+        gConfigPara.LF_EmptyDistance = 0.5;
+        gConfigPara.RB_EmptyDistance = -0.5;
 
-	gConfigPara.RB_Force1 = -5;
-	gConfigPara.RB_Force2 = -10;
-	gConfigPara.RB_Force3 = -15;
-	gConfigPara.RB_Force4 = -20;
-	gConfigPara.RB_Force5 = -25;
-	gConfigPara.RB_Force6 = -30;
-	gConfigPara.RB_Force7 = -35;
-	gConfigPara.RB_Force8 = -40;
-	gConfigPara.RB_Force9 = -45;
-	gConfigPara.RB_MaxForce = -50;
+        gConfigPara.LF_StartForce = 5;
+        gConfigPara.RB_StartForce = -5;
 
-	gConfigPara.LF_Distance1 = 1.5;
-	gConfigPara.LF_Distance2 = 3;
-	gConfigPara.LF_Distance3 = 4;
-	gConfigPara.LF_Distance4 = 5;
-	gConfigPara.LF_Distance5 = 6;
-	gConfigPara.LF_Distance6 = 7;
-	gConfigPara.LF_Distance7 = 8;
-	gConfigPara.LF_Distance8 = 9;
-	gConfigPara.LF_Distance9 = 9.5;
-	gConfigPara.LF_MaxDistance = 12;
+        gConfigPara.LF_Force1 = 5;
+        gConfigPara.LF_Force2 = 6.14;
+        gConfigPara.LF_Force3 = 8.43;
+        gConfigPara.LF_Force4 = 13;
+        gConfigPara.LF_Force5 = 17.57;
+        gConfigPara.LF_Force6 = 22.14;
+        gConfigPara.LF_Force7 = 26.71;
+        gConfigPara.LF_Force8 = 35.86;
+        gConfigPara.LF_Force9 = 40.43;
+        gConfigPara.LF_MaxForce = 45;
 
-	gConfigPara.RB_Distance1 = -1.5;
-	gConfigPara.RB_Distance2 = -3;
-	gConfigPara.RB_Distance3 = -4;
-	gConfigPara.RB_Distance4 = -5;
-	gConfigPara.RB_Distance5 = -6;
-	gConfigPara.RB_Distance6 = -7;
-	gConfigPara.RB_Distance7 = -7.5;
-	gConfigPara.RB_Distance8 = -8;
-	gConfigPara.RB_Distance9 = -8.5;
-	gConfigPara.RB_MaxDistance = -20;
+        gConfigPara.RB_Force1 = -5;
+        gConfigPara.RB_Force2 = -6.14;
+        gConfigPara.RB_Force3 = -8.43;
+        gConfigPara.RB_Force4 = -13;
+        gConfigPara.RB_Force5 = -17.57;
+        gConfigPara.RB_Force6 = -22.14;
+        gConfigPara.RB_Force7 = -26.71;
+        gConfigPara.RB_Force8 = -35.86;
+        gConfigPara.RB_Force9 = -40.43;
+        gConfigPara.RB_MaxForce = -45;
 
-	gConfigPara.LF_StartForce = 5;
-	gConfigPara.RB_StartForce = -5;
+        gConfigPara.LF_Distance1 = 1.5;
+        gConfigPara.LF_Distance2 = 1;
+        gConfigPara.LF_Distance3 = 2;
+        gConfigPara.LF_Distance4 = 4;
+        gConfigPara.LF_Distance5 = 6;
+        gConfigPara.LF_Distance6 = 8;
+        gConfigPara.LF_Distance7 = 10;
+        gConfigPara.LF_Distance8 = 14;
+        gConfigPara.LF_Distance9 = 16;
+        gConfigPara.LF_MaxDistance = 18;
 
-	gConfigPara.LF_FrontFriction = 3;
-	gConfigPara.LF_RearFriction = 3;
-	gConfigPara.RB_FrontFriction = 3;
-	gConfigPara.RB_RearFriction = 3;
+        gConfigPara.RB_Distance1 = -1.5;
+        gConfigPara.RB_Distance2 = -1;
+        gConfigPara.RB_Distance3 = -2;
+        gConfigPara.RB_Distance4 = -4;
+        gConfigPara.RB_Distance5 = -6;
+        gConfigPara.RB_Distance6 = -8;
+        gConfigPara.RB_Distance7 = -10;
+        gConfigPara.RB_Distance8 = -14;
+        gConfigPara.RB_Distance9 = -16;
+        gConfigPara.RB_MaxDistance = -20;
+     }
+     //ROLL
+     else if(gSysInfo.board_type == ROLL){
+         gConfigPara.LF_EmptyDistance = 0.5;
+         gConfigPara.RB_EmptyDistance = -0.5;
 
-	gConfigPara.LF_EmptyDistance = 0;
-	gConfigPara.RB_EmptyDistance = 0;
+         gConfigPara.LF_StartForce = 5;
+         gConfigPara.RB_StartForce = -5;
+
+         gConfigPara.LF_Force1 = 5;
+         gConfigPara.LF_Force2 = 7.6;
+         gConfigPara.LF_Force3 = 12.83;
+         gConfigPara.LF_Force4 = 18.04;
+         gConfigPara.LF_Force5 = 23.26;
+         gConfigPara.LF_Force6 = 28.48;
+         gConfigPara.LF_Force7 = 33.69;
+         gConfigPara.LF_Force8 = 44.13;
+         gConfigPara.LF_Force9 = 54.56;
+         gConfigPara.LF_MaxForce = 65;
+
+         gConfigPara.RB_Force1 = -5;
+         gConfigPara.RB_Force2 = -6.54;
+         gConfigPara.RB_Force3 = -9.62;
+         gConfigPara.RB_Force4 = -15.77;
+         gConfigPara.RB_Force5 = -21.92;
+         gConfigPara.RB_Force6 = -28.08;
+         gConfigPara.RB_Force7 = -34.23;
+         gConfigPara.RB_Force8 = -46.54;
+         gConfigPara.RB_Force9 = -52.69;
+         gConfigPara.RB_MaxForce = -65;
+
+         gConfigPara.LF_Distance1 = 1.5;
+         gConfigPara.LF_Distance2 = 1;
+         gConfigPara.LF_Distance3 = 2;
+         gConfigPara.LF_Distance4 = 3;
+         gConfigPara.LF_Distance5 = 4;
+         gConfigPara.LF_Distance6 = 5;
+         gConfigPara.LF_Distance7 = 6;
+         gConfigPara.LF_Distance8 = 8;
+         gConfigPara.LF_Distance9 = 10;
+         gConfigPara.LF_MaxDistance = 12;
+
+         gConfigPara.RB_Distance1 = -1.5;
+         gConfigPara.RB_Distance2 = -1;
+         gConfigPara.RB_Distance3 = -2;
+         gConfigPara.RB_Distance4 = -4;
+         gConfigPara.RB_Distance5 = -6;
+         gConfigPara.RB_Distance6 = -8;
+         gConfigPara.RB_Distance7 = -10;
+         gConfigPara.RB_Distance8 = -14;
+         gConfigPara.RB_Distance9 = -16;
+         gConfigPara.RB_MaxDistance = -18;
+     }
+     else{
+         gSysInfo.DimL_K = 0;
+         gSysInfo.DimL_B = 0;
+         gSysInfo.TH0 = 0;
+         gSysInfo.TH6 = 0;
+         gSysState.warning.bit.b = 1;
+     }
+
+	gConfigPara.LF_FrontFriction = 1;
+	gConfigPara.LF_RearFriction = 1;
+	gConfigPara.RB_FrontFriction = 1;
+	gConfigPara.RB_RearFriction = 1;
 
 	gConfigPara.dampingFactor = 0.5;
 
@@ -1458,7 +1557,7 @@ void Button_Debounce6(void){
 
 void Null_Displacement_Trim(void){
     double trim_sum;
-    if(checkPitchOrRoll() == PITCH){
+    if(gSysInfo.board_type == PITCH){
         trim_sum = (gButtonCmd[FWRD_SWITCH] - gButtonCmd[REAR_SWITCH]) * gConfigPara.Trim_StepSize;
         if(trim_sum > 7){
             trim_sum = 7;
@@ -1471,7 +1570,7 @@ void Null_Displacement_Trim(void){
         }
         gSysInfo.DimL_B = 59.6805 - trim_sum;
     }
-    else if(checkPitchOrRoll() == ROLL){
+    else if(gSysInfo.board_type == ROLL){
         trim_sum = (gButtonCmd[LEFT_SWITCH] - gButtonCmd[RGHT_SWITCH]) * gConfigPara.Trim_StepSize;
         if(trim_sum > 11){
             trim_sum = 11;

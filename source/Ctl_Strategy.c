@@ -21,6 +21,10 @@ double findSpringForceK(double displace){
 				springForce = gForceAndDisplaceCurve.K_spring_forceP[index];
 				return springForce;
 			}
+			else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForce = gForceAndDisplaceCurve.K_spring_forceP[index];
+                return springForce;
+			}
 		}
 	}
 	else
@@ -31,6 +35,10 @@ double findSpringForceK(double displace){
 				springForce = gForceAndDisplaceCurve.K_spring_forceN[index];
 				return springForce;
 			}
+            else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForce = gForceAndDisplaceCurve.K_spring_forceN[index];
+                return springForce;
+            }
 		}
 	}
 
@@ -47,6 +55,10 @@ double findSpringForceB(double displace){
 				springForceB = gForceAndDisplaceCurve.b_P[index];
 				return springForceB;
 			}
+            else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForceB = gForceAndDisplaceCurve.b_P[index];
+                return springForceB;
+            }
 		}
 	}
 	else
@@ -57,6 +69,10 @@ double findSpringForceB(double displace){
 				springForceB = gForceAndDisplaceCurve.b_N[index];
 				return springForceB;
 			}
+            else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForceB = gForceAndDisplaceCurve.b_N[index];
+                return springForceB;
+            }
 		}
 	}
 
