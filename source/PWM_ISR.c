@@ -491,8 +491,8 @@ inline void Check_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
-	    DisablePwmOutput();
-	    gSysState.alarm.bit.overCurrent = 1;
+	 //   DisablePwmOutput();
+	 //   gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -654,16 +654,16 @@ void Pwm_ISR_Thread(void)
 
 	//ReadDigitalValue();
 
-	//ReadAnalogValue();
-/*
+	ReadAnalogValue();
+
 	Check_Current();
-	Check_A_Q_Current();
-	Check_A_X_Current();
-	Check_B_Q_Current();
-	Check_B_X_Current();
-	Check_C_Q_Current();
-	Check_C_X_Current();
-*/
+//	Check_A_Q_Current();
+//	Check_A_X_Current();
+//	Check_B_Q_Current();
+//	Check_B_X_Current();
+//	Check_C_Q_Current();
+//	Check_C_X_Current();
+
     ReadADBySpi();
 
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(KalmanFilterForce(gAnalog16bit.force,50,50));

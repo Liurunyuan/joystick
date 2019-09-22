@@ -245,6 +245,12 @@ void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
     OnlyWithSpringRear();
+    if(gSysInfo.targetDuty > 100){
+        gSysInfo.targetDuty = 100;
+    }
+    else if(gSysInfo.targetDuty < -100){
+        gSysInfo.targetDuty = -100;
+    }
 //    switch (gExternalForceState.ForceState)
 //    {
 //    case NO_FORCE:
@@ -397,6 +403,12 @@ void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
     OnlyWithSpringFront();
+    if(gSysInfo.targetDuty > 100){
+        gSysInfo.targetDuty = 100;
+    }
+    else if(gSysInfo.targetDuty < -100){
+        gSysInfo.targetDuty = -100;
+    }
 //    switch (gExternalForceState.ForceState)
 //    {
 //    case NO_FORCE:

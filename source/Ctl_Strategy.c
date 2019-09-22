@@ -22,7 +22,7 @@ double findSpringForceK(double displace){
 				return springForce;
 			}
 			else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForce = 30;
+                springForce = 10;
                 return springForce;
 			}
 		}
@@ -36,7 +36,7 @@ double findSpringForceK(double displace){
 				return springForce;
 			}
             else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForce = 20;
+                springForce = 6;
                 return springForce;
             }
 		}
@@ -184,7 +184,6 @@ void OnlyWithSpringRear(void){
     gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
     gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
     gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
-
 }
 
 void OnlyWithSpringFront(void){
@@ -291,7 +290,6 @@ void OnlyWithSpringFront(void){
 	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
 	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
-	
 }
 /**************************************************************
  *Name:		   PidProcess
