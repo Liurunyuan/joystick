@@ -22,7 +22,7 @@ double findSpringForceK(double displace){
 				return springForce;
 			}
 			else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForce = gForceAndDisplaceCurve.K_spring_forceP[index];
+                springForce = 30;
                 return springForce;
 			}
 		}
@@ -36,7 +36,7 @@ double findSpringForceK(double displace){
 				return springForce;
 			}
             else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForce = gForceAndDisplaceCurve.K_spring_forceN[index];
+                springForce = 20;
                 return springForce;
             }
 		}
