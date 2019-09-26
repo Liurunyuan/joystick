@@ -29,6 +29,7 @@ inline void Send16Clocks(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(StartGetADBySpi, "ramfuncs")
 void StartGetADBySpi(void)
 {
 	ENABLE_CNV_AD;
@@ -41,6 +42,7 @@ void StartGetADBySpi(void)
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(ReadADBySpi, "ramfuncs")
 void ReadADBySpi(void)
 {
 	while(GpioDataRegs.GPBDAT.bit.GPIO55 == 0){

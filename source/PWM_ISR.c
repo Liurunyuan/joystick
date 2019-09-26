@@ -14,7 +14,7 @@ void ForceAndDisplaceProcess(int count);
 
 
 Uint16 real3 = 0;
-
+#pragma CODE_SECTION(UpdateKeyValue, "ramfuncs")
 void UpdateKeyValue(void) {
 	static int calSpeedCnt = 0;
 //	static double bakSpeed = 0;
@@ -52,8 +52,9 @@ void UpdateKeyValue(void) {
 	// bakSpeed = gKeyValue.motorSpeed;
 	// gAccelDirection.updateAccelDirection(0);
 }
+#pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 void TargetDutyGradualChange(int targetduty){
-	gSysInfo.duty = targetduty; 
+	gSysInfo.duty = targetduty;
 }
 
 /*
@@ -116,6 +117,7 @@ void EnablePwm3(void){
  *Author:					Simon
  *Date:						2018.10.28
  **************************************************************/
+#pragma CODE_SECTION(CalForceSpeedAccel, "ramfuncs")
 void CalForceSpeedAccel(void) {
 
 
@@ -142,7 +144,7 @@ void CalForceSpeedAccel(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
-
+#pragma CODE_SECTION(GetCurrentHallValue, "ramfuncs")
 Uint16 GetCurrentHallValue(void){
 
 	Uint16 temp;
@@ -366,6 +368,7 @@ inline void APositiveToBNegtive(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
+#pragma CODE_SECTION(SwitchDirection, "ramfuncs")
 void SwitchDirection(void){
 	int t_duty_temp;
 	Uint16 t_duty_p;
@@ -648,15 +651,16 @@ inline void Check_C_X_Current(){
  *Author:					Simon
  *Date:						2018.6.10
  **************************************************************/
+#pragma CODE_SECTION(Pwm_ISR_Thread, "ramfuncs")
 void Pwm_ISR_Thread(void)
 {
 	StartGetADBySpi();
 
 	//ReadDigitalValue();
 
-	ReadAnalogValue();
+//	ReadAnalogValue();
 
-	Check_Current();
+//	Check_Current();
 //	Check_A_Q_Current();
 //	Check_A_X_Current();
 //	Check_B_Q_Current();

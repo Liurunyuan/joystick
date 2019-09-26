@@ -131,7 +131,7 @@ void InitGlobalVarAndFunc(void){
 }
 
 void checkPitchOrRoll(void){
-    int board_type;
+
     // PITCH
     if((GpioDataRegs.GPBDAT.bit.GPIO61 == 1) && (GpioDataRegs.GPBDAT.bit.GPIO35 == 0)){
         gSysInfo.board_type = PITCH;
@@ -145,7 +145,7 @@ void checkPitchOrRoll(void){
         gSysState.warning.bit.b = 1;
     }
 }
-
+#pragma CODE_SECTION(IRNullDisAndNoForce, "ramfuncs")
 void IRNullDisAndNoForce(int a,  int b){
 	/*stick is in the range of the null displacement and no external force on the it */
 	/*so decide what we should do */
@@ -156,7 +156,7 @@ void IRNullDisAndNoForce(int a,  int b){
 	gSysInfo.targetDuty = 0;
 
 } 
-
+#pragma CODE_SECTION(IRNullDisAndForwardForce, "ramfuncs")
 void IRNullDisAndForwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is forward */
 	/*so decidde what we should do here */
@@ -167,7 +167,7 @@ void IRNullDisAndForwardForce(int a, int b){
 	gSysInfo.targetDuty = tmp; 
 	//gSysInfo.targetDuty = 100; 
 }
-
+#pragma CODE_SECTION(IRNullDisAndBackwardForce, "ramfuncs")
 void IRNullDisAndBackwardForce(int a, int b){
 	/*stick is in the range of the null displacement and the external force is backward */
 	/*so decidde what we should do here */
@@ -188,7 +188,7 @@ void IRNullDisAndBackwardForce(int a, int b){
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
 */
-
+#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec2, "ramfuncs")
 void IRStartForceSecAndNoForce_sec2(int a,  int b){
     /*stick is in the range of the null displacement and no external force on the it */
     /*so decide what we should do */
@@ -199,7 +199,7 @@ void IRStartForceSecAndNoForce_sec2(int a,  int b){
     gSysInfo.targetDuty = tmp;
 
 }
-
+#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec5, "ramfuncs")
 void IRStartForceSecAndNoForce_sec5(int a,  int b){
     /*stick is in the range of the null displacement and no external force on the it */
     /*so decide what we should do */
@@ -210,7 +210,7 @@ void IRStartForceSecAndNoForce_sec5(int a,  int b){
     gSysInfo.targetDuty = tmp;
 
 }
-
+#pragma CODE_SECTION(IRStartForceSecAndForwardForce_sec5, "ramfuncs")
 void IRStartForceSecAndForwardForce_sec5(int a, int b){
     /*stick is in the range of the null displacement and the external force is forward */
     /*so decidde what we should do here */
@@ -227,7 +227,7 @@ void IRStartForceSecAndForwardForce_sec5(int a, int b){
         gSysInfo.targetDuty = tmp;
     }
 }
-
+#pragma CODE_SECTION(IRStartForceSecAndBackwardForce_sec2, "ramfuncs")
 void IRStartForceSecAndBackwardForce_sec2(int a, int b){
     /*stick is in the range of the null displacement and the external force is backward */
     /*so decidde what we should do here */
@@ -240,7 +240,7 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
         gSysInfo.targetDuty = tmp;
     }
 }
-
+#pragma CODE_SECTION(sec0_threshold_rear, "ramfuncs")
 void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
@@ -280,7 +280,7 @@ void sec0_threshold_rear(int a, int b){
 //    }
 //        gSysInfo.targetDuty = 80;
 }
-
+#pragma CODE_SECTION(sec1_ODE_rear, "ramfuncs")
 void sec1_ODE_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
@@ -293,7 +293,7 @@ void sec1_ODE_rear(int a, int b){
     gSysInfo.targetDuty = 0;
 #endif
 }
-
+#pragma CODE_SECTION(sec2_StartForce_rear, "ramfuncs")
 void sec2_StartForce_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
@@ -318,7 +318,7 @@ void sec2_StartForce_rear(int a, int b){
     }
 
 }
-
+#pragma CODE_SECTION(sec3_Null_rear, "ramfuncs")
 void sec3_Null_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
@@ -342,6 +342,7 @@ void sec3_Null_rear(int a, int b){
     }
 
 }
+#pragma CODE_SECTION(sec4_Null_front, "ramfuncs")
 void sec4_Null_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
@@ -364,6 +365,7 @@ void sec4_Null_front(int a, int b){
         break;
     }
 }
+#pragma CODE_SECTION(sec5_StartForce_front, "ramfuncs")
 void sec5_StartForce_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
@@ -389,6 +391,7 @@ void sec5_StartForce_front(int a, int b){
     }
 
 }
+#pragma CODE_SECTION(sec6_ODE_front, "ramfuncs")
 void sec6_ODE_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
@@ -399,6 +402,8 @@ void sec6_ODE_front(int a, int b){
     //PidProcess();
 #endif
 }
+
+#pragma CODE_SECTION(sec7_threshold_front, "ramfuncs")
 void sec7_threshold_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
@@ -449,7 +454,7 @@ const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
 	sec6_ODE_front,					//6:	Front ODE
 	sec7_threshold_front               	//7:	Front OOR
 };
-
+#pragma CODE_SECTION(ControleStateMachineSwitch, "ramfuncs")
 void ControleStateMachineSwitch(int value){
 
 	if(value < (sizeof(controlStateMahchineInterface) / sizeof(controlStateMahchineInterface[0]))){
@@ -534,7 +539,7 @@ void checkRotateDirection(int value){
 			break;
 	}
 }
-
+#pragma CODE_SECTION(checkAcceleration, "ramfuncs")
 void checkAcceleration(int value){
     switch(gAccelDirection.accelDirection)
     {
@@ -606,7 +611,7 @@ void checkAcceleration(int value){
             break;
     }
 }
-
+#pragma CODE_SECTION(checkExternalForce, "ramfuncs")
 void checkExternalForce(int value){
 	/*need to decide if need to enable debouce feature */
 	switch (gExternalForceState.ForceState)
@@ -927,6 +932,7 @@ void InitSysState(void){
  *Author:	   Simon
  *Date:		   2019��1��2������9:57:12
  **************************************************************/
+#pragma CODE_SECTION(KalmanFilter, "ramfuncs")
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 
@@ -955,6 +961,7 @@ double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double Measur
 
 	return x_now;
 }
+#pragma CODE_SECTION(KalmanFilterSpeed, "ramfuncs")
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 	double R = MeasureNoise_R;
@@ -981,6 +988,7 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
+#pragma CODE_SECTION(KalmanFilterForce, "ramfuncs")
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 
@@ -1009,7 +1017,7 @@ double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
-
+#pragma CODE_SECTION(KalmanFilterAccel, "ramfuncs")
 double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 	double R = MeasureNoise_R;
@@ -1059,6 +1067,7 @@ void EnablePwmOutput(void){
 	Enable_KZ_P_DSP();
 	Enable_KZ_N_DSP();
 }
+#pragma CODE_SECTION(DisablePwmOutput, "ramfuncs")
 void DisablePwmOutput(void){
 	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
 	//GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1; //For temp use
@@ -1105,7 +1114,7 @@ void Disable_PWMD_BK(void){
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
 */
-
+#pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
 int CheckStickSetion(double val){
 	if(val <= gSysInfo.TH0){
 		return 0;
@@ -1141,7 +1150,7 @@ int CheckStickSetion(double val){
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
 */
-
+#pragma CODE_SECTION(LocateStickDisSection, "ramfuncs")
 int LocateStickDisSection(void){
 	switch (gSysInfo.currentStickDisSection)
 	{

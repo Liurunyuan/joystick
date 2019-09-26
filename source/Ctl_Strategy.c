@@ -10,7 +10,7 @@
 #define ITEGRATION_TIMES (6)
 
 
-
+#pragma CODE_SECTION(findSpringForceK, "ramfuncs")
 double findSpringForceK(double displace){
 	double springForce = -1;
 	int index;
@@ -45,6 +45,8 @@ double findSpringForceK(double displace){
 	//TODO generate alarm, because the displacement is out of range
 	return springForce;
 }
+
+#pragma CODE_SECTION(findSpringForceB, "ramfuncs")
 double findSpringForceB(double displace){
 	double springForceB = -1;
 	int index;
@@ -79,7 +81,7 @@ double findSpringForceB(double displace){
 	//TODO generate alarm, because the displacement is out of range
 	return springForceB;
 }
-
+#pragma CODE_SECTION(OnlyWithSpringRear, "ramfuncs")
 void OnlyWithSpringRear(void){
     double k;
     double kb;
@@ -186,6 +188,7 @@ void OnlyWithSpringRear(void){
     gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
 }
 
+#pragma CODE_SECTION(OnlyWithSpringFront, "ramfuncs")
 void OnlyWithSpringFront(void){
 	double k;
 	double kb;

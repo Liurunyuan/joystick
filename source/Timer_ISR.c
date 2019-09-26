@@ -24,6 +24,7 @@
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(Timer0_ISR_Thread, "ramfuncs")
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
@@ -64,23 +65,23 @@ void Timer0_ISR_Thread(void){
             gSysInfo.zeroForce = zero_force_SUM/10;
         }
 
-        gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
+        gExternalForceState.value = gSysInfo.zeroForce - force_Joystick;
         gExternalForceState.updateForceState(0);
 /******************************
-* -20mm                                                     0mm                                                      12mm 
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
+* -20mm                                                     0mm                                                      12mm
+*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->|
 *  |                                                          |
 *  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
 *  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-* 
-* 
+*
+*
 * we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
 */
         gSysInfo.controlFuncIndex = LocateStickDisSection();
 
-        ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
+        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
 
 		clearSum();
 		gKeyValue.lock = 0;

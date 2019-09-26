@@ -23,7 +23,7 @@ void InitPidVar(void){
     gPidPara.B_V_NULL = 0;
 }
 
-
+#pragma CODE_SECTION(velocity_PidOutput, "ramfuncs")
 int16 velocity_PidOutput(double targetVal, double controlVar){
     int16 pidOutput = 0;
     double ek1;
@@ -51,7 +51,7 @@ int16 velocity_PidOutput(double targetVal, double controlVar){
 
     return pidOutput;
 }
-
+#pragma CODE_SECTION(force_PidOutput, "ramfuncs")
 int16 force_PidOutput(double targetVal, double controlVar){
     int16 pidOutput = 0;
     double ek1;
