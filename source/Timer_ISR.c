@@ -34,6 +34,7 @@ void Timer0_ISR_Thread(void){
     double force_Joystick;
     double cos_value;
     double angle;
+    double temp_speed;
 
 	++count;
 
@@ -82,6 +83,25 @@ void Timer0_ISR_Thread(void){
         gSysInfo.controlFuncIndex = LocateStickDisSection();
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
+
+        if(gKeyValue.motorSpeed > 0){
+            if(gKeyValue.motorSpeed > gSysInfo.maxspeed){
+                gSysInfo.maxspeed = gKeyValue.motorSpeed;
+            }
+            else{
+                gSysInfo.maxspeed = gSysInfo.maxspeed;
+            }
+        }
+        if(gKeyValue.motorSpeed < 0){
+            temp_speed = - gKeyValue.motorSpeed;
+            if(temp_speed > gSysInfo.maxspeed){
+                gSysInfo.maxspeed = temp_speed;
+            }
+            else{
+                gSysInfo.maxspeed = gSysInfo.maxspeed;
+            }
+        }
+
 
 		clearSum();
 		gKeyValue.lock = 0;

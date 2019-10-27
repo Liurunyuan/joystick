@@ -63,13 +63,13 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.targetDuty_F = 0;
 	gSysInfo.targetDuty_V = 0;
-	gSysInfo.coe_Force = 0.6;
-	gSysInfo.coe_Velocity = 0.4;
+	gSysInfo.coe_Force = 1;
+	gSysInfo.coe_Velocity = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -0.5;
-	gSysInfo.TH2 = -0.25;
+	gSysInfo.TH1 = -5.5;
+	gSysInfo.TH2 = -5.25;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 0.25;
 	gSysInfo.TH5 = 0.5;
@@ -128,6 +128,7 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[3] = 0;
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
+    gSysInfo.maxspeed = 0;
 }
 
 void checkPitchOrRoll(void){
@@ -347,6 +348,27 @@ void sec4_Null_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
+
+//    switch (gRotateDirection.rotateDirection)
+//    {
+//    case STOP_DIRECTION:
+//        IRStartForceSecAndNoForce_sec5(0,0);
+//        break;
+//
+//    case BACKWARD_DIRECTION:
+//        gSysInfo.coe_Force = 0.2;
+//        gSysInfo.coe_Velocity = 0.8;
+//        OnlyWithSpringFront();
+//        break;
+//
+//    case FORWARD_DIRECTION:
+//        IRStartForceSecAndForwardForce_sec5(0,0);
+//        break;
+//
+//    default:
+//        break;
+//    }
+
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
@@ -370,6 +392,27 @@ void sec5_StartForce_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
+//    switch (gRotateDirection.rotateDirection)
+//    {
+//    case STOP_DIRECTION:
+//        IRStartForceSecAndNoForce_sec5(0,0);
+//        break;
+//
+//    case BACKWARD_DIRECTION:
+//        gSysInfo.coe_Force = 0.2;
+//        gSysInfo.coe_Velocity = 0.8;
+//        OnlyWithSpringFront();
+//        break;
+//
+//    case FORWARD_DIRECTION:
+//        IRStartForceSecAndForwardForce_sec5(0,0);
+//        break;
+//
+//    default:
+//        break;
+//    }
+
+
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
@@ -397,6 +440,8 @@ void sec6_ODE_front(int a, int b){
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
 #if(ONLY_SPRING == INCLUDE_FEATURE)
+    gSysInfo.coe_Force = 0.8;
+    gSysInfo.coe_Velocity = 0.2;
 	OnlyWithSpringFront();
 #else
     //PidProcess();
@@ -861,14 +906,14 @@ void InitConfigParameter(void){
          gSysState.warning.bit.b = 1;
      }
 
-	gConfigPara.LF_FrontFriction = 1;
-	gConfigPara.LF_RearFriction = 1;
+	gConfigPara.LF_FrontFriction = 3;
+	gConfigPara.LF_RearFriction = 3;
 	gConfigPara.RB_FrontFriction = 1;
 	gConfigPara.RB_RearFriction = 1;
 
 	gConfigPara.dampingFactor = 0.5;
 
-	gConfigPara.naturalVibrationFreq = 20.0;
+	gConfigPara.naturalVibrationFreq = 10.0;
 
 	gConfigPara.equivalentMass = 0;
 
@@ -1190,8 +1235,8 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 5:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
+//	    gSysInfo.sek_v = 0;
+//	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}

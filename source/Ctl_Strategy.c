@@ -81,6 +81,7 @@ double findSpringForceB(double displace){
 	//TODO generate alarm, because the displacement is out of range
 	return springForceB;
 }
+
 #pragma CODE_SECTION(OnlyWithSpringRear, "ramfuncs")
 void OnlyWithSpringRear(void){
     double k;
