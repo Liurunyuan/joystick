@@ -68,8 +68,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -5.5;
-	gSysInfo.TH2 = -5.25;
+	gSysInfo.TH1 = -0.5;
+	gSysInfo.TH2 = -0.25;
 	gSysInfo.TH3 = 0.0;
 	gSysInfo.TH4 = 0.25;
 	gSysInfo.TH5 = 0.5;
@@ -129,6 +129,9 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
     gSysInfo.maxspeed = 0;
+    gSysInfo.minspeed = 0;
+    gKeyValue.motorAccel = 0;
+    gKeyValue.motorSpeed = 0;
 }
 
 void checkPitchOrRoll(void){

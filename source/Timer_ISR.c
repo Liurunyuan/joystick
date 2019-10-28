@@ -34,7 +34,6 @@ void Timer0_ISR_Thread(void){
     double force_Joystick;
     double cos_value;
     double angle;
-    double temp_speed;
 
 	++count;
 
@@ -92,13 +91,12 @@ void Timer0_ISR_Thread(void){
                 gSysInfo.maxspeed = gSysInfo.maxspeed;
             }
         }
-        if(gKeyValue.motorSpeed < 0){
-            temp_speed = - gKeyValue.motorSpeed;
-            if(temp_speed > gSysInfo.maxspeed){
-                gSysInfo.maxspeed = temp_speed;
+        else{
+            if(gKeyValue.motorSpeed < gSysInfo.minspeed){
+                gSysInfo.minspeed = gKeyValue.motorSpeed;
             }
             else{
-                gSysInfo.maxspeed = gSysInfo.maxspeed;
+                gSysInfo.minspeed = gSysInfo.minspeed;
             }
         }
 
