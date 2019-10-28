@@ -980,6 +980,7 @@ void InitSysState(void){
 #pragma CODE_SECTION(KalmanFilter, "ramfuncs")
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
+    static int isFirstTimeExcuted = 1;
 
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
@@ -993,6 +994,14 @@ double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double Measur
 	double p_now;
 
 	double kg;
+
+
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
 
 	x_mid = x_last;
 	p_mid = p_last + Q;
