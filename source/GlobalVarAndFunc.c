@@ -128,8 +128,8 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[3] = 0;
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
-    gSysInfo.maxspeed = 0;
-    gSysInfo.minspeed = 0;
+//    gSysInfo.maxspeed = 0;
+//    gSysInfo.minspeed = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
 }

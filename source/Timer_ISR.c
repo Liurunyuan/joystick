@@ -83,22 +83,22 @@ void Timer0_ISR_Thread(void){
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
 
-        if(gKeyValue.motorSpeed > 0){
-            if(gKeyValue.motorSpeed > gSysInfo.maxspeed){
-                gSysInfo.maxspeed = gKeyValue.motorSpeed;
-            }
-            else{
-                gSysInfo.maxspeed = gSysInfo.maxspeed;
-            }
-        }
-        else{
-            if(gKeyValue.motorSpeed < gSysInfo.minspeed){
-                gSysInfo.minspeed = gKeyValue.motorSpeed;
-            }
-            else{
-                gSysInfo.minspeed = gSysInfo.minspeed;
-            }
-        }
+//        if(gKeyValue.motorSpeed > 0){
+//            if(gKeyValue.motorSpeed > gSysInfo.maxspeed){
+//                gSysInfo.maxspeed = gKeyValue.motorSpeed;
+//            }
+//            else{
+//                gSysInfo.maxspeed = gSysInfo.maxspeed;
+//            }
+//        }
+//        else{
+//            if(gKeyValue.motorSpeed < gSysInfo.minspeed){
+//                gSysInfo.minspeed = gKeyValue.motorSpeed;
+//            }
+//            else{
+//                gSysInfo.minspeed = gSysInfo.minspeed;
+//            }
+//        }
 
 
 		clearSum();

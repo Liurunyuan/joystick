@@ -122,18 +122,7 @@ void OnlyWithSpringRear(void){
         gSysState.warning.bit.a = 1;
     }
 
-    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-        friction = gConfigPara.RB_RearFriction;
-        B_V = gPidPara.B_V_ODE;
-    }
-    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-        friction = gConfigPara.RB_FrontFriction;
-        B_V = -gPidPara.B_V_ODE;
-    }
-    else{
-        friction = 0;
-        B_V = 0;
-    }
+    friction = gConfigPara.LF_FrontFriction;
 
     spring_force = k * gStickState.value + kb;
     damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
@@ -141,22 +130,23 @@ void OnlyWithSpringRear(void){
 
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
         velocity_force = friction + damp_force;
+        B_V = gPidPara.B_V_ODE;
     }
     else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
         velocity_force = 0 - friction - damp_force;
+        B_V = -gPidPara.B_V_ODE;
     }
     else{
         velocity_force = 0;
+        friction = 0;
+        B_V = 0;
     }
 
-    if(gAccelDirection.accelDirection == FORWARD_DIRECTION){
-        inertial_force = -inertial_force;
-    }
-    else if(gAccelDirection.accelDirection == BACKWARD_DIRECTION){
-        inertial_force = -inertial_force;
+    if(gAccelDirection.accelDirection == STOP_DIRECTION){
+        inertial_force = 0;
     }
     else{
-        inertial_force = 0;
+        inertial_force = -inertial_force;
     }
 
     force_openLoop = spring_force + velocity_force + inertial_force;
@@ -176,13 +166,7 @@ void OnlyWithSpringRear(void){
         velocity_openLoop = velocity_openLoop;
     }
 
-    //velocity_closeLoop = 0;
     velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
-
-
-    gDebug[0] = velocity_openLoop;
-    gDebug[1] = velocity_closeLoop;
-    gDebug[2] = mass;
 
     gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
     gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
@@ -229,18 +213,7 @@ void OnlyWithSpringFront(void){
 	    gSysState.warning.bit.a = 1;
 	}
 
-    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-        friction = gConfigPara.LF_RearFriction;
-        B_V = gPidPara.B_V_ODE;
-    }
-    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-        friction = gConfigPara.LF_FrontFriction;
-        B_V = -gPidPara.B_V_ODE;
-    }
-    else{
-        friction = 0;
-        B_V = 0;
-    }
+    friction = gConfigPara.LF_FrontFriction;
 
 	spring_force = k * gStickState.value + kb;
 	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
@@ -248,22 +221,23 @@ void OnlyWithSpringFront(void){
 
 	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
 	    velocity_force = friction + damp_force;
+	    B_V = gPidPara.B_V_ODE;
 	}
 	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
 	    velocity_force = 0 - friction - damp_force;
+	    B_V = -gPidPara.B_V_ODE;
 	}
 	else{
 	    velocity_force = 0;
+        friction = 0;
+        B_V = 0;
 	}
 
-	if(gAccelDirection.accelDirection == FORWARD_DIRECTION){
-	    inertial_force = -inertial_force;
-	}
-	else if(gAccelDirection.accelDirection == BACKWARD_DIRECTION){
-	    inertial_force = -inertial_force;
+	if(gAccelDirection.accelDirection == STOP_DIRECTION){
+	    inertial_force = 0;
 	}
 	else{
-	    inertial_force = 0;
+	    inertial_force = -inertial_force;
 	}
 
 	force_openLoop = spring_force + velocity_force + inertial_force;
@@ -283,13 +257,7 @@ void OnlyWithSpringFront(void){
         velocity_openLoop = velocity_openLoop;
     }
 
-	//velocity_closeLoop = 0;
 	velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
-
-
-	gDebug[0] = velocity_openLoop;
-	gDebug[1] = force_openLoop;
-	//gDebug[2] = velocity_openLoop;
 
 	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
 	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
