@@ -916,7 +916,7 @@ void InitConfigParameter(void){
 
 	gConfigPara.dampingFactor = 0.5;
 
-	gConfigPara.naturalVibrationFreq = 10.0;
+	gConfigPara.naturalVibrationFreq = 20.0;
 
 	gConfigPara.equivalentMass = 0;
 

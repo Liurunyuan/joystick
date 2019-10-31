@@ -129,11 +129,11 @@ void OnlyWithSpringRear(void){
     inertial_force = mass * gKeyValue.motorAccel;
 
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-        velocity_force = friction + damp_force;
+        velocity_force = 0 - friction - damp_force;
         B_V = gPidPara.B_V_ODE;
     }
     else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-        velocity_force = 0 - friction - damp_force;
+        velocity_force = friction - damp_force;
         B_V = -gPidPara.B_V_ODE;
     }
     else{
@@ -220,11 +220,11 @@ void OnlyWithSpringFront(void){
 	inertial_force = mass * gKeyValue.motorAccel;
 
 	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-	    velocity_force = friction + damp_force;
+	    velocity_force = 0 - friction - damp_force;
 	    B_V = gPidPara.B_V_ODE;
 	}
 	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-	    velocity_force = 0 - friction - damp_force;
+	    velocity_force = friction - damp_force;
 	    B_V = -gPidPara.B_V_ODE;
 	}
 	else{
