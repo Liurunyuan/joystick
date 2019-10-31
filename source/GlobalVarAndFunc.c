@@ -63,8 +63,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.targetDuty_F = 0;
 	gSysInfo.targetDuty_V = 0;
-	gSysInfo.coe_Force = 1;
-	gSysInfo.coe_Velocity = 0;
+	gSysInfo.coe_Force = 0.6;
+	gSysInfo.coe_Velocity = 0.4;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
@@ -443,8 +443,8 @@ void sec6_ODE_front(int a, int b){
     /*so decidde what we should do here */
     //gSysInfo.sek = 0;
 #if(ONLY_SPRING == INCLUDE_FEATURE)
-    gSysInfo.coe_Force = 0.8;
-    gSysInfo.coe_Velocity = 0.2;
+//    gSysInfo.coe_Force = 0.8;
+//    gSysInfo.coe_Velocity = 0.2;
 	OnlyWithSpringFront();
 #else
     //PidProcess();
@@ -1247,8 +1247,8 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 5:
-//	    gSysInfo.sek_v = 0;
-//	    gSysInfo.velocity_last = 0;
+	    gSysInfo.sek_v = 0;
+	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 		}
