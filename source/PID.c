@@ -17,7 +17,7 @@ void InitPidVar(void){
     gPidPara.B_F_ODE = 40;
     gPidPara.K_F_NULL = 0;
     gPidPara.B_F_NULL = 0;
-    gPidPara.K_V_ODE = 25;
+    gPidPara.K_V_ODE = 40;
     gPidPara.B_V_ODE = 0;
     gPidPara.K_V_NULL = 0;
     gPidPara.B_V_NULL = 0;

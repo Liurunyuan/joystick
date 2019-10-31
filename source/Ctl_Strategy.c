@@ -171,6 +171,12 @@ void OnlyWithSpringRear(void){
     gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
     gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
     gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
+    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
+        gSysInfo.targetDuty = DUTY_LIMIT_P;
+    }
+    else if(gSysInfo.targetDuty < DUTY_LIMIT_N){
+        gSysInfo.targetDuty = DUTY_LIMIT_N;
+    }
 }
 
 #pragma CODE_SECTION(OnlyWithSpringFront, "ramfuncs")
@@ -262,7 +268,14 @@ void OnlyWithSpringFront(void){
 	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
 	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
+    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
+        gSysInfo.targetDuty = DUTY_LIMIT_P;
+    }
+    else if(gSysInfo.targetDuty < DUTY_LIMIT_N){
+        gSysInfo.targetDuty = DUTY_LIMIT_N;
+    }
 }
+
 /**************************************************************
  *Name:		   PidProcess
  *Comment:

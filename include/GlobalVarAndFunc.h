@@ -24,6 +24,8 @@
 #define ROLL 0
 #define PITCH 1
 
+#define DUTY_LIMIT_P (275)
+#define DUTY_LIMIT_N (-275)
 
 #define BIT_0 (0x00000001)
 #define BIT_1 (0x00000002)

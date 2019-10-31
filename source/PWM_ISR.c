@@ -54,6 +54,14 @@ void UpdateKeyValue(void) {
 }
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 void TargetDutyGradualChange(int targetduty){
+
+	if(targetduty > DUTY_LIMIT_P){
+	    targetduty = DUTY_LIMIT_P;
+	}
+	else if(targetduty < DUTY_LIMIT_N){
+	    targetduty = DUTY_LIMIT_N;
+	}
+
 	gSysInfo.duty = targetduty;
 }
 
@@ -675,6 +683,12 @@ void Pwm_ISR_Thread(void)
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
+	    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
+	        gSysInfo.targetDuty = DUTY_LIMIT_P;
+	    }
+	    else if(gSysInfo.targetDuty < DUTY_LIMIT_N){
+	        gSysInfo.targetDuty = DUTY_LIMIT_N;
+	    }
 		TargetDutyGradualChange(gSysInfo.targetDuty);
 		SwitchDirection();
 	}
