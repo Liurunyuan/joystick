@@ -132,6 +132,7 @@ void InitGlobalVarAndFunc(void){
 //    gSysInfo.minspeed = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
+    gSysInfo.lastStickDisSection = 0;
 }
 
 void checkPitchOrRoll(void){
@@ -301,12 +302,28 @@ void sec1_ODE_rear(int a, int b){
 void sec2_StartForce_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
-    //gSysInfo.sek = 0;
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
-		//gSysInfo.targetDuty = 10; 
-        IRStartForceSecAndNoForce_sec2(0,0);
+//        switch (gRotateDirection.rotateDirection)
+//        {
+//        case STOP_DIRECTION:
+//            IRStartForceSecAndNoForce_sec2(0,0);
+//            break;
+//
+//        case BACKWARD_DIRECTION:
+//            IRStartForceSecAndNoForce_sec2(0,0);
+//            break;
+//
+//        case FORWARD_DIRECTION:
+//            BounceBackFront();
+//            break;
+//
+//        default:
+//            break;
+//        }
+        gSysInfo.targetDuty = 0;
+//        IRStartForceSecAndNoForce_sec2(0,0);
         break;
 
     case BACKWARD_FORCE:
@@ -330,7 +347,24 @@ void sec3_Null_rear(int a, int b){
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
-        IRNullDisAndNoForce(0,0);
+        switch (gRotateDirection.rotateDirection)
+        {
+        case STOP_DIRECTION:
+            IRNullDisAndNoForce(0,0);
+            break;
+        case BACKWARD_DIRECTION:
+            gSysInfo.coe_Force = 0.4;
+            gSysInfo.coe_Velocity = 0.6;
+            BounceBackFront();
+            break;
+        case FORWARD_DIRECTION:
+            gSysInfo.coe_Force = 0.4;
+            gSysInfo.coe_Velocity = 0.6;
+            BounceBackFront();
+            break;
+        default:
+            break;
+        }
         break;
 
     case BACKWARD_FORCE:
@@ -350,32 +384,28 @@ void sec3_Null_rear(int a, int b){
 void sec4_Null_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
-    //gSysInfo.sek = 0;
-
-//    switch (gRotateDirection.rotateDirection)
-//    {
-//    case STOP_DIRECTION:
-//        IRStartForceSecAndNoForce_sec5(0,0);
-//        break;
-//
-//    case BACKWARD_DIRECTION:
-//        gSysInfo.coe_Force = 0.2;
-//        gSysInfo.coe_Velocity = 0.8;
-//        OnlyWithSpringFront();
-//        break;
-//
-//    case FORWARD_DIRECTION:
-//        IRStartForceSecAndForwardForce_sec5(0,0);
-//        break;
-//
-//    default:
-//        break;
-//    }
 
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
-        IRNullDisAndNoForce(0,0);
+        switch (gRotateDirection.rotateDirection)
+        {
+        case STOP_DIRECTION:
+            IRNullDisAndNoForce(0,0);
+            break;
+        case BACKWARD_DIRECTION:
+            gSysInfo.coe_Force = 0.4;
+            gSysInfo.coe_Velocity = 0.6;
+            BounceBackFront();
+            break;
+        case FORWARD_DIRECTION:
+            gSysInfo.coe_Force = 0.4;
+            gSysInfo.coe_Velocity = 0.6;
+            BounceBackFront();
+            break;
+        default:
+            break;
+        }
         break;
 
     case BACKWARD_FORCE:
@@ -394,37 +424,32 @@ void sec4_Null_front(int a, int b){
 void sec5_StartForce_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
     /*so decidde what we should do here */
-    //gSysInfo.sek = 0;
-//    switch (gRotateDirection.rotateDirection)
-//    {
-//    case STOP_DIRECTION:
-//        IRStartForceSecAndNoForce_sec5(0,0);
-//        break;
-//
-//    case BACKWARD_DIRECTION:
-//        gSysInfo.coe_Force = 0.2;
-//        gSysInfo.coe_Velocity = 0.8;
-//        OnlyWithSpringFront();
-//        break;
-//
-//    case FORWARD_DIRECTION:
-//        IRStartForceSecAndForwardForce_sec5(0,0);
-//        break;
-//
-//    default:
-//        break;
-//    }
-
 
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
-        //gSysInfo.targetDuty = -10;
-        IRStartForceSecAndNoForce_sec5(0,0);
+//            switch (gRotateDirection.rotateDirection)
+//            {
+//            case STOP_DIRECTION:
+//                IRStartForceSecAndNoForce_sec5(0,0);
+//                break;
+//
+//            case BACKWARD_DIRECTION:
+//                BounceBackFront();
+//                break;
+//
+//            case FORWARD_DIRECTION:
+//                IRStartForceSecAndNoForce_sec5(0,0);
+//                break;
+//
+//            default:
+//                break;
+//            }
+        gSysInfo.targetDuty = 0;
+//        IRStartForceSecAndNoForce_sec5(0,0);
         break;
 
     case BACKWARD_FORCE:
-        //gSysInfo.targetDuty = -10;
         IRNullDisAndBackwardForce(0,0);
         break;
 
@@ -1183,9 +1208,25 @@ int CheckStickSetion(double val){
 		return 2;
 	}
 	else if(val <= gSysInfo.TH3){
+//	    if(((gSysInfo.lastStickDisSection == 4) && (gStickState.value < -0.22))){
+//	        gSysInfo.targetDuty_V = -gSysInfo.targetDuty_V;
+//	        gSysInfo.targetDuty_F = -gSysInfo.targetDuty_F;
+//	    }
+//	    else{
+//	        gSysInfo.targetDuty_V = gSysInfo.targetDuty_V;
+//	        gSysInfo.targetDuty_F = gSysInfo.targetDuty_F;
+//	    }
 		return 3;
 	}
 	else if(val <= gSysInfo.TH4){
+//	    if(((gSysInfo.lastStickDisSection == 3) && (gStickState.value > 0.22))){
+//	        gSysInfo.targetDuty_V = -gSysInfo.targetDuty_V;
+//	        gSysInfo.targetDuty_F = -gSysInfo.targetDuty_F;
+//	    }
+//	    else{
+//	        gSysInfo.targetDuty_V = gSysInfo.targetDuty_V;
+//	        gSysInfo.targetDuty_F = gSysInfo.targetDuty_F;
+//	    }
 		return 4;
 	}
 	else if(val <= gSysInfo.TH5){
@@ -1225,37 +1266,47 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 1:
+        gSysInfo.coe_Force = 0.6;
+        gSysInfo.coe_Velocity = 0.4;
 		if((gStickState.value  > (gSysInfo.TH1 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH0 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+			gSysInfo.lastStickDisSection = 1;
 		}
 		break;
 	case 2:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
+//	    gSysInfo.sek_v = 0;
+//	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH2 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH1 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+			gSysInfo.lastStickDisSection = 2;
 		}
 		break;
 	case 3:
 		if((gStickState.value  > (gSysInfo.TH3 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH2 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+			gSysInfo.lastStickDisSection = 3;
 		}
 		break;
 	case 4:
 		if((gStickState.value  > (gSysInfo.TH4 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH3 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+			gSysInfo.lastStickDisSection = 4;
 		}
 		break;
 	case 5:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
+//	    gSysInfo.sek_v = 0;
+//	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+			gSysInfo.lastStickDisSection = 5;
 		}
 		break;
 	case 6:
+        gSysInfo.coe_Force = 0.6;
+        gSysInfo.coe_Velocity = 0.4;
 		if((gStickState.value  > (gSysInfo.TH6 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH5 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+			gSysInfo.lastStickDisSection = 6;
 		}
 		break;
 	case 7:

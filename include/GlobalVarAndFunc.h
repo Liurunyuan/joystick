@@ -185,6 +185,7 @@ typedef struct{
     double Velocity_Debounce_Cnt_1;
     double Velocity_Debounce_Cnt_2;
     int board_type;
+    int lastStickDisSection;
 //    double maxspeed;
 //    double minspeed;
 
