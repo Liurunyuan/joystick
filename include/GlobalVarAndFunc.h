@@ -497,6 +497,8 @@ extern double gDebug[3];
 extern int gPISO_165[8];
 extern int gButtonCmd[6];
 extern int gButtonStatus[6];
+extern int bounceCnt;
+extern int gD;
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;

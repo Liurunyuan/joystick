@@ -32,6 +32,8 @@ double gDebug[3] = {0};
 int gPISO_165[8] = {0};
 int gButtonCmd[6] = {0};
 int gButtonStatus[6] = {0};
+int gD = 60;
+int bounceCnt = 0;
 
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
@@ -68,11 +70,11 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -0.5;
-	gSysInfo.TH2 = -0.25;
+	gSysInfo.TH1 = -1;
+	gSysInfo.TH2 = -0.5;
 	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 0.25;
-	gSysInfo.TH5 = 0.5;
+	gSysInfo.TH4 = 0.5;
+	gSysInfo.TH5 = 1;
 	//gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 6;
 	gSysInfo.Ki_Threshold_v = 0.1;
@@ -298,6 +300,16 @@ void sec1_ODE_rear(int a, int b){
     gSysInfo.targetDuty = 0;
 #endif
 }
+
+void ReduceFriction(int direction){
+    if(direction > 0)
+    {
+        gSysInfo.targetDuty = gD;
+    }
+    else{
+        gSysInfo.targetDuty = -gD;
+    }
+}
 #pragma CODE_SECTION(sec2_StartForce_rear, "ramfuncs")
 void sec2_StartForce_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
@@ -305,27 +317,46 @@ void sec2_StartForce_rear(int a, int b){
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
-//        switch (gRotateDirection.rotateDirection)
-//        {
-//        case STOP_DIRECTION:
+        switch (gRotateDirection.rotateDirection)
+        {
+        case STOP_DIRECTION:
+//            ReduceFriction(1);
+            gD = 60;
+            if(bounceCnt > 400){
+//                bounceCnt = 0;
+                gD = 0;
+            }
+            gSysInfo.targetDuty = gD + 20;
 //            IRStartForceSecAndNoForce_sec2(0,0);
-//            break;
-//
-//        case BACKWARD_DIRECTION:
-//            IRStartForceSecAndNoForce_sec2(0,0);
-//            break;
-//
-//        case FORWARD_DIRECTION:
-//            BounceBackFront();
-//            break;
-//
-//        default:
-//            break;
-//        }
-        gSysInfo.targetDuty = 0;
-//        IRStartForceSecAndNoForce_sec2(0,0);
-        break;
+            break;
 
+        case BACKWARD_DIRECTION:
+//            ReduceFriction(1);
+
+            bounceCnt++;
+            gD = 60;
+            if(bounceCnt > 400){
+//                bounceCnt = 0;
+                gD = 0;
+            }
+
+            gSysInfo.targetDuty = gD + 20;
+//            IRStartForceSecAndNoForce_sec2(0,0);
+            break;
+
+        case FORWARD_DIRECTION:
+            gD = 60;
+            if(bounceCnt > 400){
+//                bounceCnt = 0;
+                gD = 0;
+            }
+            ReduceFriction(1);
+            break;
+
+        default:
+            break;
+        }
+        break;
     case BACKWARD_FORCE:
         IRStartForceSecAndBackwardForce_sec2(0,0);
         break;
@@ -339,6 +370,9 @@ void sec2_StartForce_rear(int a, int b){
     }
 
 }
+
+
+
 #pragma CODE_SECTION(sec3_Null_rear, "ramfuncs")
 void sec3_Null_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
@@ -353,14 +387,16 @@ void sec3_Null_rear(int a, int b){
             IRNullDisAndNoForce(0,0);
             break;
         case BACKWARD_DIRECTION:
-            gSysInfo.coe_Force = 0.4;
-            gSysInfo.coe_Velocity = 0.6;
-            BounceBackFront();
+//            gSysInfo.coe_Force = 0.4;
+//            gSysInfo.coe_Velocity = 0.6;
+//            BounceBackFront();
+            ReduceFriction(-1);
             break;
         case FORWARD_DIRECTION:
-            gSysInfo.coe_Force = 0.4;
-            gSysInfo.coe_Velocity = 0.6;
-            BounceBackFront();
+//            gSysInfo.coe_Force = 0.4;
+//            gSysInfo.coe_Velocity = 0.6;
+//            BounceBackFront();
+            ReduceFriction(1);
             break;
         default:
             break;
@@ -380,6 +416,8 @@ void sec3_Null_rear(int a, int b){
     }
 
 }
+
+
 #pragma CODE_SECTION(sec4_Null_front, "ramfuncs")
 void sec4_Null_front(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
@@ -394,14 +432,16 @@ void sec4_Null_front(int a, int b){
             IRNullDisAndNoForce(0,0);
             break;
         case BACKWARD_DIRECTION:
-            gSysInfo.coe_Force = 0.4;
-            gSysInfo.coe_Velocity = 0.6;
-            BounceBackFront();
+//            gSysInfo.coe_Force = 0.4;
+//            gSysInfo.coe_Velocity = 0.6;
+//            BounceBackFront();
+            ReduceFriction(-1);
             break;
         case FORWARD_DIRECTION:
-            gSysInfo.coe_Force = 0.4;
-            gSysInfo.coe_Velocity = 0.6;
-            BounceBackFront();
+//            gSysInfo.coe_Force = 0.4;
+//            gSysInfo.coe_Velocity = 0.6;
+//            BounceBackFront();
+            ReduceFriction(1);
             break;
         default:
             break;
@@ -428,25 +468,45 @@ void sec5_StartForce_front(int a, int b){
     switch (gExternalForceState.ForceState)
     {
     case NO_FORCE:
-//            switch (gRotateDirection.rotateDirection)
-//            {
-//            case STOP_DIRECTION:
-//                IRStartForceSecAndNoForce_sec5(0,0);
-//                break;
-//
-//            case BACKWARD_DIRECTION:
-//                BounceBackFront();
-//                break;
-//
-//            case FORWARD_DIRECTION:
-//                IRStartForceSecAndNoForce_sec5(0,0);
-//                break;
-//
-//            default:
-//                break;
-//            }
-        gSysInfo.targetDuty = 0;
-//        IRStartForceSecAndNoForce_sec5(0,0);
+
+        switch (gRotateDirection.rotateDirection)
+        {
+        case STOP_DIRECTION:
+//            IRStartForceSecAndNoForce_sec5(0,0);
+//            ReduceFriction(-1);
+            gD = 60;
+            if(bounceCnt > 400){
+//                bounceCnt = 0;
+                gD = 0;
+            }
+            gSysInfo.targetDuty = -(gD+20);
+            break;
+
+        case BACKWARD_DIRECTION:
+            gD = 60;
+            if(bounceCnt > 400){
+//                bounceCnt = 0;
+                gD = 0;
+            }
+            ReduceFriction(-1);
+            break;
+
+        case FORWARD_DIRECTION:
+            bounceCnt++;
+            gD = 60;
+            if(bounceCnt > 400){
+//                bounceCnt = 0;
+                gD = 0;
+            }
+
+//            IRStartForceSecAndNoForce_sec5(0,0);
+//            ReduceFriction(-1);
+            gSysInfo.targetDuty = -(gD+20);
+            break;
+
+        default:
+            break;
+        }
         break;
 
     case BACKWARD_FORCE:

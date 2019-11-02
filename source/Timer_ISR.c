@@ -82,6 +82,11 @@ void Timer0_ISR_Thread(void){
         gSysInfo.controlFuncIndex = LocateStickDisSection();
 
         ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
+        if(gExternalForceState.ForceState != NO_FORCE){
+            bounceCnt = 0;
+        }
+
+
 
 //        if(gKeyValue.motorSpeed > 0){
 //            if(gKeyValue.motorSpeed > gSysInfo.maxspeed){
