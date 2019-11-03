@@ -73,11 +73,11 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -1.0;
-	gSysInfo.TH2 = -0.5;
+	gSysInfo.TH1 = -0.75;
+	gSysInfo.TH2 = -0.25;
 	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 0.5;
-	gSysInfo.TH5 = 1.0;
+	gSysInfo.TH4 = 0.25;
+	gSysInfo.TH5 = 0.75;
 	//gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 6;
 	gSysInfo.Ki_Threshold_v = 0.1;
@@ -337,7 +337,7 @@ void sec2_StartForce_rear(int a, int b){
             if(gStateMachineIndexBak != gStateMachineIndex){
 
                 bounceCnt++;
-                gD = gD - 3;
+                gD = gD - 10;
                 if(gD < 0){
                     gD = 0;
                 }
@@ -345,7 +345,7 @@ void sec2_StartForce_rear(int a, int b){
                     gD = 0;
                 }
             }
-            gSysInfo.targetDuty = gD + 60;
+            gSysInfo.targetDuty = gD + 80;
             gStateMachineIndexBak = gStateMachineIndex;
 
             break;
@@ -353,9 +353,7 @@ void sec2_StartForce_rear(int a, int b){
             gStateMachineIndex = 5;
             if(gStateMachineIndexBak != gStateMachineIndex){
                 if(gStateMachineIndexBak == 1){
-                     gD = gBounceDisplace * 7;//change gD based on the gBounceDisplace
-                    gDebug[2]++;
-//                    gD = 60;
+                    gD = gBounceDisplace * 7;//change gD based on the gBounceDisplace
                      if(gD < 0){
                          gD = -gD;
                      }
@@ -546,7 +544,6 @@ void sec5_StartForce_front(int a, int b){
             if(gStateMachineIndexBak != gStateMachineIndex){
                 if(gStateMachineIndexBak == 23){
                     gD = gBounceDisplace * 7;
-//                    gD = 60;
                     if(gD < 0){
                         gD = -gD;
                     }
@@ -559,7 +556,7 @@ void sec5_StartForce_front(int a, int b){
             gStateMachineIndex = 20;
             if(gStateMachineIndexBak != gStateMachineIndex){
                 bounceCnt++;
-                gD = gD - 3;
+                gD = gD - 10;
                 if(gD < 0){
                     gD = 0;
                 }
@@ -570,7 +567,7 @@ void sec5_StartForce_front(int a, int b){
             }
             gStateMachineIndexBak = gStateMachineIndex;
 
-            gSysInfo.targetDuty = -(gD+60);
+            gSysInfo.targetDuty = -(gD+80);
             break;
         default:
             break;
@@ -1394,16 +1391,16 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 1:
-        gSysInfo.coe_Force = 0.6;
-        gSysInfo.coe_Velocity = 0.4;
+//        gSysInfo.coe_Force = 0.6;
+//        gSysInfo.coe_Velocity = 0.4;
 		if((gStickState.value  > (gSysInfo.TH1 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH0 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 			gSysInfo.lastStickDisSection = 1;
 		}
 		break;
 	case 2:
-//	    gSysInfo.sek_v = 0;
-//	    gSysInfo.velocity_last = 0;
+	    gSysInfo.sek_v = 0;
+	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH2 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH1 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 			gSysInfo.lastStickDisSection = 2;
@@ -1422,16 +1419,16 @@ int LocateStickDisSection(void){
 		}
 		break;
 	case 5:
-//	    gSysInfo.sek_v = 0;
-//	    gSysInfo.velocity_last = 0;
+	    gSysInfo.sek_v = 0;
+	    gSysInfo.velocity_last = 0;
 		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 			gSysInfo.lastStickDisSection = 5;
 		}
 		break;
 	case 6:
-        gSysInfo.coe_Force = 0.6;
-        gSysInfo.coe_Velocity = 0.4;
+//        gSysInfo.coe_Force = 0.6;
+//        gSysInfo.coe_Velocity = 0.4;
 		if((gStickState.value  > (gSysInfo.TH6 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH5 - DEBOUNCE))){
 			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 			gSysInfo.lastStickDisSection = 6;
