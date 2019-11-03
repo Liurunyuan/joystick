@@ -38,6 +38,13 @@ int gStateMachineIndex = -1;
 int gStateMachineIndexBak = -1;
 double gBounceDisplace = 0;
 int gMaxBounceTimes = 4;
+int kspeed = 10;
+int timesDisplace = 7;
+int reduceNum = 10;
+
+
+
+
 typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
 void InitGlobalVarAndFunc(void){
@@ -74,9 +81,9 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
 	gSysInfo.TH1 = -0.75;
-	gSysInfo.TH2 = -0.25;
+	gSysInfo.TH2 = -0.35;
 	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 0.25;
+	gSysInfo.TH4 = 0.35;
 	gSysInfo.TH5 = 0.75;
 	//gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 6;
@@ -337,7 +344,7 @@ void sec2_StartForce_rear(int a, int b){
             if(gStateMachineIndexBak != gStateMachineIndex){
 
                 bounceCnt++;
-                gD = gD - 10;
+                gD = gD - timesDisplace;
                 if(gD < 0){
                     gD = 0;
                 }
@@ -353,7 +360,7 @@ void sec2_StartForce_rear(int a, int b){
             gStateMachineIndex = 5;
             if(gStateMachineIndexBak != gStateMachineIndex){
                 if(gStateMachineIndexBak == 1){
-                    gD = gBounceDisplace * 7;//change gD based on the gBounceDisplace
+                    gD = (gBounceDisplace * timesDisplace) - (gKeyValue.motorSpeed * kspeed);//change gD based on the gBounceDisplace
                      if(gD < 0){
                          gD = -gD;
                      }
@@ -418,7 +425,10 @@ void sec3_Null_rear(int a, int b){
 
             }
             gStateMachineIndexBak = gStateMachineIndex;
-
+//            gD--;
+//            if(gD < 30){
+//                gD = 30;
+//            }
             ReduceFriction(-1);
             break;
         case FORWARD_DIRECTION:
@@ -427,7 +437,10 @@ void sec3_Null_rear(int a, int b){
 
             }
             gStateMachineIndexBak = gStateMachineIndex;
-
+//            gD--;
+//            if(gD < 30){
+//                gD = 30;
+//            }
             ReduceFriction(1);
             break;
         default:
@@ -483,7 +496,10 @@ void sec4_Null_front(int a, int b){
 
             }
             gStateMachineIndexBak = gStateMachineIndex;
-
+//            gD--;
+//            if(gD < 30){
+//                gD = 30;
+//            }
             ReduceFriction(-1);
             break;
         case FORWARD_DIRECTION:
@@ -492,7 +508,10 @@ void sec4_Null_front(int a, int b){
 
             }
             gStateMachineIndexBak = gStateMachineIndex;
-
+//            gD--;
+//            if(gD < 30){
+//                gD = 30;
+//            }
             ReduceFriction(1);
             break;
         default:
@@ -543,7 +562,7 @@ void sec5_StartForce_front(int a, int b){
             gStateMachineIndex = 19;
             if(gStateMachineIndexBak != gStateMachineIndex){
                 if(gStateMachineIndexBak == 23){
-                    gD = gBounceDisplace * 7;
+                    gD = (gBounceDisplace * timesDisplace) - (gKeyValue.motorSpeed * kspeed);
                     if(gD < 0){
                         gD = -gD;
                     }
@@ -556,7 +575,7 @@ void sec5_StartForce_front(int a, int b){
             gStateMachineIndex = 20;
             if(gStateMachineIndexBak != gStateMachineIndex){
                 bounceCnt++;
-                gD = gD - 10;
+                gD = gD - reduceNum;
                 if(gD < 0){
                     gD = 0;
                 }
