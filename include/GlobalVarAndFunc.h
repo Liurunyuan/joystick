@@ -499,6 +499,9 @@ extern int gButtonCmd[6];
 extern int gButtonStatus[6];
 extern int bounceCnt;
 extern int gD;
+extern int gStateMachineIndex;
+extern int gStateMachineIndexBak;
+extern double gBounceDisplace;
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
