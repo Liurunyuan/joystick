@@ -39,7 +39,7 @@ typedef struct _DATA{
 
 typedef union _VAR16{
 	DATA datahl;
-	Uint16 value;
+	int16 value;
 }VAR16;
 
 

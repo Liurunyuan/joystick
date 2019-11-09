@@ -5,77 +5,42 @@
 #include "PID.h"
 
 volatile PIDPARA gPidPara = {0};
-volatile int gTargetSpeed = 500;
 
 void InitPidVar(void){
-//  gPidPara.kp = 450;
-//  gPidPara.ki = 500;
-    //gPidPara.kp_displace = 100;
-    gPidPara.kp_displace = 100;
-    gPidPara.ki_displace = 0;
-    gPidPara.kd_displace = 0;
-    //gPidPara.targetPid_displace = 0;  //é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·ç‰¡é”Ÿè§’ç™™IDé”Ÿæ–¤æ‹·é”Ÿè¡—ï¿½  ä»€ä¹ˆé”Ÿæ–¤æ‹·æ€�é”Ÿæ–¤æ‹·LUG
+    gPidPara.kp_velocity_ODE = 200;
+    gPidPara.ki_velocity_ODE = 50;
 
-    gPidPara.kp_force = 5;
-    gPidPara.ki_force = 0;
-    gPidPara.kd_force = 0;
-    //gPidPara.targetPid_force = 0;
+    gPidPara.kp_force_ODE = 5;
+    gPidPara.ki_force_ODE = 0;
 
-    gTargetSpeed = 500;
+    gPidPara.K_F_ODE = 1.5;
+    gPidPara.B_F_ODE = 40;
+    gPidPara.K_F_NULL = 0;
+    gPidPara.B_F_NULL = 0;
+    gPidPara.K_V_ODE = 40;
+    gPidPara.B_V_ODE = 0;
+    gPidPara.K_V_NULL = 0;
+    gPidPara.B_V_NULL = 0;
 }
 
-
-//int32 displace_PidOutput(double targetVal, double controlVar){
-//    int32 pidOutput = 0;
-//    double ek1;
-//
-//    ek1 = (targetVal - controlVar);
-////    if((ek1 > -gSysInfo.Ki_Threshold) && (ek1 < gSysInfo.Ki_Threshold))
-////    {
-////        if(((ek1 > 0) && (gSysInfo.sek < 1171)) || ((ek1 < 0) && (gSysInfo.sek > -1171)))
-////        {
-////            gSysInfo.sek = gSysInfo.sek + ek1;
-////        }
-////    }
-////    else
-////    {
-////        gSysInfo.sek = 0;
-////    }
-//    //pidOutput = (int32)(ek1 * gPidPara.kp_displace) + (int16)(((gSysInfo.sek >> 8) * gPidPara.ki_displace) >> 11);
-//    pidOutput = (int32)((ek1 * gPidPara.kp_displace) + (gExternalForceState.value * 3));
-//    //pidOutput = (int32)(ek1 * gPidPara.kp_displace);
-//
-//    if(pidOutput > 750){
-//        pidOutput = 750;
-//    }
-//    else if(pidOutput < -750){
-//        pidOutput = -750;
-//    }
-//    //gPidPara.targetPid_displace = pidOutput;
-//
-//    return pidOutput;
-//}
-
-int16 force_PidOutput(double targetVal, double controlVar){
+#pragma CODE_SECTION(velocity_PidOutput, "ramfuncs")
+int16 velocity_PidOutput(double targetVal, double controlVar){
     int16 pidOutput = 0;
     double ek1;
 
     ek1 = (targetVal - controlVar);
-    if((ek1 > -gSysInfo.Ki_Threshold) && (ek1 < gSysInfo.Ki_Threshold))
+    if((ek1 > -gSysInfo.Ki_Threshold_v) && (ek1 < gSysInfo.Ki_Threshold_v))
     {
-        if(((ek1 > 0) && (gSysInfo.sek < 60)) || ((ek1 < 0) && (gSysInfo.sek > -60)))
+        if(((ek1 > 0) && (gSysInfo.sek_v < 0.05)) || ((ek1 < 0) && (gSysInfo.sek_v > -0.05)))
         {
-            gSysInfo.sek = gSysInfo.sek + ek1;
+            gSysInfo.sek_v = gSysInfo.sek_v + ek1;
         }
     }
     else
     {
-        gSysInfo.sek = 0;
+        gSysInfo.sek_v = 0;
     }
-    pidOutput = (int16)(ek1 * gPidPara.kp_force) + (int16)(gSysInfo.sek * gPidPara.ki_force);
-    //pidOutput = (int16)(ek1 * gPidPara.kp_force);
-    //pidOutput = (int32)((ek1 * gPidPara.kp_force) + (gExternalForceState.value * 2));
-    //pidOutput = (int32)(ek1 * gPidPara.kp_displace);
+    pidOutput = (int16)(ek1 * gPidPara.kp_velocity_ODE) + (int16)(gSysInfo.sek_v * gPidPara.ki_velocity_ODE);
 
     if(pidOutput > 750){
         pidOutput = 750;
@@ -83,7 +48,34 @@ int16 force_PidOutput(double targetVal, double controlVar){
     else if(pidOutput < -750){
         pidOutput = -750;
     }
-    //gPidPara.targetPid_displace = pidOutput;
+
+    return pidOutput;
+}
+#pragma CODE_SECTION(force_PidOutput, "ramfuncs")
+int16 force_PidOutput(double targetVal, double controlVar){
+    int16 pidOutput = 0;
+    double ek1;
+
+    ek1 = (targetVal - controlVar);
+    if((ek1 > -gSysInfo.Ki_Threshold_f) && (ek1 < gSysInfo.Ki_Threshold_f))
+    {
+        if(((ek1 > 0) && (gSysInfo.sek_f < 60)) || ((ek1 < 0) && (gSysInfo.sek_f > -60)))
+        {
+            gSysInfo.sek_f = gSysInfo.sek_f + ek1;
+        }
+    }
+    else
+    {
+        gSysInfo.sek_f = 0;
+    }
+    pidOutput = (int16)(ek1 * gPidPara.kp_force_ODE) + (int16)(gSysInfo.sek_f * gPidPara.ki_force_ODE);
+
+    if(pidOutput > 750){
+        pidOutput = 750;
+    }
+    else if(pidOutput < -750){
+        pidOutput = -750;
+    }
 
     return pidOutput;
 }

@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define N (150)
+#define N (300)
 #define RS422STATUSCHECK (1000)
 
 
@@ -24,12 +24,12 @@
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(Timer0_ISR_Thread, "ramfuncs")
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
-
 
     double force_Joystick;
     double cos_value;
@@ -46,14 +46,14 @@ void Timer0_ISR_Thread(void){
 		//calculate function parameter
 		UpdateKeyValue();
 
-
         gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
 
         angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
         //cos_value = cos(angle*PI/180.0);
-        cos_value = 1; 
-        force_Joystick = -1*(((gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * FORCE_DIMENSION_K + FORCE_DIMENSION_B)*(0.045/0.14))/cos_value);
+//        cos_value = 1;
+        force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
+//                (0.045/0.14))/cos_value);
 
         if(zero_count < 10){
             zero_force_SUM = zero_force_SUM + force_Joystick;
@@ -69,28 +69,42 @@ void Timer0_ISR_Thread(void){
         gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
         gExternalForceState.updateForceState(0);
 /******************************
-* -20mm                                                     0mm                                                      12mm 
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
+* -20mm                                                     0mm                                                      12mm
+*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->|
 *  |                                                          |
 *  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
 *  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-* 
-* 
+*
+*
 * we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
 */
         gSysInfo.controlFuncIndex = LocateStickDisSection();
 
-        ControleStateMachineSwitch(gSysInfo.controlFuncIndex); 
+        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
+        if(gExternalForceState.ForceState != NO_FORCE){
+            bounceCnt = 0;
+        }
 
-        // if(gSysInfo.controlFuncIndex == SECTION0
-        // || gSysInfo.controlFuncIndex == SECTION7){
-        //     gSysState.warning.bit.a = 1;
-        // }
-        // else{
-        //     gSysState.warning.bit.a = 0;
-        // }
+
+
+//        if(gKeyValue.motorSpeed > 0){
+//            if(gKeyValue.motorSpeed > gSysInfo.maxspeed){
+//                gSysInfo.maxspeed = gKeyValue.motorSpeed;
+//            }
+//            else{
+//                gSysInfo.maxspeed = gSysInfo.maxspeed;
+//            }
+//        }
+//        else{
+//            if(gKeyValue.motorSpeed < gSysInfo.minspeed){
+//                gSysInfo.minspeed = gKeyValue.motorSpeed;
+//            }
+//            else{
+//                gSysInfo.minspeed = gSysInfo.minspeed;
+//            }
+//        }
 
 
 		clearSum();

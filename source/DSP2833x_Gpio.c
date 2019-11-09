@@ -247,6 +247,13 @@ void InitInputPin(void)
 	 */
 	GpioCtrlRegs.GPAMUX2.bit.GPIO17	= GPIO;
 	GpioCtrlRegs.GPADIR.bit.GPIO17	= INPUT;
+    /*
+     * GPIO35
+     * Pin index:           148
+     * Name in circuit:     GPIO35 ROLL
+     */
+    GpioCtrlRegs.GPBMUX1.bit.GPIO35 = GPIO;
+    GpioCtrlRegs.GPBDIR.bit.GPIO35  = INPUT;
 	/*
 	 * GPIO59
 	 * Pin index:			110
@@ -261,6 +268,13 @@ void InitInputPin(void)
 	 */
 	GpioCtrlRegs.GPBMUX2.bit.GPIO60	= GPIO;
 	GpioCtrlRegs.GPBDIR.bit.GPIO60	= INPUT;
+    /*
+     * GPIO61
+     * Pin index:           112
+     * Name in circuit:     GPIO61 PITCH
+     */
+    GpioCtrlRegs.GPBMUX2.bit.GPIO61 = GPIO;
+    GpioCtrlRegs.GPBDIR.bit.GPIO61  = INPUT;
 }
 /*
  * Initialize the GPIO

@@ -14,10 +14,10 @@ void ForceAndDisplaceProcess(int count);
 
 
 Uint16 real3 = 0;
-
+#pragma CODE_SECTION(UpdateKeyValue, "ramfuncs")
 void UpdateKeyValue(void) {
 	static int calSpeedCnt = 0;
-	static double bakSpeed = 0;
+//	static double bakSpeed = 0;
 
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
 	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
@@ -52,8 +52,17 @@ void UpdateKeyValue(void) {
 	// bakSpeed = gKeyValue.motorSpeed;
 	// gAccelDirection.updateAccelDirection(0);
 }
+#pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 void TargetDutyGradualChange(int targetduty){
-	gSysInfo.duty = targetduty; 
+
+	if(targetduty > DUTY_LIMIT_P){
+	    targetduty = DUTY_LIMIT_P;
+	}
+	else if(targetduty < DUTY_LIMIT_N){
+	    targetduty = DUTY_LIMIT_N;
+	}
+
+	gSysInfo.duty = targetduty;
 }
 
 /*
@@ -116,6 +125,7 @@ void EnablePwm3(void){
  *Author:					Simon
  *Date:						2018.10.28
  **************************************************************/
+#pragma CODE_SECTION(CalForceSpeedAccel, "ramfuncs")
 void CalForceSpeedAccel(void) {
 
 
@@ -124,7 +134,7 @@ void CalForceSpeedAccel(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*DIS_DIMENSION_K+DIS_DIMENSION_B), count);
+	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
 	//gTenAverageArray.displaceArray[count] = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value; 
 	++count;
 
@@ -142,7 +152,7 @@ void CalForceSpeedAccel(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
-
+#pragma CODE_SECTION(GetCurrentHallValue, "ramfuncs")
 Uint16 GetCurrentHallValue(void){
 
 	Uint16 temp;
@@ -366,6 +376,7 @@ inline void APositiveToBNegtive(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
+#pragma CODE_SECTION(SwitchDirection, "ramfuncs")
 void SwitchDirection(void){
 	int t_duty_temp;
 	Uint16 t_duty_p;
@@ -491,8 +502,8 @@ inline void Check_Current(){
 
 	if(gSysMonitorVar.anolog.single.var[BusCurrentPos].count_max > CURRENT_ABNORMAL_COUNT){
 		// TODO generate alarm message and disable PWM output
-	    DisablePwmOutput();
-	    gSysState.alarm.bit.overCurrent = 1;
+	 //   DisablePwmOutput();
+	 //   gSysState.alarm.bit.overCurrent = 1;
 	}
 }
 
@@ -640,61 +651,6 @@ inline void Check_C_X_Current(){
 	}
 }
 
-int checkDisplaceValidation(){
-    if(gSysInfo.duty > 0){
-        if(gforwardOverLimit == 1){
-            if(gKeyValue.displacement > (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd + 100)){
-                return 1;
-            }
-            else{
-                gCheckStartForceForwardMargin = 1;
-                gforwardOverLimit = 1;
-                return 0;
-            }
-        }
-        else{
-            if(gKeyValue.displacement > gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].min2nd){
-                return 1;
-            }
-            else{
-                gCheckStartForceForwardMargin = 1;
-                gforwardOverLimit = 1;
-                return 0;
-            }
-        }
-    }
-    else if(gSysInfo.duty < 0){
-        if(gbackwardOverLimit == 1){
-            if(gKeyValue.displacement < (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd -100)){
-                return 1;
-            }
-            else{
-                gCheckStartForceBackwardMargin = 1;
-                gbackwardOverLimit = 1;
-                return 0;
-            }
-        }
-        else{
-            if(gKeyValue.displacement < gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].max2nd){
-                return 1;
-            }
-            else{
-                gCheckStartForceBackwardMargin = 1;
-                gbackwardOverLimit = 1;
-                return 0;
-            }
-        }
-    }
-    else{
-        return 1;
-    }
-}
-
-int checkStartForceMargin(){
-//    if(gKeyValue.displacement )
-    return 0;
-}
-
 /**************************************************************
  *Name:						Pwm_ISR_Thread
  *Function:					PWM interrupt function
@@ -703,43 +659,36 @@ int checkStartForceMargin(){
  *Author:					Simon
  *Date:						2018.6.10
  **************************************************************/
+#pragma CODE_SECTION(Pwm_ISR_Thread, "ramfuncs")
 void Pwm_ISR_Thread(void)
 {
 	StartGetADBySpi();
-	static int c = 0;
 
 	//ReadDigitalValue();
 
+//	ReadAnalogValue();
 
-	//ReadAnalogValue();
-/*
-	Check_Current();
-	Check_A_Q_Current();
-	Check_A_X_Current();
-	Check_B_Q_Current();
-	Check_B_X_Current();
-	Check_C_Q_Current();
-	Check_C_X_Current();
-*/
+//	Check_Current();
+//	Check_A_Q_Current();
+//	Check_A_X_Current();
+//	Check_B_Q_Current();
+//	Check_B_X_Current();
+//	Check_C_Q_Current();
+//	Check_C_X_Current();
+
     ReadADBySpi();
-//	ReadADBySpiNTimes(1);
-
 
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(KalmanFilterForce(gAnalog16bit.force,50,50));
     //gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(gAnalog16bit.force);
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
-	//gtestdata[c] = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value;
-	//gtestdata[c] = gAnalog16bit.displace; 
-	//gtestdata[c] = gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value;
-
-	++c;
-	if(c >= 300){
-		c=0;
-	}
-
-
 	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
+	    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
+	        gSysInfo.targetDuty = DUTY_LIMIT_P;
+	    }
+	    else if(gSysInfo.targetDuty < DUTY_LIMIT_N){
+	        gSysInfo.targetDuty = DUTY_LIMIT_N;
+	    }
 		TargetDutyGradualChange(gSysInfo.targetDuty);
 		SwitchDirection();
 	}
