@@ -1,3 +1,16 @@
+/***************************0.0.5*******************************/
+Version Number: 0.0.5
+Date: 2019/11/09
+Author:Runtian Lu
+
+What new: 
+	1. Add speed open and close loop
+	2. Make gConfig parameters to be editable through HOST PC
+	3. Add duty limit
+	4. Add bounce back function in NULL sections
+	5. Make it compatible for PITCH and ROLL board
+	6. Move Timer0 and PWM into RAM
+	7. Run in FLASH
 /***************************0.0.4*******************************/
 Version Number: 0.0.4
 Date: 2019/9/1
