@@ -17,21 +17,14 @@ RS422TXQUE gRS422TxQue = {0};
 
 
 void GetTorqueCurve(int a, int b, int c){
-    //gRx422TxVar[0].value = (gSysPara.k_dampForce * 100) + 3000;
-    gRx422TxVar[0].value = (gKeyValue.displacement * 100) + 5000;
-  	//gRx422TxVar[0].value = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value;
-    //gRx422TxVar[0].value = gAnalog16bit.displace;
+    gRx422TxVar[0].value = (int)(gKeyValue.displacement * 100);
 
 }
 void GetMotorSpeedCurve(int a, int b, int c){
-    //gRx422TxVar[1].value = (gKeyValue.motorSpeed * 40000) + 5000;
-    //gRx422TxVar[1].value = (gExternalForceState.value * 100) + 3000;
-    gRx422TxVar[1].value = (gKeyValue.motorAccel * 100) + 5000;
+    gRx422TxVar[1].value = (int)(gExternalForceState.value * 100);
 }
 void GetDisplacementCurve(int a, int b, int c){
-    //gRx422TxVar[2].value = (gKeyValue.motorAccel * 10000) + 5000;
-	//gRx422TxVar[2].value = gAccelDirection.accelDirection;
-	gRx422TxVar[2].value = gSysInfo.targetDuty * 10 + 5000;
+    gRx422TxVar[2].value = 4000;
 }
 void GetMotorCurrentCurve(int a, int b, int c){
 	gRx422TxVar[3].value = gSysMonitorVar.anolog.single.var[BusCurrentA].value;
@@ -40,13 +33,13 @@ void GetDynamoVoltageCurve(int a, int b, int c){
 	gRx422TxVar[4].value = 20000;
 }
 void GetDynamoCurrentCurve(int a, int b, int c){
-	gRx422TxVar[4].value = 1;
+	gRx422TxVar[5].value = 5000;
 }
 void GetTemperatureCurve(int a, int b, int c){
-	gRx422TxVar[5].value = 3000;
+	gRx422TxVar[6].value = 3000;
 }
 void GetMotorAccelCurve(int a, int b, int c){
-	gRx422TxVar[6].value = (int)(gKeyValue.motorAccel * 500);
+	gRx422TxVar[7].value = (int)(gKeyValue.motorAccel * 500);
 }
 
 
@@ -107,6 +100,7 @@ void InitgRx422TxVar(void) {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(RX422TXEnQueue, "ramfuncs")
 int RX422TXEnQueue(char e){
 	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
 		return 0;
@@ -153,6 +147,7 @@ int RS422TxQueLength(){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(calCrc, "ramfuncs")
 int calCrc(int crc, const char *buf, int len) {
 	int x;
 	int i;
@@ -173,6 +168,7 @@ int calCrc(int crc, const char *buf, int len) {
  *Author:	   Simon
  *Date:		   2018.11.14
  **************************************************************/
+#pragma CODE_SECTION(updateTxEnableFlag, "ramfuncs")
 void updateTxEnableFlag(void) {
 	int i;
 	for (i = 0; i < TOTAL_TX_VAR; ++i) {
@@ -188,6 +184,7 @@ void updateTxEnableFlag(void) {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(PackRS422TxData, "ramfuncs")
 void PackRS422TxData(void){
 	//TODO need do some test, because we sync the tx enable flag here
 	int i;

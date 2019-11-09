@@ -15,12 +15,17 @@
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
 
-#define DIS_DIMENSION_K (-0.0007527)
-#define DIS_DIMENSION_B (19.813)
-#define FORCE_DIMENSION_K (0.014027)
-#define FORCE_DIMENSION_B (-459.6276)
+//#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
+//#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
+//#define FORCE_DIMENSION_K (0.014027)
+//#define FORCE_DIMENSION_B (-459.6276)
 #define PI (3.14149265)
 
+#define ROLL 0
+#define PITCH 1
+
+#define DUTY_LIMIT_P (275)
+#define DUTY_LIMIT_N (-275)
 
 #define BIT_0 (0x00000001)
 #define BIT_1 (0x00000002)
@@ -66,7 +71,6 @@ enum eSTICK_DIS_SECTION{
 	SECTION7 = 7,
 	INIT_SECTION 
 };
-
 
 enum CONTROL_STATE_MACHINE{
 	IR_NULL_DIS_AND_NO_FORCE = 0,
@@ -124,6 +128,8 @@ typedef struct _KeyValue{
 }KeyValue;
 
 typedef struct{
+    double DimL_K; //dimension of length K
+    double DimL_B; //dimension of length B
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
 	Uint16 sdoStatus;
@@ -132,10 +138,20 @@ typedef struct{
 	int16 dutyAddInterval;
 	int16 ddtmax;
 	int16 targetDuty;
+	int16 targetDuty_F;
+	int16 targetDuty_V;
+	double coe_Force;
+	double coe_Velocity;
+	double coe_Force_Max_ODE;
+	double coe_Force_Min_ODE;
+	double coe_Velocity_Max_ODE;
+	double coe_Velocity_Min_ODE;
 	int controlFuncIndex;
 	int currentStickDisSection;
-	int16 Ki_Threshold;
-	int16 sek;
+	int16 Ki_Threshold_f;
+	int16 sek_f;
+	double Ki_Threshold_v;
+	double sek_v;
 	double TH0;
 	double TH1;
 	double TH2;
@@ -144,6 +160,37 @@ typedef struct{
 	double TH5;
 	double TH6;
 	double zeroForce;
+	double velocity_last;
+	double Force_Init2Pos_Thr;
+	double Force_Init2Neg_Thr;
+    double Accel_Init2Pos_Thr;
+    double Accel_Init2Neg_Thr;
+    double Velocity_Init2Pos_Thr;
+    double Velocity_Init2Neg_Thr;
+    double Force_Pos_Thr;
+    double Force_Neg_Thr;
+    double Force_Hysteresis;
+    double Accel_Pos_Thr;
+    double Accel_Neg_Thr;
+    double Accel_Zero2Pos_Thr;
+    double Accel_Zero2Neg_Thr;
+    double Accel_Hysteresis;
+    double Accel_Debounce_Cnt_1;
+    double Accel_Debounce_Cnt_2;
+    double Velocity_Pos_Thr;
+    double Velocity_Neg_Thr;
+    double Velocity_Zero2Pos_Thr;
+    double Velocity_Zero2Neg_Thr;
+    double Velocity_Hysteresis;
+    double Velocity_Debounce_Cnt_1;
+    double Velocity_Debounce_Cnt_2;
+    int board_type;
+    int lastStickDisSection;
+    double Force_K;
+    double Force_B;
+//    double maxspeed;
+//    double minspeed;
+
 }SYSINFO;
 
 
@@ -316,8 +363,8 @@ typedef struct{
 	int LF_TrimRange;
 	int RB_TrimRange;
 
-	int trimTarget;
-	int trimCommand;
+	int Trim_StepSize;
+	int Trim_Speed;
 
 	int timeDelay;
 	int stateCommand;
@@ -369,11 +416,11 @@ typedef struct _STICKSTATE{
 	double value;
 }STICKSTATE;
 /***********************Force state*******************************/
-#define FORWARD_FORCE_VALUE (0.25)
-#define BACKWARD_FORCE_VALUE (-0.25)
+//#define FORWARD_FORCE_VALUE (3)
+//#define BACKWARD_FORCE_VALUE (-3)
 
-#define FOWARD_START_FORCE (5)
-#define BACKWARD_START_FORCE (-5)
+//#define FOWARD_START_FORCE (5)
+//#define BACKWARD_START_FORCE (-5)
 
 typedef struct _EXTFORCESTATE
 {
@@ -389,6 +436,21 @@ enum eForceState{
 	INIT_FORCE
 };
 /*****************************************************************/
+
+enum TRIGGER{
+    TK9_TRIGGER = 0,
+    AK29_BUTTON,
+    FWRD_SWITCH,
+    RGHT_SWITCH,
+    REAR_SWITCH,
+    LEFT_SWITCH
+};
+
+enum BTN_STAT{
+    BTN_RELEASE = 0,
+    BTN_PRESSED = 1,
+    BTN_INIT
+};
 
 typedef struct _ROTATEDIRECTION{
 	int rotateDirection;
@@ -433,21 +495,24 @@ extern SYSPARA gSysPara;
 extern SYSCURRENTSTATE gSysCurrentState;
 extern CONFIGPARA gConfigPara;
 extern FORCE_DISPLACE_CURVE gForceAndDisplaceCurve;
+extern double gDebug[3];
+extern int gPISO_165[8];
+extern int gButtonCmd[6];
+extern int gButtonStatus[6];
+extern int bounceCnt;
+extern int gD;
+extern int gStateMachineIndex;
+extern int gStateMachineIndexBak;
+extern double gBounceDisplace;
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
 
-extern int gforwardOverLimit;
-extern int gbackwardOverLimit;
-extern int gforwardForce;
-extern int gbackwardForce;
-extern int gNoExternalForce;
 
 extern int gCheckStartForceForwardMargin;
 extern int gCheckStartForceBackwardMargin;
-extern Uint16 gtestdata[300];
-extern double gDebug[2];
 
+void checkPitchOrRoll(void);
 void InitSysState(void);
 void InitConfigParameter(void);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
@@ -466,6 +531,13 @@ void ControleStateMachineSwitch(int value);
 void InitGlobalVarAndFunc(void);
 int LocateStickDisSection(void);
 double TenDisplaceElemntAverage(void);
-
+void DigitalSignalPISO(void);
+void Button_Debounce1(void);
+void Button_Debounce2(void);
+void Button_Debounce3(void);
+void Button_Debounce4(void);
+void Button_Debounce5(void);
+void Button_Debounce6(void);
+void Null_Displacement_Trim(void);
 
 #endif

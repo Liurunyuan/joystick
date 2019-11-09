@@ -29,6 +29,7 @@ inline void Send16Clocks(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(StartGetADBySpi, "ramfuncs")
 void StartGetADBySpi(void)
 {
 	ENABLE_CNV_AD;
@@ -41,6 +42,7 @@ void StartGetADBySpi(void)
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#pragma CODE_SECTION(ReadADBySpi, "ramfuncs")
 void ReadADBySpi(void)
 {
 	while(GpioDataRegs.GPBDAT.bit.GPIO55 == 0){
@@ -58,30 +60,4 @@ void ReadADBySpi(void)
 
 
 	DISABLE_CNV_AD;
-}
-
-void ReadADBySpiNTimes(int n){
-
-	int i;
-	double displace = 0;
-	double force = 0;
-	int nocare = 0;
-
-	for(i = 0; i < n; ++i){
-		ENABLE_CNV_AD;
-		while(GpioDataRegs.GPBDAT.bit.GPIO55 == 0){
-			asm ("      NOP");
-		}
-		Send16Clocks();
-		Send16Clocks();
-		Send16Clocks();
-		while(SpiaRegs.SPIFFRX.bit.RXFFST < 3) {
-		}
-		DISABLE_CNV_AD;
-		displace = SpiaRegs.SPIRXBUF;
-		gAnalog16bit.force= SpiaRegs.SPIRXBUF;
-		nocare = SpiaRegs.SPIRXBUF;   //not used
-		//asm ("      NOP");
-	}
-	gAnalog16bit.displace = (Uint16)(displace/n);
 }

@@ -10,7 +10,7 @@
 #define ITEGRATION_TIMES (6)
 
 
-
+#pragma CODE_SECTION(findSpringForceK, "ramfuncs")
 double findSpringForceK(double displace){
 	double springForce = -1;
 	int index;
@@ -20,6 +20,10 @@ double findSpringForceK(double displace){
 			if((displace <= gForceAndDisplaceCurve.displacementP[index]) && (displace >= gForceAndDisplaceCurve.displacementP[index - 1])){
 				springForce = gForceAndDisplaceCurve.K_spring_forceP[index];
 				return springForce;
+			}
+			else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForce = 10;
+                return springForce;
 			}
 		}
 	}
@@ -31,12 +35,18 @@ double findSpringForceK(double displace){
 				springForce = gForceAndDisplaceCurve.K_spring_forceN[index];
 				return springForce;
 			}
+            else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForce = 6;
+                return springForce;
+            }
 		}
 	}
 
 	//TODO generate alarm, because the displacement is out of range
 	return springForce;
 }
+
+#pragma CODE_SECTION(findSpringForceB, "ramfuncs")
 double findSpringForceB(double displace){
 	double springForceB = -1;
 	int index;
@@ -47,6 +57,10 @@ double findSpringForceB(double displace){
 				springForceB = gForceAndDisplaceCurve.b_P[index];
 				return springForceB;
 			}
+            else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForceB = gForceAndDisplaceCurve.b_P[index];
+                return springForceB;
+            }
 		}
 	}
 	else
@@ -57,155 +71,140 @@ double findSpringForceB(double displace){
 				springForceB = gForceAndDisplaceCurve.b_N[index];
 				return springForceB;
 			}
+            else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
+                springForceB = gForceAndDisplaceCurve.b_N[index];
+                return springForceB;
+            }
 		}
 	}
 
 	//TODO generate alarm, because the displacement is out of range
 	return springForceB;
 }
-/**************************************************************
- *Name:		   CalculateSpringForce
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:25
- **************************************************************/
-inline void CalculateSpringForce(void) {
-	//SpringForce = k * s
-	gSysCurrentState.springForce = gSysPara.k_springForce * gKeyValue.displacement;
-}
-/**************************************************************
- *Name:		   CalculateDampForce
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:25
- **************************************************************/
-inline void CalculateDampForce(void) {
-	//DampForce = k * v
-	gSysCurrentState.dampForce = gSysPara.k_dampForce *  gKeyValue.motorSpeed;
-}
-/**************************************************************
- *Name:		   CalculateTargetAcc
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:48
- **************************************************************/
-inline void CalculateTargetAcc(void) {
-	//a = (F - springForce - dampForce) / m
-	gSysCurrentState.accTarget = (gKeyValue.force - gSysCurrentState.springForce - gSysCurrentState.dampForce) / gSysPara.mass;
 
-}
-/**************************************************************
- *Name:		   CalculateTargetSpeed
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:31:59
- **************************************************************/
-inline void CalculateTargetSpeed(void) {
-
-	gSysCurrentState.speedTarget = gKeyValue.motorSpeed + gSysCurrentState.accTarget * 1;
-
-}
-/**************************************************************
- *Name:		   CalculateTargeDisplace
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:32:11
- **************************************************************/
-inline void CalculateTargeDisplace(void) {
-//TODO need to find a method to get the right target of displacement
-
-}
-/**************************************************************
- *Name:		   UpdateAccErr
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:32:46
- **************************************************************/
-inline void UpdateAccErr(void) {
-	gSysCurrentState.errAcc = gSysCurrentState.accTarget - gKeyValue.motorAccel;
-}
-/**************************************************************
- *Name:		   UpdateSpeedErr
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:32:57
- **************************************************************/
-inline void UpdateSpeedErr(void) {
-	gSysCurrentState.errSpeed = gSysCurrentState.speedTarget - gKeyValue.motorSpeed;
-}
-/**************************************************************
- *Name:		   UpdateDisplacementErr
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������9:33:07
- **************************************************************/
-inline void UpdateDisplacementErr(void) {
-	gSysCurrentState.errDisplacement = gSysCurrentState.displaceTarget - gKeyValue.displacement;
-}
+#pragma CODE_SECTION(OnlyWithSpringRear, "ramfuncs")
 void OnlyWithSpringRear(void){
-	double k;
-	double kb;
-	double y;
-	int tmp;
-	int friction;
+    double k;
+    double kb;
+    double force_openLoop;
+    int force_closeLoop;
+    double friction;
+    double damp_force;
+    double spring_force;
+    double mass;
+    double inertial_force;
+    double velocity_force;
+    double B_F = 0;
 
-	k = findSpringForceK(gStickState.value);
-	kb = findSpringForceB(gStickState.value);
+    double velocity_openLoop;
+    int velocity_closeLoop;
+    double B_V = 0;
 
-	if(gKeyValue.motorSpeed > 0.07){
-		friction = gConfigPara.LF_RearFriction;
-	}
-	else if(gKeyValue.motorSpeed < 0.07){
-		friction = gConfigPara.LF_RearFriction;
-	}
+    if(gExternalForceState.ForceState == BACKWARD_FORCE){
+        B_F = -gPidPara.B_F_ODE;
+    }
+    else if(gExternalForceState.ForceState == FORWARD_FORCE){
+        B_F = gPidPara.B_F_ODE;
+    }
+    else{
+        B_F = 0;
+    }
 
-	y =  k * gStickState.value + kb + friction;
+    k = findSpringForceK(gStickState.value);
+    kb = findSpringForceB(gStickState.value);
 
+    mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
 
-	gSysPara.k_dampForce = y;
+    if(mass > 1){
+        gSysState.warning.bit.a = 0;
+    }
+    else{
+        gSysState.warning.bit.a = 1;
+    }
 
-	tmp = (int32)((y - gExternalForceState.value) * 10);
-	tmp = -tmp;
-	gSysInfo.targetDuty = y + tmp;
+    friction = gConfigPara.LF_FrontFriction;
+
+    spring_force = k * gStickState.value + kb;
+    damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
+    inertial_force = mass * gKeyValue.motorAccel;
+
+    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+        velocity_force = 0 - friction - damp_force;
+        B_V = gPidPara.B_V_ODE;
+    }
+    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+        velocity_force = friction - damp_force;
+        B_V = -gPidPara.B_V_ODE;
+    }
+    else{
+        velocity_force = 0;
+        friction = 0;
+        B_V = 0;
+    }
+
+    if(gAccelDirection.accelDirection == STOP_DIRECTION){
+        inertial_force = 0;
+    }
+    else{
+        inertial_force = -inertial_force;
+    }
+
+    force_openLoop = spring_force + velocity_force + inertial_force;
+    force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
+    force_closeLoop = -force_closeLoop;
+
+    velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
+    gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
+
+    if(velocity_openLoop > 20){
+        velocity_openLoop = 20;
+    }
+    else if(velocity_openLoop < -20){
+        velocity_openLoop = -20;
+    }
+    else{
+        velocity_openLoop = velocity_openLoop;
+    }
+
+    velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
+
+    gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
+    gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
+    gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
+    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
+        gSysInfo.targetDuty = DUTY_LIMIT_P;
+    }
+    else if(gSysInfo.targetDuty < DUTY_LIMIT_N){
+        gSysInfo.targetDuty = DUTY_LIMIT_N;
+    }
 }
 
+#pragma CODE_SECTION(OnlyWithSpringFront, "ramfuncs")
 void OnlyWithSpringFront(void){
 	double k;
 	double kb;
-	double y;
-	int tmp;
+	double force_openLoop;
+	int force_closeLoop;
 	double friction;
 	double damp_force;
 	double spring_force;
 	double mass;
 	double inertial_force;
 	double velocity_force;
-	double B = 0; 
+	double B_F = 0;
+
+	double velocity_openLoop;
+	int velocity_closeLoop;
+	double B_V = 0;
 
 	if(gExternalForceState.ForceState == BACKWARD_FORCE){
-		B = -40;
+		B_F = -gPidPara.B_F_ODE;
 	}
 	else if(gExternalForceState.ForceState == FORWARD_FORCE){
-		B = 40;
+		B_F = gPidPara.B_F_ODE;
 	}
 	else{
-		B = 0;
+		B_F = 0;
 	}
 
 	k = findSpringForceK(gStickState.value);
@@ -213,55 +212,70 @@ void OnlyWithSpringFront(void){
 
 	mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
 
-    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-        friction = gConfigPara.LF_RearFriction;
-    }
-    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-        friction = gConfigPara.LF_FrontFriction;
-    }
-    else{
-        friction = 0;
-    }
-
-	spring_force = k * gStickState.value + kb;
-	if(gKeyValue.motorSpeed >= 0){
-	    gKeyValue.motorSpeed = gKeyValue.motorSpeed;
+	if(mass > 1){
+	    gSysState.warning.bit.a = 0;
 	}
 	else{
-	    gKeyValue.motorSpeed = -1 * gKeyValue.motorSpeed;
+	    gSysState.warning.bit.a = 1;
 	}
+
+    friction = gConfigPara.LF_FrontFriction;
+
+	spring_force = k * gStickState.value + kb;
 	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
 	inertial_force = mass * gKeyValue.motorAccel;
-	//spring_force = 0;
-	//damp_force = 0;
-	//friction = 0;
 
 	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-	    velocity_force = friction + damp_force;
+	    velocity_force = 0 - friction - damp_force;
+	    B_V = gPidPara.B_V_ODE;
 	}
 	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-	    velocity_force = 0 - friction - damp_force;
+	    velocity_force = friction - damp_force;
+	    B_V = -gPidPara.B_V_ODE;
 	}
 	else{
 	    velocity_force = 0;
+        friction = 0;
+        B_V = 0;
 	}
 
-	if(gAccelDirection.accelDirection == FORWARD_DIRECTION){
-	    inertial_force = -inertial_force;
-	}
-	else if(gAccelDirection.accelDirection == BACKWARD_DIRECTION){
-	    inertial_force = -inertial_force;
-	}
-	else{
+	if(gAccelDirection.accelDirection == STOP_DIRECTION){
 	    inertial_force = 0;
 	}
-	y = spring_force + velocity_force + inertial_force;
+	else{
+	    inertial_force = -inertial_force;
+	}
 
-	tmp = force_PidOutput(y, gExternalForceState.value);
-	tmp = -tmp;
-	gSysInfo.targetDuty = (1.01 * y + B) + tmp;
-	
+	force_openLoop = spring_force + velocity_force + inertial_force;
+	force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
+	force_closeLoop = -force_closeLoop;
+
+	velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
+	gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
+
+	if(velocity_openLoop > 20){
+	    velocity_openLoop = 20;
+	}
+    else if(velocity_openLoop < -20){
+        velocity_openLoop = -20;
+    }
+    else{
+        velocity_openLoop = velocity_openLoop;
+    }
+
+	velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
+
+	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
+	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
+	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
+    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
+        gSysInfo.targetDuty = DUTY_LIMIT_P;
+    }
+    else if(gSysInfo.targetDuty < DUTY_LIMIT_N){
+        gSysInfo.targetDuty = DUTY_LIMIT_N;
+    }
 }
+
 /**************************************************************
  *Name:		   PidProcess
  *Comment:
@@ -318,8 +332,8 @@ double function(double x0, double y0, double z0, double h){
 //	b = gSysPara.k_springForce / gSysPara.mass;
 //	c = gKeyValue.force / gSysPara.mass;
 
-	//k = findSpringForceK(y0);
-	//kb = findSpringForceB(y0);
+	k = findSpringForceK(y0);
+	kb = findSpringForceB(y0);
 	//gSysPara.k_springForce = k;
 	//gSysPara.k_dampForce = kb;
 	//gSysPara.mass = k/(4); 
