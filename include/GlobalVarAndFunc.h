@@ -17,8 +17,8 @@
 
 //#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
 //#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
-#define FORCE_DIMENSION_K (0.014027)
-#define FORCE_DIMENSION_B (-459.6276)
+//#define FORCE_DIMENSION_K (0.014027)
+//#define FORCE_DIMENSION_B (-459.6276)
 #define PI (3.14149265)
 
 #define ROLL 0
@@ -186,6 +186,8 @@ typedef struct{
     double Velocity_Debounce_Cnt_2;
     int board_type;
     int lastStickDisSection;
+    double Force_K;
+    double Force_B;
 //    double maxspeed;
 //    double minspeed;
 

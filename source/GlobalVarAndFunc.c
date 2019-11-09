@@ -53,13 +53,17 @@ void InitGlobalVarAndFunc(void){
     if(gSysInfo.board_type == PITCH){
         gSysInfo.DimL_K = -0.001683;
         gSysInfo.DimL_B = 63.2728;
+        gSysInfo.Force_K = 0.014027;
+        gSysInfo.Force_B = -459.6276;
         gSysInfo.TH0 = -17.8;
         gSysInfo.TH6 = 11.8;
     }
     //ROLL
     else if(gSysInfo.board_type == ROLL){
         gSysInfo.DimL_K = -0.0017467;
-        gSysInfo.DimL_B = 60.9135;
+        gSysInfo.DimL_B = 57.9135;
+        gSysInfo.Force_K = -0.014027;
+        gSysInfo.Force_B = 459.6276;
         gSysInfo.TH0 = -17.8;
         gSysInfo.TH6 = 17.8;
     }
@@ -1873,6 +1877,6 @@ void Null_Displacement_Trim(void){
         else{
             trim_sum = trim_sum;
         }
-        gSysInfo.DimL_B = 60.9135 - trim_sum;
+        gSysInfo.DimL_B = 57.9135 - trim_sum;
     }
 }
