@@ -74,6 +74,8 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.TH6 = 0;
         gSysState.warning.bit.b = 1;
     }
+    gSysInfo.sek_v = 0;
+    gSysInfo.sek_f = 0;
 	gSysInfo.ddtmax = 1;
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
@@ -106,7 +108,7 @@ void InitGlobalVarAndFunc(void){
 	gRotateDirection.debounceCount_1 = 0;
 	gRotateDirection.debounceCount_2 = 0;
 	gSysInfo.Force_Init2Pos_Thr = 3;
-	gSysInfo.Force_Init2Pos_Thr = -3;
+	gSysInfo.Force_Init2Neg_Thr = -3;
 	gSysInfo.Accel_Init2Pos_Thr = 0.1;
 	gSysInfo.Accel_Init2Neg_Thr = -0.1;
 	gSysInfo.Velocity_Init2Pos_Thr = 0.0025;
@@ -262,7 +264,8 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
     }
 }
 
-void ReduceFriction(int direction){
+#pragma CODE_SECTION(ReduceFriction, "ramfuncs")
+inline void ReduceFriction(int direction){
     if(direction > 0)
     {
         gSysInfo.targetDuty = gD;
