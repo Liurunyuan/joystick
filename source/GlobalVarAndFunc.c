@@ -282,8 +282,12 @@ void sec0_threshold_rear(int a, int b){
 
     gStateMachineIndex = 0;
     gStateMachineIndexBak = gStateMachineIndex;
-
-    OnlyWithSpringRear();
+    if(gExternalForceState.ForceState == BACKWARD_FORCE){
+        gSysInfo.targetDuty = 30;
+    }
+    else{
+        OnlyWithSpringRear();
+    }
 
     if(gSysInfo.targetDuty > 100){
         gSysInfo.targetDuty = 100;
@@ -656,7 +660,12 @@ void sec7_threshold_front(int a, int b){
 
     gStateMachineIndex = 25;
     gStateMachineIndexBak = gStateMachineIndex;
-    OnlyWithSpringFront();
+    if(gExternalForceState.ForceState == FORWARD_FORCE){
+        gSysInfo.targetDuty = -30;
+    }
+    else{
+        OnlyWithSpringFront();
+    }
     if(gSysInfo.targetDuty > 100){
         gSysInfo.targetDuty = 100;
     }
