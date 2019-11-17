@@ -27,20 +27,20 @@
 #pragma CODE_SECTION(Timer0_ISR_Thread, "ramfuncs")
 void Timer0_ISR_Thread(void){
 
-	static unsigned char count = 0;
+//	static unsigned char count = 0;
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
 
     double force_Joystick;
-    double cos_value;
-    double angle;
+//    double cos_value;s
+//    double angle;
 
-	++count;
-
-	if(count > N){
-		PackRS422TxData();
-		count = 0;
-	}
+//	++count;
+//
+//	if(count > N){
+//		PackRS422TxData();
+//		count = 0;
+//	}
 
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
@@ -49,7 +49,7 @@ void Timer0_ISR_Thread(void){
         gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
 
-        angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
+//        angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
         //cos_value = cos(angle*PI/180.0);
 //        cos_value = 1;
         force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;

@@ -1,0 +1,50 @@
+/***************************0.0.5*******************************/
+Version Number: 0.0.5
+Date: 2019/11/09
+Author:Runtian Lu
+
+What new: 
+	1. Add speed open and close loop
+	2. Make gConfig parameters to be editable through HOST PC
+	3. Add duty limit
+	4. Add bounce back function in NULL sections
+	5. Make it compatible for PITCH and ROLL board
+	6. Move Timer0 and PWM into RAM
+	7. Run in FLASH
+/***************************0.0.4*******************************/
+Version Number: 0.0.4
+Date: 2019/9/1
+Author:Simon
+
+What new: 
+	1. Force closed loop
+/***************************0.0.3*******************************/
+Version Number: 0.0.3
+Date: 2019/8/31
+Author:Runtian
+
+What new: 
+	1. Inertial Force closed loop
+	2. Optimize Friction force
+	3. Optimize debounce mehtod in checkRotateDirection
+/***************************0.0.2*******************************/
+Version Number: 0.0.2
+Date: 2019/8/27
+Author:Simon
+
+What new: 
+	1. Spring force closed loop
+	2. Friction force
+	3. Damp force closed loop
+	4. Add default force and displacement curve
+/***************************0.0.1*******************************/
+Version Number: 0.0.1
+Date: 2019/8/18
+Author:Simon
+
+What new: 
+	1. Null displacement force closed loop implemented
+	2. Start force closed loop implementd
+
+Note:
+	1. Need to adjust the kp and ki parameter for null displacement and start force closed loop.
