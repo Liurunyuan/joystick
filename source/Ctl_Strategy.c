@@ -93,22 +93,24 @@ void OnlyWithSpringRear(void){
     double spring_force;
     double mass;
     double inertial_force;
-    double velocity_force;
+//    double velocity_force;
     double B_F = 0;
 
     double velocity_openLoop;
     int velocity_closeLoop;
     double B_V = 0;
+    double dynamic_friction;
+    double abs_dynamic_friction;
 
-    if(gExternalForceState.ForceState == BACKWARD_FORCE){
-        B_F = -gPidPara.B_F_ODE;
-    }
-    else if(gExternalForceState.ForceState == FORWARD_FORCE){
-        B_F = gPidPara.B_F_ODE;
-    }
-    else{
-        B_F = 0;
-    }
+//    if(gExternalForceState.ForceState == BACKWARD_FORCE){
+//        B_F = -gPidPara.B_F_ODE;
+//    }
+//    else if(gExternalForceState.ForceState == FORWARD_FORCE){
+//        B_F = gPidPara.B_F_ODE;
+//    }
+//    else{
+//        B_F = 0;
+//    }
 
     k = findSpringForceK(gStickState.value);
     kb = findSpringForceB(gStickState.value);
@@ -122,25 +124,40 @@ void OnlyWithSpringRear(void){
         gSysState.warning.bit.a = 1;
     }
 
-    friction = gConfigPara.LF_FrontFriction;
-
     spring_force = k * gStickState.value + kb;
     damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
     inertial_force = mass * gKeyValue.motorAccel;
+    friction = gConfigPara.LF_FrontFriction;
 
-    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-        velocity_force = 0 - friction - damp_force;
-        B_V = gPidPara.B_V_ODE;
-    }
-    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-        velocity_force = friction - damp_force;
-        B_V = -gPidPara.B_V_ODE;
+    dynamic_friction = - (gExternalForceState.value - spring_force - damp_force - inertial_force);
+
+    if(dynamic_friction < 0){
+        abs_dynamic_friction = - dynamic_friction;
     }
     else{
-        velocity_force = 0;
-        friction = 0;
-        B_V = 0;
+        abs_dynamic_friction = dynamic_friction;
     }
+
+    if(abs_dynamic_friction < friction){
+        friction = dynamic_friction;
+    }
+    else{
+        friction = gConfigPara.LF_FrontFriction;
+    }
+
+//    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+//        velocity_force = 0 - friction - damp_force;
+//        B_V = gPidPara.B_V_ODE;
+//    }
+//    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+//        velocity_force = friction - damp_force;
+//        B_V = -gPidPara.B_V_ODE;
+//    }
+//    else{
+//        velocity_force = 0;
+//        friction = 0;
+//        B_V = 0;
+//    }
 
     if(gAccelDirection.accelDirection == STOP_DIRECTION){
         inertial_force = 0;
@@ -149,12 +166,13 @@ void OnlyWithSpringRear(void){
         inertial_force = -inertial_force;
     }
 
-    force_openLoop = spring_force + velocity_force + inertial_force;
+//    force_openLoop = spring_force + velocity_force + inertial_force;
+    force_openLoop = spring_force - damp_force + friction + inertial_force;
     force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
     force_closeLoop = -force_closeLoop;
 
-    velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
-    gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
+    velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
+    gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
 
     if(velocity_openLoop > 20){
         velocity_openLoop = 20;
@@ -190,22 +208,24 @@ void OnlyWithSpringFront(void){
 	double spring_force;
 	double mass;
 	double inertial_force;
-	double velocity_force;
+//	double velocity_force;
 	double B_F = 0;
+	double dynamic_friction;
+	double abs_dynamic_friction;
 
 	double velocity_openLoop;
 	int velocity_closeLoop;
 	double B_V = 0;
 
-	if(gExternalForceState.ForceState == BACKWARD_FORCE){
-		B_F = -gPidPara.B_F_ODE;
-	}
-	else if(gExternalForceState.ForceState == FORWARD_FORCE){
-		B_F = gPidPara.B_F_ODE;
-	}
-	else{
-		B_F = 0;
-	}
+//	if(gExternalForceState.ForceState == BACKWARD_FORCE){
+//		B_F = -gPidPara.B_F_ODE;
+//	}
+//	else if(gExternalForceState.ForceState == FORWARD_FORCE){
+//		B_F = gPidPara.B_F_ODE;
+//	}
+//	else{
+//		B_F = 0;
+//	}
 
 	k = findSpringForceK(gStickState.value);
 	kb = findSpringForceB(gStickState.value);
@@ -225,19 +245,35 @@ void OnlyWithSpringFront(void){
 	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
 	inertial_force = mass * gKeyValue.motorAccel;
 
-	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-	    velocity_force = 0 - friction - damp_force;
-	    B_V = gPidPara.B_V_ODE;
-	}
-	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-	    velocity_force = friction - damp_force;
-	    B_V = -gPidPara.B_V_ODE;
-	}
-	else{
-	    velocity_force = 0;
-        friction = 0;
-        B_V = 0;
-	}
+    dynamic_friction = - (gExternalForceState.value - spring_force - damp_force - inertial_force);
+
+    if(dynamic_friction < 0){
+        abs_dynamic_friction = - dynamic_friction;
+    }
+    else{
+        abs_dynamic_friction = dynamic_friction;
+    }
+
+    if(abs_dynamic_friction < friction){
+        friction = dynamic_friction;
+    }
+    else{
+        friction = gConfigPara.LF_FrontFriction;
+    }
+
+//	if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+//	    velocity_force = 0 - friction - damp_force;
+//	    B_V = gPidPara.B_V_ODE;
+//	}
+//	else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+//	    velocity_force = friction - damp_force;
+//	    B_V = -gPidPara.B_V_ODE;
+//	}
+//	else{
+//	    velocity_force = 0;
+//        friction = 0;
+//        B_V = 0;
+//	}
 
 	if(gAccelDirection.accelDirection == STOP_DIRECTION){
 	    inertial_force = 0;
@@ -246,12 +282,13 @@ void OnlyWithSpringFront(void){
 	    inertial_force = -inertial_force;
 	}
 
-	force_openLoop = spring_force + velocity_force + inertial_force;
+//	force_openLoop = spring_force + velocity_force + inertial_force;
+	force_openLoop = spring_force - damp_force + friction + inertial_force;
 	force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
 	force_closeLoop = -force_closeLoop;
 
-	velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
-	gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - velocity_force - spring_force) / mass) * (0.25/1000);
+	velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
+	gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
 
 	if(velocity_openLoop > 20){
 	    velocity_openLoop = 20;

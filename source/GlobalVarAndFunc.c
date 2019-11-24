@@ -81,8 +81,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.targetDuty = 0;
 	gSysInfo.targetDuty_F = 0;
 	gSysInfo.targetDuty_V = 0;
-	gSysInfo.coe_Force = 0.6;
-	gSysInfo.coe_Velocity = 0.4;
+	gSysInfo.coe_Force = 1;
+	gSysInfo.coe_Velocity = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
