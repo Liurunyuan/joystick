@@ -171,6 +171,13 @@ void OnlyWithSpringRear(void){
     force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
     force_closeLoop = -force_closeLoop;
 
+    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
+        gSysInfo.velocity_last = 0;
+    }
+    else{
+        gSysInfo.velocity_last = gSysInfo.velocity_last;
+    }
+
     velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
     gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
 
@@ -286,6 +293,13 @@ void OnlyWithSpringFront(void){
 	force_openLoop = spring_force - damp_force + friction + inertial_force;
 	force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
 	force_closeLoop = -force_closeLoop;
+
+    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
+        gSysInfo.velocity_last = 0;
+    }
+    else{
+        gSysInfo.velocity_last = gSysInfo.velocity_last;
+    }
 
 	velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
 	gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force - friction - spring_force) / mass) * (0.25/1000);
