@@ -263,24 +263,10 @@ void IRStartForceSecAndBackwardForce_sec2(int a, int b){
     }
 }
 
-#pragma CODE_SECTION(ReduceFriction, "ramfuncs")
-inline void ReduceFriction(int direction){
-    if(direction > 0)
-    {
-        gSysInfo.targetDuty = gD;
-    }
-    else{
-        gSysInfo.targetDuty = -gD;
-    }
-}
-
 #pragma CODE_SECTION(sec0_threshold_rear, "ramfuncs")
 void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
-
-    gStateMachineIndex = 0;
-    gStateMachineIndexBak = gStateMachineIndex;
     if(gExternalForceState.ForceState == BACKWARD_FORCE){
         gSysInfo.targetDuty = 30;
     }
@@ -300,32 +286,7 @@ void sec0_threshold_rear(int a, int b){
 }
 #pragma CODE_SECTION(sec1_ODE_rear, "ramfuncs")
 void sec1_ODE_rear(int a, int b){
-
-#if(ONLY_SPRING == INCLUDE_FEATURE)
-    if(gExternalForceState.ForceState == NO_FORCE){
-
-        gStateMachineIndex = 1;
-        gDebug[1]++;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-            gBounceDisplace = gStickState.value;
-        }
-        if(gStickState.value < gBounceDisplace){
-            gBounceDisplace = gStickState.value;
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-
-        OnlyWithSpringRear();
-    }
-    else{
-        gStateMachineIndex = 2;
-        gStateMachineIndexBak = gStateMachineIndex;
-
-        OnlyWithSpringRear();
-    }
-
-#else
-    gSysInfo.targetDuty = 0;
-#endif
+    OnlyWithSpringRear();
 }
 
 #pragma CODE_SECTION(sec2_StartForce_rear, "ramfuncs")
@@ -335,74 +296,12 @@ void sec2_StartForce_rear(int a, int b){
     {
     case NO_FORCE:
         IRNullDisAndNoForce(0,0);
-//        switch (gRotateDirection.rotateDirection)
-//        {
-//        case STOP_DIRECTION:
-//
-//            gStateMachineIndex = 3;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//                if(gStateMachineIndexBak == 4){
-//
-//                }
-//            }
-//            gSysInfo.targetDuty = gD + 20;
-//            gStateMachineIndexBak = gStateMachineIndex;
-//
-//            break;
-//        case BACKWARD_DIRECTION:
-//
-//            gStateMachineIndex = 4;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//                bounceCnt++;
-//                gD = gD - timesDisplace;
-//                if(gD < 0){
-//                    gD = 0;
-//                }
-//                if(bounceCnt > gMaxBounceTimes){
-//                    gD = 0;
-//                }
-//            }
-//            gSysInfo.targetDuty = gD + 80;
-//            gStateMachineIndexBak = gStateMachineIndex;
-//
-//            break;
-//        case FORWARD_DIRECTION:
-//            gStateMachineIndex = 5;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//                if(gStateMachineIndexBak == 1){
-//                    gD = (gBounceDisplace * timesDisplace) - (gKeyValue.motorSpeed * kspeed);//change gD based on the gBounceDisplace
-//                     if(gD < 0){
-//                         gD = -gD;
-//                     }
-//                }
-//                else if(gStateMachineIndexBak == 4 || gStateMachineIndexBak == 3){
-//
-//                }
-//            }
-//
-//            gStateMachineIndexBak = gStateMachineIndex;
-//            ReduceFriction(1);
-//            break;
-//        default:
-//            break;
-//        }
         break;
     case BACKWARD_FORCE:
-//        gStateMachineIndex = 6;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRStartForceSecAndBackwardForce_sec2(0,0);
         break;
 
     case FORWARD_FORCE:
-//        gStateMachineIndex = 7;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRNullDisAndForwardForce(0,0);
         break;
 
@@ -421,60 +320,13 @@ void sec3_Null_rear(int a, int b){
     {
     case NO_FORCE:
         IRNullDisAndNoForce(0,0);
-//        switch (gRotateDirection.rotateDirection)
-//        {
-//        case STOP_DIRECTION:
-//            gStateMachineIndex = 8;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-//            IRNullDisAndNoForce(0,0);
-//            break;
-//        case BACKWARD_DIRECTION:
-//            gStateMachineIndex = 9;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-////            gD--;
-////            if(gD < 30){
-////                gD = 30;
-////            }
-//            ReduceFriction(-1);
-//            break;
-//        case FORWARD_DIRECTION:
-//            gStateMachineIndex = 10;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-////            gD--;
-////            if(gD < 30){
-////                gD = 30;
-////            }
-//            ReduceFriction(1);
-//            break;
-//        default:
-//            break;
-//        }
         break;
 
     case BACKWARD_FORCE:
-//        gStateMachineIndex = 11;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRNullDisAndBackwardForce(0,0);
         break;
 
     case FORWARD_FORCE:
-//        gStateMachineIndex = 12;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRNullDisAndForwardForce(0,0);
         break;
 
@@ -492,61 +344,13 @@ void sec4_Null_front(int a, int b){
     {
     case NO_FORCE:
         IRNullDisAndNoForce(0,0);
-//        switch (gRotateDirection.rotateDirection)
-//        {
-//        case STOP_DIRECTION:
-//            gStateMachineIndex = 13;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-//
-//            IRNullDisAndNoForce(0,0);
-//            break;
-//        case BACKWARD_DIRECTION:
-//            gStateMachineIndex = 14;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-////            gD--;
-////            if(gD < 30){
-////                gD = 30;
-////            }
-//            ReduceFriction(-1);
-//            break;
-//        case FORWARD_DIRECTION:
-//            gStateMachineIndex = 15;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-////            gD--;
-////            if(gD < 30){
-////                gD = 30;
-////            }
-//            ReduceFriction(1);
-//            break;
-//        default:
-//            break;
-//        }
         break;
 
     case BACKWARD_FORCE:
-//        gStateMachineIndex = 16;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRNullDisAndBackwardForce(0,0);
         break;
 
     case FORWARD_FORCE:
-//        gStateMachineIndex = 17;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRNullDisAndForwardForce(0,0);
         break;
 
@@ -561,67 +365,13 @@ void sec5_StartForce_front(int a, int b){
     {
     case NO_FORCE:
         IRNullDisAndNoForce(0,0);
-//        switch (gRotateDirection.rotateDirection)
-//        {
-//        case STOP_DIRECTION:
-//            gStateMachineIndex = 18;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-//            gSysInfo.targetDuty = -(gD+20);
-//            break;
-//
-//        case BACKWARD_DIRECTION:
-//            gStateMachineIndex = 19;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//                if(gStateMachineIndexBak == 23){
-//                    gD = (gBounceDisplace * timesDisplace) - (gKeyValue.motorSpeed * kspeed);
-//                    if(gD < 0){
-//                        gD = -gD;
-//                    }
-//                }
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-//            ReduceFriction(-1);
-//            break;
-//        case FORWARD_DIRECTION:
-//            gStateMachineIndex = 20;
-//            if(gStateMachineIndexBak != gStateMachineIndex){
-//                bounceCnt++;
-//                gD = gD - reduceNum;
-//                if(gD < 0){
-//                    gD = 0;
-//                }
-//
-//                if(bounceCnt > gMaxBounceTimes){
-//                    gD = 0;
-//                }
-//            }
-//            gStateMachineIndexBak = gStateMachineIndex;
-//
-//            gSysInfo.targetDuty = -(gD+80);
-//            break;
-//        default:
-//            break;
-//        }
         break;
 
     case BACKWARD_FORCE:
-//        gStateMachineIndex = 21;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRNullDisAndBackwardForce(0,0);
         break;
 
     case FORWARD_FORCE:
-//        gStateMachineIndex = 22;
-//        if(gStateMachineIndexBak != gStateMachineIndex){
-//
-//        }
-//        gStateMachineIndexBak = gStateMachineIndex;
         IRStartForceSecAndForwardForce_sec5(0,0);
         break;
 
@@ -632,37 +382,12 @@ void sec5_StartForce_front(int a, int b){
 }
 #pragma CODE_SECTION(sec6_ODE_front, "ramfuncs")
 void sec6_ODE_front(int a, int b){
-
-#if(ONLY_SPRING == INCLUDE_FEATURE)
-    if(gExternalForceState.ForceState == NO_FORCE){
-
-        gStateMachineIndex = 23;
-        gDebug[0]++;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-            gBounceDisplace = gStickState.value;
-        }
-        if(gStickState.value > gBounceDisplace){
-            gBounceDisplace = gStickState.value;
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-
-        OnlyWithSpringFront();
-    }
-    else{
-        gStateMachineIndex = 24;
-        gStateMachineIndexBak = gStateMachineIndex;
-        OnlyWithSpringFront();
-    }
-#else
-    //PidProcess();
-#endif
+    OnlyWithSpringFront();
 }
 
 #pragma CODE_SECTION(sec7_threshold_front, "ramfuncs")
 void sec7_threshold_front(int a, int b){
 
-    gStateMachineIndex = 25;
-    gStateMachineIndexBak = gStateMachineIndex;
     if(gExternalForceState.ForceState == FORWARD_FORCE){
         gSysInfo.targetDuty = -30;
     }
