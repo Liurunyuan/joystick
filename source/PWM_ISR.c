@@ -55,14 +55,32 @@ void UpdateKeyValue(void) {
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 void TargetDutyGradualChange(int targetduty){
 
-	if(targetduty > DUTY_LIMIT_P){
-	    targetduty = DUTY_LIMIT_P;
-	}
-	else if(targetduty < DUTY_LIMIT_N){
-	    targetduty = DUTY_LIMIT_N;
-	}
+    static int count = 0;
 
-	gSysInfo.duty = targetduty;
+    ++count;
+    if(count < gSysInfo.dutyAddInterval){
+        return;
+    }
+    count = 0;
+
+        if(gSysInfo.currentDuty > targetduty){
+            gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
+        }
+        else if(gSysInfo.currentDuty < targetduty){
+            gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
+        }
+        else{
+            //nothing need change
+            }
+
+    if(gSysInfo.currentDuty > DUTY_LIMIT_P){
+        gSysInfo.currentDuty = DUTY_LIMIT_P;
+    }
+    else if(gSysInfo.currentDuty < DUTY_LIMIT_N){
+        gSysInfo.currentDuty = DUTY_LIMIT_N;
+    }
+
+    gSysInfo.duty = gSysInfo.currentDuty;
 }
 
 /*
