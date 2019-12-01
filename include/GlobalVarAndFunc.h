@@ -188,8 +188,9 @@ typedef struct{
     int lastStickDisSection;
     double Force_K;
     double Force_B;
-//    double maxspeed;
-//    double minspeed;
+    double friction;
+//    double ob_Friction;
+    double ob_velocityOpenLoop;
 
 }SYSINFO;
 

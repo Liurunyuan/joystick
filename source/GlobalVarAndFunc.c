@@ -147,11 +147,12 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[3] = 0;
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
-//    gSysInfo.maxspeed = 0;
-//    gSysInfo.minspeed = 0;
+//    gSysInfo.ob_Friction = 0;
+    gSysInfo.ob_velocityOpenLoop = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
     gSysInfo.lastStickDisSection = 0;
+    gSysInfo.friction = 0;
 }
 
 void checkPitchOrRoll(void){
@@ -429,17 +430,24 @@ void ControleStateMachineSwitch(int value){
 }
 
 void checkRotateDirection(int value){
+    static int last_state;
 	switch(gRotateDirection.rotateDirection)
 	{
 		case INIT_DIRECTION:
 			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Init2Pos_Thr){
 				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
+				gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+				last_state = 1;
 			}
 			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
 				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
+				gSysInfo.friction = gConfigPara.LF_FrontFriction;
+				last_state = 0;
 			}
 			else{
 				gRotateDirection.rotateDirection = STOP_DIRECTION;
+				gSysInfo.friction = 0;
+				last_state = 2;
 			}
 			break;
 		case BACKWARD_DIRECTION:
@@ -449,11 +457,15 @@ void checkRotateDirection(int value){
 			    if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
 			        gRotateDirection.rotateDirection = STOP_DIRECTION;
 			        gRotateDirection.debounceCount_1 = 0;
+                    gSysInfo.friction = gConfigPara.LF_FrontFriction;
+                    last_state = 0;
 			    }
 			}
             else{
                 gRotateDirection.debounceCount_1 = 0;
                 gRotateDirection.debounceCount_2 = 0;
+                gSysInfo.friction = gConfigPara.LF_FrontFriction;
+                last_state = 0;
 
             }
 			break;
@@ -464,12 +476,15 @@ void checkRotateDirection(int value){
                 if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
                     gRotateDirection.rotateDirection = STOP_DIRECTION;
                     gRotateDirection.debounceCount_1 = 0;
+                    gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+                    last_state = 1;
                 }
 			}
             else{
                 gRotateDirection.debounceCount_1 = 0;
                 gRotateDirection.debounceCount_2 = 0;
-
+                gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+                last_state = 1;
             }
 			break;
 		case STOP_DIRECTION:
@@ -479,6 +494,8 @@ void checkRotateDirection(int value){
                 if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_2){
                     gRotateDirection.rotateDirection = FORWARD_DIRECTION;
                     gRotateDirection.debounceCount_1 = 0;
+                    gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+                    last_state = 1;
                 }
 			}
 			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
@@ -487,12 +504,23 @@ void checkRotateDirection(int value){
                 if(gRotateDirection.debounceCount_2 > gSysInfo.Velocity_Debounce_Cnt_2){
                     gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
                     gRotateDirection.debounceCount_2 = 0;
+                    gSysInfo.friction = gConfigPara.LF_FrontFriction;
+                    last_state = 0;
                 }
 			}
 			else{
 				gRotateDirection.rotateDirection = STOP_DIRECTION;
 				gRotateDirection.debounceCount_1 = 0;
 				gRotateDirection.debounceCount_2 = 0;
+				if(last_state == 1){
+				    gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+				}
+				else if(last_state == 0){
+				    gSysInfo.friction = gConfigPara.LF_FrontFriction;
+				}
+				else{
+				    gSysInfo.friction = 0;
+				}
 			}
 
 			break;
