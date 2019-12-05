@@ -387,3 +387,89 @@ void ShakeHandWithUpperComputer(void){
 		TransmitRS422ShakeHandMsg();
 	}
 }
+
+
+/***************************************************************
+ *Name:						PackRS422TxDataInMain
+ *Function:					pack the data that need to be sent in main loop
+ *Input:				    none
+ *Output:					none
+ *Author:					Simon
+ *Date:						2019.12.05
+ ****************************************************************/
+void PackRS422TxDataInMain(void){
+	
+
+
+
+	//TODO need do some test, because we sync the tx enable flag here
+	int i;
+	char crcl;
+	char crch;
+	static int crc = 0;
+	char tmp[3] = {0};
+	Uint16 total =0;
+
+
+	//new begin
+	//update the curve which need to be sent to UI
+	updateTxEnableFlag();
+
+	//calculate how many curves will be sent to UI
+	for(i = 0; i < TOTAL_TX_VAR; ++i){
+		if(gRx422TxVar[i].isTx){
+			++total;
+		}
+	}
+
+	if(RX422TXEnQueue(0x5a) == 0){
+		return;
+	}
+	if(RX422TXEnQueue(0x5a) == 0){
+		return;
+	}
+	if(RX422TXEnQueue(total) == 0){
+		return;
+	}
+	if(RX422TXEnQueue(0xff) == 0){
+		return;
+	}
+	if(RX422TXEnQueue(0xff) == 0){
+		return;
+	}
+	for(i = 0; i < TOTAL_TX_VAR; ++i){
+		if(gRx422TxVar[i].isTx){
+			gRx422TxVar[i].updateValue(0,0,0);
+			tmp[0] = gRx422TxVar[i].index;
+			tmp[1] = gRx422TxVar[i].value >> 8;
+			tmp[2] = gRx422TxVar[i].value;
+			if(RX422TXEnQueue(gRx422TxVar[i].index) == 0){
+				return;
+			}
+			if(RX422TXEnQueue(gRx422TxVar[i].value >> 8) == 0){
+				return;
+			}
+			if(RX422TXEnQueue(gRx422TxVar[i].value) == 0){
+				return;
+			}
+			crc = calCrc(crc, tmp, 3);
+		}
+	}
+
+	crcl = (char)crc;
+	crch = (char)(crc >> 8);
+	crc = 0;
+	if(RX422TXEnQueue(crch) == 0){
+		return;
+	}
+	if(RX422TXEnQueue(crcl) == 0){
+		return;
+	}
+	if(RX422TXEnQueue(0xa5) == 0){
+		return;
+	}
+	if(RX422TXEnQueue(0xa5) == 0){
+		return;
+	}
+	//new end
+}

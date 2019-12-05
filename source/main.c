@@ -413,6 +413,8 @@ void Start_main_loop(void){
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
 	}
+	
+	PackRS422TxDataInMain();
 
 	RS422Unpack();
 
