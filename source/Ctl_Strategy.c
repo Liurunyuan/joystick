@@ -93,9 +93,9 @@ void OnlyWithSpringRear(void){
     double mass;
     double inertial_force;
     double B_F = 0;
-    double velocity_openLoop;
-    int velocity_closeLoop;
-    double B_V = 0;
+//    double velocity_openLoop;
+//    int velocity_closeLoop;
+//    double B_V = 0;
 
     k = findSpringForceK(gStickState.value);
     kb = findSpringForceB(gStickState.value);
@@ -126,29 +126,36 @@ void OnlyWithSpringRear(void){
 
     gSysInfo.ob_velocityOpenLoop = force_openLoop;
 
-    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
-        gSysInfo.velocity_last = 0;
+    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+        B_F = 10;
     }
-    else{
-        gSysInfo.velocity_last = gSysInfo.velocity_last;
-    }
-
-    velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-    gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-
-    if(velocity_openLoop > 20){
-        velocity_openLoop = 20;
-    }
-    else if(velocity_openLoop < -20){
-        velocity_openLoop = -20;
-    }
-    else{
-        velocity_openLoop = velocity_openLoop;
+    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+        B_F = -20;
     }
 
-    velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
-
-    gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
+//    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
+//        gSysInfo.velocity_last = 0;
+//    }
+//    else{
+//        gSysInfo.velocity_last = gSysInfo.velocity_last;
+//    }
+//
+//    velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
+//    gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
+//
+//    if(velocity_openLoop > 20){
+//        velocity_openLoop = 20;
+//    }
+//    else if(velocity_openLoop < -20){
+//        velocity_openLoop = -20;
+//    }
+//    else{
+//        velocity_openLoop = velocity_openLoop;
+//    }
+//
+//    velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
+//
+//    gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
     gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
     gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
     if(gSysInfo.targetDuty > DUTY_LIMIT_P){
@@ -170,9 +177,9 @@ void OnlyWithSpringFront(void){
 	double mass;
 	double inertial_force;
 	double B_F = 0;
-	double velocity_openLoop;
-	int velocity_closeLoop;
-	double B_V = 0;
+//	double velocity_openLoop;
+//	int velocity_closeLoop;
+//	double B_V = 0;
 
 	k = findSpringForceK(gStickState.value);
 	kb = findSpringForceB(gStickState.value);
@@ -203,29 +210,37 @@ void OnlyWithSpringFront(void){
 
 	gSysInfo.ob_velocityOpenLoop = force_openLoop;
 
-    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
-        gSysInfo.velocity_last = 0;
+    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
+        B_F = 20;
     }
-    else{
-        gSysInfo.velocity_last = gSysInfo.velocity_last;
-    }
-
-	velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-	gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-
-	if(velocity_openLoop > 20){
-	    velocity_openLoop = 20;
-	}
-    else if(velocity_openLoop < -20){
-        velocity_openLoop = -20;
-    }
-    else{
-        velocity_openLoop = velocity_openLoop;
+    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
+        B_F = -10;
     }
 
-	velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
 
-	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
+//    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
+//        gSysInfo.velocity_last = 0;
+//    }
+//    else{
+//        gSysInfo.velocity_last = gSysInfo.velocity_last;
+//    }
+//
+//	velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
+//	gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
+//
+//	if(velocity_openLoop > 20){
+//	    velocity_openLoop = 20;
+//	}
+//    else if(velocity_openLoop < -20){
+//        velocity_openLoop = -20;
+//    }
+//    else{
+//        velocity_openLoop = velocity_openLoop;
+//    }
+//
+//	velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
+
+//	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
 	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
     if(gSysInfo.targetDuty > DUTY_LIMIT_P){

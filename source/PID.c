@@ -13,7 +13,7 @@ void InitPidVar(void){
     gPidPara.kp_force_ODE = 6;
     gPidPara.ki_force_ODE = 0.1;
 
-    gPidPara.K_F_ODE = 0;
+    gPidPara.K_F_ODE = -1;
     gPidPara.B_F_ODE = 40;
     gPidPara.K_F_NULL = 0;
     gPidPara.B_F_NULL = 0;
@@ -59,7 +59,7 @@ int16 force_PidOutput(double targetVal, double controlVar){
     ek1 = (targetVal - controlVar);
     if((ek1 > -gSysInfo.Ki_Threshold_f) && (ek1 < gSysInfo.Ki_Threshold_f))
     {
-        if(((ek1 > 0) && (gSysInfo.sek_f < 600)) || ((ek1 < 0) && (gSysInfo.sek_f > -100)))
+        if(((ek1 > 0) && (gSysInfo.sek_f < 600)) || ((ek1 < 0) && (gSysInfo.sek_f > -600)))
         {
             gSysInfo.sek_f = gSysInfo.sek_f + ek1;
         }
