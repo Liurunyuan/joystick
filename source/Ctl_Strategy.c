@@ -19,11 +19,13 @@ double findSpringForceK(double displace){
 
 			if((displace <= gForceAndDisplaceCurve.displacementP[index]) && (displace >= gForceAndDisplaceCurve.displacementP[index - 1])){
 				springForce = gForceAndDisplaceCurve.K_spring_forceP[index];
+				gSysInfo.soft_break_flag = 0;
 				return springForce;
 			}
 			else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForce = 10;
-                return springForce;
+			    gSysInfo.soft_break_flag = 1;
+			    gSysInfo.targetDuty = -40;
+                return 0;
 			}
 		}
 	}
@@ -33,11 +35,13 @@ double findSpringForceK(double displace){
 
 			if((displace >= gForceAndDisplaceCurve.displacementN[index]) && (displace <= gForceAndDisplaceCurve.displacementN[index - 1])){
 				springForce = gForceAndDisplaceCurve.K_spring_forceN[index];
+				gSysInfo.soft_break_flag = 0;
 				return springForce;
 			}
             else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForce = 6;
-                return springForce;
+                gSysInfo.soft_break_flag = 1;
+                gSysInfo.targetDuty = 40;
+                return 0;
             }
 		}
 	}
@@ -98,6 +102,9 @@ void OnlyWithSpringRear(void){
 //    double B_V = 0;
 
     k = findSpringForceK(gStickState.value);
+    if(gSysInfo.soft_break_flag == 1){
+        return;
+    }
     kb = findSpringForceB(gStickState.value);
 
     mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
@@ -182,6 +189,9 @@ void OnlyWithSpringFront(void){
 //	double B_V = 0;
 
 	k = findSpringForceK(gStickState.value);
+    if(gSysInfo.soft_break_flag == 1){
+        return;
+    }
 	kb = findSpringForceB(gStickState.value);
 
 	mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);

@@ -55,32 +55,32 @@ void UpdateKeyValue(void) {
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 void TargetDutyGradualChange(int targetduty){
 
-    static int count = 0;
+//    static int count = 0;
+//
+//    ++count;
+//    if(count < gSysInfo.dutyAddInterval){
+//        return;
+//    }
+//    count = 0;
+//
+//        if(gSysInfo.currentDuty > targetduty){
+//            gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
+//        }
+//        else if(gSysInfo.currentDuty < targetduty){
+//            gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
+//        }
+//        else{
+//            //nothing need change
+//            }
+//
+//    if(gSysInfo.currentDuty > DUTY_LIMIT_P){
+//        gSysInfo.currentDuty = DUTY_LIMIT_P;
+//    }
+//    else if(gSysInfo.currentDuty < DUTY_LIMIT_N){
+//        gSysInfo.currentDuty = DUTY_LIMIT_N;
+//    }
 
-    ++count;
-    if(count < gSysInfo.dutyAddInterval){
-        return;
-    }
-    count = 0;
-
-        if(gSysInfo.currentDuty > targetduty){
-            gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
-        }
-        else if(gSysInfo.currentDuty < targetduty){
-            gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
-        }
-        else{
-            //nothing need change
-            }
-
-    if(gSysInfo.currentDuty > DUTY_LIMIT_P){
-        gSysInfo.currentDuty = DUTY_LIMIT_P;
-    }
-    else if(gSysInfo.currentDuty < DUTY_LIMIT_N){
-        gSysInfo.currentDuty = DUTY_LIMIT_N;
-    }
-
-    gSysInfo.duty = gSysInfo.currentDuty;
+    gSysInfo.duty = targetduty;
 }
 
 /*

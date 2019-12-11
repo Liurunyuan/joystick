@@ -191,6 +191,7 @@ typedef struct{
     double friction;
 //    double ob_Friction;
     double ob_velocityOpenLoop;
+    int soft_break_flag;
 
 }SYSINFO;
 
@@ -301,6 +302,7 @@ typedef struct{
 
 typedef struct{
 	double LF_MaxForce;
+	double LF_Force0;
 	double LF_Force1;
 	double LF_Force2;
 	double LF_Force3;
@@ -311,7 +313,7 @@ typedef struct{
 	double LF_Force8;
 	double LF_Force9;
 
-
+	double RB_Force0;
 	double RB_Force1;
 	double RB_Force2;
 	double RB_Force3;
@@ -324,6 +326,7 @@ typedef struct{
 	double RB_MaxForce;
 
 	double LF_MaxDistance;
+	double LF_Distance0;
 	double LF_Distance1;
 	double LF_Distance2;
 	double LF_Distance3;
@@ -334,7 +337,7 @@ typedef struct{
 	double LF_Distance8;
 	double LF_Distance9;
 
-
+	double RB_Distance0;
 	double RB_Distance1;
 	double RB_Distance2;
 	double RB_Distance3;
@@ -393,15 +396,15 @@ typedef struct{
 
 
 typedef struct{
-	double springForceP[10];
-	double springForceN[10];
-	double displacementP[10];
-	double displacementN[10];
+	double springForceP[12];
+	double springForceN[12];
+	double displacementP[12];
+	double displacementN[12];
 
-	double K_spring_forceP[10];
-	double b_P[10];
-	double K_spring_forceN[10];
-	double b_N[10];
+	double K_spring_forceP[12];
+	double b_P[12];
+	double K_spring_forceN[12];
+	double b_N[12];
 
 	int maxPoints;
 }FORCE_DISPLACE_CURVE;

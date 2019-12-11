@@ -80,12 +80,13 @@ void Timer0_ISR_Thread(void){
 *
 * we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
 */
-        gSysInfo.controlFuncIndex = LocateStickDisSection();
-
-        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
-        if(gExternalForceState.ForceState != NO_FORCE){
-            bounceCnt = 0;
-        }
+        OnlyWithSpringFront();
+//        gSysInfo.controlFuncIndex = LocateStickDisSection();
+//
+//        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
+//        if(gExternalForceState.ForceState != NO_FORCE){
+//            bounceCnt = 0;
+//        }
 
 
 
