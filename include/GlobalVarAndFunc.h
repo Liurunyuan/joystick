@@ -14,6 +14,7 @@
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
+#define  DEBOUNCE (0.05)
 
 //#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
 //#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
@@ -69,6 +70,22 @@ enum eSTICK_DIS_SECTION{
 	SECTION5 = 5,
 	SECTION6 = 6,
 	SECTION7 = 7,
+	SECTION8 = 8,
+	SECTION9 = 9,
+	SECTION10 = 10,
+	SECTION11 = 11,
+	SECTION12 = 12,
+	SECTION13 = 13,
+	SECTION14 = 14,
+	SECTION15 = 15,
+	SECTION16 = 16,
+	SECTION17 = 17,
+	SECTION18 = 18,
+	SECTION19 = 19,
+	SECTION20 = 20,
+	SECTION21 = 21,
+	SECTION22 = 22,
+	SECTION23 = 23,
 	INIT_SECTION 
 };
 
@@ -192,6 +209,8 @@ typedef struct{
 //    double ob_Friction;
     double ob_velocityOpenLoop;
     int soft_break_flag;
+    double springForceK;
+    double springForceB;
 
 }SYSINFO;
 
@@ -543,5 +562,6 @@ void Button_Debounce4(void);
 void Button_Debounce5(void);
 void Button_Debounce6(void);
 void Null_Displacement_Trim(void);
+int CheckStickSetion(double val);
 
 #endif
