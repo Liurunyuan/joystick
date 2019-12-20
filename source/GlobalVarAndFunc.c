@@ -804,14 +804,14 @@ void InitConfigParameter(void){
      }
      //ROLL
      else if(gSysInfo.board_type == ROLL){
-         gConfigPara.LF_EmptyDistance = 0.5;
-         gConfigPara.RB_EmptyDistance = -0.5;
+         gConfigPara.LF_EmptyDistance = 1;
+         gConfigPara.RB_EmptyDistance = -1;
 
          gConfigPara.LF_StartForce = 5;
          gConfigPara.RB_StartForce = -5;
 
          gConfigPara.LF_Force0 = 0;
-         gConfigPara.LF_Force1 = 0;
+         gConfigPara.LF_Force1 = 1;
          gConfigPara.LF_Force2 = 6.14;
          gConfigPara.LF_Force3 = 8.43;
          gConfigPara.LF_Force4 = 13;
@@ -823,7 +823,7 @@ void InitConfigParameter(void){
          gConfigPara.LF_MaxForce = 45;
 
          gConfigPara.RB_Force0 = 0;
-         gConfigPara.RB_Force1 = 0;
+         gConfigPara.RB_Force1 = -1;
          gConfigPara.RB_Force2 = -6.14;
          gConfigPara.RB_Force3 = -8.43;
          gConfigPara.RB_Force4 = -13;
@@ -835,7 +835,7 @@ void InitConfigParameter(void){
          gConfigPara.RB_MaxForce = -45;
 
          gConfigPara.LF_Distance0 = 0;
-         gConfigPara.LF_Distance1 = 0.25;
+         gConfigPara.LF_Distance1 = 0.5;
          gConfigPara.LF_Distance2 = 1;
          gConfigPara.LF_Distance3 = 2;
          gConfigPara.LF_Distance4 = 4;
@@ -847,7 +847,7 @@ void InitConfigParameter(void){
          gConfigPara.LF_MaxDistance = 18;
 
          gConfigPara.RB_Distance0 = 0;
-         gConfigPara.RB_Distance1 = -0.25;
+         gConfigPara.RB_Distance1 = -0.5;
          gConfigPara.RB_Distance2 = -1;
          gConfigPara.RB_Distance3 = -2;
          gConfigPara.RB_Distance4 = -4;

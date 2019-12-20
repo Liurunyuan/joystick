@@ -14,7 +14,7 @@
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
-#define  DEBOUNCE (0.05)
+#define  DEBOUNCE (0.1)
 
 //#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
 //#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
