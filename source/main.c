@@ -176,30 +176,7 @@ void Init_gRS422TxQue(void) {
 	gRS422TxQue.rear = 0;
 	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
 }
-/**************************************************************
- *Name:						Init_feedbackVarBuf
- *Function:
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-void Init_feedbackVarBuf(void) {
-	int index;
 
-	feedbackVarBuf.maxDisplacement = 0;
-	feedbackVarBuf.maxForce = 0;
-	feedbackVarBuf.minDisplacement = 0;
-	feedbackVarBuf.minForce = 0;
-	feedbackVarBuf.sumDisplacement = 0;
-	feedbackVarBuf.sumForce = 0;
-	memset(feedbackVarBuf.displacementbuf, 0,sizeof(feedbackVarBuf.displacementbuf));
-	memset(feedbackVarBuf.forcebuf, 0, sizeof(feedbackVarBuf.forcebuf));
-	for (index = 0; index < 10; ++index) {
-		feedbackVarBuf.displacementbuf[index] = index * index + 3 * index + 2;
-		feedbackVarBuf.forcebuf[index] = index;
-	}
-}
 /**************************************************************
  *Name:						Init_gSysMonitorVar
  *Function:
@@ -223,6 +200,7 @@ void Init_gSysMonitorVar() {
 
 		gSysMonitorVar.anolog.single.var[index].count_max = 0;
 		gSysMonitorVar.anolog.single.var[index].count_min = 0;
+		gSysMonitorVar.anolog.single.var[index].value = 0;
 	}
 	gSysMonitorVar.digit.multi.var[8].valueN = 55;
 	gSysMonitorVar.digit.multi.var[8].valueP = 55;
@@ -236,6 +214,10 @@ void Init_gSysMonitorVar() {
 	            AD16bitMaxMinInit[index][2];
 	    gSysMonitorVar.anolog.AD_16bit.var[index].min2nd =
 	            AD16bitMaxMinInit[index][3];
+		gSysMonitorVar.anolog.AD_16bit.var[index].updateValue = NULL;
+		gSysMonitorVar.anolog.AD_16bit.var[index].count_min = 0;
+		gSysMonitorVar.anolog.AD_16bit.var[index].count_max = 0;
+		gSysMonitorVar.anolog.AD_16bit.var[index].value = 0;
 	}
 
 	for (index = 0; index < 12; ++index) {
@@ -268,7 +250,6 @@ void InitGlobalVar(void){
 
 	Init_gRS422RxQue();
 	Init_gRS422TxQue();
-	Init_feedbackVarBuf();
 	Init_gSysMonitorVar();
 	Init_gRS422Status();
 	InitConfigParameter();
@@ -276,7 +257,7 @@ void InitGlobalVar(void){
 	InitgRx422TxEnableFlag();
 	InitGlobalVarAndFunc();
 	InitPidVar();
-	gKeyValue.displacement = 10;
+	gKeyValue.displacement = 0;
 	gKeyValue.lock = 0;
 }
 /**************************************************************
@@ -393,20 +374,20 @@ void Start_main_loop(void){
 
 	StateMachine();
 
-	Check_Power28V_M();
+	//Check_Power28V_M();
 
-	Check_Power28V();
+	//Check_Power28V();
 
-	DigitalSignalPISO();
+	//DigitalSignalPISO();
 
-	Button_Debounce1();
-	Button_Debounce2();
-	Button_Debounce3();
-	Button_Debounce4();
-	Button_Debounce5();
-	Button_Debounce6();
+	//Button_Debounce1();
+	//Button_Debounce2();
+	//Button_Debounce3();
+	//Button_Debounce4();
+	//Button_Debounce5();
+	//Button_Debounce6();
 
-	Null_Displacement_Trim();
+	//Null_Displacement_Trim();
 
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer

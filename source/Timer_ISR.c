@@ -85,7 +85,7 @@ void Timer0_ISR_Thread(void){
 
 		clearSum();
 		gKeyValue.lock = 0;
-        gSysInfo.controlFuncIndex = 0;
+        // gSysInfo.controlFuncIndex = 0;
 	}
 }
 /**************************************************************

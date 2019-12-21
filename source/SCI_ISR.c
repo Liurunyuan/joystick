@@ -29,7 +29,7 @@ char rs422rxPack[16];
  *Input:	   VAR16, int, int
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ15ÈÕÏÂÎç9:15:42
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:15:42
  **************************************************************/
 static void TestDuty(VAR16 a, int b, int c) {
 
@@ -43,7 +43,7 @@ static void TestDuty(VAR16 a, int b, int c) {
  *Input:	   VAR16, int, int
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ15ÈÕÏÂÎç9:15:42
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:15:42
  **************************************************************/
 static void TestHallPosition(VAR16 a, int b, int c) {
 
@@ -56,7 +56,7 @@ static void TestHallPosition(VAR16 a, int b, int c) {
  *Input:	   VAR16, int, int
  *Output:	   void
  *Author:	   Simon
- *Date:		   2018Äê11ÔÂ15ÈÕÏÂÎç9:15:42
+ *Date:		   2018ï¿½ï¿½11ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½9:15:42
  **************************************************************/
 static void ShakeHandMsg(VAR16 a, int b, int c) {
 	gRS422Status.shakeHand = SUCCESS;
@@ -656,7 +656,7 @@ int findhead(RS422RXQUE *RS422RxQue){
 				return SUCCESS;
 			}
 			else{
-				printf("RS422B NOT FIND HEAD\r\n");
+				//printf("RS422B NOT FIND HEAD\r\n");
 				return FAIL;
 			}
 		}
@@ -727,11 +727,11 @@ int checklength(RS422RXQUE *RS422RxQue){
 
 	if((RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLength()){
 		if((gRS422RxQueB.rxBuff[(RS422RxQue->front + 2) % MAXQSIZE] * UNIT_LEN + EXTRA_LEN) < RS422RxQueLengthB()){
-			printf("RS422 A AND B CHANNEL LENGTH IS ENOUGH!!!!!\r\n");
+			//printf("RS422 A AND B CHANNEL LENGTH IS ENOUGH!!!!!\r\n");
 			return SUCCESS;
 		}
 		else{
-			printf("RS422 B channel length not enough\r\n");
+			//printf("RS422 B channel length not enough\r\n");
 			return FAIL;
 		}
 	}
@@ -814,12 +814,12 @@ Uint16 CompareRS422AandB(Uint16 len, RS422RXQUE *RS422RxQue){
 	int16 i;
 
 	for (i = 0; i < len; ++i) {
-		printf("gRS422RxQue = %d\r\n",RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
-		printf("gRS422RxQueB= %d\r\n",gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
+		//printf("gRS422RxQue = %d\r\n",RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
+		//printf("gRS422RxQueB= %d\r\n",gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
 		if(RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE] != gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]){
-			printf("position = %d\r\n", i);
-			printf("RS422RxQue->rxBuff = %d\r\n",RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
-			printf("gRS422RxQueB.rxBuff = %d\r\n",gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
+			//printf("position = %d\r\n", i);
+			//printf("RS422RxQue->rxBuff = %d\r\n",RS422RxQue->rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
+			//printf("gRS422RxQueB.rxBuff = %d\r\n",gRS422RxQueB.rxBuff[(RS422RxQue->front + i) % MAXQSIZE]);
 			return FAIL;
 		}
 	}

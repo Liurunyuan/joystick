@@ -91,9 +91,9 @@ void clearSum(void) {
 	sumParaDisplacement.sum_Xpow2Y = 0;
 	sumParaDisplacement.sum_Y = 0;
 
-	sumParaForce.sum_XY = 0;
-	sumParaForce.sum_Xpow2Y = 0;
-	sumParaForce.sum_Y = 0;
+	// sumParaForce.sum_XY = 0;
+	// sumParaForce.sum_Xpow2Y = 0;
+	// sumParaForce.sum_Y = 0;
 }
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(clearSumSpeed, "ramfuncs")
@@ -119,6 +119,7 @@ FuncPara calFuncParaSpeed(SumPara sumPara){
 	funcPara.a = 0;
 	return funcPara;
 }
+
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(CalFuncParaSpeed, "ramfuncs")
 #endif
@@ -128,6 +129,7 @@ void CalFuncParaSpeed(double speed, int count){
 	sumParaSpeed.sum_Xpow2Y += tmpCount * tmpCount * speed;
 	sumParaSpeed.sum_Y += speed;
 }
+
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(calFuncPara, "ramfuncs")
 #endif
@@ -171,51 +173,15 @@ FuncPara calFuncPara(SumPara sumPara){
 	return funcPara;
 #endif
 }
+
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(CalFuncPara, "ramfuncs")
 #endif
 void CalFuncPara(double force, double displace, int count){
-//	force = force / 13107.0;
-//	displace = displace / 13107.0;
-
-//	force = force / 100.0;
-//	displace = displace / 100.0;
 
     double tmpCount = count * 0.025;
 	sumParaDisplacement.sum_XY += tmpCount * displace;
 	sumParaDisplacement.sum_Xpow2Y += tmpCount * tmpCount * displace;
 	sumParaDisplacement.sum_Y += displace;
-
-	sumParaForce.sum_XY += tmpCount * force;
-	sumParaForce.sum_Xpow2Y += tmpCount*tmpCount * force;
-	sumParaForce.sum_Y += force;
-
-//	if(count >= (DATA_AMOUNT - 1)){
-//		funcParaDisplacement = calFuncPara(sumParaDisplacement);
-//		//funcParaForce = calFuncPara(sumParaForce);
-//		clearSum();
-//	}
 }
-void clearSumB(void) {
-	sumParaDisplacementB.sum_XY = 0;
-	sumParaDisplacementB.sum_Xpow2Y = 0;
-	sumParaDisplacementB.sum_Y = 0;
 
-}
-void CalFuncParaB(double displace, int count){
-	//force = force / 13107.0;
-	//displace = displace / 13107.0;
-	int count_tmp = count;
-	count = count - 10;
-
-
-	displace = displace / 1000.0;
-	sumParaDisplacementB.sum_XY += count * displace;
-	sumParaDisplacementB.sum_Xpow2Y += count * count * displace;
-	sumParaDisplacementB.sum_Y += displace;
-
-	if(count_tmp >= 29){
-		funcParaDisplacementb = calFuncPara(sumParaDisplacementB);
-		clearSumB();
-	}
-}

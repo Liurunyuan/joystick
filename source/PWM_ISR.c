@@ -8,8 +8,6 @@
 #include "GlobalVarAndFunc.h"
 #include "PID.h"
 
-FeedbackVarBuf feedbackVarBuf;
-
 Uint16 real3 = 0;
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(UpdateKeyValue, "ramfuncs")

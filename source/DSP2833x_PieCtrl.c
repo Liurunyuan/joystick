@@ -71,21 +71,21 @@ void EnableInterrupts()
     		
 	// Enables PIE to drive a pulse into the CPU 
 	PieCtrlRegs.PIEACK.all = 0xFFFF;  
-	//ÅäÖÃTZÖÐ¶ÏÏà¹Ø¹Ü½Å
+	//ï¿½ï¿½ï¿½ï¿½TZï¿½Ð¶ï¿½ï¿½ï¿½Ø¹Ü½ï¿½
 
 	// Enable Interrupts at the CPU level 
-	//PieCtrlRegs.PIEIER1.bit.INTx1 = 1;//ADCÖÐ¶Ï,16Í¨µÀ×ª»»Íê³ÉºóÀ´ÖÐ¶Ï
-	PieCtrlRegs.PIEIER1.bit.INTx7 = 1;//¶¨Ê±Æ÷0ÖÐ¶Ï¡£
-//	PieCtrlRegs.PIEIER2.bit.INTx1= 1;//TZ_FAULTB´¥·¢
-	//PieCtrlRegs.PIEIER2.bit.INTx2= 1;//TZ_FAULTA´¥·¢//
-	//PieCtrlRegs.PIEIER2.bit.INTx3= 1;//IKA_BJ´¥·¢//
-	//PieCtrlRegs.PIEIER2.bit.INTx4= 1;//IKB_BJ´¥·¢//
-//	PieCtrlRegs.PIEIER2.bit.INTx6 = 1;//Ó¦¼±¿ª¹Ø´¥·¢
-	PieCtrlRegs.PIEIER3.bit.INTx1 = 1;//ePWM1ÖÐ¶Ï
+	//PieCtrlRegs.PIEIER1.bit.INTx1 = 1;//ADCï¿½Ð¶ï¿½,16Í¨ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Éºï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+	PieCtrlRegs.PIEIER1.bit.INTx7 = 1;//ï¿½ï¿½Ê±ï¿½ï¿½0ï¿½Ð¶Ï¡ï¿½
+//	PieCtrlRegs.PIEIER2.bit.INTx1= 1;//TZ_FAULTBï¿½ï¿½ï¿½ï¿½
+	//PieCtrlRegs.PIEIER2.bit.INTx2= 1;//TZ_FAULTAï¿½ï¿½ï¿½ï¿½//
+	//PieCtrlRegs.PIEIER2.bit.INTx3= 1;//IKA_BJï¿½ï¿½ï¿½ï¿½//
+	//PieCtrlRegs.PIEIER2.bit.INTx4= 1;//IKB_BJï¿½ï¿½ï¿½ï¿½//
+//	PieCtrlRegs.PIEIER2.bit.INTx6 = 1;//Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½
+	PieCtrlRegs.PIEIER3.bit.INTx1 = 1;//ePWM1ï¿½Ð¶ï¿½
 
-	PieCtrlRegs.PIEIER4.bit.INTx4 = 1;//ECAP4
-	PieCtrlRegs.PIEIER4.bit.INTx5 = 1;//ECAP5
-	PieCtrlRegs.PIEIER4.bit.INTx6 = 1;//ECAP6
+	PieCtrlRegs.PIEIER4.bit.INTx4 = 0;//ECAP4
+	PieCtrlRegs.PIEIER4.bit.INTx5 = 0;//ECAP5
+	PieCtrlRegs.PIEIER4.bit.INTx6 = 0;//ECAP6
 
 
 	//PieCtrlRegs.PIEIER7.bit.INTx1 = 1;//DMA interrupt enable
@@ -104,7 +104,7 @@ void EnableInterrupts()
  */
 void Init_Interrupt(void)
 {
-	//³õÊ¼»¯CPU_T0
+	//ï¿½ï¿½Ê¼ï¿½ï¿½CPU_T0
 		InitCpuTimers();
 		ConfigCpuTimer(&CpuTimer0, 120, 200);//t = freq * priod/150000000,0.2ms
 	    CpuTimer0Regs.TCR.bit.TIE= 1;
@@ -112,7 +112,7 @@ void Init_Interrupt(void)
 		ConfigCpuTimer(&CpuTimer1, 120, 10000);
 	    CpuTimer1Regs.TCR.bit.TIE= 1;
 	    CpuTimer1Regs.TCR.bit.TSS = 0;
-	    //ÖÐ¶ÏÅäÖÃ
+	    //ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½
 	    DINT;
 	    InitPieCtrl();
 	    IER = 0x0000;
@@ -131,18 +131,18 @@ void Init_Interrupt(void)
 	    EnableInterrupts();
 	    EINT;   // Enable Global interrupt INTM
 	    ERTM;
-	    AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;//´Ë¾äÒªÓÐ£¬·ñÔò½ø²½ÁËÖÐ¶Ï£¬Ó¦ÎªÔÚ¸ÃÐÐ´úÂëÖ´ÐÐÇ°£¬seq1ÖÐ¶Ï±êÊ¶ÒÑ¾­±»Á¢Æð£¬´Ë´¦ÐèÒªÇå³ý
+	    AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;//ï¿½Ë¾ï¿½Òªï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï£ï¿½Ó¦Îªï¿½Ú¸ï¿½ï¿½Ð´ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ç°ï¿½ï¿½seq1ï¿½Ð¶Ï±ï¿½Ê¶ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ð£¬´Ë´ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½
 
 	    //ScibRegs.SCIFFTX.bit.TXFFINTCLR = 1;
 
-	    ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;//´Ë¾ä×öÓÃÍ¬ÉÏ
+	    ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;//ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½
 	    ScicRegs.SCIFFTX.bit.TXFFINTCLR = 1;
-	    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;//´Ë¾ä×öÓÃÍ¬ÉÏ
+	    ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;//ï¿½Ë¾ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½
 
 
 	    EALLOW;
-	    EPwm1Regs.TZCLR.bit.CBC=1;//Çå³ýCBCÊ±¼ä±êÖ¾Î»
-	    EPwm1Regs.TZCLR.bit.INT=1;//Çå³ýÖÐ¶Ï±êÊ¶Î»
+	    EPwm1Regs.TZCLR.bit.CBC=1;//ï¿½ï¿½ï¿½CBCÊ±ï¿½ï¿½ï¿½Ö¾Î»
+	    EPwm1Regs.TZCLR.bit.INT=1;//ï¿½ï¿½ï¿½ï¿½Ð¶Ï±ï¿½Ê¶Î»
 	    EDIS;
 	    EPwm1Regs.ETCLR.bit.INT = 1;
 

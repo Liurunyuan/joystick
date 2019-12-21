@@ -152,6 +152,7 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.soft_break_flag = 0;
     gSysInfo.springForceK = 0;
     gSysInfo.springForceB = 0;
+    gSysInfo.zeroForce = 0;
 }
 
 void checkPitchOrRoll(void){
@@ -171,7 +172,7 @@ void checkPitchOrRoll(void){
 }
 
 void checkRotateDirection(int value){
-    static int last_state;
+    static int last_state = 2;
 	switch(gRotateDirection.rotateDirection)
 	{
 		case INIT_DIRECTION:
