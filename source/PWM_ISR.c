@@ -146,14 +146,13 @@ void EnablePwm3(void){
 #pragma CODE_SECTION(CalForceSpeedAccel, "ramfuncs")
 void CalForceSpeedAccel(void) {
 
-
 	static int count = 0;
 
 	if(gKeyValue.lock == 1){
 		return;
 	}
 	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
-	//gTenAverageArray.displaceArray[count] = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value; 
+
 	++count;
 
 	if(count >= DATA_AMOUNT){
@@ -527,7 +526,6 @@ void Pwm_ISR_Thread(void)
     ReadADBySpi();
 
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(KalmanFilterForce(gAnalog16bit.force,50,50));
-    //gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(gAnalog16bit.force);
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
 
 	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){

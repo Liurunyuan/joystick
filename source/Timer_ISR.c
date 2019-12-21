@@ -32,8 +32,6 @@ void Timer0_ISR_Thread(void){
 	static int zero_count = 0;
 
     double force_Joystick;
-//    double cos_value;s
-//    double angle;
 
 	++count;
 
@@ -49,11 +47,7 @@ void Timer0_ISR_Thread(void){
         gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
 
-//        angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
-        //cos_value = cos(angle*PI/180.0);
-//        cos_value = 1;
         force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
-//                (0.045/0.14))/cos_value);
 
         if(zero_count < 10){
             zero_force_SUM = zero_force_SUM + force_Joystick;
@@ -81,32 +75,6 @@ void Timer0_ISR_Thread(void){
 * we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
 */
         OnlyWithSpringFront();
-//        gSysInfo.controlFuncIndex = LocateStickDisSection();
-//
-//        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
-//        if(gExternalForceState.ForceState != NO_FORCE){
-//            bounceCnt = 0;
-//        }
-
-
-
-//        if(gKeyValue.motorSpeed > 0){
-//            if(gKeyValue.motorSpeed > gSysInfo.maxspeed){
-//                gSysInfo.maxspeed = gKeyValue.motorSpeed;
-//            }
-//            else{
-//                gSysInfo.maxspeed = gSysInfo.maxspeed;
-//            }
-//        }
-//        else{
-//            if(gKeyValue.motorSpeed < gSysInfo.minspeed){
-//                gSysInfo.minspeed = gKeyValue.motorSpeed;
-//            }
-//            else{
-//                gSysInfo.minspeed = gSysInfo.minspeed;
-//            }
-//        }
-
 
 		clearSum();
 		gKeyValue.lock = 0;

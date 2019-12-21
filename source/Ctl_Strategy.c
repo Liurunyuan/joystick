@@ -11,8 +11,6 @@
 
 #pragma CODE_SECTION(findSpringForceK, "ramfuncs")
 void findSpringForceK(double displace){
-//	double springForce = -1;
-//	int index;
 
     switch (gSysInfo.currentStickDisSection)
     {
@@ -405,187 +403,7 @@ void findSpringForceK(double displace){
     default:
         break;
     }
-/*
-	if(displace >= 0){
-	    if((displace > gForceAndDisplaceCurve.displacementP[1]) && (displace < gForceAndDisplaceCurve.displacementP[2])){
-	        if(gExternalForceState.value >= gForceAndDisplaceCurve.springForceP[2]){
-	            springForce = gForceAndDisplaceCurve.K_spring_forceP[3];
-	            return springForce;
-	        }
-	        else{
-	            gSysInfo.soft_break_flag = 1;
-	            gSysInfo.targetDuty = -40;
-	            return 0;
-	        }
-	    }
-		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
-			if((displace <= gForceAndDisplaceCurve.displacementP[index]) && (displace >= gForceAndDisplaceCurve.displacementP[index - 1])){
-				springForce = gForceAndDisplaceCurve.K_spring_forceP[index];
-				gSysInfo.soft_break_flag = 0;
-				return springForce;
-			}
-			else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
-			    gSysInfo.soft_break_flag = 1;
-			    gSysInfo.targetDuty = -40;
-                return 0;
-			}
-		}
-	}
-	else
-	{
-        if((displace < gForceAndDisplaceCurve.displacementP[1]) && (displace > gForceAndDisplaceCurve.displacementP[2])){
-            if(gExternalForceState.value <= gForceAndDisplaceCurve.springForceN[2]){
-                springForce = gForceAndDisplaceCurve.K_spring_forceN[3];
-                return springForce;
-            }
-            else{
-                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 40;
-                return 0;
-            }
-        }
-		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
-
-			if((displace >= gForceAndDisplaceCurve.displacementN[index]) && (displace <= gForceAndDisplaceCurve.displacementN[index - 1])){
-				springForce = gForceAndDisplaceCurve.K_spring_forceN[index];
-				gSysInfo.soft_break_flag = 0;
-				return springForce;
-			}
-            else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
-                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 40;
-                return 0;
-            }
-		}
-	}
-*/
-	//TODO generate alarm, because the displacement is out of range
-//	return springForce;
 }
-/*
-#pragma CODE_SECTION(findSpringForceB, "ramfuncs")
-double findSpringForceB(double displace){
-	double springForceB = -1;
-	int index;
-	if(displace >= 0){
-		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
-
-			if((displace <= gForceAndDisplaceCurve.displacementP[index]) && (displace >= gForceAndDisplaceCurve.displacementP[index - 1])){
-				springForceB = gForceAndDisplaceCurve.b_P[index];
-				return springForceB;
-			}
-            else if(displace > gForceAndDisplaceCurve.displacementP[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForceB = gForceAndDisplaceCurve.b_P[index];
-                return springForceB;
-            }
-		}
-	}
-	else
-	{
-		for(index = 1; index < gForceAndDisplaceCurve.maxPoints; ++index){
-
-			if((displace >= gForceAndDisplaceCurve.displacementN[index]) && (displace <= gForceAndDisplaceCurve.displacementN[index - 1])){
-				springForceB = gForceAndDisplaceCurve.b_N[index];
-				return springForceB;
-			}
-            else if(displace < gForceAndDisplaceCurve.displacementN[(gForceAndDisplaceCurve.maxPoints)-1]){
-                springForceB = gForceAndDisplaceCurve.b_N[index];
-                return springForceB;
-            }
-		}
-	}
-
-	//TODO generate alarm, because the displacement is out of range
-	return springForceB;
-}
-*/
-//#pragma CODE_SECTION(OnlyWithSpringRear, "ramfuncs")
-//void OnlyWithSpringRear(void){
-//    double k;
-//    double kb;
-//    double force_openLoop;
-//    int force_closeLoop;
-//    double damp_force;
-//    double spring_force;
-//    double mass;
-//    double inertial_force;
-//    double B_F = 0;
-//    double velocity_openLoop;
-//    int velocity_closeLoop;
-//    double B_V = 0;
-
-//    k = findSpringForceK(gStickState.value);
-//    if(gSysInfo.soft_break_flag == 1){
-//        return;
-//    }
-//    kb = findSpringForceB(gStickState.value);
-//
-//    mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
-//
-//    if(mass > 1){
-//        gSysState.warning.bit.a = 0;
-//    }
-//    else{
-//        gSysState.warning.bit.a = 1;
-//    }
-//
-//    spring_force = k * gStickState.value + kb;
-//    damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
-//    inertial_force = mass * gKeyValue.motorAccel;
-//
-//    if(gAccelDirection.accelDirection == STOP_DIRECTION){
-//        inertial_force = 0;
-//    }
-//    else{
-//        inertial_force = -inertial_force;
-//    }
-//
-//    force_openLoop = spring_force + damp_force - gSysInfo.friction + inertial_force;
-//    force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
-//    force_closeLoop = -force_closeLoop;
-//
-//    gSysInfo.ob_velocityOpenLoop = force_openLoop;
-//
-//    if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-//        B_F = 10;
-//    }
-//    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-//        B_F = -20;
-//    }
-
-//    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
-//        gSysInfo.velocity_last = 0;
-//    }
-//    else{
-//        gSysInfo.velocity_last = gSysInfo.velocity_last;
-//    }
-//
-//    velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-//    gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-//
-//    if(velocity_openLoop > 20){
-//        velocity_openLoop = 20;
-//    }
-//    else if(velocity_openLoop < -20){
-//        velocity_openLoop = -20;
-//    }
-//    else{
-//        velocity_openLoop = velocity_openLoop;
-//    }
-//
-//    velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
-//
-//    gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
-//    gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
-//    gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
-//    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
-//        gSysInfo.targetDuty = DUTY_LIMIT_P;
-//    }
-//    else if(gSysInfo.targetDuty < DUTY_LIMIT_N){
-//        gSysInfo.targetDuty = DUTY_LIMIT_N;
-//    }
-//}
-
 #pragma CODE_SECTION(OnlyWithSpringFront, "ramfuncs")
 void OnlyWithSpringFront(void){
 	double k;
@@ -597,9 +415,6 @@ void OnlyWithSpringFront(void){
 	double mass;
 	double inertial_force;
 	double B_F = 0;
-//	double velocity_openLoop;
-//	int velocity_closeLoop;
-//	double B_V = 0;
 
 	findSpringForceK(gStickState.value);
 	k = gSysInfo.springForceK;
@@ -641,30 +456,6 @@ void OnlyWithSpringFront(void){
         B_F = -10;
     }
 
-
-//    if(gRotateDirection.rotateDirection == STOP_DIRECTION){
-//        gSysInfo.velocity_last = 0;
-//    }
-//    else{
-//        gSysInfo.velocity_last = gSysInfo.velocity_last;
-//    }
-//
-//	velocity_openLoop = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-//	gSysInfo.velocity_last = gSysInfo.velocity_last + ((gExternalForceState.value - damp_force + gSysInfo.friction - spring_force) / mass);
-//
-//	if(velocity_openLoop > 20){
-//	    velocity_openLoop = 20;
-//	}
-//    else if(velocity_openLoop < -20){
-//        velocity_openLoop = -20;
-//    }
-//    else{
-//        velocity_openLoop = velocity_openLoop;
-//    }
-//
-//	velocity_closeLoop = velocity_PidOutput(velocity_openLoop, gKeyValue.motorSpeed);
-
-//	gSysInfo.targetDuty_V = (int16)((gPidPara.K_V_ODE * velocity_openLoop + B_V) + velocity_closeLoop);
 	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
     if(gSysInfo.targetDuty > DUTY_LIMIT_P){
