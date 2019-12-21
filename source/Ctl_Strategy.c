@@ -415,6 +415,9 @@ void OnlyWithSpringFront(void){
 	double mass;
 	double inertial_force;
 	double B_F = 0;
+#if(TARGET_DUTY_GRADUAL_CHANGE == INCLUDE_FEATURE)
+    int tempDuty = 0;
+#endif
 
 	findSpringForceK(gStickState.value);
 	k = gSysInfo.springForceK;
@@ -457,7 +460,24 @@ void OnlyWithSpringFront(void){
     }
 
 	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
+#if(TARGET_DUTY_GRADUAL_CHANGE == INCLUDE_FEATURE)
+	tempDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
+
+    if(tempDuty > gSysInfo.targetDuty)
+    {
+        gSysInfo.targetDuty++;
+    }
+    else if(tempDuty < gSysInfo.targetDuty)
+    {
+        gSysInfo.targetDuty--;
+    }
+    else{
+         gSysInfo.targetDuty = tempDuty;
+    }
+#elif
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
+#endif
+
     if(gSysInfo.targetDuty > DUTY_LIMIT_P){
         gSysInfo.targetDuty = DUTY_LIMIT_P;
     }
