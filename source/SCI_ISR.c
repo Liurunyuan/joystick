@@ -16,11 +16,9 @@
 
 #define COMPARE_A_AND_B (0)
 /***********globle variable define here***************/
-
-int recievechar[RXBUGLEN]={0};
 RS422RXQUE gRS422RxQue = {0};
 RS422RXQUE gRS422RxQueB = {0};
-char rs422rxPack[16];
+char rs422rxPack[100] = {0};
 
 
 /**************************************************************
@@ -365,7 +363,7 @@ static void systemStateCommand(VAR16 a, int b, int c){
 static void WaveCommand(VAR16 a, int b, int c) {
 	int i;
 
-	for(i = 0; i < WAVE_AMOUNT; ++i){
+	for(i = 0; i < 8; ++i){
 		//unpack bit information
 		if((a.value & (0x0001 << i)) >> i){
 			gRx422TxEnableFlag[i] = ENABLE_TX;
@@ -921,71 +919,6 @@ void UnpackRS422ANew(RS422RXQUE *RS422RxQue){
 //		printf("update the front position-------------\r\n");
 	}
 }
-/***************************************************************
- *Name:						testwithlabview
- *Function:					just a test function to test with Labview
- *Input:				    none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.27
- ****************************************************************/
-void testwithlabview(){
-
-	int i;
-	static int f = 0;
-	int crc;
-	static int data = 0;
-	char buf[21]={
-				0x55,
-				0x5a,
-				0x04,
-				0x00,//serial number high byte
-				0x01,//serial number low byte
-				0x01,
-				0x00,
-				0x00,
-				0x02,
-				0x00,
-				0x00,
-				0x03,
-				0x00,
-				0x00,
-				0x04,
-				0x00,
-				0x00,
-				0xd7,
-				0x32,
-				0xbb,
-				0xaa
-	};
-	buf[5] = (char)data;
-	buf[8] = (char)(100 - data);
-	if(f == 0){
-		++data;
-	}
-	else{
-		--data;
-	}
-
-	if(data == 100){
-		//data = 0;
-		f = 1;
-	}
-	if(data ==0){
-		f = 0;
-	}
-
-	crc = CalCrc(0, buf + OFFSET, 12);
-	buf[16] = (char)crc;
-	buf[15] = (char)(crc >> 8);
-	for(i = 0; i < 21; ++i){
-		while(ScicRegs.SCIFFTX.bit.TXFFST != 0){
-
-		}
-		ScicRegs.SCITXBUF = buf[i];
-
-	}
-}
 /**************************************************************
  *Name:		   ClearRS422RxOverFlow
  *Comment:
@@ -996,7 +929,7 @@ void testwithlabview(){
  **************************************************************/
 void ClearRS422RxOverFlow(void) {
 	if (ScibRegs.SCIFFRX.bit.RXFFOVF == 1) {
-		printf(">>>>>>scib rx fifo over flow\r\n");
+		// printf(">>>>>>scib rx fifo over flow\r\n");
 		ScibRegs.SCIFFRX.bit.RXFFOVRCLR = 1;
 		ScibRegs.SCIFFRX.bit.RXFIFORESET = 1;
 		if (ScibRegs.SCIFFRX.bit.RXFFOVF == 0) {

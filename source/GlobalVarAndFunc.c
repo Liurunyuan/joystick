@@ -30,20 +30,7 @@ double gDebug[3] = {0};
 int gPISO_165[8] = {0};
 int gButtonCmd[6] = {0};
 int gButtonStatus[6] = {0};
-int gD = 60;
-int bounceCnt = 0;
-int gStateMachineIndex = -1;
-int gStateMachineIndexBak = -1;
-double gBounceDisplace = 0;
-int gMaxBounceTimes = 4;
-int kspeed = 10;
-int timesDisplace = 7;
-int reduceNum = 10;
 
-
-
-
-typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
 void InitGlobalVarAndFunc(void){
     // PITCH

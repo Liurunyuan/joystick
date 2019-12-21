@@ -424,10 +424,11 @@ void OnlyWithSpringFront(void){
 #endif
 
 	findSpringForceK(gStickState.value);
-	k = gSysInfo.springForceK;
+
     if(gSysInfo.soft_break_flag == 1){
         return;
     }
+    k = gSysInfo.springForceK;
 	kb = gSysInfo.springForceB;
 
 	mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);

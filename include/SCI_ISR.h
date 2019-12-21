@@ -55,7 +55,6 @@ void UnpackRS422A(void);
 void RS422A_receive(RS422RXQUE *RS422RxQue);
 void RS422B_receive(RS422RXQUE *RS422RxQue);
 void UnpackRS422ANew(RS422RXQUE *RS422RxQue);
-void testwithlabview(void);
 void ClearRS422RxOverFlow(void);
 
 #endif

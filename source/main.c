@@ -20,17 +20,6 @@
 #include "GlobalVarAndFunc.h"
 #include "PID.h"
 
-
-enum FSM {
-	INIT = 0,
-	ZERO,
-	PASSIVE,
-	DAMP,
-	SLAVE,
-	FREEZE,
-	ALARM
-};
-
 //#define UART_PRINTF
 
 #ifdef UART_PRINTF
@@ -87,17 +76,17 @@ void Init_Peripheral(void){
 	/*Init and config SPI*/
 	Init_SPI();
 	/*Init and config A-CAN and B-CAN */
-	Init_CAN();
+	// Init_CAN();
 	/*Init and config I2C*/
-	Init_I2C();
+	// Init_I2C();
 	/*Init and config CAP4,CAP5,CAP6*/
-	Init_CAP();
+	// Init_CAP();
 	/*Init and config QEP2*/
-	Init_QEP();
+	// Init_QEP();
 	/*PWM IO init and config*/
 	Init_PWM();
 	/*DMA init and config*/
-	Init_DMA();
+	// Init_DMA();
 }
 
 /*************************************************************
@@ -126,25 +115,6 @@ void Delayfunc(Uint16 sec){
 int PowerOnBIT(void){
 	//TODO   implement here, figure out what need to check, what to do if BIT fail.
 	return 0;
-}
-
-/**************************************************************
- *Name:						test_spi_tx
- *Function:					Business logic
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-void test_spi_tx(void){
-	int retry = 0;
-	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1){
-		retry ++;
-		if(retry > 200){
-				//return 0;
-		}
-	}
-	SpiaRegs.SPITXBUF = 0x0001;
 }
 /**************************************************************
  *Name:						Init_gRS422RxQue
@@ -202,8 +172,26 @@ void Init_gSysMonitorVar() {
 		gSysMonitorVar.anolog.single.var[index].count_min = 0;
 		gSysMonitorVar.anolog.single.var[index].value = 0;
 	}
-	gSysMonitorVar.digit.multi.var[8].valueN = 55;
-	gSysMonitorVar.digit.multi.var[8].valueP = 55;
+
+	for (index = 0; index < 16; ++index) {
+		gSysMonitorVar.anolog.multi[0].var[index].updateValue = NULL;
+		gSysMonitorVar.anolog.multi[0].var[index].max = 0;
+        gSysMonitorVar.anolog.multi[0].var[index].max2nd = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].min = 0;
+        gSysMonitorVar.anolog.multi[0].var[index].min2nd = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].count_max = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].count_min = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].value = 0;
+
+		gSysMonitorVar.anolog.multi[1].var[index].updateValue = NULL;
+		gSysMonitorVar.anolog.multi[1].var[index].max = 0;
+        gSysMonitorVar.anolog.multi[1].var[index].max2nd = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].min = 0;
+        gSysMonitorVar.anolog.multi[1].var[index].min2nd = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].count_max = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].count_min = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].value = 0;
+	}
 
 	for (index = 0; index < AD16bit_Total; ++index) {
 	    gSysMonitorVar.anolog.AD_16bit.var[index].max =
@@ -220,7 +208,20 @@ void Init_gSysMonitorVar() {
 		gSysMonitorVar.anolog.AD_16bit.var[index].value = 0;
 	}
 
-	for (index = 0; index < 12; ++index) {
+	for (index = 0; index < 9; ++index) {
+
+		gSysMonitorVar.digit.multi.var[index].valueP = 55;
+		gSysMonitorVar.digit.multi.var[index].valueN = 55;
+		gSysMonitorVar.digit.multi.var[index].min = 55;
+		gSysMonitorVar.digit.multi.var[index].updateValue = NULL;
+	}
+
+	for (index = 0; index < 11; ++index) {
+
+		gSysMonitorVar.digit.single.var[index].valueP = 55;
+		gSysMonitorVar.digit.single.var[index].valueN = 55;
+		gSysMonitorVar.digit.single.var[index].min = 55;
+		gSysMonitorVar.digit.single.var[index].updateValue = NULL;
 	}
 }
 /**************************************************************

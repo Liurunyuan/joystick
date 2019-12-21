@@ -54,11 +54,11 @@ void InitAdc(void)
 	// contain the correct CPU clock period in nanoseconds.
 
     //AdcRegs.ADCTRL3.all = 0x00E0;  // Power up bandgap/reference/ADC circuits
-	AdcRegs.ADCTRL3.bit.ADCBGRFDN = 3;//  Ä£Êý×ª»»ÄÚ²¿²Î¿¼µçÑ¹Ô´µçÂ·ÉÏµç
-	DELAY_US(ADC_usDELAY);
-  	AdcRegs.ADCTRL3.bit.ADCPWDN = 1;//  Ä£Êý×ª»»ºËÄ£ÄâµçÂ·¼Óµç
-//    DELAY_US(20); // Delay at least 20us before converting ADC channels 	//  ÖÁÉÙ20usÑÓÊ±
-  	DELAY_US(5000);
+	AdcRegs.ADCTRL3.bit.ADCBGRFDN = 3;//  Ä£ï¿½ï¿½×ªï¿½ï¿½ï¿½Ú²ï¿½ï¿½Î¿ï¿½ï¿½ï¿½Ñ¹Ô´ï¿½ï¿½Â·ï¿½Ïµï¿½
+  	AdcRegs.ADCTRL3.bit.ADCPWDN = 1;//  Ä£ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Â·ï¿½Óµï¿½
+    DELAY_US(ADC_usDELAY);
+//    DELAY_US(20); // Delay at least 20us before converting ADC channels 	//  ï¿½ï¿½ï¿½ï¿½20usï¿½ï¿½Ê±
+  	// DELAY_US(5000);
     //DELAY_US(ADC_usDELAY);         // Delay before converting ADC channels
 }
 
@@ -73,22 +73,22 @@ void ADC_Config(void)
 
 
 //    AdcRegs.ADCTRL1.bit.CPS = 0;
-	AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 0; //Æô¶¯SEQ×ª»»£¨SOC£©´¥·¢£¬0£ºÇå³ý²»È·¶¨µÄSOC´¥·¢£»1£ºÈí¼þ´¥·¢SOC
-	//AdcRegs.ADCTRL1.bit.CPS = 0; // 1:¶ÔHSPCLK½øÐÐ2·ÖÆµ£¬0£º²»·ÖÆµ
+	AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 0; //ï¿½ï¿½ï¿½ï¿½SEQ×ªï¿½ï¿½ï¿½ï¿½SOCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½SOCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SOC
+	//AdcRegs.ADCTRL1.bit.CPS = 0; // 1:ï¿½ï¿½HSPCLKï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½Æµï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµ
 	AdcRegs.ADCTRL3.bit.ADCCLKPS = 0x0005; //0: ADCCLK=HSPCLK/(CPS+1); 1<=ADCCLK<=15: ADCCLK=HSPCLK/(2*ADCCLKPS*(CPS+1))
 
-	/*Ë³Ðò²ÉÑùÄ£Ê½ÏÂ£ºÒ»¸öAD×ª»»ÖÜÆÚ£¨¼°ÍêÕûµÄS/H²ÉÑù±£³ÖÖÜÆÚ£©=SOC+ADCCLK;
-	 *Í¬²½²ÉÑùÄ£Ê½ÏÂ£ºÒ»¸öAD×ª»»ÖÜÆÚ£¨¼°ÍêÕûµÄS/H²ÉÑù±£³ÖÖÜÆÚ£©=SOC+2*ADCCLK*/
+	/*Ë³ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½Â£ï¿½Ò»ï¿½ï¿½AD×ªï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½S/Hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½=SOC+ADCCLK;
+	 *Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½Â£ï¿½Ò»ï¿½ï¿½AD×ªï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½S/Hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½=SOC+2*ADCCLK*/
 	AdcRegs.ADCTRL1.bit.ACQ_PS = 0x0002;
 
-	AdcRegs.ADCTRL3.bit.SMODE_SEL = 1;//0:Ë³Ðò²ÉÑùÄ£Ê½£»1£ºÍ¬²½²ÉÑùÄ£Ê½
-	AdcRegs.ADCTRL1.bit.SEQ_CASC = 1;//0£ºË«ÐòÁÐÄ£Ê½£»1£º¼¶ÁªÄ£Ê½
+	AdcRegs.ADCTRL3.bit.SMODE_SEL = 1;//0:Ë³ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½1ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+	AdcRegs.ADCTRL1.bit.SEQ_CASC = 1;//0ï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 
-	/*0: Æô¶¯/Í£Ö¹×ª»»·½Ê½£¬µ½´ïEOCÊ±£¬Í£Ö¹²ÉÑù£¬ÐèÒªÊÖ¶¯½«SEQ_CNTRÖÃ1£¬
-	 *1: ×Ô¶¯ÖØÐÂ¿ªÊ¼£¬¼´ÔÚSEQ_CNTR=0Ê±£¬×Ô¶¯ÖØÐÂ½«MAXCONVnµÄÖµ×°Èë¡£ */
+	/*0: ï¿½ï¿½ï¿½ï¿½/Í£Ö¹×ªï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½EOCÊ±ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ö¶ï¿½ï¿½ï¿½SEQ_CNTRï¿½ï¿½1ï¿½ï¿½
+	 *1: ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SEQ_CNTR=0Ê±ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Â½ï¿½MAXCONVnï¿½ï¿½Öµ×°ï¿½ë¡£ */
 	AdcRegs.ADCTRL1.bit.CONT_RUN = 0;
 
-	//Í¬²½Ä£Ê½ÏÂ×î´óÍ¨µÀµÄÅäÖÃ
+	//Í¬ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	AdcRegs.ADCMAXCONV.all = 0x0007;
 
     AdcRegs.ADCCHSELSEQ1.bit.CONV00 = 0x0;
@@ -100,7 +100,7 @@ void ADC_Config(void)
     AdcRegs.ADCCHSELSEQ2.bit.CONV06 = 0x6;
     AdcRegs.ADCCHSELSEQ2.bit.CONV07 = 0x7;
 
-	AdcRegs.ADCTRL1.bit.SEQ_OVRD = 0;//×°»»ÍêmaxÍ¨µÀºó£¬ÅÅÐòÆ÷Ö¸Õë¸´Î»µ½³õÊ¼×´Ì¬
+	AdcRegs.ADCTRL1.bit.SEQ_OVRD = 0;//×°ï¿½ï¿½ï¿½ï¿½maxÍ¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ë¸´Î»ï¿½ï¿½ï¿½ï¿½Ê¼×´Ì¬
 	AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 1;
 
 /*
@@ -145,13 +145,13 @@ void ADC_Config(void)
 
     //new adc init
 */
-    AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 1;//ÔÊÐíePWMµÄ´¥·¢ÐÅºÅÆô¶¯SEQ1
-   // AdcRegs.ADCTRL2.bit.EPWM_SOCB_SEQ2 = 1;//ÔÊÐíePWMµÄ´¥·¢ÐÅºÅÆô¶¯SEQ1
+    AdcRegs.ADCTRL2.bit.EPWM_SOCA_SEQ1 = 1;//ï¿½ï¿½ï¿½ï¿½ePWMï¿½Ä´ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½ï¿½ï¿½SEQ1
+   // AdcRegs.ADCTRL2.bit.EPWM_SOCB_SEQ2 = 1;//ï¿½ï¿½ï¿½ï¿½ePWMï¿½Ä´ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½ï¿½ï¿½SEQ1
 
-    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 0x1;			//¸´Î»ÅÅÐòÆ÷SEQ1µ½CONV00×´Ì¬
-  //  AdcRegs.ADCTRL2.bit.RST_SEQ2 = 0x1;         //¸´Î»ÅÅÐòÆ÷SEQ1µ½CONV00×´Ì¬
-   // AdcRegs.ADCTRL2.bit.INT_MOD_SEQ1=0;			//Ã¿¸öSEQ1ÐòÁÐ½áÊøÊ±£¬INT_SEQ1ÖÃÎ»
-   // AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x0;		//½ûÖ¹SEQ1ÖÐ¶Ï
+    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 0x1;			//ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SEQ1ï¿½ï¿½CONV00×´Ì¬
+  //  AdcRegs.ADCTRL2.bit.RST_SEQ2 = 0x1;         //ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SEQ1ï¿½ï¿½CONV00×´Ì¬
+   // AdcRegs.ADCTRL2.bit.INT_MOD_SEQ1=0;			//Ã¿ï¿½ï¿½SEQ1ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½INT_SEQ1ï¿½ï¿½Î»
+   // AdcRegs.ADCTRL2.bit.INT_ENA_SEQ1 = 0x0;		//ï¿½ï¿½Ö¹SEQ1ï¿½Ð¶ï¿½
 
    // AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;
     //AdcRegs.ADCTRL2.bit.SOC_SEQ1 = 1;

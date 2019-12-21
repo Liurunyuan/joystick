@@ -69,23 +69,11 @@ void Timer0_ISR_Thread(void){
 
         gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
         gExternalForceState.updateForceState(0);
-/******************************
-* -20mm                                                     0mm                                                      12mm
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->|
-*  |                                                          |
-*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
-*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
-*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
-*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-*
-*
-* we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
-*/
+
         OnlyWithSpringFront();
 
 		clearSum();
 		gKeyValue.lock = 0;
-        // gSysInfo.controlFuncIndex = 0;
 	}
 }
 /**************************************************************
