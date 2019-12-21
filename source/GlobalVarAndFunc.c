@@ -7,8 +7,6 @@
 #include "PID.h"
 #include "Ctl_Strategy.h"
 
-#define  DEBOUNCE (0.05)
-
 void InitStickState(void);
 void checkRotateDirection(int value);
 void checkAcceleration(int value);
@@ -76,23 +74,24 @@ void InitGlobalVarAndFunc(void){
     }
     gSysInfo.sek_v = 0;
     gSysInfo.sek_f = 0;
-	gSysInfo.ddtmax = 1;
+	gSysInfo.ddtmax = 2;
 	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
+	gSysInfo.currentDuty = 0;
 	gSysInfo.targetDuty_F = 0;
 	gSysInfo.targetDuty_V = 0;
-	gSysInfo.coe_Force = 0.6;
-	gSysInfo.coe_Velocity = 0.4;
+	gSysInfo.coe_Force = 1;
+	gSysInfo.coe_Velocity = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
 	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -0.75;
-	gSysInfo.TH2 = -0.35;
+	gSysInfo.TH1 = -1;
+	gSysInfo.TH2 = -0.5;
 	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 0.35;
-	gSysInfo.TH5 = 0.75;
+	gSysInfo.TH4 = 0.5;
+	gSysInfo.TH5 = 1;
 	//gSysInfo.TH6 = 11.8; //17.8
-	gSysInfo.Ki_Threshold_f = 6;
+	gSysInfo.Ki_Threshold_f = 10;
 	gSysInfo.Ki_Threshold_v = 0.1;
 	gSysInfo.velocity_last = 0;
 
@@ -146,11 +145,13 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[3] = 0;
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
-//    gSysInfo.maxspeed = 0;
-//    gSysInfo.minspeed = 0;
+    gSysInfo.ob_velocityOpenLoop = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
-    gSysInfo.lastStickDisSection = 0;
+    gSysInfo.friction = 0;
+    gSysInfo.soft_break_flag = 0;
+    gSysInfo.springForceK = 0;
+    gSysInfo.springForceB = 0;
 }
 
 void checkPitchOrRoll(void){
@@ -168,39 +169,39 @@ void checkPitchOrRoll(void){
         gSysState.warning.bit.b = 1;
     }
 }
-#pragma CODE_SECTION(IRNullDisAndNoForce, "ramfuncs")
-void IRNullDisAndNoForce(int a,  int b){
-	/*stick is in the range of the null displacement and no external force on the it */
-	/*so decide what we should do */
-	int32 tmp;
-	tmp = (int32)((-3 * gExternalForceState.value)* 250);
-	tmp = -tmp;
-	gSysInfo.targetDuty = tmp; 
-	gSysInfo.targetDuty = 0;
-
-} 
-#pragma CODE_SECTION(IRNullDisAndForwardForce, "ramfuncs")
-void IRNullDisAndForwardForce(int a, int b){
-	/*stick is in the range of the null displacement and the external force is forward */
-	/*so decidde what we should do here */
-	int32 tmp;
-	tmp = (int32)((gSysInfo.Force_Pos_Thr - gExternalForceState.value)* 250);
-	tmp = -tmp;
-	//tmp = tmp + 20;
-	gSysInfo.targetDuty = tmp; 
-	//gSysInfo.targetDuty = 100; 
-}
-#pragma CODE_SECTION(IRNullDisAndBackwardForce, "ramfuncs")
-void IRNullDisAndBackwardForce(int a, int b){
-	/*stick is in the range of the null displacement and the external force is backward */
-	/*so decidde what we should do here */
-	int32 tmp;
-	tmp = (int32)((gSysInfo.Force_Neg_Thr - gExternalForceState.value)* 250);
-	tmp = -tmp;
-	//tmp = tmp - 20;
-	gSysInfo.targetDuty = tmp; 
-	//gSysInfo.targetDuty = -100; 
-}
+//#pragma CODE_SECTION(IRNullDisAndNoForce, "ramfuncs")
+//void IRNullDisAndNoForce(int a,  int b){
+//	/*stick is in the range of the null displacement and no external force on the it */
+//	/*so decide what we should do */
+////	int32 tmp;
+////	tmp = (int32)((-3 * gExternalForceState.value)* 250);
+////	tmp = -tmp;
+////	gSysInfo.targetDuty = tmp;
+//	gSysInfo.targetDuty = 0;
+//
+//}
+//#pragma CODE_SECTION(IRNullDisAndForwardForce, "ramfuncs")
+//void IRNullDisAndForwardForce(int a, int b){
+//	/*stick is in the range of the null displacement and the external force is forward */
+//	/*so decidde what we should do here */
+//	int32 tmp;
+//	tmp = (int32)((gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
+//	tmp = -tmp;
+//	//tmp = tmp + 20;
+//	gSysInfo.targetDuty = tmp;
+//	//gSysInfo.targetDuty = 100;
+//}
+//#pragma CODE_SECTION(IRNullDisAndBackwardForce, "ramfuncs")
+//void IRNullDisAndBackwardForce(int a, int b){
+//	/*stick is in the range of the null displacement and the external force is backward */
+//	/*so decidde what we should do here */
+//	int32 tmp;
+//	tmp = (int32)((-gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
+//	tmp = -tmp;
+//	//tmp = tmp - 20;
+//	gSysInfo.targetDuty = tmp;
+//	//gSysInfo.targetDuty = -100;
+//}
 
 /* 
 * -20mm                                                     0mm                                                      12mm 
@@ -211,498 +212,245 @@ void IRNullDisAndBackwardForce(int a, int b){
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
 */
-#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec2, "ramfuncs")
-void IRStartForceSecAndNoForce_sec2(int a,  int b){
-    /*stick is in the range of the null displacement and no external force on the it */
-    /*so decide what we should do */
-    int32 tmp;
-    tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
-    //tmp = (int32)(displace_PidOutput(gSysInfo.TH2, gStickState.value));
-    //tmp = -tmp;
-    gSysInfo.targetDuty = tmp;
-
-}
-#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec5, "ramfuncs")
-void IRStartForceSecAndNoForce_sec5(int a,  int b){
-    /*stick is in the range of the null displacement and no external force on the it */
-    /*so decide what we should do */
-    int32 tmp;
-    tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
-    //tmp = (int32)(displace_PidOutput(gSysInfo.TH4, gStickState.value));
-    //tmp = -tmp;
-    gSysInfo.targetDuty = tmp;
-
-}
-#pragma CODE_SECTION(IRStartForceSecAndForwardForce_sec5, "ramfuncs")
-void IRStartForceSecAndForwardForce_sec5(int a, int b){
-    /*stick is in the range of the null displacement and the external force is forward */
-    /*so decidde what we should do here */
-    int32 tmp;
-    if(gExternalForceState.value > gConfigPara.LF_StartForce){
-        IRNullDisAndForwardForce(0,0);
-    }
-    else{
-#if(MACHINE_FRICTION == INCLUDE_FEATURE)
-        tmp = -10;//if duty set to 0, you need 22N to push the stick move 
-#elif
-        tmp = displace_PidOutput(gSysInfo.TH4, gStickState.value);
-#endif
-        gSysInfo.targetDuty = tmp;
-    }
-}
-#pragma CODE_SECTION(IRStartForceSecAndBackwardForce_sec2, "ramfuncs")
-void IRStartForceSecAndBackwardForce_sec2(int a, int b){
+//#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec2, "ramfuncs")
+//void IRStartForceSecAndNoForce_sec2(int a,  int b){
+//    /*stick is in the range of the null displacement and no external force on the it */
+//    /*so decide what we should do */
+//    int32 tmp;
+//    tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
+//    //tmp = (int32)(displace_PidOutput(gSysInfo.TH2, gStickState.value));
+//    //tmp = -tmp;
+//    gSysInfo.targetDuty = tmp;
+//
+//}
+//#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec5, "ramfuncs")
+//void IRStartForceSecAndNoForce_sec5(int a,  int b){
+//    /*stick is in the range of the null displacement and no external force on the it */
+//    /*so decide what we should do */
+//    int32 tmp;
+//    tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
+//    //tmp = (int32)(displace_PidOutput(gSysInfo.TH4, gStickState.value));
+//    //tmp = -tmp;
+//    gSysInfo.targetDuty = tmp;
+//
+//}
+//#pragma CODE_SECTION(IRStartForceSecAndForwardForce_sec5, "ramfuncs")
+//void IRStartForceSecAndForwardForce_sec5(int a, int b){
+//    /*stick is in the range of the null displacement and the external force is forward */
+//    /*so decide what we should do here */
+//    int32 tmp;
+//    if(gExternalForceState.value > gConfigPara.LF_FrontFriction){
+//        OnlyWithSpringFront();
+////        IRNullDisAndForwardForce(0,0);
+//    }
+//    else{
+//        tmp = -30;//if duty set to 0, you need 22N to push the stick move
+//        gSysInfo.targetDuty = tmp;
+//    }
+//}
+//#pragma CODE_SECTION(IRStartForceSecAndBackwardForce_sec2, "ramfuncs")
+//void IRStartForceSecAndBackwardForce_sec2(int a, int b){
     /*stick is in the range of the null displacement and the external force is backward */
-    /*so decidde what we should do here */
-    int32 tmp;
-    if(gExternalForceState.value < gConfigPara.RB_StartForce){
-        IRNullDisAndBackwardForce(0,0);
-    }
-    else{
-		tmp = 10;
-        gSysInfo.targetDuty = tmp;
-    }
-}
+    /*so decide what we should do here */
+//    int32 tmp;
+//    if(gExternalForceState.value < -gConfigPara.LF_FrontFriction){
+//        OnlyWithSpringRear();
+//        IRNullDisAndBackwardForce(0,0);
+//    }
+//    else{
+//		tmp = 30;
+//        gSysInfo.targetDuty = tmp;
+//    }
+//}
 
-#pragma CODE_SECTION(ReduceFriction, "ramfuncs")
-inline void ReduceFriction(int direction){
-    if(direction > 0)
-    {
-        gSysInfo.targetDuty = gD;
-    }
-    else{
-        gSysInfo.targetDuty = -gD;
-    }
-}
-
-#pragma CODE_SECTION(sec0_threshold_rear, "ramfuncs")
-void sec0_threshold_rear(int a, int b){
+//#pragma CODE_SECTION(sec0_threshold_rear, "ramfuncs")
+//void sec0_threshold_rear(int a, int b){
     /*stick is out of the range of the bakcward threshold displacement*/
 	/*just output a force to let the stick go to zero state */
-
-    gStateMachineIndex = 0;
-    gStateMachineIndexBak = gStateMachineIndex;
-
-    OnlyWithSpringRear();
-
-    if(gSysInfo.targetDuty > 100){
-        gSysInfo.targetDuty = 100;
-    }
-    else if(gSysInfo.targetDuty < -100){
-        gSysInfo.targetDuty = -100;
-    }
-    else{
-
-    }
-}
-#pragma CODE_SECTION(sec1_ODE_rear, "ramfuncs")
-void sec1_ODE_rear(int a, int b){
-
-#if(ONLY_SPRING == INCLUDE_FEATURE)
-    if(gExternalForceState.ForceState == NO_FORCE){
-
-        gStateMachineIndex = 1;
-        gDebug[1]++;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-            gBounceDisplace = gStickState.value;
-        }
-        if(gStickState.value < gBounceDisplace){
-            gBounceDisplace = gStickState.value;
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-
-        OnlyWithSpringRear();
-    }
-    else{
-        gStateMachineIndex = 2;
-        gStateMachineIndexBak = gStateMachineIndex;
-
-        OnlyWithSpringRear();
-    }
-
-#else
-    gSysInfo.targetDuty = 0;
-#endif
-}
-
-#pragma CODE_SECTION(sec2_StartForce_rear, "ramfuncs")
-void sec2_StartForce_rear(int a, int b){
-
-    switch (gExternalForceState.ForceState)
-    {
-    case NO_FORCE:
-        switch (gRotateDirection.rotateDirection)
-        {
-        case STOP_DIRECTION:
-
-            gStateMachineIndex = 3;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-                if(gStateMachineIndexBak == 4){
-
-                }
-            }
-            gSysInfo.targetDuty = gD + 20;
-            gStateMachineIndexBak = gStateMachineIndex;
-
-            break;
-        case BACKWARD_DIRECTION:
-
-            gStateMachineIndex = 4;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-                bounceCnt++;
-                gD = gD - timesDisplace;
-                if(gD < 0){
-                    gD = 0;
-                }
-                if(bounceCnt > gMaxBounceTimes){
-                    gD = 0;
-                }
-            }
-            gSysInfo.targetDuty = gD + 80;
-            gStateMachineIndexBak = gStateMachineIndex;
-
-            break;
-        case FORWARD_DIRECTION:
-            gStateMachineIndex = 5;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-                if(gStateMachineIndexBak == 1){
-                    gD = (gBounceDisplace * timesDisplace) - (gKeyValue.motorSpeed * kspeed);//change gD based on the gBounceDisplace
-                     if(gD < 0){
-                         gD = -gD;
-                     }
-                }
-                else if(gStateMachineIndexBak == 4 || gStateMachineIndexBak == 3){
-
-                }
-            }
-
-            gStateMachineIndexBak = gStateMachineIndex;
-            ReduceFriction(1);
-            break;
-        default:
-            break;
-        }
-        break;
-    case BACKWARD_FORCE:
-        gStateMachineIndex = 6;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRStartForceSecAndBackwardForce_sec2(0,0);
-        break;
-
-    case FORWARD_FORCE:
-        gStateMachineIndex = 7;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRNullDisAndForwardForce(0,0);
-        break;
-
-    default:
-        break;
-    }
-
-}
-
-
-
-#pragma CODE_SECTION(sec3_Null_rear, "ramfuncs")
-void sec3_Null_rear(int a, int b){
-
-    switch (gExternalForceState.ForceState)
-    {
-    case NO_FORCE:
-        switch (gRotateDirection.rotateDirection)
-        {
-        case STOP_DIRECTION:
-            gStateMachineIndex = 8;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-            IRNullDisAndNoForce(0,0);
-            break;
-        case BACKWARD_DIRECTION:
-            gStateMachineIndex = 9;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-//            gD--;
-//            if(gD < 30){
-//                gD = 30;
-//            }
-            ReduceFriction(-1);
-            break;
-        case FORWARD_DIRECTION:
-            gStateMachineIndex = 10;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-//            gD--;
-//            if(gD < 30){
-//                gD = 30;
-//            }
-            ReduceFriction(1);
-            break;
-        default:
-            break;
-        }
-        break;
-
-    case BACKWARD_FORCE:
-        gStateMachineIndex = 11;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRNullDisAndBackwardForce(0,0);
-        break;
-
-    case FORWARD_FORCE:
-        gStateMachineIndex = 12;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRNullDisAndForwardForce(0,0);
-        break;
-
-    default:
-        break;
-    }
-
-}
-
-
-#pragma CODE_SECTION(sec4_Null_front, "ramfuncs")
-void sec4_Null_front(int a, int b){
-
-    switch (gExternalForceState.ForceState)
-    {
-    case NO_FORCE:
-        switch (gRotateDirection.rotateDirection)
-        {
-        case STOP_DIRECTION:
-            gStateMachineIndex = 13;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-
-            IRNullDisAndNoForce(0,0);
-            break;
-        case BACKWARD_DIRECTION:
-            gStateMachineIndex = 14;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-//            gD--;
-//            if(gD < 30){
-//                gD = 30;
-//            }
-            ReduceFriction(-1);
-            break;
-        case FORWARD_DIRECTION:
-            gStateMachineIndex = 15;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-//            gD--;
-//            if(gD < 30){
-//                gD = 30;
-//            }
-            ReduceFriction(1);
-            break;
-        default:
-            break;
-        }
-        break;
-
-    case BACKWARD_FORCE:
-        gStateMachineIndex = 16;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRNullDisAndBackwardForce(0,0);
-        break;
-
-    case FORWARD_FORCE:
-        gStateMachineIndex = 17;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRNullDisAndForwardForce(0,0);
-        break;
-
-    default:
-        break;
-    }
-}
-#pragma CODE_SECTION(sec5_StartForce_front, "ramfuncs")
-void sec5_StartForce_front(int a, int b){
-
-    switch (gExternalForceState.ForceState)
-    {
-    case NO_FORCE:
-        switch (gRotateDirection.rotateDirection)
-        {
-        case STOP_DIRECTION:
-            gStateMachineIndex = 18;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-            gSysInfo.targetDuty = -(gD+20);
-            break;
-
-        case BACKWARD_DIRECTION:
-            gStateMachineIndex = 19;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-                if(gStateMachineIndexBak == 23){
-                    gD = (gBounceDisplace * timesDisplace) - (gKeyValue.motorSpeed * kspeed);
-                    if(gD < 0){
-                        gD = -gD;
-                    }
-                }
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-            ReduceFriction(-1);
-            break;
-        case FORWARD_DIRECTION:
-            gStateMachineIndex = 20;
-            if(gStateMachineIndexBak != gStateMachineIndex){
-                bounceCnt++;
-                gD = gD - reduceNum;
-                if(gD < 0){
-                    gD = 0;
-                }
-
-                if(bounceCnt > gMaxBounceTimes){
-                    gD = 0;
-                }
-            }
-            gStateMachineIndexBak = gStateMachineIndex;
-
-            gSysInfo.targetDuty = -(gD+80);
-            break;
-        default:
-            break;
-        }
-        break;
-
-    case BACKWARD_FORCE:
-        gStateMachineIndex = 21;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRNullDisAndBackwardForce(0,0);
-        break;
-
-    case FORWARD_FORCE:
-        gStateMachineIndex = 22;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-        IRStartForceSecAndForwardForce_sec5(0,0);
-        break;
-
-    default:
-        break;
-    }
-
-}
-#pragma CODE_SECTION(sec6_ODE_front, "ramfuncs")
-void sec6_ODE_front(int a, int b){
-
-#if(ONLY_SPRING == INCLUDE_FEATURE)
-    if(gExternalForceState.ForceState == NO_FORCE){
-
-        gStateMachineIndex = 23;
-        gDebug[0]++;
-        if(gStateMachineIndexBak != gStateMachineIndex){
-            gBounceDisplace = gStickState.value;
-        }
-        if(gStickState.value > gBounceDisplace){
-            gBounceDisplace = gStickState.value;
-        }
-        gStateMachineIndexBak = gStateMachineIndex;
-
-        OnlyWithSpringFront();
-    }
-    else{
-        gStateMachineIndex = 24;
-        gStateMachineIndexBak = gStateMachineIndex;
-        OnlyWithSpringFront();
-    }
-#else
-    //PidProcess();
-#endif
-}
-
-#pragma CODE_SECTION(sec7_threshold_front, "ramfuncs")
-void sec7_threshold_front(int a, int b){
-
-    gStateMachineIndex = 25;
-    gStateMachineIndexBak = gStateMachineIndex;
-    OnlyWithSpringFront();
-    if(gSysInfo.targetDuty > 100){
-        gSysInfo.targetDuty = 100;
-    }
-    else if(gSysInfo.targetDuty < -100){
-        gSysInfo.targetDuty = -100;
-    }
-    else{
-
-    }
-}
-
-const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
-    sec0_threshold_rear,              	//0:	Rear OOR
-	sec1_ODE_rear, 					    //1:	Rear ODE
-	sec2_StartForce_rear,              	//2:	Rear Start force
-	sec3_Null_rear, 					//3:	Rear Null displacement
-	sec4_Null_front,					//4:	Front Null displacement
-	sec5_StartForce_front,              //5:	Front Start force
-	sec6_ODE_front,					    //6:	Front ODE
-	sec7_threshold_front               	//7:	Front OOR
-};
-#pragma CODE_SECTION(ControleStateMachineSwitch, "ramfuncs")
-void ControleStateMachineSwitch(int value){
-
-	if(value < (sizeof(controlStateMahchineInterface) / sizeof(controlStateMahchineInterface[0]))){
-		if(controlStateMahchineInterface[value]){
-			controlStateMahchineInterface[value](0, 0);
-		}
-	}
-	else{
-		//TODO generate alarm msg, something wrong
-	}
-}
+//    if(gExternalForceState.ForceState == BACKWARD_FORCE){
+//        gSysInfo.targetDuty = 30;
+//    }
+//    else{
+//        OnlyWithSpringRear();
+//    }
+//
+//    if(gSysInfo.targetDuty > 100){
+//        gSysInfo.targetDuty = 100;
+//    }
+//    else if(gSysInfo.targetDuty < -100){
+//        gSysInfo.targetDuty = -100;
+//    }
+//    else{
+//
+//    }
+//}
+//#pragma CODE_SECTION(sec1_ODE_rear, "ramfuncs")
+//void sec1_ODE_rear(int a, int b){
+//    OnlyWithSpringRear();
+//}
+//
+//#pragma CODE_SECTION(sec2_StartForce_rear, "ramfuncs")
+//void sec2_StartForce_rear(int a, int b){
+//    OnlyWithSpringRear();
+
+//    switch (gExternalForceState.ForceState)
+//    {
+//    case NO_FORCE:
+//        IRNullDisAndNoForce(0,0);
+//        break;
+//    case BACKWARD_FORCE:
+//        IRStartForceSecAndBackwardForce_sec2(0,0);
+//        break;
+//
+//    case FORWARD_FORCE:
+//        IRNullDisAndForwardForce(0,0);
+//        break;
+//
+//    default:
+//        break;
+//    }
+
+//}
+
+
+
+//#pragma CODE_SECTION(sec3_Null_rear, "ramfuncs")
+//void sec3_Null_rear(int a, int b){
+//    OnlyWithSpringRear();
+
+//    switch (gExternalForceState.ForceState)
+//    {
+//    case NO_FORCE:
+//        IRNullDisAndNoForce(0,0);
+//        break;
+//
+//    case BACKWARD_FORCE:
+//        IRNullDisAndBackwardForce(0,0);
+//        break;
+//
+//    case FORWARD_FORCE:
+//        IRNullDisAndForwardForce(0,0);
+//        break;
+//
+//    default:
+//        break;
+//    }
+
+//}
+//
+//
+//#pragma CODE_SECTION(sec4_Null_front, "ramfuncs")
+//void sec4_Null_front(int a, int b){
+//    OnlyWithSpringFront();
+//    switch (gExternalForceState.ForceState)
+//    {
+//    case NO_FORCE:
+//        IRNullDisAndNoForce(0,0);
+//        break;
+//
+//    case BACKWARD_FORCE:
+//        IRNullDisAndBackwardForce(0,0);
+//        break;
+//
+//    case FORWARD_FORCE:
+//        IRNullDisAndForwardForce(0,0);
+//        break;
+//
+//    default:
+//        break;
+//    }
+//}
+//#pragma CODE_SECTION(sec5_StartForce_front, "ramfuncs")
+//void sec5_StartForce_front(int a, int b){
+//
+//    OnlyWithSpringFront();
+
+//    switch (gExternalForceState.ForceState)
+//    {
+//    case NO_FORCE:
+//        IRNullDisAndNoForce(0,0);
+//        break;
+//
+//    case BACKWARD_FORCE:
+//        IRNullDisAndBackwardForce(0,0);
+//        break;
+//
+//    case FORWARD_FORCE:
+//        IRStartForceSecAndForwardForce_sec5(0,0);
+//        break;
+//
+//    default:
+//        break;
+//    }
+
+//}
+//#pragma CODE_SECTION(sec6_ODE_front, "ramfuncs")
+//void sec6_ODE_front(int a, int b){
+//    OnlyWithSpringFront();
+//}
+
+//#pragma CODE_SECTION(sec7_threshold_front, "ramfuncs")
+//void sec7_threshold_front(int a, int b){
+
+//    if(gExternalForceState.ForceState == FORWARD_FORCE){
+//        gSysInfo.targetDuty = -30;
+//    }
+//    else{
+//        OnlyWithSpringFront();
+//    }
+//    if(gSysInfo.targetDuty > 100){
+//        gSysInfo.targetDuty = 100;
+//    }
+//    else if(gSysInfo.targetDuty < -100){
+//        gSysInfo.targetDuty = -100;
+//    }
+//    else{
+//
+//    }
+//}
+//
+//const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
+//    sec0_threshold_rear,              	//0:	Rear OOR
+//	sec1_ODE_rear, 					    //1:	Rear ODE
+//	sec2_StartForce_rear,              	//2:	Rear Start force
+//	sec3_Null_rear, 					//3:	Rear Null displacement
+//	sec4_Null_front,					//4:	Front Null displacement
+//	sec5_StartForce_front,              //5:	Front Start force
+//	sec6_ODE_front,					    //6:	Front ODE
+//	sec7_threshold_front               	//7:	Front OOR
+//};
+//#pragma CODE_SECTION(ControleStateMachineSwitch, "ramfuncs")
+//void ControleStateMachineSwitch(int value){
+//
+//	if(value < (sizeof(controlStateMahchineInterface) / sizeof(controlStateMahchineInterface[0]))){
+//		if(controlStateMahchineInterface[value]){
+//			controlStateMahchineInterface[value](0, 0);
+//		}
+//	}
+//	else{
+//		//TODO generate alarm msg, something wrong
+//	}
+//}
 
 void checkRotateDirection(int value){
+    static int last_state;
 	switch(gRotateDirection.rotateDirection)
 	{
 		case INIT_DIRECTION:
 			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Init2Pos_Thr){
 				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
+				gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+				last_state = 1;
 			}
 			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
 				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
+				gSysInfo.friction = gConfigPara.LF_FrontFriction;
+				last_state = 0;
 			}
 			else{
 				gRotateDirection.rotateDirection = STOP_DIRECTION;
+				gSysInfo.friction = 0;
+				last_state = 2;
 			}
 			break;
 		case BACKWARD_DIRECTION:
@@ -712,11 +460,15 @@ void checkRotateDirection(int value){
 			    if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
 			        gRotateDirection.rotateDirection = STOP_DIRECTION;
 			        gRotateDirection.debounceCount_1 = 0;
+                    gSysInfo.friction = gConfigPara.LF_FrontFriction;
+                    last_state = 0;
 			    }
 			}
             else{
                 gRotateDirection.debounceCount_1 = 0;
                 gRotateDirection.debounceCount_2 = 0;
+                gSysInfo.friction = gConfigPara.LF_FrontFriction;
+                last_state = 0;
 
             }
 			break;
@@ -727,12 +479,15 @@ void checkRotateDirection(int value){
                 if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
                     gRotateDirection.rotateDirection = STOP_DIRECTION;
                     gRotateDirection.debounceCount_1 = 0;
+                    gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+                    last_state = 1;
                 }
 			}
             else{
                 gRotateDirection.debounceCount_1 = 0;
                 gRotateDirection.debounceCount_2 = 0;
-
+                gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+                last_state = 1;
             }
 			break;
 		case STOP_DIRECTION:
@@ -742,6 +497,8 @@ void checkRotateDirection(int value){
                 if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_2){
                     gRotateDirection.rotateDirection = FORWARD_DIRECTION;
                     gRotateDirection.debounceCount_1 = 0;
+                    gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+                    last_state = 1;
                 }
 			}
 			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
@@ -750,12 +507,23 @@ void checkRotateDirection(int value){
                 if(gRotateDirection.debounceCount_2 > gSysInfo.Velocity_Debounce_Cnt_2){
                     gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
                     gRotateDirection.debounceCount_2 = 0;
+                    gSysInfo.friction = gConfigPara.LF_FrontFriction;
+                    last_state = 0;
                 }
 			}
 			else{
 				gRotateDirection.rotateDirection = STOP_DIRECTION;
 				gRotateDirection.debounceCount_1 = 0;
 				gRotateDirection.debounceCount_2 = 0;
+				if(last_state == 1){
+				    gSysInfo.friction = - gConfigPara.LF_FrontFriction;
+				}
+				else if(last_state == 0){
+				    gSysInfo.friction = gConfigPara.LF_FrontFriction;
+				}
+				else{
+				    gSysInfo.friction = 0;
+				}
 			}
 
 			break;
@@ -905,53 +673,59 @@ void InitForceDisplaceCurve(void){
 
 void UpdateForceDisplaceCurve(void){
 	int index;
+    gForceAndDisplaceCurve.springForceP[0] = gConfigPara.LF_Force0;
+    gForceAndDisplaceCurve.springForceP[1] = gConfigPara.LF_Force1;
+	gForceAndDisplaceCurve.springForceP[2] = gConfigPara.LF_StartForce;
+	gForceAndDisplaceCurve.springForceP[3] = gConfigPara.LF_Force2;
+	gForceAndDisplaceCurve.springForceP[4] = gConfigPara.LF_Force3;
+	gForceAndDisplaceCurve.springForceP[5] = gConfigPara.LF_Force4;
+	gForceAndDisplaceCurve.springForceP[6] = gConfigPara.LF_Force5;
+	gForceAndDisplaceCurve.springForceP[7] = gConfigPara.LF_Force6;
+	gForceAndDisplaceCurve.springForceP[8] = gConfigPara.LF_Force7;
+	gForceAndDisplaceCurve.springForceP[9] = gConfigPara.LF_Force8;
+	gForceAndDisplaceCurve.springForceP[10] = gConfigPara.LF_Force9;
+	gForceAndDisplaceCurve.springForceP[11] = gConfigPara.LF_MaxForce;
 
-	gForceAndDisplaceCurve.springForceP[0] = gConfigPara.LF_StartForce;
-	gForceAndDisplaceCurve.springForceP[1] = gConfigPara.LF_Force2;
-	gForceAndDisplaceCurve.springForceP[2] = gConfigPara.LF_Force3;
-	gForceAndDisplaceCurve.springForceP[3] = gConfigPara.LF_Force4;
-	gForceAndDisplaceCurve.springForceP[4] = gConfigPara.LF_Force5;
-	gForceAndDisplaceCurve.springForceP[5] = gConfigPara.LF_Force6;
-	gForceAndDisplaceCurve.springForceP[6] = gConfigPara.LF_Force7;
-	gForceAndDisplaceCurve.springForceP[7] = gConfigPara.LF_Force8;
-	gForceAndDisplaceCurve.springForceP[8] = gConfigPara.LF_Force9;
-	gForceAndDisplaceCurve.springForceP[9] = gConfigPara.LF_MaxForce;
+    gForceAndDisplaceCurve.springForceN[0] = gConfigPara.RB_Force0;
+    gForceAndDisplaceCurve.springForceN[1] = gConfigPara.RB_Force1;
+	gForceAndDisplaceCurve.springForceN[2] = gConfigPara.RB_StartForce;
+	gForceAndDisplaceCurve.springForceN[3] = gConfigPara.RB_Force2;
+	gForceAndDisplaceCurve.springForceN[4] = gConfigPara.RB_Force3;
+	gForceAndDisplaceCurve.springForceN[5] = gConfigPara.RB_Force4;
+	gForceAndDisplaceCurve.springForceN[6] = gConfigPara.RB_Force5;
+	gForceAndDisplaceCurve.springForceN[7] = gConfigPara.RB_Force6;
+	gForceAndDisplaceCurve.springForceN[8] = gConfigPara.RB_Force7;
+	gForceAndDisplaceCurve.springForceN[9] = gConfigPara.RB_Force8;
+	gForceAndDisplaceCurve.springForceN[10] = gConfigPara.RB_Force9;
+	gForceAndDisplaceCurve.springForceN[11] = gConfigPara.RB_MaxForce;
 
-	gForceAndDisplaceCurve.springForceN[0] = gConfigPara.RB_StartForce;
-	gForceAndDisplaceCurve.springForceN[1] = gConfigPara.RB_Force2;
-	gForceAndDisplaceCurve.springForceN[2] = gConfigPara.RB_Force3;
-	gForceAndDisplaceCurve.springForceN[3] = gConfigPara.RB_Force4;
-	gForceAndDisplaceCurve.springForceN[4] = gConfigPara.RB_Force5;
-	gForceAndDisplaceCurve.springForceN[5] = gConfigPara.RB_Force6;
-	gForceAndDisplaceCurve.springForceN[6] = gConfigPara.RB_Force7;
-	gForceAndDisplaceCurve.springForceN[7] = gConfigPara.RB_Force8;
-	gForceAndDisplaceCurve.springForceN[8] = gConfigPara.RB_Force9;
-	gForceAndDisplaceCurve.springForceN[9] = gConfigPara.RB_MaxForce;
+    gForceAndDisplaceCurve.displacementP[0] = gConfigPara.LF_Distance0;
+    gForceAndDisplaceCurve.displacementP[1] = gConfigPara.LF_Distance1;
+	gForceAndDisplaceCurve.displacementP[2] = gConfigPara.LF_EmptyDistance;
+	gForceAndDisplaceCurve.displacementP[3] = gConfigPara.LF_Distance2;
+	gForceAndDisplaceCurve.displacementP[4] = gConfigPara.LF_Distance3;
+	gForceAndDisplaceCurve.displacementP[5] = gConfigPara.LF_Distance4;
+	gForceAndDisplaceCurve.displacementP[6] = gConfigPara.LF_Distance5;
+	gForceAndDisplaceCurve.displacementP[7] = gConfigPara.LF_Distance6;
+	gForceAndDisplaceCurve.displacementP[8] = gConfigPara.LF_Distance7;
+	gForceAndDisplaceCurve.displacementP[9] = gConfigPara.LF_Distance8;
+	gForceAndDisplaceCurve.displacementP[10] = gConfigPara.LF_Distance9;
+	gForceAndDisplaceCurve.displacementP[11] = gConfigPara.LF_MaxDistance;
 
-	gForceAndDisplaceCurve.displacementP[0] = gConfigPara.LF_EmptyDistance;
-	gForceAndDisplaceCurve.displacementP[1] = gConfigPara.LF_Distance2;
-	gForceAndDisplaceCurve.displacementP[2] = gConfigPara.LF_Distance3;
-	gForceAndDisplaceCurve.displacementP[3] = gConfigPara.LF_Distance4;
-	gForceAndDisplaceCurve.displacementP[4] = gConfigPara.LF_Distance5;
-	gForceAndDisplaceCurve.displacementP[5] = gConfigPara.LF_Distance6;
-	gForceAndDisplaceCurve.displacementP[6] = gConfigPara.LF_Distance7;
-	gForceAndDisplaceCurve.displacementP[7] = gConfigPara.LF_Distance8;
-	gForceAndDisplaceCurve.displacementP[8] = gConfigPara.LF_Distance9;
-	gForceAndDisplaceCurve.displacementP[9] = gConfigPara.LF_MaxDistance;
+    gForceAndDisplaceCurve.displacementN[0] = gConfigPara.RB_Distance0;
+    gForceAndDisplaceCurve.displacementN[1] = gConfigPara.RB_Distance1;
+	gForceAndDisplaceCurve.displacementN[2] = gConfigPara.RB_EmptyDistance;
+	gForceAndDisplaceCurve.displacementN[3] = gConfigPara.RB_Distance2;
+	gForceAndDisplaceCurve.displacementN[4] = gConfigPara.RB_Distance3;
+	gForceAndDisplaceCurve.displacementN[5] = gConfigPara.RB_Distance4;
+	gForceAndDisplaceCurve.displacementN[6] = gConfigPara.RB_Distance5;
+	gForceAndDisplaceCurve.displacementN[7] = gConfigPara.RB_Distance6;
+	gForceAndDisplaceCurve.displacementN[8] = gConfigPara.RB_Distance7;
+	gForceAndDisplaceCurve.displacementN[9] = gConfigPara.RB_Distance8;
+	gForceAndDisplaceCurve.displacementN[10] = gConfigPara.RB_Distance9;
+	gForceAndDisplaceCurve.displacementN[11] = gConfigPara.RB_MaxDistance;
 
-
-	gForceAndDisplaceCurve.displacementN[0] = gConfigPara.RB_EmptyDistance;
-	gForceAndDisplaceCurve.displacementN[1] = gConfigPara.RB_Distance2;
-	gForceAndDisplaceCurve.displacementN[2] = gConfigPara.RB_Distance3;
-	gForceAndDisplaceCurve.displacementN[3] = gConfigPara.RB_Distance4;
-	gForceAndDisplaceCurve.displacementN[4] = gConfigPara.RB_Distance5;
-	gForceAndDisplaceCurve.displacementN[5] = gConfigPara.RB_Distance6;
-	gForceAndDisplaceCurve.displacementN[6] = gConfigPara.RB_Distance7;
-	gForceAndDisplaceCurve.displacementN[7] = gConfigPara.RB_Distance8;
-	gForceAndDisplaceCurve.displacementN[8] = gConfigPara.RB_Distance9;
-	gForceAndDisplaceCurve.displacementN[9] = gConfigPara.RB_MaxDistance;
-
-	gForceAndDisplaceCurve.maxPoints = 10;
+	gForceAndDisplaceCurve.maxPoints = 12;
 
 	for(index = 1; index <gForceAndDisplaceCurve.maxPoints; ++index){
 		gForceAndDisplaceCurve.K_spring_forceP[index] =
@@ -974,65 +748,70 @@ void UpdateForceDisplaceCurve(void){
 
 void InitConfigParameter(void){
     if(gSysInfo.board_type == PITCH){
-        gConfigPara.LF_EmptyDistance = 0.5;
-        gConfigPara.RB_EmptyDistance = -0.5;
+        gConfigPara.LF_EmptyDistance = 1;
+        gConfigPara.RB_EmptyDistance = -1;
 
         gConfigPara.LF_StartForce = 5;
         gConfigPara.RB_StartForce = -5;
 
-        gConfigPara.LF_Force1 = 5;
-        gConfigPara.LF_Force2 = 6.53;
-        gConfigPara.LF_Force3 = 9.61;
-        gConfigPara.LF_Force4 = 12.69;
-        gConfigPara.LF_Force5 = 15.77;
-        gConfigPara.LF_Force6 = 18.84;
-        gConfigPara.LF_Force7 = 21.92;
-        gConfigPara.LF_Force8 = 28.07;
-        gConfigPara.LF_Force9 = 34.23;
-        gConfigPara.LF_MaxForce = 40.38;
+        gConfigPara.LF_Force0 = 0;
+        gConfigPara.LF_Force1 = 1;
+        gConfigPara.LF_Force2 = 8;
+        gConfigPara.LF_Force3 = 11;
+        gConfigPara.LF_Force4 = 14;
+        gConfigPara.LF_Force5 = 17;
+        gConfigPara.LF_Force6 = 20;
+        gConfigPara.LF_Force7 = 23;
+        gConfigPara.LF_Force8 = 26;
+        gConfigPara.LF_Force9 = 32;
+        gConfigPara.LF_MaxForce = 35;
 
-        gConfigPara.RB_Force1 = -5;
-        gConfigPara.RB_Force2 = -6.54;
-        gConfigPara.RB_Force3 = -9.62;
-        gConfigPara.RB_Force4 = -15.77;
-        gConfigPara.RB_Force5 = -21.92;
-        gConfigPara.RB_Force6 = -28.07;
-        gConfigPara.RB_Force7 = -34.23;
-        gConfigPara.RB_Force8 = -46.53;
-        gConfigPara.RB_Force9 = -52.69;
-        gConfigPara.RB_MaxForce = -65;
+        gConfigPara.RB_Force0 = 0;
+        gConfigPara.RB_Force1 = -1;
+        gConfigPara.RB_Force2 = -8;
+        gConfigPara.RB_Force3 = -11;
+        gConfigPara.RB_Force4 = -17;
+        gConfigPara.RB_Force5 = -23;
+        gConfigPara.RB_Force6 = -29;
+        gConfigPara.RB_Force7 = -35;
+        gConfigPara.RB_Force8 = -41;
+        gConfigPara.RB_Force9 = -47;
+        gConfigPara.RB_MaxForce = -50;
 
-        gConfigPara.LF_Distance1 = 1.5;
-        gConfigPara.LF_Distance2 = 1;
-        gConfigPara.LF_Distance3 = 2;
-        gConfigPara.LF_Distance4 = 3;
-        gConfigPara.LF_Distance5 = 4;
-        gConfigPara.LF_Distance6 = 5;
-        gConfigPara.LF_Distance7 = 6;
+        gConfigPara.LF_Distance0 = 0;
+        gConfigPara.LF_Distance1 = 0.5;
+        gConfigPara.LF_Distance2 = 2;
+        gConfigPara.LF_Distance3 = 3;
+        gConfigPara.LF_Distance4 = 4;
+        gConfigPara.LF_Distance5 = 5;
+        gConfigPara.LF_Distance6 = 6;
+        gConfigPara.LF_Distance7 = 7;
         gConfigPara.LF_Distance8 = 8;
         gConfigPara.LF_Distance9 = 10;
-        gConfigPara.LF_MaxDistance = 12;
+        gConfigPara.LF_MaxDistance = 11;
 
-        gConfigPara.RB_Distance1 = -1.5;
-        gConfigPara.RB_Distance2 = -1;
-        gConfigPara.RB_Distance3 = -2;
-        gConfigPara.RB_Distance4 = -4;
-        gConfigPara.RB_Distance5 = -6;
-        gConfigPara.RB_Distance6 = -8;
-        gConfigPara.RB_Distance7 = -10;
-        gConfigPara.RB_Distance8 = -14;
-        gConfigPara.RB_Distance9 = -16;
-        gConfigPara.RB_MaxDistance = -18;
+        gConfigPara.RB_Distance0 = 0;
+        gConfigPara.RB_Distance1 = -0.5;
+        gConfigPara.RB_Distance2 = -2;
+        gConfigPara.RB_Distance3 = -3;
+        gConfigPara.RB_Distance4 = -5;
+        gConfigPara.RB_Distance5 = -7;
+        gConfigPara.RB_Distance6 = -9;
+        gConfigPara.RB_Distance7 = -11;
+        gConfigPara.RB_Distance8 = -13;
+        gConfigPara.RB_Distance9 = -15;
+        gConfigPara.RB_MaxDistance = -16;
      }
      //ROLL
      else if(gSysInfo.board_type == ROLL){
-         gConfigPara.LF_EmptyDistance = 0.5;
-         gConfigPara.RB_EmptyDistance = -0.5;
+         gConfigPara.LF_EmptyDistance = 1;
+         gConfigPara.RB_EmptyDistance = -1;
 
          gConfigPara.LF_StartForce = 5;
          gConfigPara.RB_StartForce = -5;
 
-         gConfigPara.LF_Force1 = 5;
+         gConfigPara.LF_Force0 = 0;
+         gConfigPara.LF_Force1 = 1;
          gConfigPara.LF_Force2 = 6.14;
          gConfigPara.LF_Force3 = 8.43;
          gConfigPara.LF_Force4 = 13;
@@ -1043,7 +822,8 @@ void InitConfigParameter(void){
          gConfigPara.LF_Force9 = 40.43;
          gConfigPara.LF_MaxForce = 45;
 
-         gConfigPara.RB_Force1 = -5;
+         gConfigPara.RB_Force0 = 0;
+         gConfigPara.RB_Force1 = -1;
          gConfigPara.RB_Force2 = -6.14;
          gConfigPara.RB_Force3 = -8.43;
          gConfigPara.RB_Force4 = -13;
@@ -1054,7 +834,8 @@ void InitConfigParameter(void){
          gConfigPara.RB_Force9 = -40.43;
          gConfigPara.RB_MaxForce = -45;
 
-         gConfigPara.LF_Distance1 = 1.5;
+         gConfigPara.LF_Distance0 = 0;
+         gConfigPara.LF_Distance1 = 0.5;
          gConfigPara.LF_Distance2 = 1;
          gConfigPara.LF_Distance3 = 2;
          gConfigPara.LF_Distance4 = 4;
@@ -1065,7 +846,8 @@ void InitConfigParameter(void){
          gConfigPara.LF_Distance9 = 16;
          gConfigPara.LF_MaxDistance = 18;
 
-         gConfigPara.RB_Distance1 = -1.5;
+         gConfigPara.RB_Distance0 = 0;
+         gConfigPara.RB_Distance1 = -0.5;
          gConfigPara.RB_Distance2 = -1;
          gConfigPara.RB_Distance3 = -2;
          gConfigPara.RB_Distance4 = -4;
@@ -1347,47 +1129,79 @@ void Disable_PWMD_BK(void){
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
 */
-#pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
+//#pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
 int CheckStickSetion(double val){
-	if(val <= gSysInfo.TH0){
+	if(val <= gConfigPara.RB_MaxDistance){
 		return 0;
 	}
-	else if(val <= gSysInfo.TH1){
+	else if(val <= gConfigPara.RB_Distance9){
 		return 1;
 	}
-	else if(val <= gSysInfo.TH2){
+	else if(val <= gConfigPara.RB_Distance8){
 		return 2;
 	}
-	else if(val <= gSysInfo.TH3){
-//	    if(((gSysInfo.lastStickDisSection == 4) && (gStickState.value < -0.22))){
-//	        gSysInfo.targetDuty_V = -gSysInfo.targetDuty_V;
-//	        gSysInfo.targetDuty_F = -gSysInfo.targetDuty_F;
-//	    }
-//	    else{
-//	        gSysInfo.targetDuty_V = gSysInfo.targetDuty_V;
-//	        gSysInfo.targetDuty_F = gSysInfo.targetDuty_F;
-//	    }
+	else if(val <= gConfigPara.RB_Distance7){
 		return 3;
 	}
-	else if(val <= gSysInfo.TH4){
-//	    if(((gSysInfo.lastStickDisSection == 3) && (gStickState.value > 0.22))){
-//	        gSysInfo.targetDuty_V = -gSysInfo.targetDuty_V;
-//	        gSysInfo.targetDuty_F = -gSysInfo.targetDuty_F;
-//	    }
-//	    else{
-//	        gSysInfo.targetDuty_V = gSysInfo.targetDuty_V;
-//	        gSysInfo.targetDuty_F = gSysInfo.targetDuty_F;
-//	    }
+	else if(val <= gConfigPara.RB_Distance6){
 		return 4;
 	}
-	else if(val <= gSysInfo.TH5){
+	else if(val <= gConfigPara.RB_Distance5){
 		return 5;
 	}
-	else if(val <= gSysInfo.TH6){
+	else if(val <= gConfigPara.RB_Distance4){
 		return 6;
 	}
+    else if(val <= gConfigPara.RB_Distance3){
+        return 7;
+    }
+    else if(val <= gConfigPara.RB_Distance2){
+        return 8;
+    }
+    else if(val <= gConfigPara.RB_EmptyDistance){
+        return 9;
+    }
+    else if(val <= gConfigPara.RB_Distance1){
+        return 10;
+    }
+    else if(val <= gConfigPara.RB_Distance0){
+        return 11;
+    }
+    else if(val <= gConfigPara.LF_Distance1){
+        return 12;
+    }
+    else if(val <= gConfigPara.LF_EmptyDistance){
+        return 13;
+    }
+    else if(val <= gConfigPara.LF_Distance2){
+        return 14;
+    }
+    else if(val <= gConfigPara.LF_Distance3){
+        return 15;
+    }
+    else if(val <= gConfigPara.LF_Distance4){
+        return 16;
+    }
+    else if(val <= gConfigPara.LF_Distance5){
+        return 17;
+    }
+    else if(val <= gConfigPara.LF_Distance6){
+        return 18;
+    }
+    else if(val <= gConfigPara.LF_Distance7){
+        return 19;
+    }
+    else if(val <= gConfigPara.LF_Distance8){
+        return 20;
+    }
+    else if(val <= gConfigPara.LF_Distance9){
+        return 21;
+    }
+    else if(val <= gConfigPara.LF_MaxDistance){
+        return 22;
+    }
 	else{
-		return 7;
+		return 23;
 	}
 }
 /* 

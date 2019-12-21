@@ -14,6 +14,7 @@
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
+#define  DEBOUNCE (0.1)
 
 //#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
 //#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
@@ -69,6 +70,22 @@ enum eSTICK_DIS_SECTION{
 	SECTION5 = 5,
 	SECTION6 = 6,
 	SECTION7 = 7,
+	SECTION8 = 8,
+	SECTION9 = 9,
+	SECTION10 = 10,
+	SECTION11 = 11,
+	SECTION12 = 12,
+	SECTION13 = 13,
+	SECTION14 = 14,
+	SECTION15 = 15,
+	SECTION16 = 16,
+	SECTION17 = 17,
+	SECTION18 = 18,
+	SECTION19 = 19,
+	SECTION20 = 20,
+	SECTION21 = 21,
+	SECTION22 = 22,
+	SECTION23 = 23,
 	INIT_SECTION 
 };
 
@@ -188,8 +205,12 @@ typedef struct{
     int lastStickDisSection;
     double Force_K;
     double Force_B;
-//    double maxspeed;
-//    double minspeed;
+    double friction;
+//    double ob_Friction;
+    double ob_velocityOpenLoop;
+    int soft_break_flag;
+    double springForceK;
+    double springForceB;
 
 }SYSINFO;
 
@@ -300,6 +321,7 @@ typedef struct{
 
 typedef struct{
 	double LF_MaxForce;
+	double LF_Force0;
 	double LF_Force1;
 	double LF_Force2;
 	double LF_Force3;
@@ -310,7 +332,7 @@ typedef struct{
 	double LF_Force8;
 	double LF_Force9;
 
-
+	double RB_Force0;
 	double RB_Force1;
 	double RB_Force2;
 	double RB_Force3;
@@ -323,6 +345,7 @@ typedef struct{
 	double RB_MaxForce;
 
 	double LF_MaxDistance;
+	double LF_Distance0;
 	double LF_Distance1;
 	double LF_Distance2;
 	double LF_Distance3;
@@ -333,7 +356,7 @@ typedef struct{
 	double LF_Distance8;
 	double LF_Distance9;
 
-
+	double RB_Distance0;
 	double RB_Distance1;
 	double RB_Distance2;
 	double RB_Distance3;
@@ -392,15 +415,15 @@ typedef struct{
 
 
 typedef struct{
-	double springForceP[10];
-	double springForceN[10];
-	double displacementP[10];
-	double displacementN[10];
+	double springForceP[12];
+	double springForceN[12];
+	double displacementP[12];
+	double displacementN[12];
 
-	double K_spring_forceP[10];
-	double b_P[10];
-	double K_spring_forceN[10];
-	double b_N[10];
+	double K_spring_forceP[12];
+	double b_P[12];
+	double K_spring_forceN[12];
+	double b_N[12];
 
 	int maxPoints;
 }FORCE_DISPLACE_CURVE;
@@ -539,5 +562,6 @@ void Button_Debounce4(void);
 void Button_Debounce5(void);
 void Button_Debounce6(void);
 void Null_Displacement_Trim(void);
+int CheckStickSetion(double val);
 
 #endif

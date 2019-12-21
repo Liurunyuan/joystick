@@ -27,7 +27,7 @@
 #pragma CODE_SECTION(Timer0_ISR_Thread, "ramfuncs")
 void Timer0_ISR_Thread(void){
 
-//	static unsigned char count = 0;
+	static unsigned char count = 0;
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
 
@@ -35,12 +35,12 @@ void Timer0_ISR_Thread(void){
 //    double cos_value;s
 //    double angle;
 
-//	++count;
-//
-//	if(count > N){
-//		PackRS422TxData();
-//		count = 0;
-//	}
+	++count;
+
+	if(count > N){
+		PackRS422TxData();
+		count = 0;
+	}
 
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
@@ -80,12 +80,13 @@ void Timer0_ISR_Thread(void){
 *
 * we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
 */
-        gSysInfo.controlFuncIndex = LocateStickDisSection();
-
-        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
-        if(gExternalForceState.ForceState != NO_FORCE){
-            bounceCnt = 0;
-        }
+        OnlyWithSpringFront();
+//        gSysInfo.controlFuncIndex = LocateStickDisSection();
+//
+//        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
+//        if(gExternalForceState.ForceState != NO_FORCE){
+//            bounceCnt = 0;
+//        }
 
 
 
