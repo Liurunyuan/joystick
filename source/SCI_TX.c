@@ -100,7 +100,9 @@ void InitgRx422TxVar(void) {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(RX422TXEnQueue, "ramfuncs")
+#endif
 int RX422TXEnQueue(char e){
 	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
 		return 0;
@@ -147,7 +149,9 @@ int RS422TxQueLength(){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(calCrc, "ramfuncs")
+#endif
 int calCrc(int crc, const char *buf, int len) {
 	int x;
 	int i;
@@ -168,7 +172,9 @@ int calCrc(int crc, const char *buf, int len) {
  *Author:	   Simon
  *Date:		   2018.11.14
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(updateTxEnableFlag, "ramfuncs")
+#endif
 void updateTxEnableFlag(void) {
 	int i;
 	for (i = 0; i < TOTAL_TX_VAR; ++i) {
@@ -184,7 +190,9 @@ void updateTxEnableFlag(void) {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(PackRS422TxData, "ramfuncs")
+#endif
 void PackRS422TxData(void){
 	//TODO need do some test, because we sync the tx enable flag here
 	int i;

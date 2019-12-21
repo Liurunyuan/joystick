@@ -9,7 +9,9 @@
 
 #define ITEGRATION_TIMES (6)
 
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(findSpringForceK, "ramfuncs")
+#endif
 void findSpringForceK(double displace){
 
     switch (gSysInfo.currentStickDisSection)
@@ -404,7 +406,9 @@ void findSpringForceK(double displace){
         break;
     }
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(OnlyWithSpringFront, "ramfuncs")
+#endif
 void OnlyWithSpringFront(void){
 	double k;
 	double kb;
@@ -474,7 +478,7 @@ void OnlyWithSpringFront(void){
     else{
          gSysInfo.targetDuty = tempDuty;
     }
-#elif
+#else
 	gSysInfo.targetDuty = (int16)(gSysInfo.coe_Velocity * gSysInfo.targetDuty_V + gSysInfo.coe_Force * gSysInfo.targetDuty_F);
 #endif
 

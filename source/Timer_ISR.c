@@ -24,12 +24,15 @@
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(Timer0_ISR_Thread, "ramfuncs")
+#endif
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
+	static int flag = 0;
 
     double force_Joystick;
 
@@ -57,7 +60,11 @@ void Timer0_ISR_Thread(void){
             return;
         }
         else{
-            gSysInfo.zeroForce = zero_force_SUM/10;
+			if(flag == 0)
+			{
+            	gSysInfo.zeroForce = zero_force_SUM/10;
+				flag = 1;
+			}
         }
 
         gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;

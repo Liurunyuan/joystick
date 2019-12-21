@@ -14,7 +14,9 @@ void ForceAndDisplaceProcess(int count);
 
 
 Uint16 real3 = 0;
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(UpdateKeyValue, "ramfuncs")
+#endif
 void UpdateKeyValue(void) {
 	static int calSpeedCnt = 0;
 //	static double bakSpeed = 0;
@@ -52,7 +54,9 @@ void UpdateKeyValue(void) {
 	// bakSpeed = gKeyValue.motorSpeed;
 	// gAccelDirection.updateAccelDirection(0);
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
+#endif
 void TargetDutyGradualChange(int targetduty){
 
 #if(DUTY_GRADUAL_CHANGE == INCLUDE_FEATURE)
@@ -149,7 +153,9 @@ void EnablePwm3(void){
  *Author:					Simon
  *Date:						2018.10.28
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(CalForceSpeedAccel, "ramfuncs")
+#endif
 void CalForceSpeedAccel(void) {
 
 	static int count = 0;
@@ -175,7 +181,9 @@ void CalForceSpeedAccel(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(GetCurrentHallValue, "ramfuncs")
+#endif
 Uint16 GetCurrentHallValue(void){
 
 	Uint16 temp;
@@ -399,7 +407,9 @@ inline void APositiveToBNegtive(void) {
  *Author:					Simon
  *Date:						2018.10.31
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(SwitchDirection, "ramfuncs")
+#endif
 void SwitchDirection(void){
 	int t_duty_temp;
 	Uint16 t_duty_p;
@@ -512,7 +522,9 @@ void SwitchDirection(void){
  *Author:					Simon
  *Date:						2018.6.10
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(Pwm_ISR_Thread, "ramfuncs")
+#endif
 void Pwm_ISR_Thread(void)
 {
 

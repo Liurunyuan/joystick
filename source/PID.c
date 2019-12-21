@@ -23,7 +23,9 @@ void InitPidVar(void){
     gPidPara.B_V_NULL = 0;
 }
 
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(velocity_PidOutput, "ramfuncs")
+#endif
 int16 velocity_PidOutput(double targetVal, double controlVar){
     int16 pidOutput = 0;
     double ek1;
@@ -51,7 +53,9 @@ int16 velocity_PidOutput(double targetVal, double controlVar){
 
     return pidOutput;
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(force_PidOutput, "ramfuncs")
+#endif
 int16 force_PidOutput(double targetVal, double controlVar){
     int16 pidOutput = 0;
     double ek1;

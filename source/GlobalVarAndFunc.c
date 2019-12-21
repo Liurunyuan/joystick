@@ -269,7 +269,9 @@ void checkRotateDirection(int value){
 			break;
 	}
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(checkAcceleration, "ramfuncs")
+#endif
 void checkAcceleration(int value){
     switch(gAccelDirection.accelDirection)
     {
@@ -341,7 +343,9 @@ void checkAcceleration(int value){
             break;
     }
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(checkExternalForce, "ramfuncs")
+#endif
 void checkExternalForce(int value){
 	/*need to decide if need to enable debouce feature */
 	switch (gExternalForceState.ForceState)
@@ -676,7 +680,9 @@ void InitSysState(void){
  *Author:	   Simon
  *Date:		   2019��1��2������9:57:12
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilter, "ramfuncs")
+#endif
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
     static int isFirstTimeExcuted = 1;
@@ -714,7 +720,9 @@ double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double Measur
 
 	return x_now;
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilterSpeed, "ramfuncs")
+#endif
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 	double R = MeasureNoise_R;
@@ -741,7 +749,9 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilterForce, "ramfuncs")
+#endif
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 
@@ -770,7 +780,9 @@ double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilterAccel, "ramfuncs")
+#endif
 double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 	double R = MeasureNoise_R;
@@ -820,7 +832,9 @@ void EnablePwmOutput(void){
 	Enable_KZ_P_DSP();
 	Enable_KZ_N_DSP();
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(DisablePwmOutput, "ramfuncs")
+#endif
 void DisablePwmOutput(void){
 	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
 	//GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1; //For temp use
@@ -867,7 +881,9 @@ void Disable_PWMD_BK(void){
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
 */
-//#pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
+#pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
+#endif
 int CheckStickSetion(double val){
 	if(val <= gConfigPara.RB_MaxDistance){
 		return 0;
@@ -951,7 +967,9 @@ int CheckStickSetion(double val){
 *  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
 *  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
 */
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(LocateStickDisSection, "ramfuncs")
+#endif
 int LocateStickDisSection(void){
 	switch (gSysInfo.currentStickDisSection)
 	{
