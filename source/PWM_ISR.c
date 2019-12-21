@@ -55,32 +55,38 @@ void UpdateKeyValue(void) {
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 void TargetDutyGradualChange(int targetduty){
 
-//    static int count = 0;
-//
-//    ++count;
-//    if(count < gSysInfo.dutyAddInterval){
-//        return;
-//    }
-//    count = 0;
-//
-//        if(gSysInfo.currentDuty > targetduty){
-//            gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
-//        }
-//        else if(gSysInfo.currentDuty < targetduty){
-//            gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
-//        }
-//        else{
-//            //nothing need change
-//            }
-//
-//    if(gSysInfo.currentDuty > DUTY_LIMIT_P){
-//        gSysInfo.currentDuty = DUTY_LIMIT_P;
-//    }
-//    else if(gSysInfo.currentDuty < DUTY_LIMIT_N){
-//        gSysInfo.currentDuty = DUTY_LIMIT_N;
-//    }
+#if(DUTY_GRADUAL_CHANGE == INCLUDE_FEATURE)
+   	static int count = 0;
 
+   	++count;
+   	if(count < gSysInfo.dutyAddInterval){
+       return;
+   	}
+   	count = 0;
+
+	if(gSysInfo.currentDuty > targetduty){
+       	gSysInfo.currentDuty = (gSysInfo.currentDuty - gSysInfo.ddtmax) < targetduty ? targetduty : (gSysInfo.currentDuty - gSysInfo.ddtmax);
+    }
+    else if(gSysInfo.currentDuty < targetduty){
+    	gSysInfo.currentDuty = (gSysInfo.currentDuty + gSysInfo.ddtmax) > targetduty ? targetduty : (gSysInfo.currentDuty + gSysInfo.ddtmax);
+    }
+    else{
+           //nothing need change
+    }
+
+   	if(gSysInfo.currentDuty > DUTY_LIMIT_P){
+    	gSysInfo.currentDuty = DUTY_LIMIT_P;
+   	}
+   	else if(gSysInfo.currentDuty < DUTY_LIMIT_N){
+       	gSysInfo.currentDuty = DUTY_LIMIT_N;
+   	}
+
+	gSysInfo.duty = gSysInfo.currentDuty;
+#endif
+
+#if(DUTY_GRADUAL_CHANGE == EXCLUDE_FEATURE)
     gSysInfo.duty = targetduty;
+#endif
 }
 
 /*
@@ -509,19 +515,10 @@ void SwitchDirection(void){
 #pragma CODE_SECTION(Pwm_ISR_Thread, "ramfuncs")
 void Pwm_ISR_Thread(void)
 {
-	StartGetADBySpi();
 
 	//ReadDigitalValue();
 
-//	ReadAnalogValue();
-
-//	Check_Current();
-//	Check_A_Q_Current();
-//	Check_A_X_Current();
-//	Check_B_Q_Current();
-//	Check_B_X_Current();
-//	Check_C_Q_Current();
-//	Check_C_X_Current();
+	//ReadAnalogValue();
 
     ReadADBySpi();
 
@@ -543,6 +540,7 @@ void Pwm_ISR_Thread(void)
 	}
 
 	CalForceSpeedAccel();
+	StartGetADBySpi();
 }
 /**************************************************************
  *Name:						forcebufProcess
