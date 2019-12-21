@@ -63,6 +63,8 @@ void InitgRx422TxEnableFlag(void){
 
 		gRx422TxEnableFlag[index] = 0;
 	}
+	gRx422TxEnableFlag[0] = 1;
+	gRx422TxEnableFlag[1] = 1;
 }
 /**************************************************************
  *Name:		   InitgRx422TxVar

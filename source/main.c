@@ -102,20 +102,6 @@ void FeedWatchDog(void){
 	POWER_BOARD_TOOGLE_WATCHDOG = TRUE;
 }
 
-void Delayfunc(Uint16 sec){
-	Uint16 i;
-	Uint16 j;
-
-	for(i = 0; i < 10000; ++i){
-		for(j = 0; j < sec; ++j){
-			asm(" NOP");
-		}
-	}
-}
-int PowerOnBIT(void){
-	//TODO   implement here, figure out what need to check, what to do if BIT fail.
-	return 0;
-}
 /**************************************************************
  *Name:						Init_gRS422RxQue
  *Function:
@@ -434,8 +420,8 @@ void main(void) {
 	GpioDataRegs.GPCDAT.bit.GPIO84 = 1;
 
 	Init_Interrupt();
+	
 	ClearFault();
-	PowerOnBIT();
 
 	while(1)
 	{

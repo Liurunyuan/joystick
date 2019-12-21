@@ -397,10 +397,6 @@ void InitStickState(void){
 	gExternalForceState.value = 0;
 }
 
-void InitForceDisplaceCurve(void){
-
-}
-
 void UpdateForceDisplaceCurve(void){
 	int index;
     gForceAndDisplaceCurve.springForceP[0] = gConfigPara.LF_Force0;
