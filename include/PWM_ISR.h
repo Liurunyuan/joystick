@@ -30,12 +30,4 @@ extern Uint16 real3;
 extern Uint16 GetCurrentHallValue(void);
 
 void UpdateKeyValue(void);
-/*
-void DisablePwm1(void);
-void DisablePwm2(void);
-void DisablePwm3(void);
-void EnablePwm1(void);
-void EnablePwm2(void);
-void EnablePwm3(void);
-*/
 #endif

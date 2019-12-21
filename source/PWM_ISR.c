@@ -8,10 +8,7 @@
 #include "GlobalVarAndFunc.h"
 #include "PID.h"
 
-
 FeedbackVarBuf feedbackVarBuf;
-void ForceAndDisplaceProcess(int count);
-
 
 Uint16 real3 = 0;
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
@@ -19,27 +16,18 @@ Uint16 real3 = 0;
 #endif
 void UpdateKeyValue(void) {
 	static int calSpeedCnt = 0;
-//	static double bakSpeed = 0;
 
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
 	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
 
-	//gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.5 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
 #if(LINEAR_SPEED_METHOD == INCLUDE_FEATURE)
 	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.050625 + funcParaDisplacement.b * 0.225)/0.225, KALMAN_Q, KALMAN_R); 
 #elif(TEN_AVERAGE == INCLUDE_FEATURE)
 	gKeyValue.motorSpeed = TenDisplaceElemntAverage();
 
 #else
-	//gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.5 + funcParaDisplacement.b), KALMAN_Q, KALMAN_R);
 	gKeyValue.motorSpeed = KalmanFilterSpeed(funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
 #endif
-	//gKeyValue.motorSpeed = (funcParaDisplacement.a * 40) + (funcParaDisplacement.b);
-	//gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
-	//gKeyValue.motorAccel = KalmanFilterAccel(((2 * funcParaDisplacement.a)/1000), KALMAN_Q, KALMAN_R);
-	//gKeyValue.motorAccel = KalmanFilterAccel(((2 * funcParaDisplacement.a)), 50, 50);
-	//gKeyValue.motorAccel = 2 * funcParaDisplacement.a;
-/*disable temp */
 	CalFuncParaSpeed(gKeyValue.motorSpeed, calSpeedCnt);
 	++calSpeedCnt;
 	if(calSpeedCnt >= 10){
@@ -49,10 +37,6 @@ void UpdateKeyValue(void) {
 		clearSumSpeed();
 		gAccelDirection.updateAccelDirection(0);
 	}
-/*disable temp */
-	// gKeyValue.motorAccel = KalmanFilterAccel(((gKeyValue.motorSpeed - bakSpeed) * 1000)/0.25, 1, 150);
-	// bakSpeed = gKeyValue.motorSpeed;
-	// gAccelDirection.updateAccelDirection(0);
 }
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
@@ -92,59 +76,6 @@ void TargetDutyGradualChange(int targetduty){
     gSysInfo.duty = targetduty;
 #endif
 }
-
-/*
-void DisablePwm1(void){
-	//EALLOW;
-	//EPwm1Regs.AQCSFRC.bit.CSFA = 1;
-	//EPwm1Regs.AQCSFRC.bit.CSFB = 2;
-	//EPwm1Regs.TZFRC.bit.OST = 1;
-	//EDIS;
-
-	EPwm1Regs.AQCSFRC.all = 0x0009;
-}
-void DisablePwm2(void){
-	//EALLOW;
-	//EPwm2Regs.AQCSFRC.bit.CSFA = 2;
-	//EPwm2Regs.AQCSFRC.bit.CSFB = 1;
-	//EPwm2Regs.TZFRC.bit.OST = 1;
-	//EDIS;
-	EPwm2Regs.AQCSFRC.all = 0x0009;
-}
-void DisablePwm3(void){
-	//EALLOW;
-	//EPwm3Regs.AQCSFRC.bit.CSFA = 2;
-	//EPwm3Regs.AQCSFRC.bit.CSFB = 1;
-	//EPwm3Regs.TZFRC.bit.OST = 1;
-	//EDIS;
-
-	EPwm3Regs.AQCSFRC.all = 0x0009;
-}
-void EnablePwm1(void){
-	//EALLOW;
-	//EPwm1Regs.AQCSFRC.bit.CSFA = 2;
-	//EPwm1Regs.AQCSFRC.bit.CSFB = 3;
-	//EPwm1Regs.TZCLR.all = 0x003f;
-	//EDIS;
-	EPwm1Regs.AQCSFRC.all = 0x000f;
-}
-void EnablePwm2(void){
-	//EALLOW;
-	//EPwm2Regs.AQCSFRC.bit.CSFA = 2;
-	//EPwm2Regs.AQCSFRC.bit.CSFB = 3;
-	//EPwm2Regs.TZCLR.all = 0x003f;
-	//EDIS;
-	EPwm2Regs.AQCSFRC.all = 0x000f;
-}
-void EnablePwm3(void){
-	//EALLOW;
-	//EPwm3Regs.AQCSFRC.bit.CSFA = 2;
-	//EPwm3Regs.AQCSFRC.bit.CSFB = 3;
-	//EPwm3Regs.TZCLR.all = 0x003f;
-	//EDIS;
-	EPwm3Regs.AQCSFRC.all = 0x000f;
-}
-*/
 /**************************************************************
  *Name:						CalForceSpeedAccel
  *Function:
@@ -202,203 +133,6 @@ Uint16 GetCurrentHallValue(void){
 	}
 	return temp;
 }
-
-/**************************************************************
- *Name:		   CPositiveToBNegtive
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������1:16:27
- **************************************************************/
-/*
-inline void CPositiveToBNegtive(void) {
-
-//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
-//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
-//	EPwm3Regs.AQCSFRC.all = 9;
-//	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
-//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-
-//	EPwm1Regs.AQCSFRC.all = 0x000f;
-//	EPwm2Regs.AQCSFRC.all = 0x000f;
-	DisablePwm1();
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EnablePwm2();
-	EnablePwm3();
-}
-*/
-/**************************************************************
- *Name:		   CPositiveToANegtive
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������1:16:55
- **************************************************************/
-/*
-inline void CPositiveToANegtive(void) {
-
-//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
-//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
-//	EPwm2Regs.AQCSFRC.all = 9;
-//	EPwm1Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD + gSysInfo.duty;
-//	EPwm3Regs.CMPA.half.CMPA = EPWM1_TIMER_HALF_TBPRD - gSysInfo.duty;
-//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
-
-//	EPwm1Regs.AQCSFRC.all = 0x000f;
-//	EPwm3Regs.AQCSFRC.all = 0x000f;
-
-	DisablePwm2();
-	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EnablePwm1();
-	EnablePwm3();
-}
-*/
-/**************************************************************
- *Name:		   BPositiveToANegtive
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������1:17:04
- **************************************************************/
-/*
-inline void BPositiveToANegtive(void) {
-
-//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
-//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
-//	EPwm1Regs.AQCSFRC.all = 9;
-//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
-
-//	EPwm2Regs.AQCSFRC.all = 0x000f;
-//	EPwm3Regs.AQCSFRC.all = 0x000f;
-	DisablePwm3();
-	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.CMPA.half.CMPA = duty_p;
-	EPwm1Regs.CMPA.half.CMPA = duty_n;
-	EnablePwm2();
-	EnablePwm1();
-}
-*/
-/**************************************************************
- *Name:		   BPositiveToCNegtive
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������1:17:14
- **************************************************************/
-/*
-inline void BPositiveToCNegtive(void) {
-
-//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown A phase
-//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown A phase
-//	EPwm3Regs.AQCSFRC.all = 9;
-//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-//	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-
-
-//	EPwm1Regs.AQCSFRC.all = 0x000f;
-//	EPwm2Regs.AQCSFRC.all = 0x000f;
-
-	DisablePwm1();
-	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	//EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm2Regs.CMPA.half.CMPA = duty_p;
-	EPwm3Regs.CMPA.half.CMPA = duty_n;
-	EnablePwm2();
-	EnablePwm3();
-}
-*/
-/**************************************************************
- *Name:		   APositiveToCNegtive
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������1:17:26
- **************************************************************/
-/*
-inline void APositiveToCNegtive(void) {
-
-//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown B phase
-//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown B phase
-//	EPwm2Regs.AQCSFRC.all = 9;
-//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-//	EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x00;
-//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
-
-//	EPwm1Regs.AQCSFRC.all = 0x000f;
-//	EPwm3Regs.AQCSFRC.all = 0x000f;
-	DisablePwm2();
-	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	//EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = duty_p;
-	EPwm3Regs.CMPA.half.CMPA = duty_n;
-	EnablePwm1();
-	EnablePwm3();
-}
-*/
-/**************************************************************
- *Name:		   APositiveToBNegtive
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��25������1:17:37
- **************************************************************/
-/*
-inline void APositiveToBNegtive(void) {
-
-//	EPwm1Regs.AQCSFRC.bit.CSFA = 0x01; //shutdown C phase
-//	EPwm1Regs.AQCSFRC.bit.CSFB = 0x01; //shutdown C phase
-//	EPwm1Regs.AQCSFRC.all = 9;
-//	EALLOW;
-//	EPwm1Regs.TZFRC.bit.OST = 1;
-//	EDIS;
-//	EPwm3Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-//	EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-//	EPwm2Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm2Regs.AQCSFRC.bit.CSFB = 0x00;
-//
-//	EPwm3Regs.AQCSFRC.bit.CSFA = 0x00;
-//	EPwm3Regs.AQCSFRC.bit.CSFB = 0x00;
-
-//	EPwm2Regs.AQCSFRC.all = 0x000f;
-//	EPwm3Regs.AQCSFRC.all = 0x000f;
-	DisablePwm3();
-	//EPwm1Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD + gSysInfo.duty;
-	//EPwm2Regs.CMPA.half.CMPA = EPWM2_TIMER_HALF_TBPRD - gSysInfo.duty;
-	EPwm1Regs.CMPA.half.CMPA = duty_p;
-	EPwm2Regs.CMPA.half.CMPA = duty_n;
-
-	EnablePwm1();
-	EnablePwm2();
-}
-*/
 /**************************************************************
  *Name:						SwitchDirection
  *Function:
@@ -429,7 +163,6 @@ void SwitchDirection(void){
 	//3:A 2:B 1:C
 	switch (gSysInfo.currentHallPosition) {
 		case 3://A+ ---------------> C-
-			//����Ŀ����������ת�ͷ�ת��������Ҫ�ж�HALL��������λ���Ƿ�һ����
 
 			if((3 == gSysInfo.lastTimeHalllPosition )
 				|| (2 == gSysInfo.lastTimeHalllPosition)
@@ -553,90 +286,4 @@ void Pwm_ISR_Thread(void)
 
 	CalForceSpeedAccel();
 	StartGetADBySpi();
-}
-/**************************************************************
- *Name:						forcebufProcess
- *Function:
- *Input:					none
- *Output:					force value
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-int32 forcebufProcess(void)
-{
-	return ((feedbackVarBuf.sumForce - feedbackVarBuf.maxForce - feedbackVarBuf.minForce) >> 3);
-}
-/**************************************************************
- *Name:						displacebufProcess
- *Function:
- *Input:					none
- *Output:					displacement value
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-int32 displacebufProcess(void)
-{
-	return ((feedbackVarBuf.sumDisplacement - feedbackVarBuf.maxDisplacement - feedbackVarBuf.minDisplacement) >> 3);
-}
-/**************************************************************
- *Name:						UpdateMaxAndMin
- *Function:
- *Input:					feedbackVarBuf
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-void UpdateMaxAndMin(FeedbackVarBuf* feedbackVarBuf) {
-	if (gSysMonitorVar.anolog.single.var[ForceValue].value
-			>= feedbackVarBuf->maxForce) {
-		feedbackVarBuf->maxForce =
-				gSysMonitorVar.anolog.single.var[ForceValue].value;
-	}
-	if (gSysMonitorVar.anolog.single.var[ForceValue].value
-			<= feedbackVarBuf->minForce) {
-		feedbackVarBuf->minForce =
-				gSysMonitorVar.anolog.single.var[ForceValue].value;
-	}
-	if (gSysMonitorVar.anolog.single.var[DisplacementValue].value
-			>= feedbackVarBuf->maxDisplacement) {
-		feedbackVarBuf->maxDisplacement =
-				gSysMonitorVar.anolog.single.var[DisplacementValue].value;
-	}
-	if (gSysMonitorVar.anolog.single.var[DisplacementValue].value
-			<= feedbackVarBuf->minDisplacement) {
-		feedbackVarBuf->minDisplacement =
-				gSysMonitorVar.anolog.single.var[DisplacementValue].value;
-	}
-}
-/**************************************************************
- *Name:						ForceAndDisplaceProcess
- *Function:					PWM interrupt function
- *Input:					int count
- *Output:					none
- *Author:					Simon
- *Date:						2018.6.10
- **************************************************************/
-void ForceAndDisplaceProcess(int count){
-	/*
-	feedbackVarBuf.forcebuf[count] = gSysMonitorVar.anolog.single.var[ForceValue].value;
-	feedbackVarBuf.displacementbuf[count] = gSysMonitorVar.anolog.single.var[DisplacementValue].value;
-	*/
-
-	feedbackVarBuf.sumForce = feedbackVarBuf.sumForce + feedbackVarBuf.forcebuf[count];
-	feedbackVarBuf.sumDisplacement = feedbackVarBuf.sumDisplacement + feedbackVarBuf.displacementbuf[count];
-
-	//UpdateMaxAndMin(&feedbackVarBuf);
-	if(count >= 9){
-		gKeyValue.lock = 1;//need to remove after debug
-		if(gKeyValue.lock == 0)
-		{
-			//TODO generate alarm;
-			return;
-		}
-		gKeyValue.displacement = displacebufProcess();
-		gKeyValue.force = forcebufProcess();
-		gKeyValue.lock = 0;
-		feedbackVarBuf.sumForce = 0;
-		feedbackVarBuf.sumDisplacement =0;
-	}
 }

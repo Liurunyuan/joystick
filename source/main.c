@@ -20,8 +20,6 @@
 #include "GlobalVarAndFunc.h"
 #include "PID.h"
 
-Uint16 currentRefCollect[100] = {0};
-Uint16 voltageRefCollect[100] = {0};
 
 enum FSM {
 	INIT = 0,
@@ -33,7 +31,7 @@ enum FSM {
 	ALARM
 };
 
-#define UART_PRINTF
+//#define UART_PRINTF
 
 #ifdef UART_PRINTF
 
