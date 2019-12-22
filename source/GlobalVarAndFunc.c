@@ -62,7 +62,7 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.sek_v = 0;
     gSysInfo.sek_f = 0;
 	gSysInfo.ddtmax = 1;
-	gSysInfo.dutyAddInterval = 5;
+	gSysInfo.dutyAddInterval = 10;
 	gSysInfo.targetDuty = 0;
 	gSysInfo.currentDuty = 0;
 	gSysInfo.targetDuty_F = 0;
