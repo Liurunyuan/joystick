@@ -135,6 +135,11 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.ob_velocityOpenLoop = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
+    gKeyValue.displacement = 0;
+    gKeyValue.force = 0;
+    gKeyValue.lock = 0;
+
+
     gSysInfo.friction = 0;
     gSysInfo.soft_break_flag = 0;
     gSysInfo.springForceK = 0;
@@ -709,6 +714,8 @@ double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double Measur
 #endif
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
+    static int isFirstTimeExcuted = 1;
+
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
@@ -721,6 +728,13 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 	double p_now;
 
 	double kg;
+
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
 
 	x_mid = x_last;
 	p_mid = p_last + Q;
@@ -739,6 +753,8 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 
+    static int isFirstTimeExcuted = 1;
+
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
@@ -751,6 +767,13 @@ double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double M
 	double p_now;
 
 	double kg;
+
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
 
 	x_mid = x_last;
 	p_mid = p_last + Q;
@@ -769,6 +792,8 @@ double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double M
 #endif
 double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
+    static int isFirstTimeExcuted = 1;
+
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
@@ -781,6 +806,13 @@ double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double M
 	double p_now;
 
 	double kg;
+
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
 
 	x_mid = x_last;
 	p_mid = p_last + Q;
@@ -941,91 +973,6 @@ int CheckStickSetion(double val){
 	else{
 		return 23;
 	}
-}
-/* 
-* -20mm                                                      0mm                                                      12mm 
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
-*  |                                                          |
-*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
-*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
-*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
-*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-*/
-#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
-#pragma CODE_SECTION(LocateStickDisSection, "ramfuncs")
-#endif
-int LocateStickDisSection(void){
-	switch (gSysInfo.currentStickDisSection)
-	{
-	case INIT_SECTION: 
-		gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		break;
-	case 0:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if(gStickState.value  > (gSysInfo.TH0 + DEBOUNCE)){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		}
-		else{
-		    gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		}
-		break;
-	case 1:
-//        gSysInfo.coe_Force = 0.6;
-//        gSysInfo.coe_Velocity = 0.4;
-		if((gStickState.value  > (gSysInfo.TH1 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH0 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 1;
-		}
-		break;
-	case 2:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if((gStickState.value  > (gSysInfo.TH2 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH1 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 2;
-		}
-		break;
-	case 3:
-		if((gStickState.value  > (gSysInfo.TH3 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH2 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 3;
-		}
-		break;
-	case 4:
-		if((gStickState.value  > (gSysInfo.TH4 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH3 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 4;
-		}
-		break;
-	case 5:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 5;
-		}
-		break;
-	case 6:
-//        gSysInfo.coe_Force = 0.6;
-//        gSysInfo.coe_Velocity = 0.4;
-		if((gStickState.value  > (gSysInfo.TH6 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH5 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 6;
-		}
-		break;
-	case 7:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if(gStickState.value < (gSysInfo.TH6 - DEBOUNCE)){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		}
-		break;
-	
-	default:
-		break;
-	}
-	return gSysInfo.currentStickDisSection;
 }
 
 double TenDisplaceElemntAverage(void){

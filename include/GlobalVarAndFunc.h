@@ -10,8 +10,8 @@
 #define LINEAR_SPEED_METHOD 			EXCLUDE_FEATURE
 #define SPEED_CLOSED_LOOP 				INCLUDE_FEATURE
 #define TEN_AVERAGE 					EXCLUDE_FEATURE
-#define DUTY_GRADUAL_CHANGE 			INCLUDE_FEATURE
-#define TARGET_DUTY_GRADUAL_CHANGE 		INCLUDE_FEATURE
+#define DUTY_GRADUAL_CHANGE 			EXCLUDE_FEATURE
+#define TARGET_DUTY_GRADUAL_CHANGE 		EXCLUDE_FEATURE
 #define COPY_FLASH_CODE_TO_RAM 			EXCLUDE_FEATURE
 
 
@@ -546,7 +546,6 @@ void Enable_PWMD_BK(void);
 void Disable_PWMD_BK(void);
 void ControleStateMachineSwitch(int value);
 void InitGlobalVarAndFunc(void);
-int LocateStickDisSection(void);
 double TenDisplaceElemntAverage(void);
 void DigitalSignalPISO(void);
 void Button_Debounce1(void);

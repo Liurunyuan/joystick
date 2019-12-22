@@ -31,7 +31,7 @@ char rs422rxPack[100] = {0};
  **************************************************************/
 static void TestDuty(VAR16 a, int b, int c) {
 
-	gSysInfo.duty = (int)a.value;
+	// gSysInfo.duty = (int)a.value;
 
 	//TODO just an example
 }

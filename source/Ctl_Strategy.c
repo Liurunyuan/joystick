@@ -432,7 +432,7 @@ void OnlyWithSpringFront(void){
 	kb = gSysInfo.springForceB;
 
 	mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
-
+    gSysPara.mass = mass;
 //	if(mass > 1){
 //	    gSysState.warning.bit.a = 0;
 //	}
