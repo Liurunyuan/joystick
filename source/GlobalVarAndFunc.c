@@ -567,7 +567,7 @@ void InitConfigParameter(void){
 
          gConfigPara.LF_Distance0 = 0;
          gConfigPara.LF_Distance1 = 0.5;
-         gConfigPara.LF_Distance2 = 1;
+         gConfigPara.LF_Distance2 = 1.5;
          gConfigPara.LF_Distance3 = 2;
          gConfigPara.LF_Distance4 = 4;
          gConfigPara.LF_Distance5 = 6;
@@ -579,7 +579,7 @@ void InitConfigParameter(void){
 
          gConfigPara.RB_Distance0 = 0;
          gConfigPara.RB_Distance1 = -0.5;
-         gConfigPara.RB_Distance2 = -1;
+         gConfigPara.RB_Distance2 = -1.5;
          gConfigPara.RB_Distance3 = -2;
          gConfigPara.RB_Distance4 = -4;
          gConfigPara.RB_Distance5 = -6;
@@ -888,15 +888,6 @@ void Disable_PWMD_BK(void){
 	GpioDataRegs.GPASET.bit.GPIO9 = 1;
 }
 
-/* 
-* -20mm                                                     0mm                                                      12mm 
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
-*  |                                                          |
-*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
-*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
-*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
-*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-*/
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
 #endif
