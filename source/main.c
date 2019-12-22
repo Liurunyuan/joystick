@@ -400,6 +400,7 @@ void main(void) {
 	InitSysCtrl_M();
 	/*peripheral init*/
 	Init_Peripheral();
+	checkPitchOrRoll();
 
 	InitGlobalVar();
 
