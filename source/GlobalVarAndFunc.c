@@ -62,7 +62,7 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.sek_v = 0;
     gSysInfo.sek_f = 0;
 	gSysInfo.ddtmax = 1;
-	gSysInfo.dutyAddInterval = 10;
+	gSysInfo.dutyAddInterval = 3;
 	gSysInfo.targetDuty = 0;
 	gSysInfo.currentDuty = 0;
 	gSysInfo.targetDuty_F = 0;
@@ -538,8 +538,8 @@ void InitConfigParameter(void){
          gConfigPara.LF_EmptyDistance = 1;
          gConfigPara.RB_EmptyDistance = -1;
 
-         gConfigPara.LF_StartForce = 5;
-         gConfigPara.RB_StartForce = -5;
+         gConfigPara.LF_StartForce = 3.85;
+         gConfigPara.RB_StartForce = -3.85;
 
          gConfigPara.LF_Force0 = 0;
          gConfigPara.LF_Force1 = 1;
@@ -567,8 +567,8 @@ void InitConfigParameter(void){
 
          gConfigPara.LF_Distance0 = 0;
          gConfigPara.LF_Distance1 = 0.5;
-         gConfigPara.LF_Distance2 = 1.5;
-         gConfigPara.LF_Distance3 = 2;
+         gConfigPara.LF_Distance2 = 2;
+         gConfigPara.LF_Distance3 = 3;
          gConfigPara.LF_Distance4 = 4;
          gConfigPara.LF_Distance5 = 6;
          gConfigPara.LF_Distance6 = 8;
@@ -579,8 +579,8 @@ void InitConfigParameter(void){
 
          gConfigPara.RB_Distance0 = 0;
          gConfigPara.RB_Distance1 = -0.5;
-         gConfigPara.RB_Distance2 = -1.5;
-         gConfigPara.RB_Distance3 = -2;
+         gConfigPara.RB_Distance2 = -2;
+         gConfigPara.RB_Distance3 = -3;
          gConfigPara.RB_Distance4 = -4;
          gConfigPara.RB_Distance5 = -6;
          gConfigPara.RB_Distance6 = -8;
