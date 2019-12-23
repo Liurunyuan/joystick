@@ -34,7 +34,7 @@ int gButtonStatus[6] = {0};
 
 void InitGlobalVarAndFunc(void){
     // PITCH
-    checkPitchOrRoll();
+//    checkPitchOrRoll();
     if(gSysInfo.board_type == PITCH){
         gSysInfo.DimL_K = -0.001683;
         gSysInfo.DimL_B = 63.2728;
