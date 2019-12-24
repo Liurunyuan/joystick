@@ -538,32 +538,32 @@ void InitConfigParameter(void){
          gConfigPara.LF_EmptyDistance = 1;
          gConfigPara.RB_EmptyDistance = -1;
 
-         gConfigPara.LF_StartForce = 3.85;
-         gConfigPara.RB_StartForce = -3.85;
+         gConfigPara.LF_StartForce = 5;
+         gConfigPara.RB_StartForce = -5;
 
          gConfigPara.LF_Force0 = 0;
          gConfigPara.LF_Force1 = 1;
-         gConfigPara.LF_Force2 = 6.14;
-         gConfigPara.LF_Force3 = 8.43;
-         gConfigPara.LF_Force4 = 13;
-         gConfigPara.LF_Force5 = 17.57;
-         gConfigPara.LF_Force6 = 22.14;
-         gConfigPara.LF_Force7 = 26.71;
-         gConfigPara.LF_Force8 = 35.86;
-         gConfigPara.LF_Force9 = 40.43;
-         gConfigPara.LF_MaxForce = 45;
+         gConfigPara.LF_Force2 = 8;
+         gConfigPara.LF_Force3 = 11;
+         gConfigPara.LF_Force4 = 14;
+         gConfigPara.LF_Force5 = 20;
+         gConfigPara.LF_Force6 = 26;
+         gConfigPara.LF_Force7 = 32;
+         gConfigPara.LF_Force8 = 44;
+         gConfigPara.LF_Force9 = 50;
+         gConfigPara.LF_MaxForce = 56;
 
          gConfigPara.RB_Force0 = 0;
          gConfigPara.RB_Force1 = -1;
-         gConfigPara.RB_Force2 = -6.14;
-         gConfigPara.RB_Force3 = -8.43;
-         gConfigPara.RB_Force4 = -13;
-         gConfigPara.RB_Force5 = -17.57;
-         gConfigPara.RB_Force6 = -22.14;
-         gConfigPara.RB_Force7 = -26.71;
-         gConfigPara.RB_Force8 = -35.86;
-         gConfigPara.RB_Force9 = -40.43;
-         gConfigPara.RB_MaxForce = -45;
+         gConfigPara.RB_Force2 = -8;
+         gConfigPara.RB_Force3 = -11;
+         gConfigPara.RB_Force4 = -14;
+         gConfigPara.RB_Force5 = -20;
+         gConfigPara.RB_Force6 = -26;
+         gConfigPara.RB_Force7 = -32;
+         gConfigPara.RB_Force8 = -44;
+         gConfigPara.RB_Force9 = -50;
+         gConfigPara.RB_MaxForce = -56;
 
          gConfigPara.LF_Distance0 = 0;
          gConfigPara.LF_Distance1 = 0.5;
