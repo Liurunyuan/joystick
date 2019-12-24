@@ -209,6 +209,8 @@ typedef struct{
     int soft_break_flag;
     double springForceK;
     double springForceB;
+    double openLoop_Force_front_B;
+    double openLoop_Force_rear_B;
 
 }SYSINFO;
 

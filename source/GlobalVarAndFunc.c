@@ -42,6 +42,8 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.Force_B = -459.6276;
         gSysInfo.TH0 = -17.8;
         gSysInfo.TH6 = 11.8;
+        gSysInfo.openLoop_Force_front_B = 20;
+        gSysInfo.openLoop_Force_rear_B = -10;
     }
     //ROLL
     else if(gSysInfo.board_type == ROLL){
@@ -51,6 +53,8 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.Force_B = 459.6276;
         gSysInfo.TH0 = -17.8;
         gSysInfo.TH6 = 17.8;
+        gSysInfo.openLoop_Force_front_B = 5;
+        gSysInfo.openLoop_Force_rear_B = -5;
     }
     else{
         gSysInfo.DimL_K = 0;
@@ -58,6 +62,8 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.TH0 = 0;
         gSysInfo.TH6 = 0;
         gSysState.warning.bit.b = 1;
+        gSysInfo.openLoop_Force_front_B = 0;
+        gSysInfo.openLoop_Force_rear_B = 0;
     }
     gSysInfo.sek_v = 0;
     gSysInfo.sek_f = 0;

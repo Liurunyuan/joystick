@@ -458,10 +458,10 @@ void OnlyWithSpringFront(void){
 	gSysInfo.ob_velocityOpenLoop = force_openLoop;
 
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
-        B_F = 20;
+        B_F = gSysInfo.openLoop_Force_front_B;
     }
     else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
-        B_F = -10;
+        B_F = gSysInfo.openLoop_Force_rear_B;
     }
 
 	gSysInfo.targetDuty_F = (int16)((gPidPara.K_F_ODE * force_openLoop + B_F) + force_closeLoop);
