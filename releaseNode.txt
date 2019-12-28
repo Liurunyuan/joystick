@@ -1,3 +1,16 @@
+/***************************0.0.6*******************************/
+Version Number: 0.0.6
+Date: 2019/12/28
+Author:Simon
+
+What new: 
+	1. Optimize code
+	2. New control strategy
+	3. Different parameter for pitch and roll
+Bug fix:
+	1. Global variable initialization
+	2. Running on the flash
+	3. Buffer overflow
 /***************************0.0.5*******************************/
 Version Number: 0.0.5
 Date: 2019/11/09
