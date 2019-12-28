@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define N (300)
+#define N (800)
 #define RS422STATUSCHECK (1000)
 
 
@@ -24,23 +24,24 @@
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(Timer0_ISR_Thread, "ramfuncs")
+#endif
 void Timer0_ISR_Thread(void){
 
-//	static unsigned char count = 0;
+	static unsigned char count = 0;
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
+	static int flag = 0;
 
     double force_Joystick;
-//    double cos_value;s
-//    double angle;
 
-//	++count;
-//
-//	if(count > N){
-//		PackRS422TxData();
-//		count = 0;
-//	}
+	++count;
+
+	if(count > N){
+		PackRS422TxData();
+		count = 0;
+	}
 
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
@@ -49,11 +50,7 @@ void Timer0_ISR_Thread(void){
         gRotateDirection.updateRotateDirection(0);
         gStickState.value = gKeyValue.displacement;
 
-//        angle = (abs(gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value - 26288))*0.00030821;
-        //cos_value = cos(angle*PI/180.0);
-//        cos_value = 1;
         force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
-//                (0.045/0.14))/cos_value);
 
         if(zero_count < 10){
             zero_force_SUM = zero_force_SUM + force_Joystick;
@@ -63,53 +60,20 @@ void Timer0_ISR_Thread(void){
             return;
         }
         else{
-            gSysInfo.zeroForce = zero_force_SUM/10;
+			if(flag == 0)
+			{
+            	gSysInfo.zeroForce = zero_force_SUM/10;
+				flag = 1;
+			}
         }
 
         gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
         gExternalForceState.updateForceState(0);
-/******************************
-* -20mm                                                     0mm                                                      12mm
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->|
-*  |                                                          |
-*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
-*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
-*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
-*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-*
-*
-* we wil check bit0 first then bit1.....when we meet the first value 1 which means that the stick displacement is in the bitx section
-*/
-        gSysInfo.controlFuncIndex = LocateStickDisSection();
 
-        ControleStateMachineSwitch(gSysInfo.controlFuncIndex);
-        if(gExternalForceState.ForceState != NO_FORCE){
-            bounceCnt = 0;
-        }
-
-
-
-//        if(gKeyValue.motorSpeed > 0){
-//            if(gKeyValue.motorSpeed > gSysInfo.maxspeed){
-//                gSysInfo.maxspeed = gKeyValue.motorSpeed;
-//            }
-//            else{
-//                gSysInfo.maxspeed = gSysInfo.maxspeed;
-//            }
-//        }
-//        else{
-//            if(gKeyValue.motorSpeed < gSysInfo.minspeed){
-//                gSysInfo.minspeed = gKeyValue.motorSpeed;
-//            }
-//            else{
-//                gSysInfo.minspeed = gSysInfo.minspeed;
-//            }
-//        }
-
+        OnlyWithSpringFront();
 
 		clearSum();
 		gKeyValue.lock = 0;
-        gSysInfo.controlFuncIndex = 0;
 	}
 }
 /**************************************************************
@@ -133,47 +97,10 @@ void EnableScicTxInterrupt(void){
  *Date:						2018.10.21
  ****************************************************************/
 void Timer1_ISR_Thread(void){
-	static Uint16 count = 0;
-	++count;
 
 	if(gRS422TxQue.front != gRS422TxQue.rear
 			&& ScicRegs.SCIFFTX.bit.TXFFST == 0){
 
 		 EnableScicTxInterrupt();
-	}
-
-	if(count >= RS422STATUSCHECK){
-		count = 0;
-//		printf(">>>>>>>>>Check RS422 channel\r\n");
-//
-//
-//		if(gRS422Status.rs422A == 0 && gRS422Status.rs422B == 0){
-//			printf(">>>>>>>>>>RS422A and RS422B both failed to connect\r\n");
-//			return;
-//		}
-//
-//		if(RS422_CHANNEL_A == gRS422Status.rs422CurrentChannel){
-//			if(gRS422Status.rs422A){
-//				gRS422Status.rs422A = 0;
-//			}
-//			else{
-//				printf(">>>>>>>>>>Switch to RS422BBBBBBBBBB channel\r\n");
-//				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_B;
-//				//ScibRegs.SCIFFRX.bit.RXFFINTCLR = 1;
-//			}
-//		}
-//		else if(RS422_CHANNEL_B == gRS422Status.rs422CurrentChannel){
-//			if(gRS422Status.rs422B){
-//				gRS422Status.rs422B = 0;
-//			}
-//			else{
-//				//TODO need to switch rs422B to rs422A.
-//				printf(">>>Switch to RS422AAAAAAAAAAAAAAA channel\r\n");
-//				gRS422Status.rs422CurrentChannel = RS422_CHANNEL_A;
-//			}
-//		}
-//		else{
-//			printf(">>>>>>>>>>>>>>>>>>>>Unknow RS422 channel\r\n");
-//		}
 	}
 }

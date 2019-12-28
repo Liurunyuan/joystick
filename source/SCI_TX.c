@@ -18,6 +18,7 @@ RS422TXQUE gRS422TxQue = {0};
 
 void GetTorqueCurve(int a, int b, int c){
     gRx422TxVar[0].value = (int)(gKeyValue.displacement * 100);
+	//  gRx422TxVar[0].value = (int)(gSysInfo.duty * 10);
 
 }
 void GetMotorSpeedCurve(int a, int b, int c){
@@ -59,10 +60,12 @@ void InitgRx422TxEnableFlag(void){
 	int index;
 
 	memset(gRx422TxEnableFlag, 0, sizeof(gRx422TxEnableFlag));
-	for (index = 0; index < 16; ++index) {
+	for (index = 0; index < 8; ++index) {
 
 		gRx422TxEnableFlag[index] = 0;
 	}
+	gRx422TxEnableFlag[0] = 1;
+	gRx422TxEnableFlag[1] = 1;
 }
 /**************************************************************
  *Name:		   InitgRx422TxVar
@@ -77,7 +80,7 @@ void InitgRx422TxVar(void) {
 	int index;
 
 	memset(gRx422TxVar, 0, sizeof(gRx422TxVar));
-	for (index = 0; index < 16; ++index) {
+	for (index = 0; index < 8; ++index) {
 
 		gRx422TxVar[index].isTx = 0;
 		gRx422TxVar[index].index = index;
@@ -100,7 +103,9 @@ void InitgRx422TxVar(void) {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(RX422TXEnQueue, "ramfuncs")
+#endif
 int RX422TXEnQueue(char e){
 	if((gRS422TxQue.rear + 1) % TXMAXQSIZE == gRS422TxQue.front){
 		return 0;
@@ -147,7 +152,9 @@ int RS422TxQueLength(){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(calCrc, "ramfuncs")
+#endif
 int calCrc(int crc, const char *buf, int len) {
 	int x;
 	int i;
@@ -168,7 +175,9 @@ int calCrc(int crc, const char *buf, int len) {
  *Author:	   Simon
  *Date:		   2018.11.14
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(updateTxEnableFlag, "ramfuncs")
+#endif
 void updateTxEnableFlag(void) {
 	int i;
 	for (i = 0; i < TOTAL_TX_VAR; ++i) {
@@ -184,7 +193,9 @@ void updateTxEnableFlag(void) {
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(PackRS422TxData, "ramfuncs")
+#endif
 void PackRS422TxData(void){
 	//TODO need do some test, because we sync the tx enable flag here
 	int i;
@@ -336,54 +347,5 @@ void RS422A_Transmit(void){
 		}
 	}
 }
-/**************************************************************
- *Name:		   TransmitRS422ShakeHandMsg
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��15������9:02:53
- **************************************************************/
-void TransmitRS422ShakeHandMsg(void){
 
-	int len;
-	int index;
-	char rs422ShakeHandMsg[] = {
-		//TODO use the real shake hand msg in the future
-		0x5a,//head1
-		0x5a,//head2
-		0x01,//length
-		0x00,//serial number
-		0x00,//serial number
-		0xff,//shake hand
-		0xff,//shake hand
-		0xff,//shake hand
-		0x00,//crc1
-		0x00,//crc2
-		0xa5,//tail1
-		0xa5 //tail2
-	};
 
-	len = sizeof(rs422ShakeHandMsg);
-
-	for(index = 0; index < len; ++index){
-		while(ScibRegs.SCIFFTX.bit.TXFFST != 0){
-
-		}
-		ScibRegs.SCITXBUF = rs422ShakeHandMsg[index];
-	}
-}
-/**************************************************************
- *Name:		   ShakeHandWithUpperComputer
- *Comment:
- *Input:	   void
- *Output:	   void
- *Author:	   Simon
- *Date:		   2018��11��15������9:03:08
- **************************************************************/
-void ShakeHandWithUpperComputer(void){
-
-	if(FAIL == gRS422Status.shakeHand){
-		TransmitRS422ShakeHandMsg();
-	}
-}
