@@ -30,24 +30,11 @@ double gDebug[3] = {0};
 int gPISO_165[8] = {0};
 int gButtonCmd[6] = {0};
 int gButtonStatus[6] = {0};
-int gD = 60;
-int bounceCnt = 0;
-int gStateMachineIndex = -1;
-int gStateMachineIndexBak = -1;
-double gBounceDisplace = 0;
-int gMaxBounceTimes = 4;
-int kspeed = 10;
-int timesDisplace = 7;
-int reduceNum = 10;
 
-
-
-
-typedef void (*CONTROLSTATEMACHINE)(int a,int b);
 
 void InitGlobalVarAndFunc(void){
     // PITCH
-    checkPitchOrRoll();
+//    checkPitchOrRoll();
     if(gSysInfo.board_type == PITCH){
         gSysInfo.DimL_K = -0.001683;
         gSysInfo.DimL_B = 63.2728;
@@ -55,6 +42,8 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.Force_B = -459.6276;
         gSysInfo.TH0 = -17.8;
         gSysInfo.TH6 = 11.8;
+        gSysInfo.openLoop_Force_front_B = 20;
+        gSysInfo.openLoop_Force_rear_B = -10;
     }
     //ROLL
     else if(gSysInfo.board_type == ROLL){
@@ -64,6 +53,8 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.Force_B = 459.6276;
         gSysInfo.TH0 = -17.8;
         gSysInfo.TH6 = 17.8;
+        gSysInfo.openLoop_Force_front_B = 5;
+        gSysInfo.openLoop_Force_rear_B = -5;
     }
     else{
         gSysInfo.DimL_K = 0;
@@ -71,11 +62,13 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.TH0 = 0;
         gSysInfo.TH6 = 0;
         gSysState.warning.bit.b = 1;
+        gSysInfo.openLoop_Force_front_B = 0;
+        gSysInfo.openLoop_Force_rear_B = 0;
     }
     gSysInfo.sek_v = 0;
     gSysInfo.sek_f = 0;
-	gSysInfo.ddtmax = 2;
-	gSysInfo.dutyAddInterval = 2;
+	gSysInfo.ddtmax = 1;
+	gSysInfo.dutyAddInterval = 3;
 	gSysInfo.targetDuty = 0;
 	gSysInfo.currentDuty = 0;
 	gSysInfo.targetDuty_F = 0;
@@ -148,10 +141,16 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.ob_velocityOpenLoop = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
+    gKeyValue.displacement = 0;
+    gKeyValue.force = 0;
+    gKeyValue.lock = 0;
+
+
     gSysInfo.friction = 0;
     gSysInfo.soft_break_flag = 0;
     gSysInfo.springForceK = 0;
     gSysInfo.springForceB = 0;
+    gSysInfo.zeroForce = 0;
 }
 
 void checkPitchOrRoll(void){
@@ -169,271 +168,9 @@ void checkPitchOrRoll(void){
         gSysState.warning.bit.b = 1;
     }
 }
-//#pragma CODE_SECTION(IRNullDisAndNoForce, "ramfuncs")
-//void IRNullDisAndNoForce(int a,  int b){
-//	/*stick is in the range of the null displacement and no external force on the it */
-//	/*so decide what we should do */
-////	int32 tmp;
-////	tmp = (int32)((-3 * gExternalForceState.value)* 250);
-////	tmp = -tmp;
-////	gSysInfo.targetDuty = tmp;
-//	gSysInfo.targetDuty = 0;
-//
-//}
-//#pragma CODE_SECTION(IRNullDisAndForwardForce, "ramfuncs")
-//void IRNullDisAndForwardForce(int a, int b){
-//	/*stick is in the range of the null displacement and the external force is forward */
-//	/*so decidde what we should do here */
-//	int32 tmp;
-//	tmp = (int32)((gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
-//	tmp = -tmp;
-//	//tmp = tmp + 20;
-//	gSysInfo.targetDuty = tmp;
-//	//gSysInfo.targetDuty = 100;
-//}
-//#pragma CODE_SECTION(IRNullDisAndBackwardForce, "ramfuncs")
-//void IRNullDisAndBackwardForce(int a, int b){
-//	/*stick is in the range of the null displacement and the external force is backward */
-//	/*so decidde what we should do here */
-//	int32 tmp;
-//	tmp = (int32)((-gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
-//	tmp = -tmp;
-//	//tmp = tmp - 20;
-//	gSysInfo.targetDuty = tmp;
-//	//gSysInfo.targetDuty = -100;
-//}
-
-/* 
-* -20mm                                                     0mm                                                      12mm 
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
-*  |                                                          |
-*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
-*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
-*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
-*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-*/
-//#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec2, "ramfuncs")
-//void IRStartForceSecAndNoForce_sec2(int a,  int b){
-//    /*stick is in the range of the null displacement and no external force on the it */
-//    /*so decide what we should do */
-//    int32 tmp;
-//    tmp = (int32)((gSysInfo.TH2 - gStickState.value)* 100);
-//    //tmp = (int32)(displace_PidOutput(gSysInfo.TH2, gStickState.value));
-//    //tmp = -tmp;
-//    gSysInfo.targetDuty = tmp;
-//
-//}
-//#pragma CODE_SECTION(IRStartForceSecAndNoForce_sec5, "ramfuncs")
-//void IRStartForceSecAndNoForce_sec5(int a,  int b){
-//    /*stick is in the range of the null displacement and no external force on the it */
-//    /*so decide what we should do */
-//    int32 tmp;
-//    tmp = (int32)((gSysInfo.TH4 - gStickState.value)* 100);
-//    //tmp = (int32)(displace_PidOutput(gSysInfo.TH4, gStickState.value));
-//    //tmp = -tmp;
-//    gSysInfo.targetDuty = tmp;
-//
-//}
-//#pragma CODE_SECTION(IRStartForceSecAndForwardForce_sec5, "ramfuncs")
-//void IRStartForceSecAndForwardForce_sec5(int a, int b){
-//    /*stick is in the range of the null displacement and the external force is forward */
-//    /*so decide what we should do here */
-//    int32 tmp;
-//    if(gExternalForceState.value > gConfigPara.LF_FrontFriction){
-//        OnlyWithSpringFront();
-////        IRNullDisAndForwardForce(0,0);
-//    }
-//    else{
-//        tmp = -30;//if duty set to 0, you need 22N to push the stick move
-//        gSysInfo.targetDuty = tmp;
-//    }
-//}
-//#pragma CODE_SECTION(IRStartForceSecAndBackwardForce_sec2, "ramfuncs")
-//void IRStartForceSecAndBackwardForce_sec2(int a, int b){
-    /*stick is in the range of the null displacement and the external force is backward */
-    /*so decide what we should do here */
-//    int32 tmp;
-//    if(gExternalForceState.value < -gConfigPara.LF_FrontFriction){
-//        OnlyWithSpringRear();
-//        IRNullDisAndBackwardForce(0,0);
-//    }
-//    else{
-//		tmp = 30;
-//        gSysInfo.targetDuty = tmp;
-//    }
-//}
-
-//#pragma CODE_SECTION(sec0_threshold_rear, "ramfuncs")
-//void sec0_threshold_rear(int a, int b){
-    /*stick is out of the range of the bakcward threshold displacement*/
-	/*just output a force to let the stick go to zero state */
-//    if(gExternalForceState.ForceState == BACKWARD_FORCE){
-//        gSysInfo.targetDuty = 30;
-//    }
-//    else{
-//        OnlyWithSpringRear();
-//    }
-//
-//    if(gSysInfo.targetDuty > 100){
-//        gSysInfo.targetDuty = 100;
-//    }
-//    else if(gSysInfo.targetDuty < -100){
-//        gSysInfo.targetDuty = -100;
-//    }
-//    else{
-//
-//    }
-//}
-//#pragma CODE_SECTION(sec1_ODE_rear, "ramfuncs")
-//void sec1_ODE_rear(int a, int b){
-//    OnlyWithSpringRear();
-//}
-//
-//#pragma CODE_SECTION(sec2_StartForce_rear, "ramfuncs")
-//void sec2_StartForce_rear(int a, int b){
-//    OnlyWithSpringRear();
-
-//    switch (gExternalForceState.ForceState)
-//    {
-//    case NO_FORCE:
-//        IRNullDisAndNoForce(0,0);
-//        break;
-//    case BACKWARD_FORCE:
-//        IRStartForceSecAndBackwardForce_sec2(0,0);
-//        break;
-//
-//    case FORWARD_FORCE:
-//        IRNullDisAndForwardForce(0,0);
-//        break;
-//
-//    default:
-//        break;
-//    }
-
-//}
-
-
-
-//#pragma CODE_SECTION(sec3_Null_rear, "ramfuncs")
-//void sec3_Null_rear(int a, int b){
-//    OnlyWithSpringRear();
-
-//    switch (gExternalForceState.ForceState)
-//    {
-//    case NO_FORCE:
-//        IRNullDisAndNoForce(0,0);
-//        break;
-//
-//    case BACKWARD_FORCE:
-//        IRNullDisAndBackwardForce(0,0);
-//        break;
-//
-//    case FORWARD_FORCE:
-//        IRNullDisAndForwardForce(0,0);
-//        break;
-//
-//    default:
-//        break;
-//    }
-
-//}
-//
-//
-//#pragma CODE_SECTION(sec4_Null_front, "ramfuncs")
-//void sec4_Null_front(int a, int b){
-//    OnlyWithSpringFront();
-//    switch (gExternalForceState.ForceState)
-//    {
-//    case NO_FORCE:
-//        IRNullDisAndNoForce(0,0);
-//        break;
-//
-//    case BACKWARD_FORCE:
-//        IRNullDisAndBackwardForce(0,0);
-//        break;
-//
-//    case FORWARD_FORCE:
-//        IRNullDisAndForwardForce(0,0);
-//        break;
-//
-//    default:
-//        break;
-//    }
-//}
-//#pragma CODE_SECTION(sec5_StartForce_front, "ramfuncs")
-//void sec5_StartForce_front(int a, int b){
-//
-//    OnlyWithSpringFront();
-
-//    switch (gExternalForceState.ForceState)
-//    {
-//    case NO_FORCE:
-//        IRNullDisAndNoForce(0,0);
-//        break;
-//
-//    case BACKWARD_FORCE:
-//        IRNullDisAndBackwardForce(0,0);
-//        break;
-//
-//    case FORWARD_FORCE:
-//        IRStartForceSecAndForwardForce_sec5(0,0);
-//        break;
-//
-//    default:
-//        break;
-//    }
-
-//}
-//#pragma CODE_SECTION(sec6_ODE_front, "ramfuncs")
-//void sec6_ODE_front(int a, int b){
-//    OnlyWithSpringFront();
-//}
-
-//#pragma CODE_SECTION(sec7_threshold_front, "ramfuncs")
-//void sec7_threshold_front(int a, int b){
-
-//    if(gExternalForceState.ForceState == FORWARD_FORCE){
-//        gSysInfo.targetDuty = -30;
-//    }
-//    else{
-//        OnlyWithSpringFront();
-//    }
-//    if(gSysInfo.targetDuty > 100){
-//        gSysInfo.targetDuty = 100;
-//    }
-//    else if(gSysInfo.targetDuty < -100){
-//        gSysInfo.targetDuty = -100;
-//    }
-//    else{
-//
-//    }
-//}
-//
-//const CONTROLSTATEMACHINE controlStateMahchineInterface[] = {
-//    sec0_threshold_rear,              	//0:	Rear OOR
-//	sec1_ODE_rear, 					    //1:	Rear ODE
-//	sec2_StartForce_rear,              	//2:	Rear Start force
-//	sec3_Null_rear, 					//3:	Rear Null displacement
-//	sec4_Null_front,					//4:	Front Null displacement
-//	sec5_StartForce_front,              //5:	Front Start force
-//	sec6_ODE_front,					    //6:	Front ODE
-//	sec7_threshold_front               	//7:	Front OOR
-//};
-//#pragma CODE_SECTION(ControleStateMachineSwitch, "ramfuncs")
-//void ControleStateMachineSwitch(int value){
-//
-//	if(value < (sizeof(controlStateMahchineInterface) / sizeof(controlStateMahchineInterface[0]))){
-//		if(controlStateMahchineInterface[value]){
-//			controlStateMahchineInterface[value](0, 0);
-//		}
-//	}
-//	else{
-//		//TODO generate alarm msg, something wrong
-//	}
-//}
 
 void checkRotateDirection(int value){
-    static int last_state;
+    static int last_state = 2;
 	switch(gRotateDirection.rotateDirection)
 	{
 		case INIT_DIRECTION:
@@ -531,7 +268,9 @@ void checkRotateDirection(int value){
 			break;
 	}
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(checkAcceleration, "ramfuncs")
+#endif
 void checkAcceleration(int value){
     switch(gAccelDirection.accelDirection)
     {
@@ -603,7 +342,9 @@ void checkAcceleration(int value){
             break;
     }
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(checkExternalForce, "ramfuncs")
+#endif
 void checkExternalForce(int value){
 	/*need to decide if need to enable debouce feature */
 	switch (gExternalForceState.ForceState)
@@ -665,10 +406,6 @@ void InitStickState(void){
 
 	gStickState.value = 0;
 	gExternalForceState.value = 0;
-}
-
-void InitForceDisplaceCurve(void){
-
 }
 
 void UpdateForceDisplaceCurve(void){
@@ -812,32 +549,32 @@ void InitConfigParameter(void){
 
          gConfigPara.LF_Force0 = 0;
          gConfigPara.LF_Force1 = 1;
-         gConfigPara.LF_Force2 = 6.14;
-         gConfigPara.LF_Force3 = 8.43;
-         gConfigPara.LF_Force4 = 13;
-         gConfigPara.LF_Force5 = 17.57;
-         gConfigPara.LF_Force6 = 22.14;
-         gConfigPara.LF_Force7 = 26.71;
-         gConfigPara.LF_Force8 = 35.86;
-         gConfigPara.LF_Force9 = 40.43;
-         gConfigPara.LF_MaxForce = 45;
+         gConfigPara.LF_Force2 = 8;
+         gConfigPara.LF_Force3 = 11;
+         gConfigPara.LF_Force4 = 14;
+         gConfigPara.LF_Force5 = 20;
+         gConfigPara.LF_Force6 = 26;
+         gConfigPara.LF_Force7 = 32;
+         gConfigPara.LF_Force8 = 44;
+         gConfigPara.LF_Force9 = 50;
+         gConfigPara.LF_MaxForce = 56;
 
          gConfigPara.RB_Force0 = 0;
          gConfigPara.RB_Force1 = -1;
-         gConfigPara.RB_Force2 = -6.14;
-         gConfigPara.RB_Force3 = -8.43;
-         gConfigPara.RB_Force4 = -13;
-         gConfigPara.RB_Force5 = -17.57;
-         gConfigPara.RB_Force6 = -22.14;
-         gConfigPara.RB_Force7 = -26.71;
-         gConfigPara.RB_Force8 = -35.86;
-         gConfigPara.RB_Force9 = -40.43;
-         gConfigPara.RB_MaxForce = -45;
+         gConfigPara.RB_Force2 = -8;
+         gConfigPara.RB_Force3 = -11;
+         gConfigPara.RB_Force4 = -14;
+         gConfigPara.RB_Force5 = -20;
+         gConfigPara.RB_Force6 = -26;
+         gConfigPara.RB_Force7 = -32;
+         gConfigPara.RB_Force8 = -44;
+         gConfigPara.RB_Force9 = -50;
+         gConfigPara.RB_MaxForce = -56;
 
          gConfigPara.LF_Distance0 = 0;
          gConfigPara.LF_Distance1 = 0.5;
-         gConfigPara.LF_Distance2 = 1;
-         gConfigPara.LF_Distance3 = 2;
+         gConfigPara.LF_Distance2 = 2;
+         gConfigPara.LF_Distance3 = 3;
          gConfigPara.LF_Distance4 = 4;
          gConfigPara.LF_Distance5 = 6;
          gConfigPara.LF_Distance6 = 8;
@@ -848,8 +585,8 @@ void InitConfigParameter(void){
 
          gConfigPara.RB_Distance0 = 0;
          gConfigPara.RB_Distance1 = -0.5;
-         gConfigPara.RB_Distance2 = -1;
-         gConfigPara.RB_Distance3 = -2;
+         gConfigPara.RB_Distance2 = -2;
+         gConfigPara.RB_Distance3 = -3;
          gConfigPara.RB_Distance4 = -4;
          gConfigPara.RB_Distance5 = -6;
          gConfigPara.RB_Distance6 = -8;
@@ -938,7 +675,9 @@ void InitSysState(void){
  *Author:	   Simon
  *Date:		   2019��1��2������9:57:12
  **************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilter, "ramfuncs")
+#endif
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
     static int isFirstTimeExcuted = 1;
@@ -976,9 +715,13 @@ double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double Measur
 
 	return x_now;
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilterSpeed, "ramfuncs")
+#endif
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
+    static int isFirstTimeExcuted = 1;
+
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
@@ -992,6 +735,13 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 
 	double kg;
 
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
+
 	x_mid = x_last;
 	p_mid = p_last + Q;
 
@@ -1003,10 +753,14 @@ double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilterForce, "ramfuncs")
+#endif
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
 
+    static int isFirstTimeExcuted = 1;
+
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
@@ -1019,6 +773,13 @@ double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double M
 	double p_now;
 
 	double kg;
+
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
 
 	x_mid = x_last;
 	p_mid = p_last + Q;
@@ -1032,9 +793,13 @@ double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double M
 
 	return x_now;
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(KalmanFilterAccel, "ramfuncs")
+#endif
 double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
 {
+    static int isFirstTimeExcuted = 1;
+
 	double R = MeasureNoise_R;
 	double Q = ProcessNiose_Q;
 
@@ -1047,6 +812,13 @@ double KalmanFilterAccel(const double ResrcData, double ProcessNiose_Q, double M
 	double p_now;
 
 	double kg;
+
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
 
 	x_mid = x_last;
 	p_mid = p_last + Q;
@@ -1082,7 +854,9 @@ void EnablePwmOutput(void){
 	Enable_KZ_P_DSP();
 	Enable_KZ_N_DSP();
 }
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(DisablePwmOutput, "ramfuncs")
+#endif
 void DisablePwmOutput(void){
 	GpioDataRegs.GPCSET.bit.GPIO87 = 1;
 	//GpioDataRegs.GPCCLEAR.bit.GPIO87 = 1; //For temp use
@@ -1120,16 +894,9 @@ void Disable_PWMD_BK(void){
 	GpioDataRegs.GPASET.bit.GPIO9 = 1;
 }
 
-/* 
-* -20mm                                                     0mm                                                      12mm 
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
-*  |                                                          |
-*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
-*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
-*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
-*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-*/
-//#pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
+#pragma CODE_SECTION(CheckStickSetion, "ramfuncs")
+#endif
 int CheckStickSetion(double val){
 	if(val <= gConfigPara.RB_MaxDistance){
 		return 0;
@@ -1203,89 +970,6 @@ int CheckStickSetion(double val){
 	else{
 		return 23;
 	}
-}
-/* 
-* -20mm                                                      0mm                                                      12mm 
-*  |<--------------------------Backwards--------------------->|<------------------------Forward------------------------->| 
-*  |                                                          |
-*  |Threshold|        ODE      | StartForce   |     Null      |     Null      | StartForce    |      ODE       |Threshold|
-*  |--Sec0---|-------Sec1------|----Sec2------|----Sec3-------|------Sec4-----|-----Sec5------|-----Sec6-------|---Sec7--|
-*  |--------TH0---------------TH1------------TH2-------------TH3-------------TH4-------------TH5---------------TH6-------|
-*  |----- -18mm ----------- -15mm -------- -10mm ----------- 0mm ----------  8mm ----------  9mm ------------ 10mm ------|
-*/
-#pragma CODE_SECTION(LocateStickDisSection, "ramfuncs")
-int LocateStickDisSection(void){
-	switch (gSysInfo.currentStickDisSection)
-	{
-	case INIT_SECTION: 
-		gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		break;
-	case 0:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if(gStickState.value  > (gSysInfo.TH0 + DEBOUNCE)){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		}
-		else{
-		    gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		}
-		break;
-	case 1:
-//        gSysInfo.coe_Force = 0.6;
-//        gSysInfo.coe_Velocity = 0.4;
-		if((gStickState.value  > (gSysInfo.TH1 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH0 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 1;
-		}
-		break;
-	case 2:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if((gStickState.value  > (gSysInfo.TH2 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH1 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 2;
-		}
-		break;
-	case 3:
-		if((gStickState.value  > (gSysInfo.TH3 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH2 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 3;
-		}
-		break;
-	case 4:
-		if((gStickState.value  > (gSysInfo.TH4 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH3 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 4;
-		}
-		break;
-	case 5:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if((gStickState.value  > (gSysInfo.TH5 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH4 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 5;
-		}
-		break;
-	case 6:
-//        gSysInfo.coe_Force = 0.6;
-//        gSysInfo.coe_Velocity = 0.4;
-		if((gStickState.value  > (gSysInfo.TH6 + DEBOUNCE)) || (gStickState.value < (gSysInfo.TH5 - DEBOUNCE))){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-			gSysInfo.lastStickDisSection = 6;
-		}
-		break;
-	case 7:
-	    gSysInfo.sek_v = 0;
-	    gSysInfo.velocity_last = 0;
-		if(gStickState.value < (gSysInfo.TH6 - DEBOUNCE)){
-			gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
-		}
-		break;
-	
-	default:
-		break;
-	}
-	return gSysInfo.currentStickDisSection;
 }
 
 double TenDisplaceElemntAverage(void){

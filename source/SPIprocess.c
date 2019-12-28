@@ -29,7 +29,9 @@ inline void Send16Clocks(void){
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(StartGetADBySpi, "ramfuncs")
+#endif
 void StartGetADBySpi(void)
 {
 	ENABLE_CNV_AD;
@@ -42,7 +44,9 @@ void StartGetADBySpi(void)
  *Author:					Simon
  *Date:						2018.10.21
  ****************************************************************/
+#if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(ReadADBySpi, "ramfuncs")
+#endif
 void ReadADBySpi(void)
 {
 	while(GpioDataRegs.GPBDAT.bit.GPIO55 == 0){

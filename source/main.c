@@ -20,20 +20,7 @@
 #include "GlobalVarAndFunc.h"
 #include "PID.h"
 
-Uint16 currentRefCollect[100] = {0};
-Uint16 voltageRefCollect[100] = {0};
-
-enum FSM {
-	INIT = 0,
-	ZERO,
-	PASSIVE,
-	DAMP,
-	SLAVE,
-	FREEZE,
-	ALARM
-};
-
-#define UART_PRINTF
+//#define UART_PRINTF
 
 #ifdef UART_PRINTF
 
@@ -89,17 +76,17 @@ void Init_Peripheral(void){
 	/*Init and config SPI*/
 	Init_SPI();
 	/*Init and config A-CAN and B-CAN */
-	Init_CAN();
+	// Init_CAN();
 	/*Init and config I2C*/
-	Init_I2C();
+	// Init_I2C();
 	/*Init and config CAP4,CAP5,CAP6*/
-	Init_CAP();
+	// Init_CAP();
 	/*Init and config QEP2*/
-	Init_QEP();
+	// Init_QEP();
 	/*PWM IO init and config*/
 	Init_PWM();
 	/*DMA init and config*/
-	Init_DMA();
+	// Init_DMA();
 }
 
 /*************************************************************
@@ -115,39 +102,6 @@ void FeedWatchDog(void){
 	POWER_BOARD_TOOGLE_WATCHDOG = TRUE;
 }
 
-void Delayfunc(Uint16 sec){
-	Uint16 i;
-	Uint16 j;
-
-	for(i = 0; i < 10000; ++i){
-		for(j = 0; j < sec; ++j){
-			asm(" NOP");
-		}
-	}
-}
-int PowerOnBIT(void){
-	//TODO   implement here, figure out what need to check, what to do if BIT fail.
-	return 0;
-}
-
-/**************************************************************
- *Name:						test_spi_tx
- *Function:					Business logic
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-void test_spi_tx(void){
-	int retry = 0;
-	while(SpiaRegs.SPISTS.bit.BUFFULL_FLAG == 1){
-		retry ++;
-		if(retry > 200){
-				//return 0;
-		}
-	}
-	SpiaRegs.SPITXBUF = 0x0001;
-}
 /**************************************************************
  *Name:						Init_gRS422RxQue
  *Function:
@@ -178,30 +132,7 @@ void Init_gRS422TxQue(void) {
 	gRS422TxQue.rear = 0;
 	memset(gRS422TxQue.txBuf, 0, sizeof(gRS422TxQue.txBuf));
 }
-/**************************************************************
- *Name:						Init_feedbackVarBuf
- *Function:
- *Input:					none
- *Output:					none
- *Author:					Simon
- *Date:						2018.10.28
- **************************************************************/
-void Init_feedbackVarBuf(void) {
-	int index;
 
-	feedbackVarBuf.maxDisplacement = 0;
-	feedbackVarBuf.maxForce = 0;
-	feedbackVarBuf.minDisplacement = 0;
-	feedbackVarBuf.minForce = 0;
-	feedbackVarBuf.sumDisplacement = 0;
-	feedbackVarBuf.sumForce = 0;
-	memset(feedbackVarBuf.displacementbuf, 0,sizeof(feedbackVarBuf.displacementbuf));
-	memset(feedbackVarBuf.forcebuf, 0, sizeof(feedbackVarBuf.forcebuf));
-	for (index = 0; index < 10; ++index) {
-		feedbackVarBuf.displacementbuf[index] = index * index + 3 * index + 2;
-		feedbackVarBuf.forcebuf[index] = index;
-	}
-}
 /**************************************************************
  *Name:						Init_gSysMonitorVar
  *Function:
@@ -225,9 +156,28 @@ void Init_gSysMonitorVar() {
 
 		gSysMonitorVar.anolog.single.var[index].count_max = 0;
 		gSysMonitorVar.anolog.single.var[index].count_min = 0;
+		gSysMonitorVar.anolog.single.var[index].value = 0;
 	}
-	gSysMonitorVar.digit.multi.var[8].valueN = 55;
-	gSysMonitorVar.digit.multi.var[8].valueP = 55;
+
+	for (index = 0; index < 16; ++index) {
+		gSysMonitorVar.anolog.multi[0].var[index].updateValue = NULL;
+		gSysMonitorVar.anolog.multi[0].var[index].max = 0;
+        gSysMonitorVar.anolog.multi[0].var[index].max2nd = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].min = 0;
+        gSysMonitorVar.anolog.multi[0].var[index].min2nd = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].count_max = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].count_min = 0;
+		gSysMonitorVar.anolog.multi[0].var[index].value = 0;
+
+		gSysMonitorVar.anolog.multi[1].var[index].updateValue = NULL;
+		gSysMonitorVar.anolog.multi[1].var[index].max = 0;
+        gSysMonitorVar.anolog.multi[1].var[index].max2nd = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].min = 0;
+        gSysMonitorVar.anolog.multi[1].var[index].min2nd = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].count_max = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].count_min = 0;
+		gSysMonitorVar.anolog.multi[1].var[index].value = 0;
+	}
 
 	for (index = 0; index < AD16bit_Total; ++index) {
 	    gSysMonitorVar.anolog.AD_16bit.var[index].max =
@@ -238,9 +188,26 @@ void Init_gSysMonitorVar() {
 	            AD16bitMaxMinInit[index][2];
 	    gSysMonitorVar.anolog.AD_16bit.var[index].min2nd =
 	            AD16bitMaxMinInit[index][3];
+		gSysMonitorVar.anolog.AD_16bit.var[index].updateValue = NULL;
+		gSysMonitorVar.anolog.AD_16bit.var[index].count_min = 0;
+		gSysMonitorVar.anolog.AD_16bit.var[index].count_max = 0;
+		gSysMonitorVar.anolog.AD_16bit.var[index].value = 0;
 	}
 
-	for (index = 0; index < 12; ++index) {
+	for (index = 0; index < 9; ++index) {
+
+		gSysMonitorVar.digit.multi.var[index].valueP = 55;
+		gSysMonitorVar.digit.multi.var[index].valueN = 55;
+		gSysMonitorVar.digit.multi.var[index].min = 55;
+		gSysMonitorVar.digit.multi.var[index].updateValue = NULL;
+	}
+
+	for (index = 0; index < 11; ++index) {
+
+		gSysMonitorVar.digit.single.var[index].valueP = 55;
+		gSysMonitorVar.digit.single.var[index].valueN = 55;
+		gSysMonitorVar.digit.single.var[index].min = 55;
+		gSysMonitorVar.digit.single.var[index].updateValue = NULL;
 	}
 }
 /**************************************************************
@@ -270,7 +237,6 @@ void InitGlobalVar(void){
 
 	Init_gRS422RxQue();
 	Init_gRS422TxQue();
-	Init_feedbackVarBuf();
 	Init_gSysMonitorVar();
 	Init_gRS422Status();
 	InitConfigParameter();
@@ -278,7 +244,7 @@ void InitGlobalVar(void){
 	InitgRx422TxEnableFlag();
 	InitGlobalVarAndFunc();
 	InitPidVar();
-	gKeyValue.displacement = 10;
+	gKeyValue.displacement = 0;
 	gKeyValue.lock = 0;
 }
 /**************************************************************
@@ -395,20 +361,20 @@ void Start_main_loop(void){
 
 	StateMachine();
 
-	Check_Power28V_M();
+	//Check_Power28V_M();
 
-	Check_Power28V();
+	//Check_Power28V();
 
-	DigitalSignalPISO();
+	//DigitalSignalPISO();
 
-	Button_Debounce1();
-	Button_Debounce2();
-	Button_Debounce3();
-	Button_Debounce4();
-	Button_Debounce5();
-	Button_Debounce6();
+	//Button_Debounce1();
+	//Button_Debounce2();
+	//Button_Debounce3();
+	//Button_Debounce4();
+	//Button_Debounce5();
+	//Button_Debounce6();
 
-	Null_Displacement_Trim();
+	//Null_Displacement_Trim();
 
 	if(IsCommonAnalogValueAbnormal() == TRUE){
 		//TODO, generate alarm and notice uppper computer
@@ -434,6 +400,7 @@ void main(void) {
 	InitSysCtrl_M();
 	/*peripheral init*/
 	Init_Peripheral();
+	checkPitchOrRoll();
 
 	InitGlobalVar();
 
@@ -442,7 +409,7 @@ void main(void) {
 	DisablePwmOutput();
 	SET_DIGIT_SER_LOAD_HIGH;
 	SET_DIGIT_SER_CLK_LOW;
-	//gSysInfo.currentHallPosition = 5;
+	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
 
 	gSysInfo.currentHallPosition = GetCurrentHallValue();
 	gSysInfo.lastTimeHalllPosition = gSysInfo.currentHallPosition;
@@ -451,22 +418,11 @@ void main(void) {
 	gConfigPara.stateCommand = 0;
 	//gConfigPara.stateCommand = 1;
 	gSysInfo.duty = 0;
-	//gSysInfo.duty = 100;
+	GpioDataRegs.GPCDAT.bit.GPIO84 = 1;
 
 	Init_Interrupt();
+	
 	ClearFault();
-	PowerOnBIT();
-//	for(i = 0; i<100; i++){
-//		while(AdcRegs.ADCST.bit.INT_SEQ1==0){
-//
-//		}
-//		currentRefCollect[i] = AdcRegs.ADCRESULT1;
-//		voltageRefCollect[i] = AdcRegs.ADCRESULT2;
-//		AdcRegs.ADCST.bit.INT_SEQ1_CLR=1;
-//	}
-	//GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
-	GpioDataRegs.GPCCLEAR.bit.GPIO84 = 1;
-	//GpioDataRegs.GPASET.bit.GPIO6 = 1;
 
 	while(1)
 	{

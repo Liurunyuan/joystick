@@ -10,14 +10,14 @@
 #define GET_ADCINB7   	((AdcRegs.ADCRESULT15) >> 4)
 #define GET_ADCINB1	    ((AdcRegs.ADCRESULT9) >> 4)
 
-/*****************Ä£ÄâÁ¿¶àÍ¨µÀBIT¼ì²âµØÖ·Î»ÉèÖÃ************/
+/*****************Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½BITï¿½ï¿½ï¿½ï¿½Ö·Î»ï¿½ï¿½ï¿½ï¿½************/
 #define SET_AD1K		(GpioDataRegs.GPADAT.bit.GPIO30)
 #define SET_AD2K		(GpioDataRegs.GPADAT.bit.GPIO29)
 #define SET_AD3K		(GpioDataRegs.GPCDAT.bit.GPIO85)
 #define SET_AD4K		(GpioDataRegs.GPBDAT.bit.GPIO39)
 /*********************************************************/
 
-/*****************Êý×ÖÁ¿¶àÍ¨µÀBIT¼ì²âÉèÖÃ******************/
+/*****************ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½BITï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½******************/
 #define GET_DIGIT_SERIAL_N   (GpioDataRegs.GPBDAT.bit.GPIO60)
 #define GET_DIGIT_SERIAL_P   (GpioDataRegs.GPBDAT.bit.GPIO59)
 
@@ -27,7 +27,7 @@
 #define SET_DIGIT_SER_LOAD_HIGH (GpioDataRegs.GPBSET.bit.GPIO53 = 1)
 #define SET_DIGIT_SER_LOAD_LOW  (GpioDataRegs.GPBCLEAR.bit.GPIO53 = 1)
 
-/***********************½ô¼±¹¦ÂÊ°åÊä³öÄ£ÄâÁ¿****************/
+/***********************ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê°ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½****************/
 #define GET_FORCE_SGN				((AdcRegs.ADCRESULT0) >> 4)
 #define GET_BUS_CURRENT_P			((AdcRegs.ADCRESULT2) >> 4)
 #define GET_28V_M					((AdcRegs.ADCRESULT4) >> 4)
@@ -80,17 +80,17 @@
 
 enum Status{
 	/*
-	 * U38Ê±ÐòÇÐ»»×´Ì¬»ú
+	 * U38Ê±ï¿½ï¿½ï¿½Ð»ï¿½×´Ì¬ï¿½ï¿½
 	 */
 	REFRESH = 1,
 	LOCK,
 	TRIGGER,
 	GETDATA
 };
-/**************************¹¦ÂÊ°åÄ£ÄâÁ¿Êý×ÖÁ¿¶¨Òå******************************************/
+/**************************ï¿½ï¿½ï¿½Ê°ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½******************************************/
 enum MULTCH_CTRLBRD_ANAL_IDX
 {
-	/* U36:CD47HC4067M  ¿ØÖÆ°åÄ£ÄâÁ¿¶àÍ¨µÀÇÐ»»Ð¾Æ¬
+	/* U36:CD47HC4067M  ï¿½ï¿½ï¿½Æ°ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ð»ï¿½Ð¾Æ¬
 	 * X0:	AGND
 	 * X1:	2V5
 	 * X2:	REF_2v5
@@ -130,7 +130,7 @@ enum MULTCH_CTRLBRD_ANAL_IDX
 
 enum MULTCH_CTRLBRD_DIGI_IDX
 {
-	/* U38: MC74HC165ADG  ¿ØÖÆ°åÊý×ÖÁ¿²¢×ª´®¶àÍ¨µÀÇÐ»»Ð¾Æ¬
+	/* U38: MC74HC165ADG  ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ð»ï¿½Ð¾Æ¬
 	 * SER: GND
 	 * A:	AVDD5V_PGOOD
 	 * B:	HAND_3V3_6
@@ -153,10 +153,10 @@ enum MULTCH_CTRLBRD_DIGI_IDX
 
 	TOTAL_CTRLBRD_MULTI_DIGIT//9
 };
-/**************************¹¦ÂÊ°åÄ£ÄâÁ¿Êý×ÖÁ¿¶¨Òå******************************************/
+/**************************ï¿½ï¿½ï¿½Ê°ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½******************************************/
 enum MULTCH_PWERBRD_ANAL_IDX
 {
-	/* UG1: CD47HC4067M  ¹¦ÂÊ°åÄ£ÄâÁ¿¶àÍ¨µÀÇÐ»»Ð¾Æ¬
+	/* UG1: CD47HC4067M  ï¿½ï¿½ï¿½Ê°ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ð»ï¿½Ð¾Æ¬
 	 *
 	 * X0:	28V_SEN_BAK
 	 * X1:	10V_BIT
@@ -232,14 +232,14 @@ struct SingleAnalogVar
 	// int zero_min
 	// int fault_zero_p
 	// int k
-	// int zero_source   Èç¹û=-1£¬³õÊ¼»¯Ê±¶ÁÈ¡£¬Èç¹û>=0£¬Ôòzero_source¾ÍÊÇÁãÎ»
+	// int zero_source   ï¿½ï¿½ï¿½=-1ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ê±ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½>=0ï¿½ï¿½ï¿½ï¿½zero_sourceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
 	UV  updateValue;
 };
 
 
 
 
-/********************ÏµÍ³Ä£ÄâÁ¿Êý¾Ý½á¹¹**************************/
+/********************ÏµÍ³Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹**************************/
 typedef struct _AnalogVar{
 	Uint16 value;
 	Uint16 max;
@@ -270,7 +270,7 @@ typedef struct _SysAnalogVar{
 	AD16bit_Channel AD_16bit;
 }SysAnalogVar;
 
-/**********************ÏµÍ³Êý×ÖÁ¿Êý¾Ý½á¹¹****************************/
+/**********************ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹****************************/
 
 typedef struct _DigitVar{
 	int valueP;
@@ -293,7 +293,7 @@ typedef struct _SysDigitVar{
 	SingleChannelD single;
 }SysDigitVar;
 
-/***********************ÏµÍ³×´Ì¬Á¿Êý¾Ý½á¹¹**********************/
+/***********************ÏµÍ³×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹**********************/
 
 typedef struct _SysMonitorVar{
 	SysAnalogVar anolog;

@@ -5,21 +5,20 @@
 #define INCLUDE_FEATURE 1
 #define EXCLUDE_FEATURE 0
 
-#define MACHINE_FRICTION 		INCLUDE_FEATURE
-#define ONLY_SPRING 	 		INCLUDE_FEATURE
-#define LINEAR_SPEED_METHOD 	EXCLUDE_FEATURE
-#define SPEED_CLOSED_LOOP 		INCLUDE_FEATURE
-#define TEN_AVERAGE 			EXCLUDE_FEATURE
+#define MACHINE_FRICTION 				INCLUDE_FEATURE
+#define ONLY_SPRING 	 				INCLUDE_FEATURE
+#define LINEAR_SPEED_METHOD 			EXCLUDE_FEATURE
+#define SPEED_CLOSED_LOOP 				INCLUDE_FEATURE
+#define TEN_AVERAGE 					EXCLUDE_FEATURE
+#define DUTY_GRADUAL_CHANGE 			INCLUDE_FEATURE
+#define TARGET_DUTY_GRADUAL_CHANGE 		INCLUDE_FEATURE
+#define COPY_FLASH_CODE_TO_RAM 			EXCLUDE_FEATURE
 
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
-#define  DEBOUNCE (0.1)
+#define  DEBOUNCE (0)
 
-//#define DIS_DIMENSION_K (-0.0017467)  // PITCH:Forward 30721 Backward 51242 K -0.001559, B 59.6805
-//#define DIS_DIMENSION_B (60.9135)    // ROLL: Left 24568 Right 45178 K -0.0017467 B 60.9135
-//#define FORCE_DIMENSION_K (0.014027)
-//#define FORCE_DIMENSION_B (-459.6276)
 #define PI (3.14149265)
 
 #define ROLL 0
@@ -149,7 +148,6 @@ typedef struct{
     double DimL_B; //dimension of length B
 	Uint16 currentHallPosition;
 	Uint16 lastTimeHalllPosition;
-	Uint16 sdoStatus;
 	int16 duty;
 	int16 currentDuty;
 	int16 dutyAddInterval;
@@ -211,6 +209,8 @@ typedef struct{
     int soft_break_flag;
     double springForceK;
     double springForceB;
+    double openLoop_Force_front_B;
+    double openLoop_Force_rear_B;
 
 }SYSINFO;
 
@@ -522,11 +522,7 @@ extern double gDebug[3];
 extern int gPISO_165[8];
 extern int gButtonCmd[6];
 extern int gButtonStatus[6];
-extern int bounceCnt;
-extern int gD;
-extern int gStateMachineIndex;
-extern int gStateMachineIndexBak;
-extern double gBounceDisplace;
+
 
 extern ANOLOG16BIT gAnalog16bit;
 extern TENAVE gTenAverageArray;
@@ -552,7 +548,6 @@ void Enable_PWMD_BK(void);
 void Disable_PWMD_BK(void);
 void ControleStateMachineSwitch(int value);
 void InitGlobalVarAndFunc(void);
-int LocateStickDisSection(void);
 double TenDisplaceElemntAverage(void);
 void DigitalSignalPISO(void);
 void Button_Debounce1(void);
