@@ -165,98 +165,152 @@ void findSpringForceK(double displace){
         break;
     case 9:
         if(gStickState.value  > (gConfigPara.RB_EmptyDistance + DEBOUNCE)){
+            //rear start force
             gSysInfo.currentStickDisSection = 10;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
+            gSysInfo.soft_break_flag = 0;
+
         }
         else if(gStickState.value < (gConfigPara.RB_Distance2 - DEBOUNCE)){
             gSysInfo.currentStickDisSection = 8;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[4];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[4];
+            gSysInfo.soft_break_flag = 0;
         }
         else{
+            //rear ode
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[3];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[3];
+            gSysInfo.soft_break_flag = 0;
         }
         break;
     case 10:
         if(gStickState.value  > (gConfigPara.RB_Distance1 + DEBOUNCE)){
+            //rear Null distance
             gSysInfo.currentStickDisSection = 11;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[1];
+            gSysInfo.soft_break_flag = 0;
         }
         else if(gStickState.value < (gConfigPara.RB_EmptyDistance - DEBOUNCE)){
+            //rear ode
             gSysInfo.currentStickDisSection = 9;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[3];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[3];
+            gSysInfo.soft_break_flag = 0;
         }
         else{
-            gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
-            gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
+            //rear start force
+//            gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
+//            gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
+            if(gExternalForceState.value < -8){
+                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[3];
+                gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[3];
+                gSysInfo.soft_break_flag = 0;
+            }
+            else{
+                            gSysInfo.soft_break_flag = 1;
+                            gSysInfo.targetDuty = 0;
+            }
+
         }
         break;
     case 11:
         if(gStickState.value  > (gConfigPara.RB_Distance0 + DEBOUNCE)){
+            //front null distance
             gSysInfo.currentStickDisSection = 12;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[1];
+            gSysInfo.soft_break_flag = 0;
         }
         else if(gStickState.value < (gConfigPara.RB_Distance1 - DEBOUNCE)){
+            // rear start force
             gSysInfo.currentStickDisSection = 10;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
+            gSysInfo.soft_break_flag = 0;
         }
         else{
+            //rear null distance
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[1];
+            gSysInfo.soft_break_flag = 0;
         }
         break;
     case 12:
         if(gStickState.value  > (gConfigPara.LF_Distance1 + DEBOUNCE)){
+            //front start force
             gSysInfo.currentStickDisSection = 13;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
+            gSysInfo.soft_break_flag = 0;
         }
         else if(gStickState.value < (gConfigPara.LF_Distance0 - DEBOUNCE)){
+            //rear null distance
             gSysInfo.currentStickDisSection = 11;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[1];
+            gSysInfo.soft_break_flag = 0;
         }
         else{
+            //front null distance
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[1];
+            gSysInfo.soft_break_flag = 0;
         }
         break;
     case 13:
         if(gStickState.value  > (gConfigPara.LF_EmptyDistance + DEBOUNCE)){
+            //front ode
             gSysInfo.currentStickDisSection = 14;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
+            gSysInfo.soft_break_flag = 0;
         }
         else if(gStickState.value < (gConfigPara.LF_Distance1 - DEBOUNCE)){
+            //front null distance
             gSysInfo.currentStickDisSection = 12;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[1];
+            gSysInfo.soft_break_flag = 0;
         }
         else{
-            gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
-            gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
+            //front start force
+//            gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
+//            gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
+            if(gExternalForceState.value > 8){
+                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
+                gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
+                gSysInfo.soft_break_flag = 0;
+            }
+            else{
+                            gSysInfo.soft_break_flag = 1;
+                            gSysInfo.targetDuty = 0;
+            }
+
         }
         break;
     case 14:
         if(gStickState.value  > (gConfigPara.LF_Distance2 + DEBOUNCE)){
+            //front ode 2
             gSysInfo.currentStickDisSection = 15;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[4];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[4];
+            gSysInfo.soft_break_flag = 0;
         }
         else if(gStickState.value < (gConfigPara.LF_EmptyDistance - DEBOUNCE)){
+            //front start force
             gSysInfo.currentStickDisSection = 13;
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
+            gSysInfo.soft_break_flag = 0;
         }
         else{
+            //front ode
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
+            gSysInfo.soft_break_flag = 0;
         }
         break;
     case 15:

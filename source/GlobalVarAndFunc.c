@@ -492,7 +492,7 @@ void InitConfigParameter(void){
         gConfigPara.RB_StartForce = -5;
 
         gConfigPara.LF_Force0 = 0;
-        gConfigPara.LF_Force1 = 1;
+        gConfigPara.LF_Force1 = 0;
         gConfigPara.LF_Force2 = 8;
         gConfigPara.LF_Force3 = 11;
         gConfigPara.LF_Force4 = 14;
@@ -504,7 +504,7 @@ void InitConfigParameter(void){
         gConfigPara.LF_MaxForce = 35;
 
         gConfigPara.RB_Force0 = 0;
-        gConfigPara.RB_Force1 = -1;
+        gConfigPara.RB_Force1 = 0;
         gConfigPara.RB_Force2 = -8;
         gConfigPara.RB_Force3 = -11;
         gConfigPara.RB_Force4 = -17;
@@ -516,7 +516,7 @@ void InitConfigParameter(void){
         gConfigPara.RB_MaxForce = -50;
 
         gConfigPara.LF_Distance0 = 0;
-        gConfigPara.LF_Distance1 = 0.5;
+        gConfigPara.LF_Distance1 = 0.75;
         gConfigPara.LF_Distance2 = 2;
         gConfigPara.LF_Distance3 = 3;
         gConfigPara.LF_Distance4 = 4;
@@ -528,7 +528,7 @@ void InitConfigParameter(void){
         gConfigPara.LF_MaxDistance = 11;
 
         gConfigPara.RB_Distance0 = 0;
-        gConfigPara.RB_Distance1 = -0.5;
+        gConfigPara.RB_Distance1 = -0.75;
         gConfigPara.RB_Distance2 = -2;
         gConfigPara.RB_Distance3 = -3;
         gConfigPara.RB_Distance4 = -5;
@@ -548,7 +548,7 @@ void InitConfigParameter(void){
          gConfigPara.RB_StartForce = -5;
 
          gConfigPara.LF_Force0 = 0;
-         gConfigPara.LF_Force1 = 1;
+         gConfigPara.LF_Force1 = 0;
          gConfigPara.LF_Force2 = 8;
          gConfigPara.LF_Force3 = 11;
          gConfigPara.LF_Force4 = 14;
@@ -560,7 +560,7 @@ void InitConfigParameter(void){
          gConfigPara.LF_MaxForce = 56;
 
          gConfigPara.RB_Force0 = 0;
-         gConfigPara.RB_Force1 = -1;
+         gConfigPara.RB_Force1 = 0;
          gConfigPara.RB_Force2 = -8;
          gConfigPara.RB_Force3 = -11;
          gConfigPara.RB_Force4 = -14;
@@ -572,7 +572,7 @@ void InitConfigParameter(void){
          gConfigPara.RB_MaxForce = -56;
 
          gConfigPara.LF_Distance0 = 0;
-         gConfigPara.LF_Distance1 = 0.5;
+         gConfigPara.LF_Distance1 = 0.75;
          gConfigPara.LF_Distance2 = 2;
          gConfigPara.LF_Distance3 = 3;
          gConfigPara.LF_Distance4 = 4;
@@ -584,7 +584,7 @@ void InitConfigParameter(void){
          gConfigPara.LF_MaxDistance = 18;
 
          gConfigPara.RB_Distance0 = 0;
-         gConfigPara.RB_Distance1 = -0.5;
+         gConfigPara.RB_Distance1 = -0.75;
          gConfigPara.RB_Distance2 = -2;
          gConfigPara.RB_Distance3 = -3;
          gConfigPara.RB_Distance4 = -4;
