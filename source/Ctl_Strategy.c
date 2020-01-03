@@ -223,7 +223,7 @@ void findSpringForceK(double displace){
             //rear start force
 //            gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
 //            gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
-            if((gExternalForceState.value < -8) || (gExternalForceState.value > 0)){
+            if((gExternalForceState.value < (gConfigPara.RB_StartForce - gConfigPara.LF_FrontFriction)) || (gExternalForceState.value > 0)){
                 gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[3];
                 gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[3];
                 gSysInfo.soft_break_flag = 0;
@@ -242,14 +242,14 @@ void findSpringForceK(double displace){
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[1];
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((3 - gExternalForceState.value)* 150);
+                tmp = (int32)((gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)((-3 - gExternalForceState.value)* 150);
+                tmp = (int32)((-gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -271,14 +271,14 @@ void findSpringForceK(double displace){
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[1];
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((3 - gExternalForceState.value)* 150);
+                tmp = (int32)((gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)((-3 - gExternalForceState.value)* 150);
+                tmp = (int32)((-gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -303,14 +303,14 @@ void findSpringForceK(double displace){
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[1];
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((3 - gExternalForceState.value)* 150);
+                tmp = (int32)((gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)((-3 - gExternalForceState.value)* 150);
+                tmp = (int32)((-gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -325,14 +325,14 @@ void findSpringForceK(double displace){
             gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[1];
             gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[1];
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((3 - gExternalForceState.value)* 150);
+                tmp = (int32)((gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)((-3 - gExternalForceState.value)* 150);
+                tmp = (int32)((-gConfigPara.LF_FrontFriction - gExternalForceState.value)* 150);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -379,7 +379,7 @@ void findSpringForceK(double displace){
             //front start force
 //            gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
 //            gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
-            if(gExternalForceState.value > 8 || (gExternalForceState.value < 0)){
+            if(gExternalForceState.value > (gConfigPara.LF_StartForce + gConfigPara.LF_FrontFriction) || (gExternalForceState.value < 0)){
                 gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
                 gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
                 gSysInfo.soft_break_flag = 0;
