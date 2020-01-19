@@ -30,6 +30,7 @@
 void Timer0_ISR_Thread(void){
 
 	static unsigned char count = 0;
+	static unsigned char trim_time_count = 0;
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
 	static int flag = 0;
@@ -74,6 +75,33 @@ void Timer0_ISR_Thread(void){
 
 		clearSum();
 		gKeyValue.lock = 0;
+	}
+
+	if(trim_time_count == 1000){
+	    trim_time_count = 0;
+	    if(gButtonStatus[FWRD_SWITCH] == BTN_PRESSED){
+	        if(gSysInfo.DimL_B < 56.2728){
+	            gSysInfo.DimL_B = 56.2728;
+	        }
+	        else{
+	            gSysInfo.DimL_B = 63.2728 - gConfigPara.Trim_Speed * 0.2;
+	        }
+	    }
+	    else if(gButtonStatus[REAR_SWITCH] == BTN_PRESSED){
+            if(gSysInfo.DimL_B > 75.2728){
+                gSysInfo.DimL_B = 75.2728;
+            }
+            else{
+                gSysInfo.DimL_B = 63.2728 + gConfigPara.Trim_Speed * 0.2;
+            }
+	    }
+	    else{
+	        gSysInfo.DimL_B = gSysInfo.DimL_B;
+	    }
+	}
+	else{
+	    trim_time_count ++;
+	    gSysInfo.DimL_B = gSysInfo.DimL_B;
 	}
 }
 /**************************************************************

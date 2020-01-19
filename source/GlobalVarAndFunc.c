@@ -620,7 +620,7 @@ void InitConfigParameter(void){
 
 	gConfigPara.Trim_StepSize = 0;
 
-	gConfigPara.Trim_Speed = 0;
+	gConfigPara.Trim_Speed = 2; //unit mm/s
 
 	gConfigPara.timeDelay = 0;
 

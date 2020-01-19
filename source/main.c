@@ -365,14 +365,14 @@ void Start_main_loop(void){
 
 	//Check_Power28V();
 
-	//DigitalSignalPISO();
+	DigitalSignalPISO();
 
-	//Button_Debounce1();
-	//Button_Debounce2();
-	//Button_Debounce3();
-	//Button_Debounce4();
-	//Button_Debounce5();
-	//Button_Debounce6();
+	Button_Debounce1();
+	Button_Debounce2();
+	Button_Debounce3();
+	Button_Debounce4();
+	Button_Debounce5();
+	Button_Debounce6();
 
 	//Null_Displacement_Trim();
 
