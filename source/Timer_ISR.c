@@ -79,24 +79,47 @@ void Timer0_ISR_Thread(void){
 
 	if(trim_time_count == 1000){
 	    trim_time_count = 0;
-	    if(gButtonStatus[FWRD_SWITCH] == BTN_PRESSED){
-	        if(gSysInfo.DimL_B < 56.2728){
-	            gSysInfo.DimL_B = 56.2728;
+	    if(gSysInfo.board_type == PITCH){
+	        if(gButtonStatus[FWRD_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B < 56.2728){
+	                gSysInfo.DimL_B = 56.2728;
+	            }
+	            else{
+	                gSysInfo.DimL_B = 63.2728 - gConfigPara.Trim_Speed * 0.2;
+	            }
+	        }
+	        else if(gButtonStatus[REAR_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B > 75.2728){
+	                gSysInfo.DimL_B = 75.2728;
+	            }
+	            else{
+	                gSysInfo.DimL_B = 63.2728 + gConfigPara.Trim_Speed * 0.2;
+	            }
 	        }
 	        else{
-	            gSysInfo.DimL_B = 63.2728 - gConfigPara.Trim_Speed * 0.2;
+	            gSysInfo.DimL_B = gSysInfo.DimL_B;
 	        }
 	    }
-	    else if(gButtonStatus[REAR_SWITCH] == BTN_PRESSED){
-            if(gSysInfo.DimL_B > 75.2728){
-                gSysInfo.DimL_B = 75.2728;
-            }
-            else{
-                gSysInfo.DimL_B = 63.2728 + gConfigPara.Trim_Speed * 0.2;
-            }
-	    }
 	    else{
-	        gSysInfo.DimL_B = gSysInfo.DimL_B;
+	        if(gButtonStatus[LEFT_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B < 46.9135){
+	                gSysInfo.DimL_B = 46.9135;
+	            }
+	            else{
+	                gSysInfo.DimL_B = 57.9135 - gConfigPara.Trim_Speed * 0.2;
+	            }
+	        }
+	        else if(gButtonStatus[RGHT_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B > 68.9135){
+	                gSysInfo.DimL_B = 68.9135;
+	            }
+	            else{
+	                gSysInfo.DimL_B = 57.9135 + gConfigPara.Trim_Speed * 0.2;
+	            }
+	        }
+	        else{
+	            gSysInfo.DimL_B = gSysInfo.DimL_B;
+	        }
 	    }
 	}
 	else{
