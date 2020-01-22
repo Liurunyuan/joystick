@@ -550,6 +550,7 @@ void OnlyWithSpringFront(void){
 	double mass;
 	double inertial_force;
 	double B_F = 0;
+	double friction;
 #if(TARGET_DUTY_GRADUAL_CHANGE == INCLUDE_FEATURE)
     int tempDuty = 0;
 #endif
@@ -562,11 +563,21 @@ void OnlyWithSpringFront(void){
     k = gSysInfo.springForceK;
 	kb = gSysInfo.springForceB;
 
-	mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
+    if((gSysInfo.currentStickDisSection > 11) && (gSysInfo.currentStickDisSection < 14)){
+        mass = (3 * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
+    }
+    else if((gSysInfo.currentStickDisSection > 9) && (gSysInfo.currentStickDisSection < 12)){
+        mass = (-3 * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
+    }
+    else{
+        mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
+    }
+
+//	mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
     gSysPara.mass = mass;
 
 	spring_force = k * gStickState.value + kb;
-	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
+//	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
 	inertial_force = mass * gKeyValue.motorAccel;
 
 //	if(gAccelDirection.accelDirection == STOP_DIRECTION){
@@ -576,11 +587,22 @@ void OnlyWithSpringFront(void){
 //	    inertial_force = -inertial_force;
 //	}
 
-	force_openLoop = spring_force + damp_force - gSysInfo.friction + inertial_force;
+//	friction = gSysInfo.friction;
+	if((gSysInfo.currentStickDisSection > 9) && (gSysInfo.currentStickDisSection < 14)){
+	    friction = 0;
+	    damp_force = 0;
+	}
+	else{
+	    friction = gSysInfo.friction;
+	    damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
+	}
+
+
+	force_openLoop = spring_force + damp_force - friction + inertial_force;
 	force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
 	force_closeLoop = -force_closeLoop;
 
-	gSysInfo.ob_velocityOpenLoop = force_openLoop;
+	gSysInfo.ob_velocityOpenLoop = inertial_force;
 
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
         B_F = gSysInfo.openLoop_Force_front_B;
