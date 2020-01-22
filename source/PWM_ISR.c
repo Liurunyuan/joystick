@@ -31,7 +31,8 @@ void UpdateKeyValue(void) {
 #endif
 	CalFuncParaSpeed(gKeyValue.motorSpeed, calSpeedCnt);
 	++calSpeedCnt;
-	if(calSpeedCnt >= 10){
+	//for 3 points
+	if(calSpeedCnt >= 3){
 		funcParaSpeed = calFuncParaSpeed(sumParaSpeed);
 		gKeyValue.motorAccel = KalmanFilterAccel(1000 * funcParaSpeed.b, 1, 150);
 		calSpeedCnt = 0;
