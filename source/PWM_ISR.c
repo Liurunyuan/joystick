@@ -18,7 +18,7 @@ void UpdateKeyValue(void) {
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
 	// gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
 	//for 3 points, need to change here
-	gKeyValue.displacement = funcParaDisplacement.b * 0.075 + funcParaDisplacement.c;
+	gKeyValue.displacement = funcParaDisplacement.b * 0.175 + funcParaDisplacement.c;
 	
 
 #if(LINEAR_SPEED_METHOD == INCLUDE_FEATURE)
@@ -32,7 +32,7 @@ void UpdateKeyValue(void) {
 	CalFuncParaSpeed(gKeyValue.motorSpeed, calSpeedCnt);
 	++calSpeedCnt;
 	//for 3 points
-	if(calSpeedCnt >= 3){
+	if(calSpeedCnt >= 7){
 		funcParaSpeed = calFuncParaSpeed(sumParaSpeed);
 		gKeyValue.motorAccel = KalmanFilterAccel(1000 * funcParaSpeed.b, 1, 150);
 		calSpeedCnt = 0;

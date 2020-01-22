@@ -14,7 +14,7 @@
 
 // #define N (300)
 //for 3 points, need to change the value of N
-#define N (1000)
+#define N (700)
 #define RS422STATUSCHECK (1000)
 
 
