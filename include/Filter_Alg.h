@@ -6,7 +6,7 @@
 //#define TWENTY_POINTS
 
 #ifdef TEN_POINTS
-#define DATA_AMOUNT (10)
+#define DATA_AMOUNT (3) //for 3 points. change this value.
 #endif
 
 #ifdef TWENTY_POINTS

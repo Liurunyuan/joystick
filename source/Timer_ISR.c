@@ -12,7 +12,9 @@
 #include <stdio.h>
 #include <math.h>
 
-#define N (300)
+// #define N (300)
+//for 3 points, need to change the value of N
+#define N (1000)
 #define RS422STATUSCHECK (1000)
 
 

@@ -106,7 +106,8 @@ void Init_Interrupt(void)
 {
 	//��ʼ��CPU_T0
 		InitCpuTimers();
-		ConfigCpuTimer(&CpuTimer0, 120, 200);//t = freq * priod/150000000,0.2ms
+		// ConfigCpuTimer(&CpuTimer0, 120, 200);//t = freq * priod/150000000,0.2ms
+		ConfigCpuTimer(&CpuTimer0, 120, 75);// for 3points, time period set to 0.075ms
 	    CpuTimer0Regs.TCR.bit.TIE= 1;
 	    CpuTimer0Regs.TCR.bit.TSS = 0;
 		ConfigCpuTimer(&CpuTimer1, 120, 10000);

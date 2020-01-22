@@ -16,7 +16,10 @@ void UpdateKeyValue(void) {
 	static int calSpeedCnt = 0;
 
 	funcParaDisplacement = calFuncPara(sumParaDisplacement);
-	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+	// gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+	//for 3 points, need to change here
+	gKeyValue.displacement = funcParaDisplacement.b * 0.075 + funcParaDisplacement.c;
+	
 
 #if(LINEAR_SPEED_METHOD == INCLUDE_FEATURE)
 	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.050625 + funcParaDisplacement.b * 0.225)/0.225, KALMAN_Q, KALMAN_R); 

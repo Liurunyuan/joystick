@@ -12,12 +12,20 @@
 //#define SUMXPOW5 120825L
 //#define SUMXPOW6 978405L
 
-#define SUMX (1.125)
-#define SUMXPOW2 (0.178125)
-#define SUMXPOW3 (0.031641)
-#define SUMXPOW4 (0.005989)
-#define SUMXPOW5 (0.001180)
-#define SUMXPOW6 (0.000239)
+// #define SUMX (1.125)
+// #define SUMXPOW2 (0.178125)
+// #define SUMXPOW3 (0.031641)
+// #define SUMXPOW4 (0.005989)
+// #define SUMXPOW5 (0.001180)
+// #define SUMXPOW6 (0.000239)
+
+// for 3 points, need to change the value here
+#define SUMX (0.075)
+#define SUMXPOW2 (0.003125)
+#define SUMXPOW3 (0.000140625)
+#define SUMXPOW4 (0.000006640625)
+#define SUMXPOW5 (0.000000322265625)
+#define SUMXPOW6 (0.000000015869140625)
 
 #define SUMXSPEED (11.25)
 #define SUMXPOW2SPEED (17.8125)
@@ -124,7 +132,9 @@ FuncPara calFuncParaSpeed(SumPara sumPara){
 #pragma CODE_SECTION(CalFuncParaSpeed, "ramfuncs")
 #endif
 void CalFuncParaSpeed(double speed, int count){
-    double tmpCount = count * 0.25;
+	//for 3 points, need to change here
+    // double tmpCount = count * 0.25;
+	double tmpCount = count * 0.075;
 	sumParaSpeed.sum_XY += tmpCount * speed;
 	sumParaSpeed.sum_Xpow2Y += tmpCount * tmpCount * speed;
 	sumParaSpeed.sum_Y += speed;
