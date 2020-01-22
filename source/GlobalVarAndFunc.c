@@ -151,6 +151,9 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.springForceK = 0;
     gSysInfo.springForceB = 0;
     gSysInfo.zeroForce = 0;
+
+    gSysInfo.pointsToCalSpeed = 7;
+    gSysInfo.pointsToCalAccel = 7;
 }
 
 void checkPitchOrRoll(void){

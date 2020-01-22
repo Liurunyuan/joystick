@@ -1,6 +1,8 @@
 #ifndef _GLOBAL_VAR_AND_FUNC_H
 #define _GLOBAL_VAR_AND_FUNC_H
 
+#include "DSP2833x_Device.h"
+
 
 #define INCLUDE_FEATURE 1
 #define EXCLUDE_FEATURE 0
@@ -211,6 +213,8 @@ typedef struct{
     double springForceB;
     double openLoop_Force_front_B;
     double openLoop_Force_rear_B;
+	 int pointsToCalSpeed;
+	 int pointsToCalAccel;
 
 }SYSINFO;
 

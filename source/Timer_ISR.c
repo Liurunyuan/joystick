@@ -14,7 +14,7 @@
 
 // #define N (300)
 //for 3 points, need to change the value of N
-#define N (700)
+#define N (3000)
 #define RS422STATUSCHECK (1000)
 
 
@@ -41,7 +41,7 @@ void Timer0_ISR_Thread(void){
 
 	++count;
 
-	if(count > N){
+	if(count > (N / gSysInfo.pointsToCalSpeed)){
 		PackRS422TxData();
 		count = 0;
 	}

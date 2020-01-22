@@ -13,6 +13,7 @@
 
 #include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
 #include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
+#include "GlobalVarAndFunc.h"
 
 //---------------------------------------------------------------------------
 // InitPieCtrl: 
@@ -107,7 +108,7 @@ void Init_Interrupt(void)
 	//��ʼ��CPU_T0
 		InitCpuTimers();
 		// ConfigCpuTimer(&CpuTimer0, 120, 200);//t = freq * priod/150000000,0.2ms
-		ConfigCpuTimer(&CpuTimer0, 120, 175);// for 7points, time period set to 0.175ms
+		ConfigCpuTimer(&CpuTimer0, 120, gSysInfo.pointsToCalSpeed * 25);// for 7points, time period set to 0.175ms
 	    CpuTimer0Regs.TCR.bit.TIE= 1;
 	    CpuTimer0Regs.TCR.bit.TSS = 0;
 		ConfigCpuTimer(&CpuTimer1, 120, 10000);

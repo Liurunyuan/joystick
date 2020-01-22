@@ -37,6 +37,7 @@ FuncPara calFuncPara(SumPara sumPara);
 FuncPara calFuncParaSpeed(SumPara sumPara);
 void clearSumSpeed(void);
 void clearSum(void);
+void InitFilterAlg(int pointsSpeed, int pointsAcc);
 
 extern FuncPara funcParaDisplacement;
 extern FuncPara funcParaDisplacementb;

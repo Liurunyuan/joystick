@@ -1,5 +1,6 @@
 #include <math.h>
 #include "Filter_Alg.h"
+#include "GlobalVarAndFunc.h"
 
 #define FIRST_ORDER   (1)
 #define SECOND_ORDER  (0)
@@ -126,9 +127,9 @@ FuncPara calFuncParaSpeed(SumPara sumPara){
 	double temp,temp0,temp1;
 	FuncPara funcPara;
 
-	temp = (DATA_AMOUNT * sumParaSpeed.sum_Xpow2) - (sumParaSpeed.sum_X * sumParaSpeed.sum_X); 
+	temp = (gSysInfo.pointsToCalAccel * sumParaSpeed.sum_Xpow2) - (sumParaSpeed.sum_X * sumParaSpeed.sum_X); 
 	temp0 = (sumParaSpeed.sum_Y * sumParaSpeed.sum_Xpow2) - (sumParaSpeed.sum_X * sumParaSpeed.sum_XY);
-	temp1 = (DATA_AMOUNT * sumParaSpeed.sum_XY) - (sumParaSpeed.sum_Y * sumParaSpeed.sum_X);
+	temp1 = (gSysInfo.pointsToCalAccel * sumParaSpeed.sum_XY) - (sumParaSpeed.sum_Y * sumParaSpeed.sum_X);
 	funcPara.c = temp0 / temp;
 	funcPara.b = temp1 / temp;
 	funcPara.a = 0;
@@ -141,7 +142,7 @@ FuncPara calFuncParaSpeed(SumPara sumPara){
 void CalFuncParaSpeed(double speed, int count){
 	//for 3 points, need to change here
     // double tmpCount = count * 0.25;
-	double tmpCount = count * 0.175;
+	double tmpCount = count * 0.025 * gSysInfo.pointsToCalSpeed;
 	sumParaSpeed.sum_XY += tmpCount * speed;
 	sumParaSpeed.sum_Xpow2Y += tmpCount * tmpCount * speed;
 	sumParaSpeed.sum_Y += speed;
@@ -181,9 +182,9 @@ FuncPara calFuncPara(SumPara sumPara){
 	double temp,temp0,temp1;
 	FuncPara funcPara;
 
-	temp = (DATA_AMOUNT * sumPara.sum_Xpow2) - (sumPara.sum_X * sumPara.sum_X); 
+	temp = (gSysInfo.pointsToCalSpeed * sumPara.sum_Xpow2) - (sumPara.sum_X * sumPara.sum_X); 
 	temp0 = (sumPara.sum_Y * sumPara.sum_Xpow2) - (sumPara.sum_X * sumPara.sum_XY);
-	temp1 = (DATA_AMOUNT * sumPara.sum_XY) - (sumPara.sum_Y * sumPara.sum_X);
+	temp1 = (gSysInfo.pointsToCalSpeed * sumPara.sum_XY) - (sumPara.sum_Y * sumPara.sum_X);
 	funcPara.c = temp0 / temp;
 	funcPara.b = temp1 / temp;
 	funcPara.a = 0;
@@ -202,3 +203,71 @@ void CalFuncPara(double force, double displace, int count){
 	sumParaDisplacement.sum_Y += displace;
 }
 
+void InitFilterAlg(int pointsSpeed, int pointsAcc)
+{
+	int i = 0;
+	double x = 0.025;
+	double x2 = 0.025;
+	
+	x2 = x * pointsSpeed;
+	
+	double sum = 0;
+	
+	for(i = 0; i < pointsSpeed; ++i)
+	{
+		sum = sum + pow(x,1);
+	}
+	sumParaDisplacement.sum_X = sum;
+	sum = 0;
+
+	for(i = 0; i < pointsSpeed; ++i)
+	{
+		sum = sum + pow(x,2);
+	}
+	sumParaDisplacement.sum_Xpow2 = sum;
+	sum = 0;
+
+	for(i = 0; i < pointsSpeed; ++i)
+	{
+		sum = sum + pow(x,3);
+	}
+	sumParaDisplacement.sum_Xpow3 = sum;
+	sum = 0;
+
+	for(i = 0; i < pointsSpeed; ++i)
+	{
+		sum = sum + pow(x,4);
+	}
+	sumParaDisplacement.sum_Xpow4 = sum;
+	sum = 0;
+
+	//pointsAcc
+
+	for(i = 0; i < pointsAcc; ++i)
+	{
+		sum = sum + pow(x2,1);
+	}
+	sumParaSpeed.sum_X = sum;
+	sum = 0;
+
+	for(i = 0; i < pointsAcc; ++i)
+	{
+		sum = sum + pow(x2,2);
+	}
+	sumParaSpeed.sum_Xpow2 = sum;
+	sum = 0;
+
+	for(i = 0; i < pointsAcc; ++i)
+	{
+		sum = sum + pow(x2,3);
+	}
+	sumParaSpeed.sum_Xpow3 = sum;
+	sum = 0;
+
+	for(i = 0; i < pointsAcc; ++i)
+	{
+		sum = sum + pow(x2,4);
+	}
+	sumParaSpeed.sum_Xpow4 = sum;
+	sum = 0;
+}

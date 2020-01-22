@@ -19,6 +19,7 @@
 #include "PWM_ISR.h"
 #include "GlobalVarAndFunc.h"
 #include "PID.h"
+#include "Filter_Alg.h"
 
 //#define UART_PRINTF
 
@@ -405,6 +406,8 @@ void main(void) {
 	InitGlobalVar();
 
 	UpdateForceDisplaceCurve();
+
+	// InitFilterAlg(gSysInfo.pointsToCalSpeed,gSysInfo.pointsToCalAccel);
 	/*interrupt init*/
 	DisablePwmOutput();
 	SET_DIGIT_SER_LOAD_HIGH;
