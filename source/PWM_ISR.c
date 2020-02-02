@@ -162,9 +162,7 @@ void SwitchDirection(void){
 	switch (gSysInfo.currentHallPosition) {
 		case 3://A+ ---------------> C-
 
-			if((3 == gSysInfo.lastTimeHalllPosition )
-				|| (2 == gSysInfo.lastTimeHalllPosition)
-				|| (1 == gSysInfo.lastTimeHalllPosition)){
+			if(3 == gSysInfo.lastTimeHalllPosition){
 
 				//APositiveToCNegtive();
 				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
@@ -173,11 +171,28 @@ void SwitchDirection(void){
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+			else if(1 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+			    gSysInfo.rotateDirection = 0; //0 means backward, 1 means forward
+			}
+			else if(2 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+			    gSysInfo.rotateDirection = 1; //0 means backward, 1 means forward
+			}
+			else{
+			    //TODO report error
+			}
 			break;
 		case 1://B+ ---------------> C-
-			if((1 == gSysInfo.lastTimeHalllPosition )
-				|| (3 == gSysInfo.lastTimeHalllPosition)
-				|| (5 == gSysInfo.lastTimeHalllPosition)){
+			if(1 == gSysInfo.lastTimeHalllPosition){
 
 				//BPositiveToCNegtive();
 				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
@@ -186,11 +201,28 @@ void SwitchDirection(void){
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+            else if(5 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(3 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 5://B+ ---------------> A-
-			if((5 == gSysInfo.lastTimeHalllPosition )
-				|| (1 == gSysInfo.lastTimeHalllPosition)
-				|| (4 == gSysInfo.lastTimeHalllPosition)){
+			if(5 == gSysInfo.lastTimeHalllPosition){
 
 				//BPositiveToANegtive();
 				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
@@ -199,11 +231,28 @@ void SwitchDirection(void){
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 			}
+            else if(4 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(1 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 4://C+ ---------------> A-
-			if((4 == gSysInfo.lastTimeHalllPosition )
-				|| (5 == gSysInfo.lastTimeHalllPosition)
-				|| (6 == gSysInfo.lastTimeHalllPosition)){
+			if(4 == gSysInfo.lastTimeHalllPosition){
 
 				//CPositiveToANegtive();
 				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
@@ -212,11 +261,28 @@ void SwitchDirection(void){
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+            else if(6 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(5 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 6://C+ ---------------> B-
-			if((6 == gSysInfo.lastTimeHalllPosition )
-				|| (4 == gSysInfo.lastTimeHalllPosition)
-				|| (2 == gSysInfo.lastTimeHalllPosition)){
+			if(6 == gSysInfo.lastTimeHalllPosition){
 
 				//CPositiveToBNegtive();
 				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
@@ -225,11 +291,28 @@ void SwitchDirection(void){
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+            else if(2 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(4 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 2://A+ ---------------> B-
-			if((2 == gSysInfo.lastTimeHalllPosition )
-				|| (6 == gSysInfo.lastTimeHalllPosition)
-				|| (3 == gSysInfo.lastTimeHalllPosition)){
+			if(2 == gSysInfo.lastTimeHalllPosition){
 
 				//APositiveToBNegtive();
 				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
@@ -238,6 +321,25 @@ void SwitchDirection(void){
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 			}
+            else if(3 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(6 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		default:
 			gSysState.erro.bit.software = TRUE;

@@ -211,6 +211,9 @@ typedef struct{
     double springForceB;
     double openLoop_Force_front_B;
     double openLoop_Force_rear_B;
+    int isEcapRefresh;
+    double JoyStickSpeed;
+    int rotateDirection;
 
 }SYSINFO;
 
@@ -510,6 +513,7 @@ extern ROTATEDIRECTION gRotateDirection;
 extern ACCELDIRECTION gAccelDirection;
 
 extern Uint32 gECapCount;
+//extern int16 gMotorSpeedEcap;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
 extern SYSINFO gSysInfo;
@@ -534,6 +538,7 @@ extern int gCheckStartForceBackwardMargin;
 void checkPitchOrRoll(void);
 void InitSysState(void);
 void InitConfigParameter(void);
+double KalmanFilterRodSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);

@@ -83,9 +83,9 @@ void EnableInterrupts()
 //	PieCtrlRegs.PIEIER2.bit.INTx6 = 1;//Ӧ�����ش���
 	PieCtrlRegs.PIEIER3.bit.INTx1 = 1;//ePWM1�ж�
 
-	PieCtrlRegs.PIEIER4.bit.INTx4 = 0;//ECAP4
-	PieCtrlRegs.PIEIER4.bit.INTx5 = 0;//ECAP5
-	PieCtrlRegs.PIEIER4.bit.INTx6 = 0;//ECAP6
+	PieCtrlRegs.PIEIER4.bit.INTx4 = 1;//ECAP4
+	PieCtrlRegs.PIEIER4.bit.INTx5 = 1;//ECAP5
+	PieCtrlRegs.PIEIER4.bit.INTx6 = 1;//ECAP6
 
 
 	//PieCtrlRegs.PIEIER7.bit.INTx1 = 1;//DMA interrupt enable

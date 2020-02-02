@@ -18,6 +18,7 @@
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
 #include "GlobalVarAndFunc.h"
+#include "ECap_ISR.h"
 #include "PID.h"
 
 //#define UART_PRINTF
@@ -80,7 +81,7 @@ void Init_Peripheral(void){
 	/*Init and config I2C*/
 	// Init_I2C();
 	/*Init and config CAP4,CAP5,CAP6*/
-	// Init_CAP();
+	 Init_CAP();
 	/*Init and config QEP2*/
 	// Init_QEP();
 	/*PWM IO init and config*/
@@ -244,6 +245,7 @@ void InitGlobalVar(void){
 	InitgRx422TxEnableFlag();
 	InitGlobalVarAndFunc();
 	InitPidVar();
+	InitEcapVar();
 	gKeyValue.displacement = 0;
 	gKeyValue.lock = 0;
 }

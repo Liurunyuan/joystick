@@ -9,12 +9,34 @@
 #include "Filter_Alg.h"
 #include "ADprocessor.h"
 #include "Ctl_Strategy.h"
+#include "ECap_ISR.h"
 #include <stdio.h>
 #include <math.h>
 
 #define N (300)
 #define RS422STATUSCHECK (1000)
 
+void MotorSpeed(){
+    static int count = 0;
+    double calSpeed = 0;
+
+    if (gSysInfo.isEcapRefresh == 1){
+
+        calSpeed = CalculateSpeed(gECapCount);
+//        if(calSpeed != -1){
+            gMotorSpeedEcap = KalmanFilterRodSpeed(calSpeed, KALMAN_Q, KALMAN_R);
+//        }
+        gSysInfo.isEcapRefresh = 0;
+//        count = 0;
+    }
+    else{
+        count++;
+        if(count > 5){
+            gMotorSpeedEcap = KalmanFilterRodSpeed(0, KALMAN_Q, KALMAN_R);
+            count = 0;
+        }
+    }
+}
 
 /***************************************************************
  *Name:						Timer0_ISR_Thread
@@ -42,6 +64,14 @@ void Timer0_ISR_Thread(void){
 	if(count > N){
 		PackRS422TxData();
 		count = 0;
+	}
+
+	MotorSpeed();
+	gSysInfo.JoyStickSpeed = gMotorSpeedEcap * 0.03257947937; //0.03257947937 = 140 * (pi / 180) / 75
+	if(gSysInfo.rotateDirection == 0){
+	    gSysInfo.JoyStickSpeed = -gSysInfo.JoyStickSpeed;
+	}else{
+	    gSysInfo.JoyStickSpeed = gSysInfo.JoyStickSpeed;
 	}
 
 	if(gKeyValue.lock == 1){

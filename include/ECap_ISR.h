@@ -7,4 +7,6 @@ void ECap4_Isr(void);
 void ECap5_Isr(void);
 void ECap6_Isr(void);
 int32 CalculateSpeed(Uint32 capCount);
+void InitEcapVar(void);
+extern volatile double gMotorSpeedEcap;
 #endif
