@@ -114,15 +114,16 @@ int GetECap6Count(void){
  *Author:	   Simon
  *Date:		   2018��11��12������10:27:17
  **************************************************************/
-int32 CalculateSpeed(Uint32 capCount){
+double CalculateSpeed(Uint32 capCount){
 	//TODO calculate the motor speed
-	int32 speed32 = 0;
+	double speed32 = 0;
 //	if(capCount <= 0){
 //		return -1;
 //	}
 
 	//unit of speed32 = degree/sec
-	speed32 = ((6171428571.42857)/(float)capCount);//17142857.142857 = 120000000/7 120000000=120MHz clk, 7=the nunber of pairs of poles of the motor
+	//6171428571.42857
+	speed32 = ((1436156.641641)/(float)capCount);//17142857.142857 = 120000000/7 120000000=120MHz clk, 7=the nunber of pairs of poles of the motor
 	return speed32;
 //	if(speed32 < 19200){
 //		return speed32;

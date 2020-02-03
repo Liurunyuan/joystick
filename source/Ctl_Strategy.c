@@ -594,7 +594,7 @@ void OnlyWithSpringFront(void){
 	}
 	else{
 	    friction = gSysInfo.friction;
-	    damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
+	    damp_force = 2 * gConfigPara.dampingFactor * mass * gSysInfo.JoyStickSpeed * gConfigPara.naturalVibrationFreq;
 	}
 
 
@@ -602,7 +602,7 @@ void OnlyWithSpringFront(void){
 	force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
 	force_closeLoop = -force_closeLoop;
 
-	gSysInfo.ob_velocityOpenLoop = inertial_force;
+	gSysInfo.ob_velocityOpenLoop = damp_force;
 
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
         B_F = gSysInfo.openLoop_Force_front_B;

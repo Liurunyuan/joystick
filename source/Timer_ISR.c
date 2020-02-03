@@ -67,11 +67,11 @@ void Timer0_ISR_Thread(void){
 	}
 
 	MotorSpeed();
-	gSysInfo.JoyStickSpeed = gMotorSpeedEcap * 0.03257947937; //0.03257947937 = 140 * (pi / 180) / 75
+//	gSysInfo.JoyStickSpeed = gMotorSpeedEcap * 0.00003257947937; //0.03257947937 = 140 * (pi / 180) / 75
 	if(gSysInfo.rotateDirection == 0){
-	    gSysInfo.JoyStickSpeed = -gSysInfo.JoyStickSpeed;
+	    gSysInfo.JoyStickSpeed = -gMotorSpeedEcap;
 	}else{
-	    gSysInfo.JoyStickSpeed = gSysInfo.JoyStickSpeed;
+	    gSysInfo.JoyStickSpeed = gMotorSpeedEcap;
 	}
 
 	if(gKeyValue.lock == 1){

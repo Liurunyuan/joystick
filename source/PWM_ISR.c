@@ -24,13 +24,13 @@ void UpdateKeyValue(void) {
 	gKeyValue.motorSpeed = TenDisplaceElemntAverage();
 
 #else
-	gKeyValue.motorSpeed = KalmanFilterSpeed(funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
+//	gKeyValue.motorSpeed = KalmanFilterSpeed(funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
 #endif
-	CalFuncParaSpeed(gKeyValue.motorSpeed, calSpeedCnt);
+	CalFuncParaSpeed(gSysInfo.JoyStickSpeed, calSpeedCnt);
 	++calSpeedCnt;
 	if(calSpeedCnt >= 10){
 		funcParaSpeed = calFuncParaSpeed(sumParaSpeed);
-		gKeyValue.motorAccel = KalmanFilterAccel(1000 * funcParaSpeed.b, 1, 150);
+		gKeyValue.motorAccel = KalmanFilterAccel(funcParaSpeed.b, 1, 150);
 		calSpeedCnt = 0;
 		clearSumSpeed();
 		gAccelDirection.updateAccelDirection(0);
