@@ -613,9 +613,9 @@ void InitConfigParameter(void){
 	gConfigPara.RB_FrontFriction = 1;
 	gConfigPara.RB_RearFriction = 1;
 
-	gConfigPara.dampingFactor = 0.5;
+	gConfigPara.dampingFactor = 0.1;
 
-	gConfigPara.naturalVibrationFreq = 20.0;
+	gConfigPara.naturalVibrationFreq = 40.0;
 
 	gConfigPara.equivalentMass = 0;
 

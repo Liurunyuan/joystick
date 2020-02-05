@@ -23,7 +23,9 @@ void GetTorqueCurve(int a, int b, int c){
 }
 void GetMotorSpeedCurve(int a, int b, int c){
     gRx422TxVar[1].value = (int)(gExternalForceState.value * 100);
-//    gRx422TxVar[1].value = (int)(gKeyValue.motorAccel * 100000);
+//    gRx422TxVar[1].value = (int)(gSysInfo.ob_velocityOpenLoop * 100);
+//    gRx422TxVar[1].value = (int)(gKeyValue.motorSpeed * 100000);
+//    gRx422TxVar[1].value = (int)(gSysInfo.targetDuty * 1000);
 }
 void GetDisplacementCurve(int a, int b, int c){
     gRx422TxVar[2].value = 4000;
