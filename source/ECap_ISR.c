@@ -123,7 +123,8 @@ double CalculateSpeed(Uint32 capCount){
 
 	//unit of speed32 = degree/sec
 	//6171428571.42857
-	speed32 = ((1436156.641641)/(float)capCount);//17142857.142857 = 120000000/7 120000000=120MHz clk, 7=the nunber of pairs of poles of the motor
+	//1436156.641641
+	speed32 = ((201061.9298297)/(float)capCount);//17142857.142857 = 120000000/7 120000000=120MHz clk, 7=the nunber of pairs of poles of the motor
 	return speed32;
 //	if(speed32 < 19200){
 //		return speed32;

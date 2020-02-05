@@ -1,3 +1,4 @@
+#include "DSP2833x_Device.h"
 #ifndef _GLOBAL_VAR_AND_FUNC_H
 #define _GLOBAL_VAR_AND_FUNC_H
 

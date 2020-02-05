@@ -178,12 +178,12 @@ void checkRotateDirection(int value){
 	switch(gRotateDirection.rotateDirection)
 	{
 		case INIT_DIRECTION:
-			if(gSysInfo.JoyStickSpeed > gSysInfo.Velocity_Init2Pos_Thr){
+			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Init2Pos_Thr){
 				gRotateDirection.rotateDirection = FORWARD_DIRECTION;
 				gSysInfo.friction = - gConfigPara.LF_FrontFriction;
 				last_state = 1;
 			}
-			else if(gSysInfo.JoyStickSpeed < gSysInfo.Velocity_Init2Neg_Thr){
+			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
 				gRotateDirection.rotateDirection = BACKWARD_DIRECTION;
 				gSysInfo.friction = gConfigPara.LF_FrontFriction;
 				last_state = 0;
@@ -195,7 +195,7 @@ void checkRotateDirection(int value){
 			}
 			break;
 		case BACKWARD_DIRECTION:
-			if(gSysInfo.JoyStickSpeed > gSysInfo.Velocity_Neg_Thr){
+			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Neg_Thr){
 			    gRotateDirection.debounceCount_1++;
 			    gRotateDirection.debounceCount_2 = 0;
 			    if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
@@ -214,7 +214,7 @@ void checkRotateDirection(int value){
             }
 			break;
 		case FORWARD_DIRECTION:
-			if(gSysInfo.JoyStickSpeed < gSysInfo.Velocity_Pos_Thr){
+			if(gKeyValue.motorSpeed < gSysInfo.Velocity_Pos_Thr){
                 gRotateDirection.debounceCount_1++;
                 gRotateDirection.debounceCount_2 = 0;
                 if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_1){
@@ -232,7 +232,7 @@ void checkRotateDirection(int value){
             }
 			break;
 		case STOP_DIRECTION:
-			if(gSysInfo.JoyStickSpeed > gSysInfo.Velocity_Init2Pos_Thr){
+			if(gKeyValue.motorSpeed > gSysInfo.Velocity_Init2Pos_Thr){
                 gRotateDirection.debounceCount_1++;
                 gRotateDirection.debounceCount_2 = 0;
                 if(gRotateDirection.debounceCount_1 > gSysInfo.Velocity_Debounce_Cnt_2){
@@ -242,7 +242,7 @@ void checkRotateDirection(int value){
                     last_state = 1;
                 }
 			}
-			else if(gSysInfo.JoyStickSpeed < gSysInfo.Velocity_Init2Neg_Thr){
+			else if(gKeyValue.motorSpeed < gSysInfo.Velocity_Init2Neg_Thr){
                 gRotateDirection.debounceCount_2++;
                 gRotateDirection.debounceCount_1 = 0;
                 if(gRotateDirection.debounceCount_2 > gSysInfo.Velocity_Debounce_Cnt_2){

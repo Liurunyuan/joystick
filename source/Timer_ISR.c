@@ -16,28 +16,6 @@
 #define N (300)
 #define RS422STATUSCHECK (1000)
 
-void MotorSpeed(){
-    static int count = 0;
-    double calSpeed = 0;
-
-    if (gSysInfo.isEcapRefresh == 1){
-
-        calSpeed = CalculateSpeed(gECapCount);
-//        if(calSpeed != -1){
-            gMotorSpeedEcap = KalmanFilterRodSpeed(calSpeed, KALMAN_Q, KALMAN_R);
-//        }
-        gSysInfo.isEcapRefresh = 0;
-//        count = 0;
-    }
-    else{
-        count++;
-        if(count > 5){
-            gMotorSpeedEcap = KalmanFilterRodSpeed(0, KALMAN_Q, KALMAN_R);
-            count = 0;
-        }
-    }
-}
-
 /***************************************************************
  *Name:						Timer0_ISR_Thread
  *Function:					period = 0.2ms, pack the data
@@ -66,21 +44,16 @@ void Timer0_ISR_Thread(void){
 		count = 0;
 	}
 
-	MotorSpeed();
+//	MotorSpeed();
 //	gSysInfo.JoyStickSpeed = gMotorSpeedEcap * 0.00003257947937; //0.03257947937 = 140 * (pi / 180) / 75
-	if(gSysInfo.rotateDirection == 0){
-	    gSysInfo.JoyStickSpeed = -gMotorSpeedEcap;
-	}else{
-	    gSysInfo.JoyStickSpeed = gMotorSpeedEcap;
-	}
+//	if(gSysInfo.rotateDirection == 0){
+//	    gSysInfo.JoyStickSpeed = -gMotorSpeedEcap;
+//	}else{
+//	    gSysInfo.JoyStickSpeed = gMotorSpeedEcap;
+//	}
 
 	if(gKeyValue.lock == 1){
 		//calculate function parameter
-		UpdateKeyValue();
-
-        gRotateDirection.updateRotateDirection(0);
-        gStickState.value = gKeyValue.displacement;
-
         force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
 
         if(zero_count < 10){
@@ -98,7 +71,12 @@ void Timer0_ISR_Thread(void){
 			}
         }
 
+        UpdateKeyValue();
+        gStickState.value = gKeyValue.displacement;
         gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
+
+        gRotateDirection.updateRotateDirection(0);
+        gAccelDirection.updateAccelDirection(0);
         gExternalForceState.updateForceState(0);
 
         OnlyWithSpringFront();
