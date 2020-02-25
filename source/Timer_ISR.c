@@ -44,46 +44,38 @@ void Timer0_ISR_Thread(void){
 		count = 0;
 	}
 
-//	MotorSpeed();
-//	gSysInfo.JoyStickSpeed = gMotorSpeedEcap * 0.00003257947937; //0.03257947937 = 140 * (pi / 180) / 75
-//	if(gSysInfo.rotateDirection == 0){
-//	    gSysInfo.JoyStickSpeed = -gMotorSpeedEcap;
-//	}else{
-//	    gSysInfo.JoyStickSpeed = gMotorSpeedEcap;
-//	}
+    //calculate function parameter
+    force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
 
-	if(gKeyValue.lock == 1){
-		//calculate function parameter
-        force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
-
-        if(zero_count < 10){
-            zero_force_SUM = zero_force_SUM + force_Joystick;
-            ++zero_count;
-		    clearSum();
-		    gKeyValue.lock = 0;
-            return;
+    if(zero_count < 10){
+        zero_force_SUM = zero_force_SUM + force_Joystick;
+        ++zero_count;
+//          clearSum();
+        gKeyValue.lock = 0;
+        return;
+    }
+    else{
+        if(flag == 0)
+        {
+            gSysInfo.zeroForce = zero_force_SUM/10;
+            flag = 1;
         }
-        else{
-			if(flag == 0)
-			{
-            	gSysInfo.zeroForce = zero_force_SUM/10;
-				flag = 1;
-			}
-        }
+    }
 
+    if(gKeyValue.lock == 1){
         UpdateKeyValue();
-        gStickState.value = gKeyValue.displacement;
-        gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
-
-        gRotateDirection.updateRotateDirection(0);
         gAccelDirection.updateAccelDirection(0);
-        gExternalForceState.updateForceState(0);
+        gKeyValue.lock = 0;
+    }
 
-        OnlyWithSpringFront();
+    gStickState.value = gKeyValue.displacement;
+    gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
 
-		clearSum();
-		gKeyValue.lock = 0;
-	}
+    gRotateDirection.updateRotateDirection(0);
+    gExternalForceState.updateForceState(0);
+
+    OnlyWithSpringFront();
+
 
 	if(trim_time_count == 1000){
 	    trim_time_count = 0;

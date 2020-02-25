@@ -15,9 +15,25 @@ Uint16 real3 = 0;
 #endif
 void UpdateKeyValue(void) {
 //	static int calSpeedCnt = 0;
+//    static double lastspeed = 0;
 
-	funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement);
-	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+#if(IMPLEMENT_LSM == INCLUDE_FEATURE)
+    funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement);
+    gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+    clearSum();
+
+    funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
+    gKeyValue.motorSpeed = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
+    gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
+    clearSumSpeed();
+#else
+    funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
+    gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
+    clearSumSpeed();
+#endif
+
+//	funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement);
+//	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
 
 //#if(LINEAR_SPEED_METHOD == INCLUDE_FEATURE)
 //	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.050625 + funcParaDisplacement.b * 0.225)/0.225, KALMAN_Q, KALMAN_R);
@@ -25,18 +41,22 @@ void UpdateKeyValue(void) {
 //	gKeyValue.motorSpeed = TenDisplaceElemntAverage();
 
 //#else
-//	gKeyValue.motorSpeed = KalmanFilterSpeed(funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
+//	gSysInfo.ob_velocityOpenLoop = KalmanFilterSpeed(funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
 //#endif
 //	CalFuncPara_Speed(gSysInfo.JoyStickSpeed, calSpeedCnt);
 //	++calSpeedCnt;
 //	if(calSpeedCnt >= 10){
-		funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
-		gKeyValue.motorSpeed = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
-		gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
+//		funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
+//		gSysInfo.ob_velocityOpenLoop = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
+
+//		gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
+//		gKeyValue.motorAccel = 1000 * funcParaSpeed.b;
+//		lastspeed = gKeyValue.motorSpeed;
 //		calSpeedCnt = 0;
-		clearSumSpeed();
+//		clearSumSpeed();
 //	}
 }
+
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 #endif
@@ -93,8 +113,13 @@ void Calc_Error_Sum_Squares_Displace_Speed(void) {
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	Calc_10p_Error_Sum_Squares_Displace((gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
-	Calc_10p_Error_Sum_Squares_Speed(gSysInfo.JoyStickSpeed, count);
+
+#if(IMPLEMENT_LSM == INCLUDE_FEATURE)
+    Calc_10p_Error_Sum_Squares_Displace((gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
+    Calc_10p_Error_Sum_Squares_Speed(gSysInfo.JoyStickSpeed, count);
+#else
+    Calc_10p_Error_Sum_Squares_Speed(gSysInfo.JoyStickSpeed, count);
+#endif
 
 	++count;
 
@@ -423,6 +448,12 @@ void Pwm_ISR_Thread(void)
 		DisablePwmOutput();
 	}
 
+#if(IMPLEMENT_LSM == INCLUDE_FEATURE)
 	Calc_Error_Sum_Squares_Displace_Speed();
+#else
+	Calc_Error_Sum_Squares_Displace_Speed();
+	gKeyValue.displacement = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B;
+	gKeyValue.motorSpeed = gSysInfo.JoyStickSpeed;
+#endif
 	StartGetADBySpi();
 }

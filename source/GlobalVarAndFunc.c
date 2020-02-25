@@ -105,8 +105,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.Accel_Init2Neg_Thr = -0.1;
 	gSysInfo.Velocity_Init2Pos_Thr = 0.0001;
 	gSysInfo.Velocity_Init2Neg_Thr = -0.0001;
-	gSysInfo.Force_Pos_Thr = 3;
-	gSysInfo.Force_Neg_Thr = -3;
+	gSysInfo.Force_Pos_Thr = 0.5;
+	gSysInfo.Force_Neg_Thr = -0.5;
 	gSysInfo.Force_Hysteresis = 0.15;
 	gSysInfo.Accel_Pos_Thr = 0.04;
     gSysInfo.Accel_Neg_Thr = -0.04;
