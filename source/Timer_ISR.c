@@ -40,15 +40,9 @@ void Timer0_ISR_Thread(void){
 
     if(timer0_interrupt_cnt == 0){
         ++timer0_interrupt_cnt;
-    }
-    else if(timer0_interrupt_cnt == 1){
-        ++timer0_interrupt_cnt;
         CpuTimer0Regs.TCR.bit.TSS = 1;
         ConfigCpuTimer(&CpuTimer0, 120, 200);//t = freq * priod/150000000,0.2ms
         CpuTimer0Regs.TCR.bit.TSS = 0;
-    }
-    else{
-        timer0_interrupt_cnt = 2;
     }
 
     gSysInfo.ob_velocityOpenLoop = timer0_interrupt_cnt;
@@ -59,6 +53,18 @@ void Timer0_ISR_Thread(void){
 		PackRS422TxData();
 		count = 0;
 	}
+
+    if((gSysInfo.displace_LSM_buffer == 0) || (gSysInfo.displace_LSM_buffer == 1)){
+        UpdateKeyValue();
+        gAccelDirection.updateAccelDirection(0);
+//        gKeyValue.lock = 0;
+    }
+    else{
+        return;
+    }
+
+    gStickState.value = gKeyValue.displacement;
+    gRotateDirection.updateRotateDirection(0);
 
     //calculate function parameter
     force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
@@ -77,17 +83,7 @@ void Timer0_ISR_Thread(void){
             flag = 1;
         }
     }
-
-//    if(gKeyValue.lock == 1){
-        UpdateKeyValue();
-        gAccelDirection.updateAccelDirection(0);
-//        gKeyValue.lock = 0;
-//    }
-
-    gStickState.value = gKeyValue.displacement;
     gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
-
-    gRotateDirection.updateRotateDirection(0);
     gExternalForceState.updateForceState(0);
 
     OnlyWithSpringFront();

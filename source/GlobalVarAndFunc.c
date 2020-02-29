@@ -156,7 +156,7 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.JoyStickSpeed = 0;
     gSysInfo.rotateDirection = 0;
 
-    gSysInfo.displace_LSM_buffer = 0;
+    gSysInfo.displace_LSM_buffer = 2;
     gSysInfo.velocity_LSM_buffer = 0;
 }
 
