@@ -704,8 +704,6 @@ void OnlyWithSpringFront(void){
 	force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
 	force_closeLoop = -force_closeLoop;
 
-//	gSysInfo.ob_velocityOpenLoop = inertial_force;
-
     if(gRotateDirection.rotateDirection == FORWARD_DIRECTION){
         B_F = gSysInfo.openLoop_Force_front_B;
     }

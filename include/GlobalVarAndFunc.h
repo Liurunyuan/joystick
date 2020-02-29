@@ -14,7 +14,7 @@
 #define DUTY_GRADUAL_CHANGE 			EXCLUDE_FEATURE
 #define TARGET_DUTY_GRADUAL_CHANGE 		INCLUDE_FEATURE
 #define COPY_FLASH_CODE_TO_RAM 			EXCLUDE_FEATURE
-#define IMPLEMENT_LSM                   EXCLUDE_FEATURE
+#define IMPLEMENT_LSM                   INCLUDE_FEATURE
 
 
 #define KALMAN_Q  (1.1)
@@ -216,6 +216,8 @@ typedef struct{
     int isEcapRefresh;
     double JoyStickSpeed;
     int rotateDirection;
+    int displace_LSM_buffer;
+    int velocity_LSM_buffer;
 
 }SYSINFO;
 

@@ -155,6 +155,9 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.isEcapRefresh = 0;
     gSysInfo.JoyStickSpeed = 0;
     gSysInfo.rotateDirection = 0;
+
+    gSysInfo.displace_LSM_buffer = 0;
+    gSysInfo.velocity_LSM_buffer = 0;
 }
 
 void checkPitchOrRoll(void){

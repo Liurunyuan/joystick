@@ -33,7 +33,7 @@ void GetMotorSpeedCurve(int a, int b, int c){
 //    gRx422TxVar[1].value = (int)(gSysInfo.targetDuty * 1000);
 }
 void GetDisplacementCurve(int a, int b, int c){
-    gRx422TxVar[2].value = (int)(gSysInfo.ob_velocityOpenLoop * 100000);
+    gRx422TxVar[2].value = (int)(gSysInfo.ob_velocityOpenLoop * 100);
 //    gRx422TxVar[2].value = gSysInfo.JoyStickSpeed * 100;
 }
 void GetMotorCurrentCurve(int a, int b, int c){

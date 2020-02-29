@@ -13,10 +13,10 @@
 //#define SUMXPOW5 120825L
 //#define SUMXPOW6 978405L
 
-#define SUMX (1.125)
-#define SUMXPOW2 (0.178125)
-#define SUMXPOW3 (0.031641)
-#define SUMXPOW4 (0.005989)
+#define SUMX (0.7)
+#define SUMXPOW2 (0.0875)
+#define SUMXPOW3 (0.01225)
+#define SUMXPOW4 (0.001827)
 #define SUMXPOW5 (0.001180)
 #define SUMXPOW6 (0.000239)
 
@@ -26,10 +26,10 @@
 //#define SUMXPOW4SPEED (59.89)
 //#define SUMXPOW5SPEED (118)
 //#define SUMXPOW6SPEED (238.868)
-#define SUMXSPEED (1.125)
-#define SUMXPOW2SPEED (0.178125)
-#define SUMXPOW3SPEED (0.031641)
-#define SUMXPOW4SPEED (0.005989)
+#define SUMXSPEED (0.7)
+#define SUMXPOW2SPEED (0.0875)
+#define SUMXPOW3SPEED (0.01225)
+#define SUMXPOW4SPEED (0.001827)
 #define SUMXPOW5SPEED (0.001180)
 #define SUMXPOW6SPEED (0.000239)
 #endif
@@ -44,26 +44,34 @@
 #endif
 /***************************Add the speed sum parameters begin******************************** */
 SumPara sumParaSpeed = {
-	SUMXSPEED,
-	0,
-	SUMXPOW2SPEED,
-	SUMXPOW3SPEED,
-	SUMXPOW4SPEED,
-	0,
-	0
+	 SUMXSPEED,
+	 0,
+	 SUMXPOW2SPEED,
+	 SUMXPOW3SPEED,
+	 SUMXPOW4SPEED,
+	 0,
+	 0
 };
 /***************************Add the speed sum parameters end******************************** */
 
 
-SumPara sumParaDisplacement = {
-	SUMX,
+SumPara sumParaDisplacement[2] = {
+	{SUMX,
 	0,
 	SUMXPOW2,
 	SUMXPOW3,
 	SUMXPOW4,
 	0,
-	0
+	0},
+    {SUMX,
+    0,
+    SUMXPOW2,
+    SUMXPOW3,
+    SUMXPOW4,
+    0,
+    0},
 };
+
 SumPara sumParaDisplacementB = {
 	SUMX,
 	0,
@@ -93,10 +101,10 @@ FuncPara funcParaSpeed = {0,0,0};
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(clearSum, "ramfuncs")
 #endif
-void clearSum(void) {
-	sumParaDisplacement.sum_XY = 0;
-	sumParaDisplacement.sum_Xpow2Y = 0;
-	sumParaDisplacement.sum_Y = 0;
+void clearSum(int buffer_bum) {
+	sumParaDisplacement[buffer_bum].sum_XY = 0;
+	sumParaDisplacement[buffer_bum].sum_Xpow2Y = 0;
+	sumParaDisplacement[buffer_bum].sum_Y = 0;
 
 	// sumParaForce.sum_XY = 0;
 	// sumParaForce.sum_Xpow2Y = 0;
@@ -185,10 +193,16 @@ FuncPara Calc_LSM_Coef_Displace(SumPara sumPara){
 #pragma CODE_SECTION(Cal_10p_Error_Sum_Squares_Displace, "ramfuncs")
 #endif
 void Calc_10p_Error_Sum_Squares_Displace(double displace, int count){
-
+    static int buffer_num = 0;
     double tmpCount = count * 0.025;
-	sumParaDisplacement.sum_XY += tmpCount * displace;
-	sumParaDisplacement.sum_Xpow2Y += tmpCount * tmpCount * displace;
-	sumParaDisplacement.sum_Y += displace;
+
+    sumParaDisplacement[buffer_num].sum_XY += tmpCount * displace;
+    sumParaDisplacement[buffer_num].sum_Xpow2Y += tmpCount * tmpCount * displace;
+    sumParaDisplacement[buffer_num].sum_Y += displace;
+
+    if(count >= (DATA_AMOUNT - 1)){
+        gSysInfo.displace_LSM_buffer = buffer_num;
+        buffer_num = 1 - buffer_num;
+    }
 }
 

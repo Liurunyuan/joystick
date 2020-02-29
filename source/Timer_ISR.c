@@ -34,8 +34,24 @@ void Timer0_ISR_Thread(void){
 	static double zero_force_SUM = 0;
 	static int zero_count = 0;
 	static int flag = 0;
+	static int timer0_interrupt_cnt = 0;
 
     double force_Joystick;
+
+    if(timer0_interrupt_cnt == 0){
+        ++timer0_interrupt_cnt;
+    }
+    else if(timer0_interrupt_cnt == 1){
+        ++timer0_interrupt_cnt;
+        CpuTimer0Regs.TCR.bit.TSS = 1;
+        ConfigCpuTimer(&CpuTimer0, 120, 200);//t = freq * priod/150000000,0.2ms
+        CpuTimer0Regs.TCR.bit.TSS = 0;
+    }
+    else{
+        timer0_interrupt_cnt = 2;
+    }
+
+    gSysInfo.ob_velocityOpenLoop = timer0_interrupt_cnt;
 
 	++count;
 
@@ -51,7 +67,7 @@ void Timer0_ISR_Thread(void){
         zero_force_SUM = zero_force_SUM + force_Joystick;
         ++zero_count;
 //          clearSum();
-        gKeyValue.lock = 0;
+//        gKeyValue.lock = 0;
         return;
     }
     else{
@@ -62,11 +78,11 @@ void Timer0_ISR_Thread(void){
         }
     }
 
-    if(gKeyValue.lock == 1){
+//    if(gKeyValue.lock == 1){
         UpdateKeyValue();
         gAccelDirection.updateAccelDirection(0);
-        gKeyValue.lock = 0;
-    }
+//        gKeyValue.lock = 0;
+//    }
 
     gStickState.value = gKeyValue.displacement;
     gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;

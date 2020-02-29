@@ -18,9 +18,9 @@ void UpdateKeyValue(void) {
 //    static double lastspeed = 0;
 
 #if(IMPLEMENT_LSM == INCLUDE_FEATURE)
-    funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement);
+    funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement[gSysInfo.displace_LSM_buffer]);
     gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
-    clearSum();
+    clearSum(gSysInfo.displace_LSM_buffer);
 
     funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
     gKeyValue.motorSpeed = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
@@ -110,9 +110,9 @@ void Calc_Error_Sum_Squares_Displace_Speed(void) {
 
 	static int count = 0;
 
-	if(gKeyValue.lock == 1){
-		return;
-	}
+//	if(gKeyValue.lock == 1){
+//		return;
+//	}
 
 #if(IMPLEMENT_LSM == INCLUDE_FEATURE)
     Calc_10p_Error_Sum_Squares_Displace((gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
@@ -124,7 +124,7 @@ void Calc_Error_Sum_Squares_Displace_Speed(void) {
 	++count;
 
 	if(count >= DATA_AMOUNT){
-		gKeyValue.lock = 1;
+//		gKeyValue.lock = 1;
 		count = 0;
 	}
 }
