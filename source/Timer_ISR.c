@@ -45,8 +45,6 @@ void Timer0_ISR_Thread(void){
         CpuTimer0Regs.TCR.bit.TSS = 0;
     }
 
-    gSysInfo.ob_velocityOpenLoop = timer0_interrupt_cnt;
-
 	++count;
 
 	if(count > N){
@@ -60,6 +58,7 @@ void Timer0_ISR_Thread(void){
 //        gKeyValue.lock = 0;
     }
     else{
+//        ++ gSysInfo.ob_velocityOpenLoop;
         return;
     }
 

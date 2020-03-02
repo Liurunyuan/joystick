@@ -34,8 +34,8 @@ void Calc_10p_Error_Sum_Squares_Displace(double displace, int count);
 void Calc_10p_Error_Sum_Squares_Speed(double speed, int count);
 FuncPara Calc_LSM_Coef_Displace(SumPara sumPara);
 FuncPara Calc_LSM_Coef_Speed(SumPara sumPara);
-void clearSumSpeed(void);
-void clearSum(int buffer_bum);
+void clearSumSpeed(int buffer_num);
+void clearSum(int buffer_num);
 
 extern FuncPara funcParaDisplacement;
 extern FuncPara funcParaDisplacementb;
@@ -43,5 +43,5 @@ extern FuncPara funcParaSpeed;
 extern FuncPara funcParaForce;
 extern SumPara sumParaDisplacementB;
 extern SumPara sumParaDisplacement[2];
-extern SumPara sumParaSpeed;
+extern SumPara sumParaSpeed[2];
 #endif

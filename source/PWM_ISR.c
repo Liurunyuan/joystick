@@ -22,10 +22,10 @@ void UpdateKeyValue(void) {
     gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
     clearSum(gSysInfo.displace_LSM_buffer);
 
-    funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
+    funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed[gSysInfo.velocity_LSM_buffer]);
     gKeyValue.motorSpeed = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
     gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
-    clearSumSpeed();
+    clearSumSpeed(gSysInfo.velocity_LSM_buffer);
 #else
     funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
     gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);

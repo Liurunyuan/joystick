@@ -43,14 +43,21 @@
 #define SUMXPOW6 152455810L
 #endif
 /***************************Add the speed sum parameters begin******************************** */
-SumPara sumParaSpeed = {
-	 SUMXSPEED,
+SumPara sumParaSpeed[2] = {
+	 {SUMXSPEED,
 	 0,
 	 SUMXPOW2SPEED,
 	 SUMXPOW3SPEED,
 	 SUMXPOW4SPEED,
 	 0,
-	 0
+	 0},
+	 {SUMXSPEED,
+	  0,
+	  SUMXPOW2SPEED,
+	  SUMXPOW3SPEED,
+	  SUMXPOW4SPEED,
+	  0,
+	  0},
 };
 /***************************Add the speed sum parameters end******************************** */
 
@@ -101,10 +108,10 @@ FuncPara funcParaSpeed = {0,0,0};
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(clearSum, "ramfuncs")
 #endif
-void clearSum(int buffer_bum) {
-	sumParaDisplacement[buffer_bum].sum_XY = 0;
-	sumParaDisplacement[buffer_bum].sum_Xpow2Y = 0;
-	sumParaDisplacement[buffer_bum].sum_Y = 0;
+void clearSum(int buffer_num) {
+	sumParaDisplacement[buffer_num].sum_XY = 0;
+	sumParaDisplacement[buffer_num].sum_Xpow2Y = 0;
+	sumParaDisplacement[buffer_num].sum_Y = 0;
 
 	// sumParaForce.sum_XY = 0;
 	// sumParaForce.sum_Xpow2Y = 0;
@@ -113,11 +120,11 @@ void clearSum(int buffer_bum) {
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(clearSumSpeed, "ramfuncs")
 #endif
-void clearSumSpeed(void) {
+void clearSumSpeed(int buffer_num) {
 
-	sumParaSpeed.sum_XY = 0;
-	sumParaSpeed.sum_Xpow2Y = 0;
-	sumParaSpeed.sum_Y = 0;
+	sumParaSpeed[buffer_num].sum_XY = 0;
+	sumParaSpeed[buffer_num].sum_Xpow2Y = 0;
+	sumParaSpeed[buffer_num].sum_Y = 0;
 }
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(Calc_LSM_Coef_Speed, "ramfuncs")
@@ -126,9 +133,9 @@ FuncPara Calc_LSM_Coef_Speed(SumPara sumPara){
 	double temp,temp0,temp1;
 	FuncPara funcPara;
 
-	temp = (DATA_AMOUNT * sumParaSpeed.sum_Xpow2) - (sumParaSpeed.sum_X * sumParaSpeed.sum_X); 
-	temp0 = (sumParaSpeed.sum_Y * sumParaSpeed.sum_Xpow2) - (sumParaSpeed.sum_X * sumParaSpeed.sum_XY);
-	temp1 = (DATA_AMOUNT * sumParaSpeed.sum_XY) - (sumParaSpeed.sum_Y * sumParaSpeed.sum_X);
+	temp = (DATA_AMOUNT * sumPara.sum_Xpow2) - (sumPara.sum_X * sumPara.sum_X);
+	temp0 = (sumPara.sum_Y * sumPara.sum_Xpow2) - (sumPara.sum_X * sumPara.sum_XY);
+	temp1 = (DATA_AMOUNT * sumPara.sum_XY) - (sumPara.sum_Y * sumPara.sum_X);
 	funcPara.c = temp0 / temp;
 	funcPara.b = temp1 / temp;
 	funcPara.a = 0;
@@ -139,10 +146,16 @@ FuncPara Calc_LSM_Coef_Speed(SumPara sumPara){
 #pragma CODE_SECTION(Calc_10p_Error_Sum_Squares_Speed, "ramfuncs")
 #endif
 void Calc_10p_Error_Sum_Squares_Speed(double speed, int count){
+    static int buffer_num = 0;
     double tmpCount = count * 0.025;
-	sumParaSpeed.sum_XY += tmpCount * speed;
-	sumParaSpeed.sum_Xpow2Y += tmpCount * tmpCount * speed;
-	sumParaSpeed.sum_Y += speed;
+	sumParaSpeed[buffer_num].sum_XY += tmpCount * speed;
+	sumParaSpeed[buffer_num].sum_Xpow2Y += tmpCount * tmpCount * speed;
+	sumParaSpeed[buffer_num].sum_Y += speed;
+
+    if(count >= (DATA_AMOUNT - 1)){
+        gSysInfo.velocity_LSM_buffer = buffer_num;
+        buffer_num = 1 - buffer_num;
+    }
 }
 
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)

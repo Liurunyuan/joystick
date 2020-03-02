@@ -157,7 +157,7 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.rotateDirection = 0;
 
     gSysInfo.displace_LSM_buffer = 2;
-    gSysInfo.velocity_LSM_buffer = 0;
+    gSysInfo.velocity_LSM_buffer = 2;
 }
 
 void checkPitchOrRoll(void){
