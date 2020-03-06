@@ -175,8 +175,8 @@ void findSpringForceK(double displace){
             }
             else{
                 if(gExternalForceState.ForceState == NO_FORCE){
-                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[3];
-                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[3];
+                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
+                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
                     gSysInfo.soft_break_flag = 0;
                 }
                 else{
@@ -246,8 +246,8 @@ void findSpringForceK(double displace){
             }
             else{
                 if(gExternalForceState.ForceState == NO_FORCE){
-                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[3];
-                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[3];
+                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
+                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
                     gSysInfo.soft_break_flag = 0;
                 }
                 else{
@@ -293,8 +293,8 @@ void findSpringForceK(double displace){
             }
             else{
                 if(gExternalForceState.ForceState == NO_FORCE){
-                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[3];
-                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[3];
+                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
+                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
                     gSysInfo.soft_break_flag = 0;
                 }
                 else{
@@ -340,8 +340,8 @@ void findSpringForceK(double displace){
             }
             else{
                 if(gExternalForceState.ForceState == NO_FORCE){
-                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
-                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
+                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
+                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
                     gSysInfo.soft_break_flag = 0;
                 }
                 else{
@@ -442,8 +442,8 @@ void findSpringForceK(double displace){
             }
             else{
                 if(gExternalForceState.ForceState == NO_FORCE){
-                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
-                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
+                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
+                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
                     gSysInfo.soft_break_flag = 0;
                 }
                 else{
@@ -472,8 +472,8 @@ void findSpringForceK(double displace){
             }
             else{
                 if(gExternalForceState.ForceState == NO_FORCE){
-                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
-                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
+                    gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
+                    gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
                     gSysInfo.soft_break_flag = 0;
                 }
                 else{
@@ -699,7 +699,7 @@ void OnlyWithSpringFront(void){
 	    damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
 	}
 
-
+//	gSysInfo.ob_velocityOpenLoop = inertial_force;
 	force_openLoop = spring_force + damp_force - friction + inertial_force;
 	force_closeLoop = force_PidOutput(force_openLoop, gExternalForceState.value);
 	force_closeLoop = -force_closeLoop;
