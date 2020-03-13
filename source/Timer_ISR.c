@@ -35,6 +35,12 @@ void Timer0_ISR_Thread(void){
 	static int zero_count = 0;
 	static int flag = 0;
 	static int timer0_interrupt_cnt = 0;
+	static int first_time_run = 0;
+	static int first_time_back_to_mid = 0;
+	static int first_time_to_front = 0;
+	static int first_time_to_back = 0;
+	static int location = 0;
+	static int touch_positive_edge = 0;
 
     double force_Joystick;
 
@@ -71,6 +77,8 @@ void Timer0_ISR_Thread(void){
     if(zero_count < 10){
         zero_force_SUM = zero_force_SUM + force_Joystick;
         ++zero_count;
+
+//        gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 //          clearSum();
 //        gKeyValue.lock = 0;
         return;
@@ -84,9 +92,79 @@ void Timer0_ISR_Thread(void){
     }
     gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
     gExternalForceState.updateForceState(0);
+    gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
 
-    OnlyWithSpringFront();
+    if(touch_positive_edge == 0){
+        if(gSysInfo.currentStickDisSection < 23){
+            gSysInfo.targetDuty = 50;
+        }
+        else{
+            gSysInfo.targetDuty = -50;
+            touch_positive_edge = 1 - touch_positive_edge;
+        }
+    }
+    else{
+            if(gSysInfo.currentStickDisSection > 0){
+                gSysInfo.targetDuty = -50;
+            }
+            else{
+                gSysInfo.targetDuty = 50;
+                touch_positive_edge = 1 - touch_positive_edge;
+            }
+    }
 
+
+//    if(first_time_run == 0){
+//        if(first_time_back_to_mid == 0){
+//            if((gSysInfo.currentStickDisSection == 11) || (gSysInfo.currentStickDisSection == 12)){
+//                first_time_back_to_mid = 1;
+//            }
+//            else{
+//                ++gSysInfo.ob_velocityOpenLoop;
+//                first_time_back_to_mid = 0;
+//                OnlyWithSpringFront();
+//            }
+//        }
+//        else if(first_time_back_to_mid == 1){
+//            if(first_time_to_front == 0){
+//                if(gSysInfo.currentStickDisSection < 23){
+//                    gSysInfo.targetDuty = 50;
+//                }
+//                else{
+////                    gSysInfo.targetDuty = -60;
+//                    first_time_to_front = 1;
+//                    return;
+//                }
+//            }
+//            else{
+//                if(first_time_to_back == 0){
+//                    if(gSysInfo.currentStickDisSection > 0){
+//                        gSysInfo.targetDuty = -50;
+//                    }
+//                    else{
+////                        gSysInfo.targetDuty = 60;
+//                        first_time_to_back = 1;
+//                        return;
+//                    }
+//                }
+//                else{
+//                    if((gSysInfo.currentStickDisSection == 11) || (gSysInfo.currentStickDisSection == 12)){
+//                        first_time_run = 1;
+//                        return;
+//                    }
+//                    else{
+//                        gSysInfo.targetDuty = 50;
+//                    }
+//                }
+//            }
+//        }
+//        else{
+//            ++gSysInfo.ob_velocityOpenLoop;
+//        }
+//    }
+//    else{
+//        OnlyWithSpringFront();
+//    }
 
 	if(trim_time_count == 1000){
 	    trim_time_count = 0;

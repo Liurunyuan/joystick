@@ -915,7 +915,7 @@ void DisablePwmOutput(void){
 }
 void StateMachine(void){
 	//gConfigPara.stateCommand = 1; // For TEMP Test
-	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){
+	if(gSysState.erro.bit.software != 1){
 		EnablePwmOutput();
 	}
 	else{
