@@ -30,6 +30,10 @@ double gDebug[3] = {0};
 int gPISO_165[8] = {0};
 int gButtonCmd[6] = {0};
 int gButtonStatus[6] = {0};
+double ob_velocityOpenLoop[10] = {0};
+int ob_section[10] = {0};
+Uint16 ob_edge1[10] = {0};
+int ob_edge2 = 0;
 
 
 void InitGlobalVarAndFunc(void){
@@ -138,13 +142,45 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[3] = 0;
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
-    gSysInfo.ob_velocityOpenLoop = 0;
+//    gSysInfo.ob_velocityOpenLoop = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
     gKeyValue.displacement = 0;
     gKeyValue.force = 0;
     gKeyValue.lock = 0;
 
+    ob_velocityOpenLoop[0] = 0;
+    ob_velocityOpenLoop[1] = 0;
+    ob_velocityOpenLoop[2] = 0;
+    ob_velocityOpenLoop[3] = 0;
+    ob_velocityOpenLoop[4] = 0;
+    ob_velocityOpenLoop[5] = 0;
+    ob_velocityOpenLoop[6] = 0;
+    ob_velocityOpenLoop[7] = 0;
+    ob_velocityOpenLoop[8] = 0;
+    ob_velocityOpenLoop[9] = 0;
+
+    ob_section[0] = 0;
+    ob_section[1] = 0;
+    ob_section[2] = 0;
+    ob_section[3] = 0;
+    ob_section[4] = 0;
+    ob_section[5] = 0;
+    ob_section[6] = 0;
+    ob_section[7] = 0;
+    ob_section[8] = 0;
+    ob_section[9] = 0;
+
+    ob_edge1[0] = 0;
+    ob_edge1[1] = 0;
+    ob_edge1[2] = 0;
+    ob_edge1[3] = 0;
+    ob_edge1[4] = 0;
+    ob_edge1[5] = 0;
+    ob_edge1[6] = 0;
+    ob_edge1[7] = 0;
+    ob_edge1[8] = 0;
+    ob_edge1[9] = 0;
 
     gSysInfo.friction = 0;
     gSysInfo.soft_break_flag = 0;
@@ -915,7 +951,7 @@ void DisablePwmOutput(void){
 }
 void StateMachine(void){
 	//gConfigPara.stateCommand = 1; // For TEMP Test
-	if(gSysState.erro.bit.software != 1){
+	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){
 		EnablePwmOutput();
 	}
 	else{

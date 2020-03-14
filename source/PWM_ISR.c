@@ -16,14 +16,19 @@ Uint16 real3 = 0;
 void UpdateKeyValue(void) {
 //	static int calSpeedCnt = 0;
 //    static double lastspeed = 0;
+    static int count = 0;
 
 #if(IMPLEMENT_LSM == INCLUDE_FEATURE)
     funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement[gSysInfo.displace_LSM_buffer]);
-    gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+    gKeyValue.displacement = funcParaDisplacement.a * 0.04 + funcParaDisplacement.b * 0.2 + funcParaDisplacement.c;
     clearSum(gSysInfo.displace_LSM_buffer);
+//    if(count < 10){
+//        ob_velocityOpenLoop[count] = gKeyValue.displacement;
+//        ++ count;
+//    }
 
     funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed[gSysInfo.velocity_LSM_buffer]);
-    gKeyValue.motorSpeed = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
+    gKeyValue.motorSpeed = funcParaSpeed.a * 0.04 + funcParaSpeed.b * 0.2 + funcParaSpeed.c;
     gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
     clearSumSpeed(gSysInfo.velocity_LSM_buffer);
 #else
@@ -434,7 +439,7 @@ void Pwm_ISR_Thread(void)
         gSysInfo.JoyStickSpeed = gMotorSpeedEcap;
     }
 
-	if((gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
+	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
 	    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
 	        gSysInfo.targetDuty = DUTY_LIMIT_P;
 	    }

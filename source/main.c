@@ -246,8 +246,8 @@ void InitGlobalVar(void){
 	InitGlobalVarAndFunc();
 	InitPidVar();
 	InitEcapVar();
-	gKeyValue.displacement = 0;
-	gKeyValue.lock = 0;
+//	gKeyValue.displacement = 0;
+//	gKeyValue.lock = 0;
 }
 /**************************************************************
  *Name:		   RS422Unpack

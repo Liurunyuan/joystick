@@ -207,7 +207,7 @@ typedef struct{
     double Force_B;
     double friction;
 //    double ob_Friction;
-    double ob_velocityOpenLoop;
+//    double ob_velocityOpenLoop[10] = {0};
     int soft_break_flag;
     double springForceK;
     double springForceB;
@@ -530,6 +530,10 @@ extern double gDebug[3];
 extern int gPISO_165[8];
 extern int gButtonCmd[6];
 extern int gButtonStatus[6];
+extern double ob_velocityOpenLoop[10];
+extern int ob_section[10];
+extern Uint16 ob_edge1[10];
+extern int ob_edge2;
 
 
 extern ANOLOG16BIT gAnalog16bit;

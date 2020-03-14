@@ -16,6 +16,8 @@
 #define N (300)
 #define RS422STATUSCHECK (1000)
 
+double ob_watching_you = 0;
+
 /***************************************************************
  *Name:						Timer0_ISR_Thread
  *Function:					period = 0.2ms, pack the data
@@ -41,6 +43,8 @@ void Timer0_ISR_Thread(void){
 	static int first_time_to_back = 0;
 	static int location = 0;
 	static int touch_positive_edge = 0;
+
+	static int test_count = 0;
 
     double force_Joystick;
 
@@ -92,27 +96,40 @@ void Timer0_ISR_Thread(void){
     }
     gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
     gExternalForceState.updateForceState(0);
-    gSysInfo.currentStickDisSection = CheckStickSetion(gStickState.value);
+    ob_watching_you = CheckStickSetion(gStickState.value);
 
-    if(touch_positive_edge == 0){
-        if(gSysInfo.currentStickDisSection < 23){
-            gSysInfo.targetDuty = 50;
-        }
-        else{
-            gSysInfo.targetDuty = -50;
-            touch_positive_edge = 1 - touch_positive_edge;
+    if(test_count < 10){
+        if((ob_watching_you == 11) || (ob_watching_you == 12)){
+            ob_velocityOpenLoop[test_count] = gStickState.value;
+            ob_section[test_count] = ob_watching_you;
+            ob_edge1[test_count] = gAnalog16bit.displace;
+            ++test_count;
         }
     }
-    else{
-            if(gSysInfo.currentStickDisSection > 0){
-                gSysInfo.targetDuty = -50;
-            }
-            else{
-                gSysInfo.targetDuty = 50;
-                touch_positive_edge = 1 - touch_positive_edge;
-            }
-    }
 
+    if((ob_watching_you == 11) || (ob_watching_you == 12)){
+
+                ++ob_edge2;
+            }
+
+//    if(touch_positive_edge == 0){
+//        if(gSysInfo.currentStickDisSection < 23){
+//            gSysInfo.targetDuty = 50;
+//        }
+//        else{
+//            gSysInfo.targetDuty = -50;
+//            touch_positive_edge = 1 - touch_positive_edge;
+//        }
+//    }
+//    else{
+//            if(gSysInfo.currentStickDisSection > 0){
+//                gSysInfo.targetDuty = -50;
+//            }
+//            else{
+//                gSysInfo.targetDuty = 50;
+//                touch_positive_edge = 1 - touch_positive_edge;
+//            }
+//    }
 
 //    if(first_time_run == 0){
 //        if(first_time_back_to_mid == 0){
@@ -120,7 +137,7 @@ void Timer0_ISR_Thread(void){
 //                first_time_back_to_mid = 1;
 //            }
 //            else{
-//                ++gSysInfo.ob_velocityOpenLoop;
+////                ++gSysInfo.ob_velocityOpenLoop;
 //                first_time_back_to_mid = 0;
 //                OnlyWithSpringFront();
 //            }
@@ -159,7 +176,7 @@ void Timer0_ISR_Thread(void){
 //            }
 //        }
 //        else{
-//            ++gSysInfo.ob_velocityOpenLoop;
+////            ++gSysInfo.ob_velocityOpenLoop;
 //        }
 //    }
 //    else{
