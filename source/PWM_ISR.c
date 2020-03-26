@@ -434,7 +434,7 @@ void Pwm_ISR_Thread(void)
         gSysInfo.JoyStickSpeed = gMotorSpeedEcap;
     }
 
-	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
+	if((gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
 	    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
 	        gSysInfo.targetDuty = DUTY_LIMIT_P;
 	    }

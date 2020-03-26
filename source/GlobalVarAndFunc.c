@@ -624,7 +624,7 @@ void InitConfigParameter(void){
 
 	gConfigPara.Trim_StepSize = 0;
 
-	gConfigPara.Trim_Speed = 2; //unit mm/s
+	gConfigPara.Trim_Speed = 1; //unit mm/s
 
 	gConfigPara.timeDelay = 0;
 
@@ -912,7 +912,7 @@ void DisablePwmOutput(void){
 }
 void StateMachine(void){
 	//gConfigPara.stateCommand = 1; // For TEMP Test
-	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){
+	if(gSysState.erro.bit.software != 1){
 		EnablePwmOutput();
 	}
 	else{

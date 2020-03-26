@@ -123,7 +123,7 @@ void Timer0_ISR_Thread(void){
         }
         else if(gSysInfo.board_type == ROLL){
             ++run_time;
-            if(run_time > 7000){
+            if(run_time > 8000){
                 if(first_time_to_front == 0){
                     if(CheckStickSetion(gStickState.value) < 23){
                         gSysInfo.targetDuty = 70;
@@ -163,7 +163,7 @@ void Timer0_ISR_Thread(void){
     }
 
 
-	if(trim_time_count == 1000){
+	if(trim_time_count == 2){
 	    trim_time_count = 0;
 	    if(gSysInfo.board_type == PITCH){
 	        if(gButtonStatus[FWRD_SWITCH] == BTN_PRESSED){
@@ -171,7 +171,7 @@ void Timer0_ISR_Thread(void){
 	                gSysInfo.DimL_B = 56.2728;
 	            }
 	            else{
-	                gSysInfo.DimL_B = 63.2728 - gConfigPara.Trim_Speed * 0.2;
+	                gSysInfo.DimL_B = gSysInfo.DimL_B - gConfigPara.Trim_Speed * 0.01;
 	            }
 	        }
 	        else if(gButtonStatus[REAR_SWITCH] == BTN_PRESSED){
@@ -179,7 +179,7 @@ void Timer0_ISR_Thread(void){
 	                gSysInfo.DimL_B = 75.2728;
 	            }
 	            else{
-	                gSysInfo.DimL_B = 63.2728 + gConfigPara.Trim_Speed * 0.2;
+	                gSysInfo.DimL_B = gSysInfo.DimL_B + gConfigPara.Trim_Speed * 0.01;
 	            }
 	        }
 	        else{
@@ -192,7 +192,7 @@ void Timer0_ISR_Thread(void){
 	                gSysInfo.DimL_B = 46.9135;
 	            }
 	            else{
-	                gSysInfo.DimL_B = 57.9135 - gConfigPara.Trim_Speed * 0.2;
+	                gSysInfo.DimL_B = gSysInfo.DimL_B - gConfigPara.Trim_Speed * 0.01;
 	            }
 	        }
 	        else if(gButtonStatus[RGHT_SWITCH] == BTN_PRESSED){
@@ -200,7 +200,7 @@ void Timer0_ISR_Thread(void){
 	                gSysInfo.DimL_B = 68.9135;
 	            }
 	            else{
-	                gSysInfo.DimL_B = 57.9135 + gConfigPara.Trim_Speed * 0.2;
+	                gSysInfo.DimL_B = gSysInfo.DimL_B + gConfigPara.Trim_Speed * 0.01;
 	            }
 	        }
 	        else{
