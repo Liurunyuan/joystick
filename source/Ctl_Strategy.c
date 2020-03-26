@@ -30,7 +30,7 @@ void findSpringForceK(double displace){
         else{
             gSysInfo.currentStickDisSection = 0;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = 40;
+            gSysInfo.targetDuty = 55;
         }
         break;
     case 1:
@@ -43,7 +43,7 @@ void findSpringForceK(double displace){
         else if(gStickState.value < (gConfigPara.RB_MaxDistance - DEBOUNCE)){
             gSysInfo.currentStickDisSection = 0;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = 40;
+            gSysInfo.targetDuty = 55;
         }
         else{
             gSysInfo.currentStickDisSection = 1;
@@ -608,7 +608,7 @@ void findSpringForceK(double displace){
         if(gStickState.value  > (gConfigPara.LF_MaxDistance + DEBOUNCE)){
             gSysInfo.currentStickDisSection = 23;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = -40;
+            gSysInfo.targetDuty = -55;
         }
         else if(gStickState.value < (gConfigPara.LF_Distance9 - DEBOUNCE)){
             gSysInfo.currentStickDisSection = 21;
@@ -632,7 +632,7 @@ void findSpringForceK(double displace){
         else{
             gSysInfo.currentStickDisSection = 23;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = -40;
+            gSysInfo.targetDuty = -55;
         }
         break;
     default:
@@ -666,7 +666,7 @@ void OnlyWithSpringFront(void){
 	kb = gSysInfo.springForceB;
 
     if((gSysInfo.currentStickDisSection > 11) && (gSysInfo.currentStickDisSection < 14)){
-        mass = (3 * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
+        mass = (5 * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
     }
     else if((gSysInfo.currentStickDisSection > 9) && (gSysInfo.currentStickDisSection < 12)){
         mass = (-3 * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);

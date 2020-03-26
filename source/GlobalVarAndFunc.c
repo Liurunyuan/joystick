@@ -492,32 +492,32 @@ void InitConfigParameter(void){
         gConfigPara.LF_EmptyDistance = 1;
         gConfigPara.RB_EmptyDistance = -1;
 
-        gConfigPara.LF_StartForce = 5;
-        gConfigPara.RB_StartForce = -5;
+        gConfigPara.LF_StartForce = 10;
+        gConfigPara.RB_StartForce = -10;
 
         gConfigPara.LF_Force0 = 0;
         gConfigPara.LF_Force1 = 0;
-        gConfigPara.LF_Force2 = 8;
-        gConfigPara.LF_Force3 = 11;
-        gConfigPara.LF_Force4 = 14;
-        gConfigPara.LF_Force5 = 17;
-        gConfigPara.LF_Force6 = 20;
-        gConfigPara.LF_Force7 = 23;
-        gConfigPara.LF_Force8 = 26;
-        gConfigPara.LF_Force9 = 32;
-        gConfigPara.LF_MaxForce = 35;
+        gConfigPara.LF_Force2 = 15;
+        gConfigPara.LF_Force3 = 20;
+        gConfigPara.LF_Force4 = 25;
+        gConfigPara.LF_Force5 = 30;
+        gConfigPara.LF_Force6 = 35;
+        gConfigPara.LF_Force7 = 40;
+        gConfigPara.LF_Force8 = 45;
+        gConfigPara.LF_Force9 = 55;
+        gConfigPara.LF_MaxForce = 60;
 
         gConfigPara.RB_Force0 = 0;
         gConfigPara.RB_Force1 = 0;
-        gConfigPara.RB_Force2 = -8;
-        gConfigPara.RB_Force3 = -11;
-        gConfigPara.RB_Force4 = -17;
-        gConfigPara.RB_Force5 = -23;
-        gConfigPara.RB_Force6 = -29;
-        gConfigPara.RB_Force7 = -35;
-        gConfigPara.RB_Force8 = -41;
-        gConfigPara.RB_Force9 = -47;
-        gConfigPara.RB_MaxForce = -50;
+        gConfigPara.RB_Force2 = -13;
+        gConfigPara.RB_Force3 = -16;
+        gConfigPara.RB_Force4 = -22;
+        gConfigPara.RB_Force5 = -28;
+        gConfigPara.RB_Force6 = -34;
+        gConfigPara.RB_Force7 = -40;
+        gConfigPara.RB_Force8 = -46;
+        gConfigPara.RB_Force9 = -52;
+        gConfigPara.RB_MaxForce = -55;
 
         gConfigPara.LF_Distance0 = 0;
         gConfigPara.LF_Distance1 = 0.75;
@@ -615,7 +615,7 @@ void InitConfigParameter(void){
 
 	gConfigPara.dampingFactor = 0.1;
 
-	gConfigPara.naturalVibrationFreq = 40.0;
+	gConfigPara.naturalVibrationFreq = 80.0;
 
 	gConfigPara.equivalentMass = 0;
 
