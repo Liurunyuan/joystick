@@ -29,11 +29,15 @@
 #endif
 void Timer0_ISR_Thread(void){
 
-	static unsigned char count = 0;
-	static unsigned char trim_time_count = 0;
-	static double zero_force_SUM = 0;
-	static int zero_count = 0;
-	static int flag = 0;
+    static unsigned char count = 0;
+    static unsigned char trim_time_count = 0;
+    static double zero_force_SUM = 0;
+    static int zero_count = 0;
+    static int flag = 0;
+    static int first_time_back_to_mid = 0;
+    static int first_time_to_front = 0;
+    static int first_time_to_back = 0;
+    static Uint16 run_time = 0;
 
     double force_Joystick;
 
@@ -74,7 +78,89 @@ void Timer0_ISR_Thread(void){
     gRotateDirection.updateRotateDirection(0);
     gExternalForceState.updateForceState(0);
 
-    OnlyWithSpringFront();
+
+
+    if(first_time_back_to_mid == 0){
+        if((CheckStickSetion(gStickState.value) == 11) || (CheckStickSetion(gStickState.value) == 12)){
+            first_time_back_to_mid = 1;
+        }
+        else{
+            OnlyWithSpringFront();
+        }
+    }
+    else if(first_time_back_to_mid == 1){
+        if(gSysInfo.board_type == PITCH){
+            if(first_time_to_front == 0){
+                if(CheckStickSetion(gStickState.value) < 23){
+                    gSysInfo.targetDuty = 70;
+                }
+                else{
+                    first_time_to_front = 1;
+                    return;
+                }
+            }
+            else{
+                if(first_time_to_back == 0){
+                    if(CheckStickSetion(gStickState.value) > 0){
+                        gSysInfo.targetDuty = -70;
+                    }
+                    else{
+                        first_time_to_back = 1;
+                        return;
+                    }
+                }
+                else{
+                    if((CheckStickSetion(gStickState.value) == 11) || (CheckStickSetion(gStickState.value) == 12)){
+
+                        first_time_back_to_mid = 2;
+                        return;
+                    }
+                    else{
+                        gSysInfo.targetDuty = 70;
+                    }
+                }
+            }
+        }
+        else if(gSysInfo.board_type == ROLL){
+            ++run_time;
+            if(run_time > 7000){
+                if(first_time_to_front == 0){
+                    if(CheckStickSetion(gStickState.value) < 23){
+                        gSysInfo.targetDuty = 70;
+                    }
+                    else{
+                        first_time_to_front = 1;
+                        return;
+                    }
+                }
+                else{
+                    if(first_time_to_back == 0){
+                        if(CheckStickSetion(gStickState.value) > 0){
+                            gSysInfo.targetDuty = -70;
+                        }
+                        else{
+                            first_time_to_back = 1;
+                            return;
+                        }
+                    }
+                    else{
+                        if((CheckStickSetion(gStickState.value) == 11) || (CheckStickSetion(gStickState.value) == 12)){
+
+                            first_time_back_to_mid = 2;
+                            return;
+                        }
+                        else{
+                            gSysInfo.targetDuty = 70;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    else{
+        OnlyWithSpringFront();
+    }
 
 
 	if(trim_time_count == 1000){
