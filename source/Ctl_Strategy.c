@@ -30,7 +30,7 @@ void findSpringForceK(double displace){
         else{
             gSysInfo.currentStickDisSection = 0;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = 55;
+            gSysInfo.targetDuty = 50;
         }
         break;
     case 1:
@@ -43,7 +43,7 @@ void findSpringForceK(double displace){
         else if(gStickState.value < (gConfigPara.RB_MaxDistance - DEBOUNCE)){
             gSysInfo.currentStickDisSection = 0;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = 55;
+            gSysInfo.targetDuty = 50;
         }
         else{
             gSysInfo.currentStickDisSection = 1;
