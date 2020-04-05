@@ -32,6 +32,7 @@ char rs422rxPack[100] = {0};
 static void TestDuty(VAR16 a, int b, int c) {
 
 	// gSysInfo.duty = (int)a.value;
+    gSysInfo.RS422_Rx_Data = (int)a.value;
 
 	//TODO just an example
 }
@@ -57,7 +58,8 @@ static void TestHallPosition(VAR16 a, int b, int c) {
  *Date:		   2018��11��15������9:15:42
  **************************************************************/
 static void ShakeHandMsg(VAR16 a, int b, int c) {
-	gRS422Status.shakeHand = SUCCESS;
+//	gRS422Status.shakeHand = SUCCESS;
+    UpdateForceDisplaceCurve();
 }
 
 /*******************************************************/

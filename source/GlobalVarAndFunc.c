@@ -158,6 +158,9 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.isEcapRefresh = 0;
     gSysInfo.JoyStickSpeed = 0;
     gSysInfo.rotateDirection = 0;
+
+    gSysInfo.fourButtons = 0;
+    gSysInfo.RS422_Rx_Data = 0;
 }
 
 void checkPitchOrRoll(void){
@@ -1188,6 +1191,7 @@ void Button_Debounce3(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.fourButtons &= (~(0x01));
             if(gPISO_165[FWRD_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1204,6 +1208,7 @@ void Button_Debounce3(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.fourButtons |= 0x01;
             if(gPISO_165[FWRD_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1244,6 +1249,7 @@ void Button_Debounce4(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.fourButtons &= (~(0x08));
             if(gPISO_165[RGHT_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1260,6 +1266,7 @@ void Button_Debounce4(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.fourButtons |= 0x08;
             if(gPISO_165[RGHT_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1300,6 +1307,7 @@ void Button_Debounce5(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.fourButtons &= (~(0x02));
             if(gPISO_165[REAR_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1316,6 +1324,7 @@ void Button_Debounce5(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.fourButtons |= 0x02;
             if(gPISO_165[REAR_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1356,6 +1365,7 @@ void Button_Debounce6(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.fourButtons &= (~(0x04));
             if(gPISO_165[LEFT_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1372,6 +1382,7 @@ void Button_Debounce6(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.fourButtons |= 0x04;
             if(gPISO_165[LEFT_SWITCH+1] == 0){
                 count_release ++;
             }

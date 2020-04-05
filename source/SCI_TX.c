@@ -33,11 +33,11 @@ void GetMotorSpeedCurve(int a, int b, int c){
 //    gRx422TxVar[1].value = (int)(gSysInfo.targetDuty * 1000);
 }
 void GetDisplacementCurve(int a, int b, int c){
-    gRx422TxVar[2].value = (int)(gSysInfo.ob_velocityOpenLoop * 100000);
+    gRx422TxVar[2].value = gSysInfo.fourButtons;
 //    gRx422TxVar[2].value = gSysInfo.JoyStickSpeed * 100;
 }
 void GetMotorCurrentCurve(int a, int b, int c){
-	gRx422TxVar[3].value = gSysMonitorVar.anolog.single.var[BusCurrentA].value;
+	gRx422TxVar[3].value = gSysInfo.RS422_Rx_Data;
 }
 void GetDynamoVoltageCurve(int a, int b, int c){
 	gRx422TxVar[4].value = 20000;
@@ -75,6 +75,13 @@ void InitgRx422TxEnableFlag(void){
 	}
 	gRx422TxEnableFlag[0] = 1;
 	gRx422TxEnableFlag[1] = 1;
+	if(gSysInfo.board_type == PITCH){
+	    gRx422TxEnableFlag[2] = 1;
+	}
+	else{
+	    gRx422TxEnableFlag[2] = 0;
+	}
+	gRx422TxEnableFlag[3] = 1;
 }
 /**************************************************************
  *Name:		   InitgRx422TxVar
