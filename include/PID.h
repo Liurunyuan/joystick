@@ -2,10 +2,10 @@
 #define PID_H_
 
 typedef struct _PIDPARA{
-    int16 kp_velocity_ODE;
+    double kp_velocity_ODE;
     double ki_velocity_ODE;
 
-    int16 kp_force_ODE;
+    double kp_force_ODE;
     double ki_force_ODE;
 
     int16 kp_velocity_NULL;

@@ -50,6 +50,9 @@ void Timer0_ISR_Thread(void){
 
     //calculate function parameter
     force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
+    if(gSysInfo.board_type == ROLL){
+        force_Joystick = force_Joystick / 0.625;
+    }
 
     if(zero_count < 10){
         zero_force_SUM = zero_force_SUM + force_Joystick;
@@ -123,7 +126,7 @@ void Timer0_ISR_Thread(void){
         }
         else if(gSysInfo.board_type == ROLL){
             ++run_time;
-            if(run_time > 8000){
+            if(run_time > 9000){
                 if(first_time_to_front == 0){
                     if(CheckStickSetion(gStickState.value) < 23){
                         gSysInfo.targetDuty = 70;

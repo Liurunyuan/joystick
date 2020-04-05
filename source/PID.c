@@ -17,8 +17,8 @@ void InitPidVar(void){
         gPidPara.K_F_ODE = -0.7;
     }
     else if(gSysInfo.board_type == ROLL){
-        gPidPara.kp_force_ODE = 4;
-        gPidPara.ki_force_ODE = 0.06;
+        gPidPara.kp_force_ODE = 2;
+        gPidPara.ki_force_ODE = 0.2;
 
         gPidPara.K_F_ODE = -0.7;
     }

@@ -545,59 +545,57 @@ void InitConfigParameter(void){
      }
      //ROLL
      else if(gSysInfo.board_type == ROLL){
-         gConfigPara.LF_EmptyDistance = 1;
-         gConfigPara.RB_EmptyDistance = -1;
-
-         gConfigPara.LF_StartForce = 5;
-         gConfigPara.RB_StartForce = -5;
-
          gConfigPara.LF_Force0 = 0;
          gConfigPara.LF_Force1 = 0;
-         gConfigPara.LF_Force2 = 8;
-         gConfigPara.LF_Force3 = 11;
-         gConfigPara.LF_Force4 = 14;
-         gConfigPara.LF_Force5 = 20;
-         gConfigPara.LF_Force6 = 26;
-         gConfigPara.LF_Force7 = 32;
-         gConfigPara.LF_Force8 = 44;
-         gConfigPara.LF_Force9 = 50;
-         gConfigPara.LF_MaxForce = 56;
+         gConfigPara.LF_StartForce = 5;
+         gConfigPara.LF_Force2 = 7.35;
+         gConfigPara.LF_Force3 = 9.71;
+         gConfigPara.LF_Force4 = 12.06;
+         gConfigPara.LF_Force5 = 16.76;
+         gConfigPara.LF_Force6 = 21.47;
+         gConfigPara.LF_Force7 = 26.18;
+         gConfigPara.LF_Force8 = 35.59;
+         gConfigPara.LF_Force9 = 40.29;
+         gConfigPara.LF_MaxForce = 45;
 
          gConfigPara.RB_Force0 = 0;
          gConfigPara.RB_Force1 = 0;
-         gConfigPara.RB_Force2 = -8;
-         gConfigPara.RB_Force3 = -11;
-         gConfigPara.RB_Force4 = -14;
-         gConfigPara.RB_Force5 = -20;
-         gConfigPara.RB_Force6 = -26;
-         gConfigPara.RB_Force7 = -32;
-         gConfigPara.RB_Force8 = -44;
-         gConfigPara.RB_Force9 = -50;
-         gConfigPara.RB_MaxForce = -56;
+         gConfigPara.RB_StartForce = -5;
+         gConfigPara.RB_Force2 = -7.35;
+         gConfigPara.RB_Force3 = -9.71;
+         gConfigPara.RB_Force4 = -12.06;
+         gConfigPara.RB_Force5 = -16.76;
+         gConfigPara.RB_Force6 = -21.47;
+         gConfigPara.RB_Force7 = -26.18;
+         gConfigPara.RB_Force8 = -35.59;
+         gConfigPara.RB_Force9 = -40.29;
+         gConfigPara.RB_MaxForce = -45;
 
          gConfigPara.LF_Distance0 = 0;
-         gConfigPara.LF_Distance1 = 0.75;
-         gConfigPara.LF_Distance2 = 2;
-         gConfigPara.LF_Distance3 = 3;
-         gConfigPara.LF_Distance4 = 4;
-         gConfigPara.LF_Distance5 = 6;
-         gConfigPara.LF_Distance6 = 8;
-         gConfigPara.LF_Distance7 = 10;
-         gConfigPara.LF_Distance8 = 14;
-         gConfigPara.LF_Distance9 = 16;
-         gConfigPara.LF_MaxDistance = 18;
+         gConfigPara.LF_Distance1 = 0.25;
+         gConfigPara.LF_EmptyDistance = 0.5;
+         gConfigPara.LF_Distance2 = 1.5;
+         gConfigPara.LF_Distance3 = 2.5;
+         gConfigPara.LF_Distance4 = 3.5;
+         gConfigPara.LF_Distance5 = 5.5;
+         gConfigPara.LF_Distance6 = 7.5;
+         gConfigPara.LF_Distance7 = 9.5;
+         gConfigPara.LF_Distance8 = 13.5;
+         gConfigPara.LF_Distance9 = 15.5;
+         gConfigPara.LF_MaxDistance = 17.5;
 
          gConfigPara.RB_Distance0 = 0;
-         gConfigPara.RB_Distance1 = -0.75;
-         gConfigPara.RB_Distance2 = -2;
-         gConfigPara.RB_Distance3 = -3;
-         gConfigPara.RB_Distance4 = -4;
-         gConfigPara.RB_Distance5 = -6;
-         gConfigPara.RB_Distance6 = -8;
-         gConfigPara.RB_Distance7 = -10;
-         gConfigPara.RB_Distance8 = -14;
-         gConfigPara.RB_Distance9 = -16;
-         gConfigPara.RB_MaxDistance = -18;
+         gConfigPara.RB_Distance1 = -0.25;
+         gConfigPara.RB_EmptyDistance = -0.5;
+         gConfigPara.RB_Distance2 = -1.5;
+         gConfigPara.RB_Distance3 = -2.5;
+         gConfigPara.RB_Distance4 = -3.5;
+         gConfigPara.RB_Distance5 = -5.5;
+         gConfigPara.RB_Distance6 = -7.5;
+         gConfigPara.RB_Distance7 = -9.5;
+         gConfigPara.RB_Distance8 = -13.5;
+         gConfigPara.RB_Distance9 = -15.5;
+         gConfigPara.RB_MaxDistance = -17.5;
 
      }
      else{
