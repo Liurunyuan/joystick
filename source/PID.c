@@ -17,8 +17,8 @@ void InitPidVar(void){
         gPidPara.K_F_ODE = -0.7;
     }
     else if(gSysInfo.board_type == ROLL){
-        gPidPara.kp_force_ODE = 2;
-        gPidPara.ki_force_ODE = 0.2;
+        gPidPara.kp_force_ODE = 5.5;
+        gPidPara.ki_force_ODE = 0.6;
 
         gPidPara.K_F_ODE = -0.7;
     }
@@ -88,7 +88,7 @@ int16 force_PidOutput(double targetVal, double controlVar){
         gSysInfo.sek_f = 0;
     }
     pidOutput = (int16)(ek1 * gPidPara.kp_force_ODE) + (int16)(gSysInfo.sek_f * gPidPara.ki_force_ODE);
-    gSysInfo.ob_velocityOpenLoop = ek1;
+//    gSysInfo.ob_velocityOpenLoop = ek1;
     if(pidOutput > 750){
         pidOutput = 750;
     }

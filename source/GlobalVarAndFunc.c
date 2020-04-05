@@ -139,6 +139,7 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
     gSysInfo.ob_velocityOpenLoop = 0;
+    gSysInfo.ob_velocityOpenLoop2 = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
     gKeyValue.displacement = 0;
@@ -604,8 +605,8 @@ void InitConfigParameter(void){
          gSysState.warning.bit.b = 1;
      }
 
-	gConfigPara.LF_FrontFriction = 3;
-	gConfigPara.LF_RearFriction = 3;
+	gConfigPara.LF_FrontFriction = 1;
+	gConfigPara.LF_RearFriction = 1;
 	gConfigPara.RB_FrontFriction = 1;
 	gConfigPara.RB_RearFriction = 1;
 

@@ -208,6 +208,7 @@ typedef struct{
     double friction;
 //    double ob_Friction;
     double ob_velocityOpenLoop;
+    double ob_velocityOpenLoop2;
     int soft_break_flag;
     double springForceK;
     double springForceB;

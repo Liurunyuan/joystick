@@ -54,20 +54,20 @@ void Timer0_ISR_Thread(void){
         force_Joystick = force_Joystick / 0.625;
     }
 
-    if(zero_count < 10){
-        zero_force_SUM = zero_force_SUM + force_Joystick;
-        ++zero_count;
-//          clearSum();
-        gKeyValue.lock = 0;
-        return;
-    }
-    else{
-        if(flag == 0)
-        {
-            gSysInfo.zeroForce = zero_force_SUM/10;
-            flag = 1;
-        }
-    }
+//    if(zero_count < 10){
+//        zero_force_SUM = zero_force_SUM + force_Joystick;
+//        ++zero_count;
+////          clearSum();
+//        gKeyValue.lock = 0;
+//        return;
+//    }
+//    else{
+//        if(flag == 0)
+//        {
+//            gSysInfo.zeroForce = zero_force_SUM/10;
+//            flag = 1;
+//        }
+//    }
 
     if(gKeyValue.lock == 1){
         UpdateKeyValue();
@@ -84,7 +84,7 @@ void Timer0_ISR_Thread(void){
 
 
     if(first_time_back_to_mid == 0){
-        if((CheckStickSetion(gStickState.value) == 11) || (CheckStickSetion(gStickState.value) == 12)){
+        if((gStickState.value < gConfigPara.LF_Distance1) && (gStickState.value > gConfigPara.RB_Distance1)){
             first_time_back_to_mid = 1;
         }
         else{
@@ -94,7 +94,7 @@ void Timer0_ISR_Thread(void){
     else if(first_time_back_to_mid == 1){
         if(gSysInfo.board_type == PITCH){
             if(first_time_to_front == 0){
-                if(CheckStickSetion(gStickState.value) < 23){
+                if(gStickState.value < gConfigPara.LF_MaxDistance){
                     gSysInfo.targetDuty = 70;
                 }
                 else{
@@ -104,7 +104,7 @@ void Timer0_ISR_Thread(void){
             }
             else{
                 if(first_time_to_back == 0){
-                    if(CheckStickSetion(gStickState.value) > 0){
+                    if(gStickState.value > gConfigPara.RB_MaxDistance){
                         gSysInfo.targetDuty = -70;
                     }
                     else{
@@ -113,7 +113,7 @@ void Timer0_ISR_Thread(void){
                     }
                 }
                 else{
-                    if((CheckStickSetion(gStickState.value) == 11) || (CheckStickSetion(gStickState.value) == 12)){
+                    if((gStickState.value < gConfigPara.LF_Distance1) && (gStickState.value > gConfigPara.RB_Distance1)){
 
                         first_time_back_to_mid = 2;
                         return;
@@ -128,7 +128,7 @@ void Timer0_ISR_Thread(void){
             ++run_time;
             if(run_time > 9000){
                 if(first_time_to_front == 0){
-                    if(CheckStickSetion(gStickState.value) < 23){
+                    if(gStickState.value < gConfigPara.LF_MaxDistance){
                         gSysInfo.targetDuty = 70;
                     }
                     else{
@@ -138,7 +138,7 @@ void Timer0_ISR_Thread(void){
                 }
                 else{
                     if(first_time_to_back == 0){
-                        if(CheckStickSetion(gStickState.value) > 0){
+                        if(gStickState.value > gConfigPara.RB_MaxDistance){
                             gSysInfo.targetDuty = -70;
                         }
                         else{
@@ -147,7 +147,7 @@ void Timer0_ISR_Thread(void){
                         }
                     }
                     else{
-                        if((CheckStickSetion(gStickState.value) == 11) || (CheckStickSetion(gStickState.value) == 12)){
+                        if((gStickState.value < gConfigPara.LF_Distance1) && (gStickState.value > gConfigPara.RB_Distance1)){
 
                             first_time_back_to_mid = 2;
                             return;
@@ -157,6 +157,10 @@ void Timer0_ISR_Thread(void){
                         }
                     }
                 }
+            }
+            else{
+                gSysInfo.targetDuty = 0;
+                return;
             }
         }
 
