@@ -67,6 +67,7 @@ void InitGlobalVarAndFunc(void){
     }
     gSysInfo.sek_v = 0;
     gSysInfo.sek_f = 0;
+    gSysInfo.sek_d = 0;
 	gSysInfo.ddtmax = 1;
 	gSysInfo.dutyAddInterval = 3;
 	gSysInfo.targetDuty = 0;
@@ -85,6 +86,7 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.TH5 = 1;
 	//gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 5;
+	gSysInfo.Ki_Threshold_d = 0.0725;
 	gSysInfo.Ki_Threshold_v = 0.1;
 	gSysInfo.velocity_last = 0;
 
@@ -105,8 +107,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.Accel_Init2Neg_Thr = -0.1;
 	gSysInfo.Velocity_Init2Pos_Thr = 0.0001;
 	gSysInfo.Velocity_Init2Neg_Thr = -0.0001;
-	gSysInfo.Force_Pos_Thr = 0.5;
-	gSysInfo.Force_Neg_Thr = -0.5;
+	gSysInfo.Force_Pos_Thr = 0.9;
+	gSysInfo.Force_Neg_Thr = -0.9;
 	gSysInfo.Force_Hysteresis = 0.15;
 	gSysInfo.Accel_Pos_Thr = 0.04;
     gSysInfo.Accel_Neg_Thr = -0.04;

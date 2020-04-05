@@ -30,7 +30,12 @@ void findSpringForceK(double displace){
         else{
             gSysInfo.currentStickDisSection = 0;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = 50;
+            if(gSysInfo.board_type == ROLL){
+                gSysInfo.targetDuty = 40;
+            }
+            else{
+                gSysInfo.targetDuty = 50;
+            }
         }
         break;
     case 1:
@@ -43,7 +48,12 @@ void findSpringForceK(double displace){
         else if(gStickState.value < (gConfigPara.RB_MaxDistance - DEBOUNCE)){
             gSysInfo.currentStickDisSection = 0;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = 50;
+            if(gSysInfo.board_type == ROLL){
+                gSysInfo.targetDuty = 40;
+            }
+            else{
+                gSysInfo.targetDuty = 50;
+            }
         }
         else{
             gSysInfo.currentStickDisSection = 1;
@@ -174,14 +184,19 @@ void findSpringForceK(double displace){
                 gSysInfo.soft_break_flag = 0;
             }
             else if(gExternalForceState.value > 0){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
             }
             else{
-                gSysInfo.soft_break_flag = 1;
+//                gSysInfo.soft_break_flag = 1;
                 gSysInfo.targetDuty = 0;
+//                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
+//                gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
+//                gSysInfo.soft_break_flag = 0;
+//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_Distance1,gStickState.value);
+                gSysInfo.soft_break_flag = 1;
             }
 
         }
@@ -203,14 +218,14 @@ void findSpringForceK(double displace){
             //rear Null distance
             gSysInfo.currentStickDisSection = 11;
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -241,14 +256,19 @@ void findSpringForceK(double displace){
                 gSysInfo.soft_break_flag = 0;
             }
             else if(gExternalForceState.value > 0){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
             }
             else{
-                gSysInfo.soft_break_flag = 1;
+//                gSysInfo.soft_break_flag = 1;
                 gSysInfo.targetDuty = 0;
+//                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
+//                gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
+//                gSysInfo.soft_break_flag = 0;
+//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_Distance1,gStickState.value);
+                gSysInfo.soft_break_flag = 1;
             }
 
         }
@@ -259,14 +279,14 @@ void findSpringForceK(double displace){
             gSysInfo.currentStickDisSection = 12;
 
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -287,27 +307,32 @@ void findSpringForceK(double displace){
                 gSysInfo.soft_break_flag = 0;
             }
             else if(gExternalForceState.value > 0){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
             }
             else{
-                gSysInfo.soft_break_flag = 1;
+//                gSysInfo.soft_break_flag = 1;
                 gSysInfo.targetDuty = 0;
+//                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
+//                gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
+//                gSysInfo.soft_break_flag = 0;
+//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_Distance1,gStickState.value);
+                gSysInfo.soft_break_flag = 1;
             }
         }
         else{
             //rear null distance
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -324,34 +349,39 @@ void findSpringForceK(double displace){
         if(gStickState.value  > (gConfigPara.LF_Distance1 + DEBOUNCE)){
             //front start force
             gSysInfo.currentStickDisSection = 13;
-            if(gExternalForceState.value > (gConfigPara.LF_StartForce + gConfigPara.LF_FrontFriction) || (gExternalForceState.ForceState == NO_FORCE)){
+            if((gExternalForceState.value > (gConfigPara.LF_StartForce + gConfigPara.LF_FrontFriction)) || (gExternalForceState.ForceState == NO_FORCE)){
                 gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
                 gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
                 gSysInfo.soft_break_flag = 0;
             }
             else if(gExternalForceState.value < 0){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
             }
             else{
-                gSysInfo.soft_break_flag = 1;
+//                gSysInfo.soft_break_flag = 1;
                 gSysInfo.targetDuty = 0;
+//                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
+//                gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
+//                gSysInfo.soft_break_flag = 0;
+//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_Distance1,gStickState.value);
+                gSysInfo.soft_break_flag = 1;
             }
         }
         else if(gStickState.value < (gConfigPara.LF_Distance0 - DEBOUNCE)){
             //rear null distance
             gSysInfo.currentStickDisSection = 11;
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -366,14 +396,14 @@ void findSpringForceK(double displace){
         else{
             //front null distance
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -398,14 +428,14 @@ void findSpringForceK(double displace){
             //front null distance
             gSysInfo.currentStickDisSection = 12;
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -422,20 +452,25 @@ void findSpringForceK(double displace){
         }
         else{
             //front start force
-            if(gExternalForceState.value > (gConfigPara.LF_StartForce + gConfigPara.LF_FrontFriction) || (gExternalForceState.ForceState == NO_FORCE)){
+            if((gExternalForceState.value > (gConfigPara.LF_StartForce + gConfigPara.LF_FrontFriction)) || (gExternalForceState.ForceState == NO_FORCE)){
                 gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
                 gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
                 gSysInfo.soft_break_flag = 0;
             }
             else if(gExternalForceState.value < 0){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
             }
             else{
-                gSysInfo.soft_break_flag = 1;
+//                gSysInfo.soft_break_flag = 1;
                 gSysInfo.targetDuty = 0;
+//                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
+//                gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
+//                gSysInfo.soft_break_flag = 0;
+//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_Distance1,gStickState.value);
+                gSysInfo.soft_break_flag = 1;
             }
 
         }
@@ -451,20 +486,26 @@ void findSpringForceK(double displace){
         else if(gStickState.value < (gConfigPara.LF_EmptyDistance - DEBOUNCE)){
             //front start force
             gSysInfo.currentStickDisSection = 13;
-            if(gExternalForceState.value > (gConfigPara.LF_StartForce + gConfigPara.LF_FrontFriction) || (gExternalForceState.ForceState == NO_FORCE)){
+            if((gExternalForceState.value > (gConfigPara.LF_StartForce + gConfigPara.LF_FrontFriction)) || (gExternalForceState.ForceState == NO_FORCE)){
                 gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[3];
                 gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[3];
                 gSysInfo.soft_break_flag = 0;
             }
             else if(gExternalForceState.value < 0){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 5);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
             }
             else{
-                gSysInfo.soft_break_flag = 1;
+//                gSysInfo.soft_break_flag = 1;
                 gSysInfo.targetDuty = 0;
+//                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
+//                gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
+//                gSysInfo.soft_break_flag = 0;
+
+//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_Distance1,gStickState.value);
+                gSysInfo.soft_break_flag = 1;
             }
         }
         else{
@@ -590,7 +631,12 @@ void findSpringForceK(double displace){
         if(gStickState.value  > (gConfigPara.LF_MaxDistance + DEBOUNCE)){
             gSysInfo.currentStickDisSection = 23;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = -55;
+            if(gSysInfo.board_type == ROLL){
+                gSysInfo.targetDuty = -40;
+            }
+            else{
+                gSysInfo.targetDuty = -55;
+            }
         }
         else if(gStickState.value < (gConfigPara.LF_Distance9 - DEBOUNCE)){
             gSysInfo.currentStickDisSection = 21;
@@ -614,7 +660,12 @@ void findSpringForceK(double displace){
         else{
             gSysInfo.currentStickDisSection = 23;
             gSysInfo.soft_break_flag = 1;
-            gSysInfo.targetDuty = -55;
+            if(gSysInfo.board_type == ROLL){
+                gSysInfo.targetDuty = -40;
+            }
+            else{
+                gSysInfo.targetDuty = -55;
+            }
         }
         break;
     default:

@@ -10,6 +10,9 @@ void InitPidVar(void){
     gPidPara.kp_velocity_ODE = 200;
     gPidPara.ki_velocity_ODE = 50;
 
+    gPidPara.kp_displace_ODE = 200;
+    gPidPara.ki_displace_ODE = 60;
+
     if(gSysInfo.board_type == PITCH){
         gPidPara.kp_force_ODE = 5.5;
         gPidPara.ki_force_ODE = 0.4;
@@ -18,7 +21,7 @@ void InitPidVar(void){
     }
     else if(gSysInfo.board_type == ROLL){
         gPidPara.kp_force_ODE = 5.5;
-        gPidPara.ki_force_ODE = 0.6;
+        gPidPara.ki_force_ODE = 0.3;
 
         gPidPara.K_F_ODE = -0.7;
     }
@@ -88,6 +91,35 @@ int16 force_PidOutput(double targetVal, double controlVar){
         gSysInfo.sek_f = 0;
     }
     pidOutput = (int16)(ek1 * gPidPara.kp_force_ODE) + (int16)(gSysInfo.sek_f * gPidPara.ki_force_ODE);
+//    gSysInfo.ob_velocityOpenLoop = ek1;
+    if(pidOutput > 750){
+        pidOutput = 750;
+    }
+    else if(pidOutput < -750){
+        pidOutput = -750;
+    }
+
+    return pidOutput;
+}
+
+
+int16 displace_PidOutput(double targetVal, double controlVar){
+    int16 pidOutput = 0;
+    double ek1;
+
+    ek1 = (targetVal - controlVar);
+    if((ek1 > -gSysInfo.Ki_Threshold_d) && (ek1 < gSysInfo.Ki_Threshold_d))
+    {
+        if(((ek1 > 0) && (gSysInfo.sek_d < 0.3625)) || ((ek1 < 0) && (gSysInfo.sek_d > -0.3625)))
+        {
+            gSysInfo.sek_d = gSysInfo.sek_d + ek1;
+        }
+    }
+    else
+    {
+        gSysInfo.sek_d = 0;
+    }
+    pidOutput = (int16)(ek1 * gPidPara.kp_displace_ODE) + (int16)(gSysInfo.sek_d * gPidPara.ki_displace_ODE);
 //    gSysInfo.ob_velocityOpenLoop = ek1;
     if(pidOutput > 750){
         pidOutput = 750;

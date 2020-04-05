@@ -19,7 +19,7 @@
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
-#define  DEBOUNCE (0)
+#define  DEBOUNCE (0.15)
 
 #define PI (3.14149265)
 
@@ -166,7 +166,9 @@ typedef struct{
 	int controlFuncIndex;
 	int currentStickDisSection;
 	int16 Ki_Threshold_f;
+	double Ki_Threshold_d;
 	int16 sek_f;
+	double sek_d;
 	double Ki_Threshold_v;
 	double sek_v;
 	double TH0;

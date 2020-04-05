@@ -8,6 +8,9 @@ typedef struct _PIDPARA{
     double kp_force_ODE;
     double ki_force_ODE;
 
+    double kp_displace_ODE;
+    double ki_displace_ODE;
+
     int16 kp_velocity_NULL;
     double ki_velocity_NULL;
 
@@ -33,6 +36,7 @@ extern volatile PIDPARA gPidPara;
 void InitPidVar(void);
 //int32 displace_PidOutput(double targetVal, double controlVar);
 int16 force_PidOutput(double targetVal, double controlVar);
+int16 displace_PidOutput(double targetVal, double controlVar);
 int16 velocity_PidOutput(double targetVal, double controlVar);
 
 #endif
