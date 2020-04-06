@@ -161,6 +161,7 @@ void InitGlobalVarAndFunc(void){
 
     gSysInfo.fourButtons = 0;
     gSysInfo.RS422_Rx_Data = 0;
+    gSysInfo.software_version = 6;
 }
 
 void checkPitchOrRoll(void){

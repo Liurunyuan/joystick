@@ -221,6 +221,7 @@ typedef struct{
     int rotateDirection;
     int fourButtons;
     int RS422_Rx_Data;
+    int software_version;
 
 }SYSINFO;
 
