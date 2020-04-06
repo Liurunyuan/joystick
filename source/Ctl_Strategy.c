@@ -191,11 +191,11 @@ void findSpringForceK(double displace){
             }
             else{
 //                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 0;
+//                gSysInfo.targetDuty = 0;
 //                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
 //                gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
 //                gSysInfo.soft_break_flag = 0;
-//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_Distance1,gStickState.value);
+                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_EmptyDistance,gStickState.value);
                 gSysInfo.soft_break_flag = 1;
             }
 
@@ -263,11 +263,11 @@ void findSpringForceK(double displace){
             }
             else{
 //                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 0;
+//                gSysInfo.targetDuty = 0;
 //                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
 //                gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
 //                gSysInfo.soft_break_flag = 0;
-//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_Distance1,gStickState.value);
+                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_EmptyDistance,gStickState.value);
                 gSysInfo.soft_break_flag = 1;
             }
 
@@ -314,11 +314,11 @@ void findSpringForceK(double displace){
             }
             else{
 //                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 0;
+//                gSysInfo.targetDuty = 0;
 //                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceN[2];
 //                gSysInfo.springForceB = gForceAndDisplaceCurve.b_N[2];
 //                gSysInfo.soft_break_flag = 0;
-//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_Distance1,gStickState.value);
+                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.RB_EmptyDistance,gStickState.value);
                 gSysInfo.soft_break_flag = 1;
             }
         }
@@ -362,11 +362,11 @@ void findSpringForceK(double displace){
             }
             else{
 //                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 0;
+//                gSysInfo.targetDuty = 0;
 //                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
 //                gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
 //                gSysInfo.soft_break_flag = 0;
-//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_Distance1,gStickState.value);
+                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_EmptyDistance,gStickState.value);
                 gSysInfo.soft_break_flag = 1;
             }
         }
@@ -465,11 +465,11 @@ void findSpringForceK(double displace){
             }
             else{
 //                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 0;
+//                gSysInfo.targetDuty = 0;
 //                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
 //                gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
 //                gSysInfo.soft_break_flag = 0;
-//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_Distance1,gStickState.value);
+                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_EmptyDistance,gStickState.value);
                 gSysInfo.soft_break_flag = 1;
             }
 
@@ -499,12 +499,12 @@ void findSpringForceK(double displace){
             }
             else{
 //                gSysInfo.soft_break_flag = 1;
-                gSysInfo.targetDuty = 0;
+//                gSysInfo.targetDuty = 0;
 //                gSysInfo.springForceK = gForceAndDisplaceCurve.K_spring_forceP[2];
 //                gSysInfo.springForceB = gForceAndDisplaceCurve.b_P[2];
 //                gSysInfo.soft_break_flag = 0;
 
-//                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_Distance1,gStickState.value);
+                gSysInfo.targetDuty = (gStickState.value * -50) + displace_PidOutput(gConfigPara.LF_EmptyDistance,gStickState.value);
                 gSysInfo.soft_break_flag = 1;
             }
         }
