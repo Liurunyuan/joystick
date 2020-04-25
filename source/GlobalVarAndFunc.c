@@ -40,8 +40,6 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.DimL_B = 63.2728;
         gSysInfo.Force_K = 0.014027;
         gSysInfo.Force_B = -459.6276;
-        gSysInfo.TH0 = -17.8;
-        gSysInfo.TH6 = 11.8;
         gSysInfo.openLoop_Force_front_B = 20;
         gSysInfo.openLoop_Force_rear_B = -10;
     }
@@ -51,16 +49,12 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.DimL_B = 57.9135;
         gSysInfo.Force_K = -0.014027;
         gSysInfo.Force_B = 459.6276;
-        gSysInfo.TH0 = -17.8;
-        gSysInfo.TH6 = 17.8;
         gSysInfo.openLoop_Force_front_B = 5;
         gSysInfo.openLoop_Force_rear_B = -5;
     }
     else{
         gSysInfo.DimL_K = 0;
         gSysInfo.DimL_B = 0;
-        gSysInfo.TH0 = 0;
-        gSysInfo.TH6 = 0;
         gSysState.warning.bit.b = 1;
         gSysInfo.openLoop_Force_front_B = 0;
         gSysInfo.openLoop_Force_rear_B = 0;
@@ -78,13 +72,6 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.coe_Velocity = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
-	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -1;
-	gSysInfo.TH2 = -0.5;
-	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 0.5;
-	gSysInfo.TH5 = 1;
-	//gSysInfo.TH6 = 11.8; //17.8
 	gSysInfo.Ki_Threshold_f = 5;
 	gSysInfo.Ki_Threshold_d = 0.0725;
 	gSysInfo.Ki_Threshold_v = 0.1;
@@ -604,10 +591,6 @@ void InitConfigParameter(void){
 
      }
      else{
-         gSysInfo.DimL_K = 0;
-         gSysInfo.DimL_B = 0;
-         gSysInfo.TH0 = 0;
-         gSysInfo.TH6 = 0;
          gSysState.warning.bit.b = 1;
      }
 

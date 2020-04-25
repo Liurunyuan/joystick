@@ -171,13 +171,6 @@ typedef struct{
 	double sek_d;
 	double Ki_Threshold_v;
 	double sek_v;
-	double TH0;
-	double TH1;
-	double TH2;
-	double TH3;
-	double TH4;
-	double TH5;
-	double TH6;
 	double zeroForce;
 	double velocity_last;
 	double Force_Init2Pos_Thr;
