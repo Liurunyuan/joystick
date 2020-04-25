@@ -19,7 +19,7 @@
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
-#define  DEBOUNCE (0.1)
+#define  DEBOUNCE (0)
 
 #define PI (3.14149265)
 
