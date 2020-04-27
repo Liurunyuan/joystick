@@ -54,20 +54,20 @@ void Timer0_ISR_Thread(void){
         force_Joystick = force_Joystick / 0.625;
     }
 
-//    if(zero_count < 10){
-//        zero_force_SUM = zero_force_SUM + force_Joystick;
-//        ++zero_count;
-////          clearSum();
-//        gKeyValue.lock = 0;
-//        return;
-//    }
-//    else{
-//        if(flag == 0)
-//        {
-//            gSysInfo.zeroForce = zero_force_SUM/10;
-//            flag = 1;
-//        }
-//    }
+    if(zero_count < 10){
+        zero_force_SUM = zero_force_SUM + force_Joystick;
+        ++zero_count;
+//          clearSum();
+        gKeyValue.lock = 0;
+        return;
+    }
+    else{
+        if(flag == 0)
+        {
+            gSysInfo.zeroForce = zero_force_SUM/10;
+            flag = 1;
+        }
+    }
 
     if(gKeyValue.lock == 1){
         UpdateKeyValue();

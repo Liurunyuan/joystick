@@ -12,16 +12,19 @@
 #define SPEED_CLOSED_LOOP 				INCLUDE_FEATURE
 #define TEN_AVERAGE 					EXCLUDE_FEATURE
 #define DUTY_GRADUAL_CHANGE 			INCLUDE_FEATURE
-#define TARGET_DUTY_GRADUAL_CHANGE 		INCLUDE_FEATURE
+#define TARGET_DUTY_GRADUAL_CHANGE 		EXCLUDE_FEATURE
 #define COPY_FLASH_CODE_TO_RAM 			EXCLUDE_FEATURE
 #define IMPLEMENT_LSM                   EXCLUDE_FEATURE
 
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
-#define  DEBOUNCE (0)
+//#define  DEBOUNCE (0)
+//#define START_FORCE_OFFSET (0)
+//#define START_FORCE_DUTY (50)
+#define ROLL_OFFSET (10)
 
-#define PI (3.14149265)
+//#define PI (3.14149265)
 
 #define ROLL 0
 #define PITCH 1
@@ -380,8 +383,8 @@ typedef struct{
 	int RB_FrontFriction;
 	int RB_RearFriction;
 
-	int LF_EmptyDistance;
-	int RB_EmptyDistance;
+	double LF_EmptyDistance;
+	double RB_EmptyDistance;
 
 	double dampingFactor;
 	double naturalVibrationFreq;

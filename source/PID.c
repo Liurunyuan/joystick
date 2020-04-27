@@ -15,7 +15,7 @@ void InitPidVar(void){
 
     if(gSysInfo.board_type == PITCH){
         gPidPara.kp_force_ODE = 5.5;
-        gPidPara.ki_force_ODE = 0.4;
+        gPidPara.ki_force_ODE = 0.3;
 
         gPidPara.K_F_ODE = -0.7;
     }
@@ -81,7 +81,7 @@ int16 force_PidOutput(double targetVal, double controlVar){
     ek1 = (targetVal - controlVar);
     if((ek1 > -gSysInfo.Ki_Threshold_f) && (ek1 < gSysInfo.Ki_Threshold_f))
     {
-        if(((ek1 > 0) && (gSysInfo.sek_f < 70)) || ((ek1 < 0) && (gSysInfo.sek_f > -70)))
+        if(((ek1 > 0) && (gSysInfo.sek_f < 110)) || ((ek1 < 0) && (gSysInfo.sek_f > -110)))
         {
             gSysInfo.sek_f = gSysInfo.sek_f + ek1;
         }
@@ -91,7 +91,7 @@ int16 force_PidOutput(double targetVal, double controlVar){
         gSysInfo.sek_f = 0;
     }
     pidOutput = (int16)(ek1 * gPidPara.kp_force_ODE) + (int16)(gSysInfo.sek_f * gPidPara.ki_force_ODE);
-//    gSysInfo.ob_velocityOpenLoop = ek1;
+    gSysInfo.ob_velocityOpenLoop = ek1;
     if(pidOutput > 750){
         pidOutput = 750;
     }
