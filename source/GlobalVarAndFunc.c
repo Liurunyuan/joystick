@@ -146,9 +146,9 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.JoyStickSpeed = 0;
     gSysInfo.rotateDirection = 0;
 
-    gSysInfo.fourButtons = 0;
+    gSysInfo.sixButtons = 0;
     gSysInfo.RS422_Rx_Data = 0;
-    gSysInfo.software_version = 6;
+    gSysInfo.software_version = 7;
 }
 
 void checkPitchOrRoll(void){
@@ -1068,6 +1068,7 @@ void Button_Debounce1(void){
             }
             break;
         case BTN_RELEASE:
+        	gSysInfo.sixButtons &= (~(0x10));
             if(gPISO_165[TK9_TRIGGER+1] == 1){
                 count_pressed ++;
             }
@@ -1084,6 +1085,7 @@ void Button_Debounce1(void){
 
             break;
         case BTN_PRESSED:
+        	gSysInfo.sixButtons |= 0x10;
             if(gPISO_165[TK9_TRIGGER+1] == 0){
                 count_release ++;
             }
@@ -1121,6 +1123,7 @@ void Button_Debounce2(void){
             }
             break;
         case BTN_RELEASE:
+        	gSysInfo.sixButtons &= (~(0x20));
             if(gPISO_165[AK29_BUTTON+1] == 1){
                 count_pressed ++;
             }
@@ -1138,6 +1141,7 @@ void Button_Debounce2(void){
 
             break;
         case BTN_PRESSED:
+        	gSysInfo.sixButtons |= 0x20;
             if(gPISO_165[AK29_BUTTON+1] == 0){
                 count_release ++;
             }
@@ -1175,7 +1179,7 @@ void Button_Debounce3(void){
             }
             break;
         case BTN_RELEASE:
-            gSysInfo.fourButtons &= (~(0x01));
+            gSysInfo.sixButtons &= (~(0x01));
             if(gPISO_165[FWRD_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1192,7 +1196,7 @@ void Button_Debounce3(void){
 
             break;
         case BTN_PRESSED:
-            gSysInfo.fourButtons |= 0x01;
+            gSysInfo.sixButtons |= 0x01;
             if(gPISO_165[FWRD_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1233,7 +1237,7 @@ void Button_Debounce4(void){
             }
             break;
         case BTN_RELEASE:
-            gSysInfo.fourButtons &= (~(0x08));
+            gSysInfo.sixButtons &= (~(0x08));
             if(gPISO_165[RGHT_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1250,7 +1254,7 @@ void Button_Debounce4(void){
 
             break;
         case BTN_PRESSED:
-            gSysInfo.fourButtons |= 0x08;
+            gSysInfo.sixButtons |= 0x08;
             if(gPISO_165[RGHT_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1291,7 +1295,7 @@ void Button_Debounce5(void){
             }
             break;
         case BTN_RELEASE:
-            gSysInfo.fourButtons &= (~(0x02));
+            gSysInfo.sixButtons &= (~(0x02));
             if(gPISO_165[REAR_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1308,7 +1312,7 @@ void Button_Debounce5(void){
 
             break;
         case BTN_PRESSED:
-            gSysInfo.fourButtons |= 0x02;
+            gSysInfo.sixButtons |= 0x02;
             if(gPISO_165[REAR_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1349,7 +1353,7 @@ void Button_Debounce6(void){
             }
             break;
         case BTN_RELEASE:
-            gSysInfo.fourButtons &= (~(0x04));
+            gSysInfo.sixButtons &= (~(0x04));
             if(gPISO_165[LEFT_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1366,7 +1370,7 @@ void Button_Debounce6(void){
 
             break;
         case BTN_PRESSED:
-            gSysInfo.fourButtons |= 0x04;
+            gSysInfo.sixButtons |= 0x04;
             if(gPISO_165[LEFT_SWITCH+1] == 0){
                 count_release ++;
             }

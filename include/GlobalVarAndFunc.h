@@ -215,7 +215,7 @@ typedef struct{
     int isEcapRefresh;
     double JoyStickSpeed;
     int rotateDirection;
-    int fourButtons;
+    int sixButtons;
     int RS422_Rx_Data;
     int software_version;
 
