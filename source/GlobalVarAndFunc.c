@@ -594,7 +594,7 @@ void InitConfigParameter(void){
          gSysState.warning.bit.b = 1;
      }
 
-	gConfigPara.LF_FrontFriction = 0;
+	gConfigPara.LF_FrontFriction = 1;
 	gConfigPara.LF_RearFriction = 1;
 	gConfigPara.RB_FrontFriction = 1;
 	gConfigPara.RB_RearFriction = 1;

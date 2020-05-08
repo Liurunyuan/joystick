@@ -20,7 +20,7 @@ void InitPidVar(void){
         gPidPara.K_F_ODE = -0.7;
     }
     else if(gSysInfo.board_type == ROLL){
-        gPidPara.kp_force_ODE = 5.5;
+        gPidPara.kp_force_ODE = 5.4;
         gPidPara.ki_force_ODE = 0.3;
 
         gPidPara.K_F_ODE = -0.7;
@@ -81,7 +81,7 @@ int16 force_PidOutput(double targetVal, double controlVar){
     ek1 = (targetVal - controlVar);
     if((ek1 > -gSysInfo.Ki_Threshold_f) && (ek1 < gSysInfo.Ki_Threshold_f))
     {
-        if(((ek1 > 0) && (gSysInfo.sek_f < 110)) || ((ek1 < 0) && (gSysInfo.sek_f > -110)))
+        if(((ek1 > 0) && (gSysInfo.sek_f < 70)) || ((ek1 < 0) && (gSysInfo.sek_f > -70)))
         {
             gSysInfo.sek_f = gSysInfo.sek_f + ek1;
         }

@@ -22,7 +22,7 @@ void findSpringForceK(double displace){
     case 0:
             gSysInfo.soft_break_flag = 1;
             if(gSysInfo.board_type == ROLL){
-                gSysInfo.targetDuty = 50;
+                gSysInfo.targetDuty = 40;
             }
             else{
                 gSysInfo.targetDuty = 50;
@@ -104,14 +104,14 @@ void findSpringForceK(double displace){
     case 11:
             //rear null distance
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 12);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 12);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -126,14 +126,14 @@ void findSpringForceK(double displace){
     case 12:
             //front null distance
             if(gExternalForceState.ForceState == FORWARD_FORCE){
-                tmp = (int32)((0.5 - gExternalForceState.value)* 10);
+                tmp = (int32)((0.5 - gExternalForceState.value)* 12);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
 
             }
             else if(gExternalForceState.ForceState == BACKWARD_FORCE){
-                tmp = (int32)(((-0.5) - gExternalForceState.value)* 10);
+                tmp = (int32)(((-0.5) - gExternalForceState.value)* 12);
                 tmp = -tmp;
                 gSysInfo.targetDuty = tmp;
                 gSysInfo.soft_break_flag = 1;
@@ -221,7 +221,7 @@ void findSpringForceK(double displace){
             gSysInfo.currentStickDisSection = 23;
             gSysInfo.soft_break_flag = 1;
             if(gSysInfo.board_type == ROLL){
-                gSysInfo.targetDuty = -40;
+                gSysInfo.targetDuty = -30;
             }
             else{
                 gSysInfo.targetDuty = -40;
@@ -300,7 +300,7 @@ void OnlyWithSpringFront(void){
 //	gSysInfo.ob_velocityOpenLoop2 = damp_force;
 
     if(force_closeLoop >= 0){
-        B_F = 12;
+        B_F = 0;
 //        if((gSysInfo.currentStickDisSection > 9) && (gSysInfo.currentStickDisSection < 14)){
 //            B_F = 0;
 //        }
@@ -309,7 +309,7 @@ void OnlyWithSpringFront(void){
 //        }
     }
     else{
-        B_F = -12;
+        B_F = 0;
     }
 //    else if(gRotateDirection.rotateDirection == BACKWARD_DIRECTION){
 //        if((gSysInfo.currentStickDisSection > 9) && (gSysInfo.currentStickDisSection < 14)){
