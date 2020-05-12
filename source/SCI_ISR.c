@@ -939,3 +939,29 @@ void ClearRS422RxOverFlow(void) {
 		}
 	}
 }
+
+/*************New Protocol for the Joystick********************/
+#define HEAD1_NEW 0xAA
+#define HEAD2_NEW 0x55
+
+void FindHead_New(RS422RXQUE *RS422RxQue)
+{
+	char head1;
+	char head2;
+
+
+	while(1){
+
+		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
+		head2 = RS422RxQue->rxBuff[(RS422RxQue->front + 1) % MAXQSIZE];
+
+		if(head1 == HEAD1 && head2 == HEAD2){
+			return SUCCESS;
+		}
+
+		if(DeQueue(RS422RxQue) == 0){
+			//printf("rs422 rx queue is empty\r\n");
+			return FAIL;
+		}
+	}
+}
