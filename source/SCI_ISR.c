@@ -943,8 +943,8 @@ void ClearRS422RxOverFlow(void) {
 /*************New Protocol for the Joystick********************/
 #define HEAD1_NEW 0xAA
 #define HEAD2_NEW 0x55
-#define LENGHT_NEW 0X9
-#define EXTRA_LEN_NEW 0x01
+#define LENGHT_NEW 0x1a
+#define EXTRA_LEN_NEW 0x0d
 
 int FindHead_New(RS422RXQUE *RS422RxQue)
 {
@@ -1004,7 +1004,7 @@ void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
 
 		// length for the new protocol is a fixed value
 
-		saveprofile(length,RS422RxQue);
+		saveprofile(LENGHT_NEW,RS422RxQue);
 
 		if(CheckSum_New(rs422rxPack + OFFSET, length - EXTRA_LEN + 2) != 0){
 			if(DeQueue(RS422RxQue) == 0){
@@ -1015,6 +1015,6 @@ void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
 
 		Unpack_New(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
 
-		updatehead(length, RS422RxQue);
+		updatehead(LENGHT_NEW, RS422RxQue);
 	}
 }
