@@ -1002,11 +1002,6 @@ int CheckSum_New(const char *buf, int len){
 	return 1;
 }
 
-int CheckUnitCode_New()
-{
-	return 0;
-}
-
 void Unpack_New(int len){
 // update the value from the host side
 
@@ -1022,6 +1017,11 @@ void Unpack_New(int len){
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 2];
 	unitCode = var16.value;
+
+	if(unitCode != 1)
+	{
+		return;
+	}
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 2];
