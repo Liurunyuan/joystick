@@ -945,7 +945,8 @@ void ClearRS422RxOverFlow(void) {
 #define HEAD2_NEW 0x55
 #define LENGHT_NEW 0x1a
 #define EXTRA_LEN_NEW 0x0d
-
+#define OFFSET_NEW 0x03
+#define UNIT_LEN_NEW 0x02
 int FindHead_New(RS422RXQUE *RS422RxQue)
 {
 	char head1;
@@ -979,7 +980,26 @@ int CheckLength_New(RS422RXQUE *RS422RxQue){
 }
 
 int CheckSum_New(const char *buf, int len){
-	return 0;
+	int i = 0;
+	Uint16 sum = 0;
+	Uint16 rxSum = 0;
+
+	rxSum = buf[LENGHT_NEW - 2];
+	rxSum = rxSum << 8;
+	rxSum = rxSum | buf[LENGHT_NEW - 1];
+
+
+	for(i = 0; i < len - 2; ++i)
+	{
+		sum += buf[0];
+	}
+
+	if(sum == rxSum)
+	{
+		return 0;
+	}
+
+	return 1;
 }
 
 int CheckUnitCode_New()
@@ -989,10 +1009,43 @@ int CheckUnitCode_New()
 
 void Unpack_New(int len){
 // update the value from the host side
+
+	int16 unitCode;
+	int16 startForce;
+	int16 friction;
+	int16 emptyDistance;
+	int16 k;
+	int16 timeDelay;
+
+	VAR16 var16;
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 2];
+	unitCode = var16.value;
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 2];
+	startForce = var16.value;
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 2];
+	friction = var16.value;
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 2];
+	emptyDistance = var16.value;
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 2];
+	k = var16.value;
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 2];
+	timeDelay = var16.value;
 }
 
 void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
-	int length;
+
 	while(RS422RxQueLength(RS422RxQue) > EXTRA_LEN_NEW){
 		if(FindHead_New(RS422RxQue) == FAIL){
 			return;
@@ -1004,16 +1057,16 @@ void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
 
 		// length for the new protocol is a fixed value
 
-		saveprofile(LENGHT_NEW,RS422RxQue);
+		saveprofile(LENGHT_NEW, RS422RxQue);
 
-		if(CheckSum_New(rs422rxPack + OFFSET, length - EXTRA_LEN + 2) != 0){
+		if(CheckSum_New(rs422rxPack, LENGHT_NEW) != 0){
 			if(DeQueue(RS422RxQue) == 0){
 				//printf("RS422 rx queue is empty\r\n");
 			}
 			return;
 		}
 
-		Unpack_New(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
+		Unpack_New(LENGHT_NEW);
 
 		updatehead(LENGHT_NEW, RS422RxQue);
 	}
