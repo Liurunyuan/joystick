@@ -944,8 +944,9 @@ void ClearRS422RxOverFlow(void) {
 #define HEAD1_NEW 0xAA
 #define HEAD2_NEW 0x55
 #define LENGHT_NEW 0X9
+#define EXTRA_LEN_NEW 0x01
 
-void FindHead_New(RS422RXQUE *RS422RxQue)
+int FindHead_New(RS422RXQUE *RS422RxQue)
 {
 	char head1;
 	char head2;
@@ -990,3 +991,30 @@ void Unpack_New(int len){
 // update the value from the host side
 }
 
+void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
+	int length;
+	while(RS422RxQueLength(RS422RxQue) > EXTRA_LEN_NEW){
+		if(FindHead_New(RS422RxQue) == FAIL){
+			return;
+		}
+
+		if(CheckLength_New(RS422RxQue) == FAIL){
+			return;
+		}
+
+		// length for the new protocol is a fixed value
+
+		saveprofile(length,RS422RxQue);
+
+		if(CheckSum_New(rs422rxPack + OFFSET, length - EXTRA_LEN + 2) != 0){
+			if(DeQueue(RS422RxQue) == 0){
+				//printf("RS422 rx queue is empty\r\n");
+			}
+			return;
+		}
+
+		Unpack_New(RS422RxQue->rxBuff[(RS422RxQue->front + 2) % MAXQSIZE]);
+
+		updatehead(length, RS422RxQue);
+	}
+}
