@@ -382,7 +382,9 @@ void Start_main_loop(void){
 		//TODO, generate alarm and notice uppper computer
 	}
 
-	RS422Unpack();
+	// RS422Unpack();
+
+	UnpackRS422A_New(&gRS422RxQueB);
 
 	ClearRS422RxOverFlow();
 	//TODO need to implement
