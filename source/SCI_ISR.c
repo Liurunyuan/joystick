@@ -947,6 +947,7 @@ void ClearRS422RxOverFlow(void) {
 #define EXTRA_LEN_NEW 0x0d
 #define OFFSET_NEW 0x03
 #define UNIT_LEN_NEW 0x02
+
 int FindHead_New(RS422RXQUE *RS422RxQue)
 {
 	char head1;
@@ -958,7 +959,8 @@ int FindHead_New(RS422RXQUE *RS422RxQue)
 		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
 		head2 = RS422RxQue->rxBuff[(RS422RxQue->front + 1) % MAXQSIZE];
 
-		if(head1 == HEAD1 && head2 == HEAD2){
+		if(head1 == HEAD1_NEW && head2 == HEAD2_NEW){
+
 			return SUCCESS;
 		}
 
@@ -979,6 +981,7 @@ int CheckLength_New(RS422RXQUE *RS422RxQue){
 	}
 }
 
+
 int CheckSum_New(const char *buf, int len){
 	int i = 0;
 	Uint16 sum = 0;
@@ -991,7 +994,7 @@ int CheckSum_New(const char *buf, int len){
 
 	for(i = 0; i < len - 2; ++i)
 	{
-		sum += buf[0];
+		sum += buf[i];
 	}
 
 	if(sum == rxSum)
@@ -1001,6 +1004,7 @@ int CheckSum_New(const char *buf, int len){
 
 	return 1;
 }
+Uint16 gTT[6] = {0};
 
 void Unpack_New(int len){
 // update the value from the host side
@@ -1017,6 +1021,7 @@ void Unpack_New(int len){
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 2];
 	unitCode = var16.value;
+	gTT[0] = unitCode;
 
 	if(unitCode != 1)
 	{
@@ -1026,22 +1031,27 @@ void Unpack_New(int len){
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 2];
 	startForce = var16.value;
+	gTT[1] = startForce;
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 2];
 	friction = var16.value;
+	gTT[2] = friction;
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 2];
 	emptyDistance = var16.value;
+	gTT[3] = emptyDistance;
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 2];
 	k = var16.value;
+	gTT[4] = k;
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 2];
 	timeDelay = var16.value;
+	gTT[5] = timeDelay;
 }
 
 void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
@@ -1051,9 +1061,15 @@ void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
 			return;
 		}
 
+
 		if(CheckLength_New(RS422RxQue) == FAIL){
+		    PieCtrlRegs.PIEIER9.bit.INTx3 = 0;
+		    RS422B_receive(&gRS422RxQueB);
+		    PieCtrlRegs.PIEIER9.bit.INTx3 = 1;
 			return;
 		}
+
+
 
 		// length for the new protocol is a fixed value
 
@@ -1061,7 +1077,7 @@ void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
 
 		if(CheckSum_New(rs422rxPack, LENGHT_NEW) != 0){
 			if(DeQueue(RS422RxQue) == 0){
-				//printf("RS422 rx queue is empty\r\n");
+
 			}
 			return;
 		}
