@@ -943,6 +943,7 @@ void ClearRS422RxOverFlow(void) {
 /*************New Protocol for the Joystick********************/
 #define HEAD1_NEW 0xAA
 #define HEAD2_NEW 0x55
+#define LENGHT_NEW 0X9
 
 void FindHead_New(RS422RXQUE *RS422RxQue)
 {
@@ -965,3 +966,27 @@ void FindHead_New(RS422RXQUE *RS422RxQue)
 		}
 	}
 }
+
+int CheckLength_New(RS422RXQUE *RS422RxQue){
+
+	if(LENGHT_NEW <= RS422RxQueLength(RS422RxQue)){
+		return SUCCESS;
+	}
+	else{
+		return FAIL;
+	}
+}
+
+int CheckSum_New(const char *buf, int len){
+	return 0;
+}
+
+int CheckUnitCode_New()
+{
+	return 0;
+}
+
+void Unpack_New(int len){
+// update the value from the host side
+}
+
