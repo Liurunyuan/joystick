@@ -1057,26 +1057,31 @@ void Unpack_New(int len){
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 2];
 	startForce = var16.value;
 	gTT[1] = startForce;
+	UpdateStartForce(var16);
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 2];
 	friction = var16.value;
 	gTT[2] = friction;
+	UpdateFriction(var16);
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 2];
 	emptyDistance = var16.value;
 	gTT[3] = emptyDistance;
+	UpdateEmptyDistance(var16);
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 2];
 	k = var16.value;
 	gTT[4] = k;
+	UpdateK(var16);
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 1];
 	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 2];
 	timeDelay = var16.value;
 	gTT[5] = timeDelay;
+	UpdateTimeDelay(var16);
 }
 
 void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
