@@ -950,17 +950,25 @@ void ClearRS422RxOverFlow(void) {
 
 void UpdateStartForce(VAR16 a)
 {
-
+	gConfigPara.LF_StartForce = ((double)(a.value)) / 100;
+	gConfigPara.RB_StartForce = -((double)(a.value)) / 100;
 }
 
 void UpdateFriction(VAR16 a)
 {
+	gConfigPara.LF_FrontFriction = ((double)(a.value)) / 100;
 
+	gConfigPara.LF_RearFriction = ((double)(a.value)) / 100;
+
+	gConfigPara.RB_FrontFriction = ((double)(a.value)) / 100;
+
+	gConfigPara.RB_RearFriction = ((double)(a.value)) / 100;
 }
 
 void UpdateEmptyDistance(VAR16 a)
 {
-
+	gConfigPara.LF_EmptyDistance = ((double)(a.value)) / 100;
+	gConfigPara.RB_EmptyDistance = -((double)(a.value)) / 100;
 }
 
 void UpdateK(VAR16 a)
@@ -970,7 +978,7 @@ void UpdateK(VAR16 a)
 
 void UpdateTimeDelay(VAR16 a)
 {
-
+	//TODO how to use the time delay
 }
 
 int FindHead_New(RS422RXQUE *RS422RxQue)
