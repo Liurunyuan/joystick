@@ -948,6 +948,31 @@ void ClearRS422RxOverFlow(void) {
 #define OFFSET_NEW 0x03
 #define UNIT_LEN_NEW 0x02
 
+void UpdateStartForce(VAR16 a)
+{
+
+}
+
+void UpdateFriction(VAR16 a)
+{
+
+}
+
+void UpdateEmptyDistance(VAR16 a)
+{
+
+}
+
+void UpdateK(VAR16 a)
+{
+
+}
+
+void UpdateTimeDelay(VAR16 a)
+{
+
+}
+
 int FindHead_New(RS422RXQUE *RS422RxQue)
 {
 	char head1;
