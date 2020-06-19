@@ -386,6 +386,8 @@ typedef struct{
 	double LF_EmptyDistance;
 	double RB_EmptyDistance;
 
+	double Force_Displace_K;
+
 	double dampingFactor;
 	double naturalVibrationFreq;
 

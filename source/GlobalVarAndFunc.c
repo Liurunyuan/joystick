@@ -598,6 +598,7 @@ void InitConfigParameter(void){
 	gConfigPara.LF_RearFriction = 1;
 	gConfigPara.RB_FrontFriction = 1;
 	gConfigPara.RB_RearFriction = 1;
+	gConfigPara.Force_Displace_K = 3;
 
 	gConfigPara.dampingFactor = 0.1;
 

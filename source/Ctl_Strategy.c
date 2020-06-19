@@ -236,7 +236,6 @@ void findSpringForceK(double displace){
 #endif
 void OnlyWithSpringFront(void){
 	double k;
-	double kb;
 	double force_openLoop;
 	int force_closeLoop;
 	double damp_force;
@@ -254,8 +253,7 @@ void OnlyWithSpringFront(void){
     if(gSysInfo.soft_break_flag == 1){
         return;
     }
-    k = gSysInfo.springForceK;
-	kb = gSysInfo.springForceB;
+    k = gConfigPara.Force_Displace_K;
 
     if((gSysInfo.currentStickDisSection > 11) && (gSysInfo.currentStickDisSection < 14)){
         mass = (gForceAndDisplaceCurve.K_spring_forceP[3] * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
@@ -270,7 +268,10 @@ void OnlyWithSpringFront(void){
 //	mass = (k * 1000) / (gConfigPara.naturalVibrationFreq * gConfigPara.naturalVibrationFreq);
     gSysPara.mass = mass;
 
-	spring_force = k * gStickState.value + kb;
+	spring_force = k * gStickState.value;
+	if((spring_force > gConfigPara.LF_MaxForce) || (spring_force < gConfigPara.RB_MaxDistance)){
+		gSysState.erro.bit.software = 1;
+	}
 //	damp_force = 2 * gConfigPara.dampingFactor * mass * gKeyValue.motorSpeed * gConfigPara.naturalVibrationFreq;
 	inertial_force = mass * gKeyValue.motorAccel;
 

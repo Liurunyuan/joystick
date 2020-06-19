@@ -957,12 +957,6 @@ void UpdateStartForce(VAR16 a)
 void UpdateFriction(VAR16 a)
 {
 	gConfigPara.LF_FrontFriction = ((double)(a.value)) / 100;
-
-	gConfigPara.LF_RearFriction = ((double)(a.value)) / 100;
-
-	gConfigPara.RB_FrontFriction = ((double)(a.value)) / 100;
-
-	gConfigPara.RB_RearFriction = ((double)(a.value)) / 100;
 }
 
 void UpdateEmptyDistance(VAR16 a)
@@ -973,7 +967,7 @@ void UpdateEmptyDistance(VAR16 a)
 
 void UpdateK(VAR16 a)
 {
-
+	gConfigPara.Force_Displace_K = ((double)(a.value)) / 100;
 }
 
 void UpdateTimeDelay(VAR16 a)
@@ -1056,9 +1050,15 @@ void Unpack_New(int len){
 	unitCode = var16.value;
 	gTT[0] = unitCode;
 
-	if(unitCode != 1)
-	{
-		return;
+	if(gSysInfo.board_type == PITCH){
+		if((unitCode >310) || (unitCode <301)){
+			return;
+		}
+	}
+	else{
+		if((unitCode >410) || (unitCode <401)){
+			return;
+		}
 	}
 
 	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 1];
