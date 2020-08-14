@@ -1,3 +1,12 @@
+/***************************0.0.7*******************************/
+Version Number: 0.0.7
+Date: 2020/6/19
+Author:Runtian Lu
+
+What new: 
+	1. Changed communication protocol based on customer request
+	2. Changed updateK related features based on customer request
+	3. Optimize PID parameters and control parameters to match 188 test goals for final version
 /***************************0.0.6*******************************/
 Version Number: 0.0.6
 Date: 2019/12/28
