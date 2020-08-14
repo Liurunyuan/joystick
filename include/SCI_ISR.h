@@ -56,5 +56,6 @@ void RS422A_receive(RS422RXQUE *RS422RxQue);
 void RS422B_receive(RS422RXQUE *RS422RxQue);
 void UnpackRS422ANew(RS422RXQUE *RS422RxQue);
 void ClearRS422RxOverFlow(void);
+void UnpackRS422A_New(RS422RXQUE *RS422RxQue);
 
 #endif

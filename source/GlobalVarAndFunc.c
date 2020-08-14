@@ -40,10 +40,8 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.DimL_B = 63.2728;
         gSysInfo.Force_K = 0.014027;
         gSysInfo.Force_B = -459.6276;
-        gSysInfo.TH0 = -17.8;
-        gSysInfo.TH6 = 11.8;
-        gSysInfo.openLoop_Force_front_B = 20;
-        gSysInfo.openLoop_Force_rear_B = -10;
+        gSysInfo.openLoop_Force_front_B = 0;
+        gSysInfo.openLoop_Force_rear_B = 0;
     }
     //ROLL
     else if(gSysInfo.board_type == ROLL){
@@ -51,24 +49,21 @@ void InitGlobalVarAndFunc(void){
         gSysInfo.DimL_B = 57.9135;
         gSysInfo.Force_K = -0.014027;
         gSysInfo.Force_B = 459.6276;
-        gSysInfo.TH0 = -17.8;
-        gSysInfo.TH6 = 17.8;
         gSysInfo.openLoop_Force_front_B = 5;
         gSysInfo.openLoop_Force_rear_B = -5;
     }
     else{
         gSysInfo.DimL_K = 0;
         gSysInfo.DimL_B = 0;
-        gSysInfo.TH0 = 0;
-        gSysInfo.TH6 = 0;
         gSysState.warning.bit.b = 1;
         gSysInfo.openLoop_Force_front_B = 0;
         gSysInfo.openLoop_Force_rear_B = 0;
     }
     gSysInfo.sek_v = 0;
     gSysInfo.sek_f = 0;
-	gSysInfo.ddtmax = 1;
-	gSysInfo.dutyAddInterval = 3;
+    gSysInfo.sek_d = 0;
+	gSysInfo.ddtmax = 5;
+	gSysInfo.dutyAddInterval = 2;
 	gSysInfo.targetDuty = 0;
 	gSysInfo.currentDuty = 0;
 	gSysInfo.targetDuty_F = 0;
@@ -77,14 +72,8 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.coe_Velocity = 0;
 	gSysInfo.controlFuncIndex = 0;
 	gSysInfo.currentStickDisSection = INIT_SECTION;
-	//gSysInfo.TH0 = -19.2; //-17.8
-	gSysInfo.TH1 = -1;
-	gSysInfo.TH2 = -0.5;
-	gSysInfo.TH3 = 0.0;
-	gSysInfo.TH4 = 0.5;
-	gSysInfo.TH5 = 1;
-	//gSysInfo.TH6 = 11.8; //17.8
-	gSysInfo.Ki_Threshold_f = 10;
+	gSysInfo.Ki_Threshold_f = 5;
+	gSysInfo.Ki_Threshold_d = 0.0725;
 	gSysInfo.Ki_Threshold_v = 0.1;
 	gSysInfo.velocity_last = 0;
 
@@ -103,10 +92,10 @@ void InitGlobalVarAndFunc(void){
 	gSysInfo.Force_Init2Neg_Thr = -3;
 	gSysInfo.Accel_Init2Pos_Thr = 0.1;
 	gSysInfo.Accel_Init2Neg_Thr = -0.1;
-	gSysInfo.Velocity_Init2Pos_Thr = 0.0025;
-	gSysInfo.Velocity_Init2Neg_Thr = -0.0025;
-	gSysInfo.Force_Pos_Thr = 3;
-	gSysInfo.Force_Neg_Thr = -3;
+	gSysInfo.Velocity_Init2Pos_Thr = 0.0001;
+	gSysInfo.Velocity_Init2Neg_Thr = -0.0001;
+	gSysInfo.Force_Pos_Thr = 0.9;
+	gSysInfo.Force_Neg_Thr = -0.9;
 	gSysInfo.Force_Hysteresis = 0.15;
 	gSysInfo.Accel_Pos_Thr = 0.04;
     gSysInfo.Accel_Neg_Thr = -0.04;
@@ -115,8 +104,8 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.Accel_Hysteresis = 0;
     gSysInfo.Accel_Debounce_Cnt_1 = 4;
     gSysInfo.Accel_Debounce_Cnt_2 = 8;
-    gSysInfo.Velocity_Pos_Thr = 0.02;
-    gSysInfo.Velocity_Neg_Thr = -0.02;
+    gSysInfo.Velocity_Pos_Thr = 0.0001;
+    gSysInfo.Velocity_Neg_Thr = -0.0001;
     gSysInfo.Velocity_Zero2Pos_Thr = 0.03;
     gSysInfo.Velocity_Zero2Neg_Thr = -0.03;
     gSysInfo.Velocity_Hysteresis = 0;
@@ -139,6 +128,7 @@ void InitGlobalVarAndFunc(void){
     gButtonCmd[4] = 0;
     gButtonCmd[5] = 0;
     gSysInfo.ob_velocityOpenLoop = 0;
+    gSysInfo.ob_velocityOpenLoop2 = 0;
     gKeyValue.motorAccel = 0;
     gKeyValue.motorSpeed = 0;
     gKeyValue.displacement = 0;
@@ -151,6 +141,14 @@ void InitGlobalVarAndFunc(void){
     gSysInfo.springForceK = 0;
     gSysInfo.springForceB = 0;
     gSysInfo.zeroForce = 0;
+
+    gSysInfo.isEcapRefresh = 0;
+    gSysInfo.JoyStickSpeed = 0;
+    gSysInfo.rotateDirection = 0;
+
+    gSysInfo.sixButtons = 0;
+    gSysInfo.RS422_Rx_Data = 0;
+    gSysInfo.software_version = 7;
 }
 
 void checkPitchOrRoll(void){
@@ -485,38 +483,35 @@ void UpdateForceDisplaceCurve(void){
 
 void InitConfigParameter(void){
     if(gSysInfo.board_type == PITCH){
-        gConfigPara.LF_EmptyDistance = 1;
-        gConfigPara.RB_EmptyDistance = -1;
-
-        gConfigPara.LF_StartForce = 5;
-        gConfigPara.RB_StartForce = -5;
-
         gConfigPara.LF_Force0 = 0;
-        gConfigPara.LF_Force1 = 1;
-        gConfigPara.LF_Force2 = 8;
-        gConfigPara.LF_Force3 = 11;
-        gConfigPara.LF_Force4 = 14;
-        gConfigPara.LF_Force5 = 17;
-        gConfigPara.LF_Force6 = 20;
-        gConfigPara.LF_Force7 = 23;
-        gConfigPara.LF_Force8 = 26;
-        gConfigPara.LF_Force9 = 32;
-        gConfigPara.LF_MaxForce = 35;
+        gConfigPara.LF_Force1 = 0;
+        gConfigPara.LF_StartForce = 5;
+        gConfigPara.LF_Force2 = 9.4348;
+        gConfigPara.LF_Force3 = 12.3913;
+        gConfigPara.LF_Force4 = 15.3478;
+        gConfigPara.LF_Force5 = 18.3044;
+        gConfigPara.LF_Force6 = 21.2609;
+        gConfigPara.LF_Force7 = 24.2174;
+        gConfigPara.LF_Force8 = 27.1739;
+        gConfigPara.LF_Force9 = 33.0870;
+        gConfigPara.LF_MaxForce = 39;
 
         gConfigPara.RB_Force0 = 0;
-        gConfigPara.RB_Force1 = -1;
-        gConfigPara.RB_Force2 = -8;
-        gConfigPara.RB_Force3 = -11;
-        gConfigPara.RB_Force4 = -17;
-        gConfigPara.RB_Force5 = -23;
-        gConfigPara.RB_Force6 = -29;
-        gConfigPara.RB_Force7 = -35;
-        gConfigPara.RB_Force8 = -41;
-        gConfigPara.RB_Force9 = -47;
-        gConfigPara.RB_MaxForce = -50;
+        gConfigPara.RB_Force1 = 0;
+        gConfigPara.RB_StartForce = -5;
+        gConfigPara.RB_Force2 = -9.6154;
+        gConfigPara.RB_Force3 = -12.6923;
+        gConfigPara.RB_Force4 = -18.8462;
+        gConfigPara.RB_Force5 = -25;
+        gConfigPara.RB_Force6 = -31.1539;
+        gConfigPara.RB_Force7 = -37.3077;
+        gConfigPara.RB_Force8 = -43.4615;
+        gConfigPara.RB_Force9 = -49.6154;
+        gConfigPara.RB_MaxForce = -65;
 
         gConfigPara.LF_Distance0 = 0;
-        gConfigPara.LF_Distance1 = 0.5;
+        gConfigPara.LF_Distance1 = 0.25;
+        gConfigPara.LF_EmptyDistance = 0.5;
         gConfigPara.LF_Distance2 = 2;
         gConfigPara.LF_Distance3 = 3;
         gConfigPara.LF_Distance4 = 4;
@@ -525,10 +520,11 @@ void InitConfigParameter(void){
         gConfigPara.LF_Distance7 = 7;
         gConfigPara.LF_Distance8 = 8;
         gConfigPara.LF_Distance9 = 10;
-        gConfigPara.LF_MaxDistance = 11;
+        gConfigPara.LF_MaxDistance = 12;
 
         gConfigPara.RB_Distance0 = 0;
-        gConfigPara.RB_Distance1 = -0.5;
+        gConfigPara.RB_Distance1 = -0.25;
+        gConfigPara.RB_EmptyDistance = -0.5;
         gConfigPara.RB_Distance2 = -2;
         gConfigPara.RB_Distance3 = -3;
         gConfigPara.RB_Distance4 = -5;
@@ -537,44 +533,41 @@ void InitConfigParameter(void){
         gConfigPara.RB_Distance7 = -11;
         gConfigPara.RB_Distance8 = -13;
         gConfigPara.RB_Distance9 = -15;
-        gConfigPara.RB_MaxDistance = -16;
+        gConfigPara.RB_MaxDistance =-20;
      }
      //ROLL
      else if(gSysInfo.board_type == ROLL){
-         gConfigPara.LF_EmptyDistance = 1;
-         gConfigPara.RB_EmptyDistance = -1;
-
-         gConfigPara.LF_StartForce = 5;
-         gConfigPara.RB_StartForce = -5;
-
          gConfigPara.LF_Force0 = 0;
-         gConfigPara.LF_Force1 = 1;
-         gConfigPara.LF_Force2 = 8;
-         gConfigPara.LF_Force3 = 11;
-         gConfigPara.LF_Force4 = 14;
-         gConfigPara.LF_Force5 = 20;
-         gConfigPara.LF_Force6 = 26;
-         gConfigPara.LF_Force7 = 32;
-         gConfigPara.LF_Force8 = 44;
-         gConfigPara.LF_Force9 = 50;
-         gConfigPara.LF_MaxForce = 56;
+         gConfigPara.LF_Force1 = 0;
+         gConfigPara.LF_StartForce = 5;
+         gConfigPara.LF_Force2 = 6.143;
+         gConfigPara.LF_Force3 = 8.429;
+         gConfigPara.LF_Force4 = 13;
+         gConfigPara.LF_Force5 = 17.571;
+         gConfigPara.LF_Force6 = 22.143;
+         gConfigPara.LF_Force7 = 26.714;
+         gConfigPara.LF_Force8 = 35.857;
+         gConfigPara.LF_Force9 = 40.429;
+         gConfigPara.LF_MaxForce = 45;
 
          gConfigPara.RB_Force0 = 0;
-         gConfigPara.RB_Force1 = -1;
-         gConfigPara.RB_Force2 = -8;
-         gConfigPara.RB_Force3 = -11;
-         gConfigPara.RB_Force4 = -14;
-         gConfigPara.RB_Force5 = -20;
-         gConfigPara.RB_Force6 = -26;
-         gConfigPara.RB_Force7 = -32;
-         gConfigPara.RB_Force8 = -44;
-         gConfigPara.RB_Force9 = -50;
-         gConfigPara.RB_MaxForce = -56;
+         gConfigPara.RB_Force1 = 0;
+         gConfigPara.RB_StartForce = -5;
+         gConfigPara.RB_Force2 = -6.143;
+         gConfigPara.RB_Force3 = -8.429;
+         gConfigPara.RB_Force4 = -13;
+         gConfigPara.RB_Force5 = -17.571;
+         gConfigPara.RB_Force6 = -22.143;
+         gConfigPara.RB_Force7 = -26.714;
+         gConfigPara.RB_Force8 = -35.857;
+         gConfigPara.RB_Force9 = -40.429;
+         gConfigPara.RB_MaxForce = -45;
 
          gConfigPara.LF_Distance0 = 0;
-         gConfigPara.LF_Distance1 = 0.5;
-         gConfigPara.LF_Distance2 = 2;
-         gConfigPara.LF_Distance3 = 3;
+         gConfigPara.LF_Distance1 = 0.25;
+         gConfigPara.LF_EmptyDistance = 0.5;
+         gConfigPara.LF_Distance2 = 1;
+         gConfigPara.LF_Distance3 = 2;
          gConfigPara.LF_Distance4 = 4;
          gConfigPara.LF_Distance5 = 6;
          gConfigPara.LF_Distance6 = 8;
@@ -584,9 +577,10 @@ void InitConfigParameter(void){
          gConfigPara.LF_MaxDistance = 18;
 
          gConfigPara.RB_Distance0 = 0;
-         gConfigPara.RB_Distance1 = -0.5;
-         gConfigPara.RB_Distance2 = -2;
-         gConfigPara.RB_Distance3 = -3;
+         gConfigPara.RB_Distance1 = -0.25;
+         gConfigPara.RB_EmptyDistance = -0.5;
+         gConfigPara.RB_Distance2 = -1;
+         gConfigPara.RB_Distance3 = -2;
          gConfigPara.RB_Distance4 = -4;
          gConfigPara.RB_Distance5 = -6;
          gConfigPara.RB_Distance6 = -8;
@@ -597,21 +591,18 @@ void InitConfigParameter(void){
 
      }
      else{
-         gSysInfo.DimL_K = 0;
-         gSysInfo.DimL_B = 0;
-         gSysInfo.TH0 = 0;
-         gSysInfo.TH6 = 0;
          gSysState.warning.bit.b = 1;
      }
 
-	gConfigPara.LF_FrontFriction = 3;
-	gConfigPara.LF_RearFriction = 3;
+	gConfigPara.LF_FrontFriction = 1;
+	gConfigPara.LF_RearFriction = 1;
 	gConfigPara.RB_FrontFriction = 1;
 	gConfigPara.RB_RearFriction = 1;
+	gConfigPara.Force_Displace_K = 3;
 
-	gConfigPara.dampingFactor = 0.5;
+	gConfigPara.dampingFactor = 0.1;
 
-	gConfigPara.naturalVibrationFreq = 20.0;
+	gConfigPara.naturalVibrationFreq = 80.0;
 
 	gConfigPara.equivalentMass = 0;
 
@@ -620,7 +611,7 @@ void InitConfigParameter(void){
 
 	gConfigPara.Trim_StepSize = 0;
 
-	gConfigPara.Trim_Speed = 0;
+	gConfigPara.Trim_Speed = 1; //unit mm/s
 
 	gConfigPara.timeDelay = 0;
 
@@ -667,6 +658,46 @@ void InitSysState(void){
 	gSysCurrentState.speedTarget = 0;
 	gSysCurrentState.springForce = 0;
 }
+
+double KalmanFilterRodSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R)
+{
+    static int isFirstTimeExcuted = 1;
+
+    double R = MeasureNoise_R;
+    double Q = ProcessNiose_Q;
+
+    static double x_last = 0;
+    double x_mid = x_last;
+    double x_now;
+
+    static double p_last = 0;
+    double p_mid;
+    double p_now;
+
+    double kg;
+
+
+    if(isFirstTimeExcuted){
+        isFirstTimeExcuted = 0;
+        x_last = ResrcData;
+        p_last = ResrcData;
+        return ResrcData;
+    }
+
+    x_mid = x_last;
+    p_mid = p_last + Q;
+
+
+    kg = p_mid / (p_mid + R);
+    x_now = x_mid + kg * (ResrcData - x_mid);
+    p_now = (1 - kg) * p_mid;
+    p_last = p_now;
+    x_last = x_now;
+
+    return x_now;
+}
+
+
 /**************************************************************
  *Name:		   KalmanFilter
  *Comment:
@@ -868,7 +899,7 @@ void DisablePwmOutput(void){
 }
 void StateMachine(void){
 	//gConfigPara.stateCommand = 1; // For TEMP Test
-	if(gConfigPara.stateCommand == 1 && gSysState.erro.bit.software != 1){
+	if(gSysState.erro.bit.software != 1){
 		EnablePwmOutput();
 	}
 	else{
@@ -1038,6 +1069,7 @@ void Button_Debounce1(void){
             }
             break;
         case BTN_RELEASE:
+        	gSysInfo.sixButtons &= (~(0x10));
             if(gPISO_165[TK9_TRIGGER+1] == 1){
                 count_pressed ++;
             }
@@ -1054,6 +1086,7 @@ void Button_Debounce1(void){
 
             break;
         case BTN_PRESSED:
+        	gSysInfo.sixButtons |= 0x10;
             if(gPISO_165[TK9_TRIGGER+1] == 0){
                 count_release ++;
             }
@@ -1091,6 +1124,7 @@ void Button_Debounce2(void){
             }
             break;
         case BTN_RELEASE:
+        	gSysInfo.sixButtons &= (~(0x20));
             if(gPISO_165[AK29_BUTTON+1] == 1){
                 count_pressed ++;
             }
@@ -1108,6 +1142,7 @@ void Button_Debounce2(void){
 
             break;
         case BTN_PRESSED:
+        	gSysInfo.sixButtons |= 0x20;
             if(gPISO_165[AK29_BUTTON+1] == 0){
                 count_release ++;
             }
@@ -1145,6 +1180,7 @@ void Button_Debounce3(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.sixButtons &= (~(0x01));
             if(gPISO_165[FWRD_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1161,6 +1197,7 @@ void Button_Debounce3(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.sixButtons |= 0x01;
             if(gPISO_165[FWRD_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1201,6 +1238,7 @@ void Button_Debounce4(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.sixButtons &= (~(0x08));
             if(gPISO_165[RGHT_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1217,6 +1255,7 @@ void Button_Debounce4(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.sixButtons |= 0x08;
             if(gPISO_165[RGHT_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1257,6 +1296,7 @@ void Button_Debounce5(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.sixButtons &= (~(0x02));
             if(gPISO_165[REAR_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1273,6 +1313,7 @@ void Button_Debounce5(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.sixButtons |= 0x02;
             if(gPISO_165[REAR_SWITCH+1] == 0){
                 count_release ++;
             }
@@ -1313,6 +1354,7 @@ void Button_Debounce6(void){
             }
             break;
         case BTN_RELEASE:
+            gSysInfo.sixButtons &= (~(0x04));
             if(gPISO_165[LEFT_SWITCH+1] == 1){
                 count_pressed ++;
             }
@@ -1329,6 +1371,7 @@ void Button_Debounce6(void){
 
             break;
         case BTN_PRESSED:
+            gSysInfo.sixButtons |= 0x04;
             if(gPISO_165[LEFT_SWITCH+1] == 0){
                 count_release ++;
             }

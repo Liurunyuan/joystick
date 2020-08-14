@@ -18,6 +18,7 @@
 #include "SCI_TX.h"
 #include "PWM_ISR.h"
 #include "GlobalVarAndFunc.h"
+#include "ECap_ISR.h"
 #include "PID.h"
 
 //#define UART_PRINTF
@@ -80,7 +81,7 @@ void Init_Peripheral(void){
 	/*Init and config I2C*/
 	// Init_I2C();
 	/*Init and config CAP4,CAP5,CAP6*/
-	// Init_CAP();
+	 Init_CAP();
 	/*Init and config QEP2*/
 	// Init_QEP();
 	/*PWM IO init and config*/
@@ -244,6 +245,7 @@ void InitGlobalVar(void){
 	InitgRx422TxEnableFlag();
 	InitGlobalVarAndFunc();
 	InitPidVar();
+	InitEcapVar();
 	gKeyValue.displacement = 0;
 	gKeyValue.lock = 0;
 }
@@ -365,14 +367,14 @@ void Start_main_loop(void){
 
 	//Check_Power28V();
 
-	//DigitalSignalPISO();
+	DigitalSignalPISO();
 
-	//Button_Debounce1();
-	//Button_Debounce2();
-	//Button_Debounce3();
-	//Button_Debounce4();
-	//Button_Debounce5();
-	//Button_Debounce6();
+	Button_Debounce1();
+	Button_Debounce2();
+	Button_Debounce3();
+	Button_Debounce4();
+	Button_Debounce5();
+	Button_Debounce6();
 
 	//Null_Displacement_Trim();
 
@@ -380,7 +382,9 @@ void Start_main_loop(void){
 		//TODO, generate alarm and notice uppper computer
 	}
 
-	RS422Unpack();
+	// RS422Unpack();
+
+	UnpackRS422A_New(&gRS422RxQueB);
 
 	ClearRS422RxOverFlow();
 	//TODO need to implement

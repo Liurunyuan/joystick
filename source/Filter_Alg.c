@@ -1,5 +1,6 @@
 #include <math.h>
 #include "Filter_Alg.h"
+#include "GlobalVarAndFunc.h"
 
 #define FIRST_ORDER   (1)
 #define SECOND_ORDER  (0)
@@ -19,12 +20,18 @@
 #define SUMXPOW5 (0.001180)
 #define SUMXPOW6 (0.000239)
 
-#define SUMXSPEED (11.25)
-#define SUMXPOW2SPEED (17.8125)
-#define SUMXPOW3SPEED (31.641)
-#define SUMXPOW4SPEED (59.89)
-#define SUMXPOW5SPEED (118)
-#define SUMXPOW6SPEED (238.868)
+//#define SUMXSPEED (11.25)
+//#define SUMXPOW2SPEED (17.8125)
+//#define SUMXPOW3SPEED (31.641)
+//#define SUMXPOW4SPEED (59.89)
+//#define SUMXPOW5SPEED (118)
+//#define SUMXPOW6SPEED (238.868)
+#define SUMXSPEED (1.125)
+#define SUMXPOW2SPEED (0.178125)
+#define SUMXPOW3SPEED (0.031641)
+#define SUMXPOW4SPEED (0.005989)
+#define SUMXPOW5SPEED (0.001180)
+#define SUMXPOW6SPEED (0.000239)
 #endif
 
 #ifdef TWENTY_POINTS
@@ -105,9 +112,9 @@ void clearSumSpeed(void) {
 	sumParaSpeed.sum_Y = 0;
 }
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
-#pragma CODE_SECTION(calFuncParaSpeed, "ramfuncs")
+#pragma CODE_SECTION(Calc_LSM_Coef_Speed, "ramfuncs")
 #endif
-FuncPara calFuncParaSpeed(SumPara sumPara){
+FuncPara Calc_LSM_Coef_Speed(SumPara sumPara){
 	double temp,temp0,temp1;
 	FuncPara funcPara;
 
@@ -121,19 +128,19 @@ FuncPara calFuncParaSpeed(SumPara sumPara){
 }
 
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
-#pragma CODE_SECTION(CalFuncParaSpeed, "ramfuncs")
+#pragma CODE_SECTION(Calc_10p_Error_Sum_Squares_Speed, "ramfuncs")
 #endif
-void CalFuncParaSpeed(double speed, int count){
-    double tmpCount = count * 0.25;
+void Calc_10p_Error_Sum_Squares_Speed(double speed, int count){
+    double tmpCount = count * 0.025;
 	sumParaSpeed.sum_XY += tmpCount * speed;
 	sumParaSpeed.sum_Xpow2Y += tmpCount * tmpCount * speed;
 	sumParaSpeed.sum_Y += speed;
 }
 
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
-#pragma CODE_SECTION(calFuncPara, "ramfuncs")
+#pragma CODE_SECTION(Calc_LSM_Coef_Displace, "ramfuncs")
 #endif
-FuncPara calFuncPara(SumPara sumPara){
+FuncPara Calc_LSM_Coef_Displace(SumPara sumPara){
 #if(SECOND_ORDER)
 	double temp,temp0,temp1,temp2;
 	FuncPara funcPara;
@@ -175,9 +182,9 @@ FuncPara calFuncPara(SumPara sumPara){
 }
 
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
-#pragma CODE_SECTION(CalFuncPara, "ramfuncs")
+#pragma CODE_SECTION(Cal_10p_Error_Sum_Squares_Displace, "ramfuncs")
 #endif
-void CalFuncPara(double force, double displace, int count){
+void Calc_10p_Error_Sum_Squares_Displace(double displace, int count){
 
     double tmpCount = count * 0.025;
 	sumParaDisplacement.sum_XY += tmpCount * displace;
