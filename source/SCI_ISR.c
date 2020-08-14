@@ -32,6 +32,7 @@ char rs422rxPack[100] = {0};
 static void TestDuty(VAR16 a, int b, int c) {
 
 	// gSysInfo.duty = (int)a.value;
+    gSysInfo.RS422_Rx_Data = (int)a.value;
 
 	//TODO just an example
 }
@@ -57,7 +58,8 @@ static void TestHallPosition(VAR16 a, int b, int c) {
  *Date:		   2018��11��15������9:15:42
  **************************************************************/
 static void ShakeHandMsg(VAR16 a, int b, int c) {
-	gRS422Status.shakeHand = SUCCESS;
+//	gRS422Status.shakeHand = SUCCESS;
+    UpdateForceDisplaceCurve();
 }
 
 /*******************************************************/
@@ -935,5 +937,191 @@ void ClearRS422RxOverFlow(void) {
 		if (ScibRegs.SCIFFRX.bit.RXFFOVF == 0) {
 //			printf(">>scib clear fifo over flow flag\r\n");
 		}
+	}
+}
+
+/*************New Protocol for the Joystick********************/
+#define HEAD1_NEW 0xAA
+#define HEAD2_NEW 0x55
+#define LENGHT_NEW 0x1a
+#define EXTRA_LEN_NEW 0x0d
+#define OFFSET_NEW 0x03
+#define UNIT_LEN_NEW 0x02
+
+void UpdateStartForce(VAR16 a)
+{
+	gConfigPara.LF_StartForce = ((double)(a.value)) / 100;
+	gConfigPara.RB_StartForce = -((double)(a.value)) / 100;
+}
+
+void UpdateFriction(VAR16 a)
+{
+	gConfigPara.LF_FrontFriction = ((double)(a.value)) / 100;
+}
+
+void UpdateEmptyDistance(VAR16 a)
+{
+	gConfigPara.LF_EmptyDistance = ((double)(a.value)) / 100;
+	gConfigPara.RB_EmptyDistance = -((double)(a.value)) / 100;
+}
+
+void UpdateK(VAR16 a)
+{
+	gConfigPara.Force_Displace_K = ((double)(a.value)) / 100;
+}
+
+void UpdateTimeDelay(VAR16 a)
+{
+	//TODO how to use the time delay
+}
+
+int FindHead_New(RS422RXQUE *RS422RxQue)
+{
+	char head1;
+	char head2;
+
+
+	while(1){
+
+		head1 = RS422RxQue->rxBuff[RS422RxQue->front];
+		head2 = RS422RxQue->rxBuff[(RS422RxQue->front + 1) % MAXQSIZE];
+
+		if(head1 == HEAD1_NEW && head2 == HEAD2_NEW){
+
+			return SUCCESS;
+		}
+
+		if(DeQueue(RS422RxQue) == 0){
+			//printf("rs422 rx queue is empty\r\n");
+			return FAIL;
+		}
+	}
+}
+
+int CheckLength_New(RS422RXQUE *RS422RxQue){
+
+	if(LENGHT_NEW <= RS422RxQueLength(RS422RxQue)){
+		return SUCCESS;
+	}
+	else{
+		return FAIL;
+	}
+}
+
+
+int CheckSum_New(const char *buf, int len){
+	int i = 0;
+	Uint16 sum = 0;
+	Uint16 rxSum = 0;
+
+	rxSum = buf[LENGHT_NEW - 2];
+	rxSum = rxSum << 8;
+	rxSum = rxSum | buf[LENGHT_NEW - 1];
+
+
+	for(i = 0; i < len - 2; ++i)
+	{
+		sum += buf[i];
+	}
+
+	if(sum == rxSum)
+	{
+		return 0;
+	}
+
+	return 1;
+}
+Uint16 gTT[6] = {0};
+
+void Unpack_New(int len){
+// update the value from the host side
+
+	int16 unitCode;
+	int16 startForce;
+	int16 friction;
+	int16 emptyDistance;
+	int16 k;
+	int16 timeDelay;
+
+	VAR16 var16;
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*0 + 2];
+	unitCode = var16.value;
+	gTT[0] = unitCode;
+
+	if(gSysInfo.board_type == PITCH){
+		if((unitCode >310) || (unitCode <301)){
+			return;
+		}
+	}
+	else{
+		if((unitCode >410) || (unitCode <401)){
+			return;
+		}
+	}
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*1 + 2];
+	startForce = var16.value;
+	gTT[1] = startForce;
+	UpdateStartForce(var16);
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*2 + 2];
+	friction = var16.value;
+	gTT[2] = friction;
+	UpdateFriction(var16);
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*3 + 2];
+	emptyDistance = var16.value;
+	gTT[3] = emptyDistance;
+	UpdateEmptyDistance(var16);
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*4 + 2];
+	k = var16.value;
+	gTT[4] = k;
+	UpdateK(var16);
+
+	var16.datahl.h = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 1];
+	var16.datahl.l = rs422rxPack[OFFSET_NEW + UNIT_LEN_NEW*5 + 2];
+	timeDelay = var16.value;
+	gTT[5] = timeDelay;
+	UpdateTimeDelay(var16);
+}
+
+void UnpackRS422A_New(RS422RXQUE *RS422RxQue){
+
+	while(RS422RxQueLength(RS422RxQue) > EXTRA_LEN_NEW){
+		if(FindHead_New(RS422RxQue) == FAIL){
+			return;
+		}
+
+
+		if(CheckLength_New(RS422RxQue) == FAIL){
+		    PieCtrlRegs.PIEIER9.bit.INTx3 = 0;
+		    RS422B_receive(&gRS422RxQueB);
+		    PieCtrlRegs.PIEIER9.bit.INTx3 = 1;
+			return;
+		}
+
+
+
+		// length for the new protocol is a fixed value
+
+		saveprofile(LENGHT_NEW, RS422RxQue);
+
+		if(CheckSum_New(rs422rxPack, LENGHT_NEW) != 0){
+			if(DeQueue(RS422RxQue) == 0){
+
+			}
+			return;
+		}
+
+		Unpack_New(LENGHT_NEW);
+
+		updatehead(LENGHT_NEW, RS422RxQue);
 	}
 }

@@ -7,35 +7,56 @@
 #include "SPIprocess.h"
 #include "GlobalVarAndFunc.h"
 #include "PID.h"
+#include "ECap_ISR.h"
 
 Uint16 real3 = 0;
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(UpdateKeyValue, "ramfuncs")
 #endif
 void UpdateKeyValue(void) {
-	static int calSpeedCnt = 0;
+//	static int calSpeedCnt = 0;
+//    static double lastspeed = 0;
 
-	funcParaDisplacement = calFuncPara(sumParaDisplacement);
-	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+#if(IMPLEMENT_LSM == INCLUDE_FEATURE)
+    funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement);
+    gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+    clearSum();
 
-#if(LINEAR_SPEED_METHOD == INCLUDE_FEATURE)
-	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.050625 + funcParaDisplacement.b * 0.225)/0.225, KALMAN_Q, KALMAN_R); 
-#elif(TEN_AVERAGE == INCLUDE_FEATURE)
-	gKeyValue.motorSpeed = TenDisplaceElemntAverage();
-
+    funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
+    gKeyValue.motorSpeed = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
+    gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
+    clearSumSpeed();
 #else
-	gKeyValue.motorSpeed = KalmanFilterSpeed(funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
+    funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
+    gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
+    clearSumSpeed();
 #endif
-	CalFuncParaSpeed(gKeyValue.motorSpeed, calSpeedCnt);
-	++calSpeedCnt;
-	if(calSpeedCnt >= 10){
-		funcParaSpeed = calFuncParaSpeed(sumParaSpeed);
-		gKeyValue.motorAccel = KalmanFilterAccel(1000 * funcParaSpeed.b, 1, 150);
-		calSpeedCnt = 0;
-		clearSumSpeed();
-		gAccelDirection.updateAccelDirection(0);
-	}
+
+//	funcParaDisplacement = Calc_LSM_Coef_Displace(sumParaDisplacement);
+//	gKeyValue.displacement = funcParaDisplacement.a * 0.0625 + funcParaDisplacement.b * 0.25 + funcParaDisplacement.c;
+
+//#if(LINEAR_SPEED_METHOD == INCLUDE_FEATURE)
+//	gKeyValue.motorSpeed = KalmanFilterSpeed((funcParaDisplacement.a * 0.050625 + funcParaDisplacement.b * 0.225)/0.225, KALMAN_Q, KALMAN_R);
+//#elif(TEN_AVERAGE == INCLUDE_FEATURE)
+//	gKeyValue.motorSpeed = TenDisplaceElemntAverage();
+
+//#else
+//	gSysInfo.ob_velocityOpenLoop = KalmanFilterSpeed(funcParaDisplacement.b, KALMAN_Q, KALMAN_R);
+//#endif
+//	CalFuncPara_Speed(gSysInfo.JoyStickSpeed, calSpeedCnt);
+//	++calSpeedCnt;
+//	if(calSpeedCnt >= 10){
+//		funcParaSpeed = Calc_LSM_Coef_Speed(sumParaSpeed);
+//		gSysInfo.ob_velocityOpenLoop = funcParaSpeed.a * 0.0625 + funcParaSpeed.b * 0.25 + funcParaSpeed.c;
+
+//		gKeyValue.motorAccel = KalmanFilterAccel((1000 * funcParaSpeed.b), 1, 150);
+//		gKeyValue.motorAccel = 1000 * funcParaSpeed.b;
+//		lastspeed = gKeyValue.motorSpeed;
+//		calSpeedCnt = 0;
+//		clearSumSpeed();
+//	}
 }
+
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
 #pragma CODE_SECTION(TargetDutyGradualChange, "ramfuncs")
 #endif
@@ -83,16 +104,22 @@ void TargetDutyGradualChange(int targetduty){
  *Date:						2018.10.28
  **************************************************************/
 #if(COPY_FLASH_CODE_TO_RAM == INCLUDE_FEATURE)
-#pragma CODE_SECTION(CalForceSpeedAccel, "ramfuncs")
+#pragma CODE_SECTION(Calc_Error_Sum_Squares_Displace_Speed, "ramfuncs")
 #endif
-void CalForceSpeedAccel(void) {
+void Calc_Error_Sum_Squares_Displace_Speed(void) {
 
 	static int count = 0;
 
 	if(gKeyValue.lock == 1){
 		return;
 	}
-	CalFuncPara(gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value, (gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
+
+#if(IMPLEMENT_LSM == INCLUDE_FEATURE)
+    Calc_10p_Error_Sum_Squares_Displace((gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B), count);
+    Calc_10p_Error_Sum_Squares_Speed(gSysInfo.JoyStickSpeed, count);
+#else
+    Calc_10p_Error_Sum_Squares_Speed(gSysInfo.JoyStickSpeed, count);
+#endif
 
 	++count;
 
@@ -100,6 +127,36 @@ void CalForceSpeedAccel(void) {
 		gKeyValue.lock = 1;
 		count = 0;
 	}
+}
+
+/**************************************************************
+ *Name:                     MotorSpeed
+ *Function:
+ *Input:                    none
+ *Output:                   none
+ *Author:                   Simon
+ *Date:                     2018.10.28
+ **************************************************************/
+void MotorSpeed(){
+    static int count = 0;
+    double calSpeed = 0;
+
+    if (gSysInfo.isEcapRefresh == 1){
+
+        calSpeed = CalculateSpeed(gECapCount);
+//        if(calSpeed != -1){
+            gMotorSpeedEcap = KalmanFilterRodSpeed(calSpeed, KALMAN_Q, KALMAN_R);
+//        }
+        gSysInfo.isEcapRefresh = 0;
+//        count = 0;
+    }
+    else{
+        count++;
+        if(count > 500){
+            gMotorSpeedEcap = KalmanFilterRodSpeed(0, KALMAN_Q, KALMAN_R);
+            count = 0;
+        }
+    }
 }
 
 /**************************************************************
@@ -162,9 +219,7 @@ void SwitchDirection(void){
 	switch (gSysInfo.currentHallPosition) {
 		case 3://A+ ---------------> C-
 
-			if((3 == gSysInfo.lastTimeHalllPosition )
-				|| (2 == gSysInfo.lastTimeHalllPosition)
-				|| (1 == gSysInfo.lastTimeHalllPosition)){
+			if(3 == gSysInfo.lastTimeHalllPosition){
 
 				//APositiveToCNegtive();
 				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
@@ -173,11 +228,28 @@ void SwitchDirection(void){
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+			else if(1 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+			    gSysInfo.rotateDirection = 0; //0 means backward, 1 means forward
+			}
+			else if(2 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+			    gSysInfo.rotateDirection = 1; //0 means backward, 1 means forward
+			}
+			else{
+			    //TODO report error
+			}
 			break;
 		case 1://B+ ---------------> C-
-			if((1 == gSysInfo.lastTimeHalllPosition )
-				|| (3 == gSysInfo.lastTimeHalllPosition)
-				|| (5 == gSysInfo.lastTimeHalllPosition)){
+			if(1 == gSysInfo.lastTimeHalllPosition){
 
 				//BPositiveToCNegtive();
 				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
@@ -186,11 +258,28 @@ void SwitchDirection(void){
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+            else if(5 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(3 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm3Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 5://B+ ---------------> A-
-			if((5 == gSysInfo.lastTimeHalllPosition )
-				|| (1 == gSysInfo.lastTimeHalllPosition)
-				|| (4 == gSysInfo.lastTimeHalllPosition)){
+			if(5 == gSysInfo.lastTimeHalllPosition){
 
 				//BPositiveToANegtive();
 				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
@@ -199,11 +288,28 @@ void SwitchDirection(void){
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 			}
+            else if(4 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(1 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm2Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 4://C+ ---------------> A-
-			if((4 == gSysInfo.lastTimeHalllPosition )
-				|| (5 == gSysInfo.lastTimeHalllPosition)
-				|| (6 == gSysInfo.lastTimeHalllPosition)){
+			if(4 == gSysInfo.lastTimeHalllPosition){
 
 				//CPositiveToANegtive();
 				EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
@@ -212,11 +318,28 @@ void SwitchDirection(void){
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+            else if(6 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(5 == gSysInfo.lastTimeHalllPosition){
+                EPwm2Regs.AQCSFRC.all = 0x0009; //DisablePwm2();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm1Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 6://C+ ---------------> B-
-			if((6 == gSysInfo.lastTimeHalllPosition )
-				|| (4 == gSysInfo.lastTimeHalllPosition)
-				|| (2 == gSysInfo.lastTimeHalllPosition)){
+			if(6 == gSysInfo.lastTimeHalllPosition){
 
 				//CPositiveToBNegtive();
 				EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
@@ -225,11 +348,28 @@ void SwitchDirection(void){
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 				EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
 			}
+            else if(2 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(4 == gSysInfo.lastTimeHalllPosition){
+                EPwm1Regs.AQCSFRC.all = 0x0009; //DisablePwm1();
+                EPwm3Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                EPwm3Regs.AQCSFRC.all = 0x000f; //EnablePwm3();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		case 2://A+ ---------------> B-
-			if((2 == gSysInfo.lastTimeHalllPosition )
-				|| (6 == gSysInfo.lastTimeHalllPosition)
-				|| (3 == gSysInfo.lastTimeHalllPosition)){
+			if(2 == gSysInfo.lastTimeHalllPosition){
 
 				//APositiveToBNegtive();
 				EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
@@ -238,6 +378,25 @@ void SwitchDirection(void){
 				EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
 				EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
 			}
+            else if(3 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                gSysInfo.rotateDirection = 0;
+            }
+            else if(6 == gSysInfo.lastTimeHalllPosition){
+                EPwm3Regs.AQCSFRC.all = 0x0009; //DisablePwm3();
+                EPwm1Regs.CMPA.half.CMPA = t_duty_p;
+                EPwm2Regs.CMPA.half.CMPA = t_duty_n;
+                EPwm1Regs.AQCSFRC.all = 0x000f; //EnablePwm1();
+                EPwm2Regs.AQCSFRC.all = 0x000f; //EnablePwm2();
+                gSysInfo.rotateDirection = 1;
+            }
+            else{
+                //TODO report error
+            }
 			break;
 		default:
 			gSysState.erro.bit.software = TRUE;
@@ -267,8 +426,15 @@ void Pwm_ISR_Thread(void)
 
     gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value = (Uint16)(KalmanFilterForce(gAnalog16bit.force,50,50));
     gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value = (Uint16)(KalmanFilter(gAnalog16bit.displace, KALMAN_Q, KALMAN_R));
+    MotorSpeed();
+//  gSysInfo.JoyStickSpeed = gMotorSpeedEcap * 0.00003257947937; //0.03257947937 = 140 * (pi / 180) / 75
+    if(gSysInfo.rotateDirection == 0){
+        gSysInfo.JoyStickSpeed = -gMotorSpeedEcap;
+    }else{
+        gSysInfo.JoyStickSpeed = gMotorSpeedEcap;
+    }
 
-	if((gConfigPara.stateCommand == 1) && (gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
+	if((gSysState.warning.all == 0) && (gSysState.alarm.all == 0)){
 	    if(gSysInfo.targetDuty > DUTY_LIMIT_P){
 	        gSysInfo.targetDuty = DUTY_LIMIT_P;
 	    }
@@ -282,6 +448,12 @@ void Pwm_ISR_Thread(void)
 		DisablePwmOutput();
 	}
 
-	CalForceSpeedAccel();
+#if(IMPLEMENT_LSM == INCLUDE_FEATURE)
+	Calc_Error_Sum_Squares_Displace_Speed();
+#else
+	Calc_Error_Sum_Squares_Displace_Speed();
+	gKeyValue.displacement = gSysMonitorVar.anolog.AD_16bit.var[DisplacementValue_16bit].value*gSysInfo.DimL_K+gSysInfo.DimL_B;
+	gKeyValue.motorSpeed = gSysInfo.JoyStickSpeed;
+#endif
 	StartGetADBySpi();
 }

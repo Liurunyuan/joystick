@@ -31,10 +31,10 @@ typedef struct _FuncPara{
 }FuncPara;
 
 
-void CalFuncPara(double force, double displace, int count);
-void CalFuncParaSpeed(double speed, int count);
-FuncPara calFuncPara(SumPara sumPara);
-FuncPara calFuncParaSpeed(SumPara sumPara);
+void Calc_10p_Error_Sum_Squares_Displace(double displace, int count);
+void Calc_10p_Error_Sum_Squares_Speed(double speed, int count);
+FuncPara Calc_LSM_Coef_Displace(SumPara sumPara);
+FuncPara Calc_LSM_Coef_Speed(SumPara sumPara);
 void clearSumSpeed(void);
 void clearSum(void);
 

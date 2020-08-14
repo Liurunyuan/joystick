@@ -9,12 +9,12 @@
 #include "Filter_Alg.h"
 #include "ADprocessor.h"
 #include "Ctl_Strategy.h"
+#include "ECap_ISR.h"
 #include <stdio.h>
 #include <math.h>
 
-#define N (800)
+#define N (300)
 #define RS422STATUSCHECK (1000)
-
 
 /***************************************************************
  *Name:						Timer0_ISR_Thread
@@ -29,10 +29,15 @@
 #endif
 void Timer0_ISR_Thread(void){
 
-	static unsigned char count = 0;
-	static double zero_force_SUM = 0;
-	static int zero_count = 0;
-	static int flag = 0;
+    static unsigned char count = 0;
+    static unsigned char trim_time_count = 0;
+    static double zero_force_SUM = 0;
+    static int zero_count = 0;
+    static int flag = 0;
+    static int first_time_back_to_mid = 0;
+    static int first_time_to_front = 0;
+    static int first_time_to_back = 0;
+    static Uint16 run_time = 0;
 
     double force_Joystick;
 
@@ -43,37 +48,176 @@ void Timer0_ISR_Thread(void){
 		count = 0;
 	}
 
-	if(gKeyValue.lock == 1){
-		//calculate function parameter
-		UpdateKeyValue();
+    //calculate function parameter
+    force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
+    if(gSysInfo.board_type == ROLL){
+        force_Joystick = force_Joystick / 0.625;
+    }
 
-        gRotateDirection.updateRotateDirection(0);
-        gStickState.value = gKeyValue.displacement;
+    if(zero_count < 10){
+        zero_force_SUM = zero_force_SUM + force_Joystick;
+        ++zero_count;
+//          clearSum();
+        gKeyValue.lock = 0;
+        return;
+    }
+    else{
+        if(flag == 0)
+        {
+            gSysInfo.zeroForce = zero_force_SUM/10;
+            flag = 1;
+        }
+    }
 
-        force_Joystick = (gSysMonitorVar.anolog.AD_16bit.var[ForceValue_16bit].value * gSysInfo.Force_K + gSysInfo.Force_B)*0.32143;
+    if(gKeyValue.lock == 1){
+        UpdateKeyValue();
+        gAccelDirection.updateAccelDirection(0);
+        gKeyValue.lock = 0;
+    }
 
-        if(zero_count < 10){
-            zero_force_SUM = zero_force_SUM + force_Joystick;
-            ++zero_count;
-		    clearSum();
-		    gKeyValue.lock = 0;
-            return;
+    gStickState.value = gKeyValue.displacement;
+    gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
+
+    gRotateDirection.updateRotateDirection(0);
+    gExternalForceState.updateForceState(0);
+
+
+
+    if(first_time_back_to_mid == 0){
+        if((gStickState.value < gConfigPara.LF_Distance1) && (gStickState.value > gConfigPara.RB_Distance1)){
+            first_time_back_to_mid = 1;
         }
         else{
-			if(flag == 0)
-			{
-            	gSysInfo.zeroForce = zero_force_SUM/10;
-				flag = 1;
-			}
+            OnlyWithSpringFront();
+        }
+    }
+    else if(first_time_back_to_mid == 1){
+        if(gSysInfo.board_type == PITCH){
+            if(first_time_to_front == 0){
+                if(gStickState.value < gConfigPara.LF_MaxDistance){
+                    gSysInfo.targetDuty = 70;
+                }
+                else{
+                    first_time_to_front = 1;
+                    return;
+                }
+            }
+            else{
+                if(first_time_to_back == 0){
+                    if(gStickState.value > gConfigPara.RB_MaxDistance){
+                        gSysInfo.targetDuty = -70;
+                    }
+                    else{
+                        first_time_to_back = 1;
+                        return;
+                    }
+                }
+                else{
+                    if((gStickState.value < gConfigPara.LF_Distance1) && (gStickState.value > gConfigPara.RB_Distance1)){
+
+                        first_time_back_to_mid = 2;
+                        return;
+                    }
+                    else{
+                        gSysInfo.targetDuty = 70;
+                    }
+                }
+            }
+        }
+        else if(gSysInfo.board_type == ROLL){
+            ++run_time;
+            if(run_time > 9000){
+                if(first_time_to_front == 0){
+                    if(gStickState.value < gConfigPara.LF_MaxDistance){
+                        gSysInfo.targetDuty = 70;
+                    }
+                    else{
+                        first_time_to_front = 1;
+                        return;
+                    }
+                }
+                else{
+                    if(first_time_to_back == 0){
+                        if(gStickState.value > gConfigPara.RB_MaxDistance){
+                            gSysInfo.targetDuty = -70;
+                        }
+                        else{
+                            first_time_to_back = 1;
+                            return;
+                        }
+                    }
+                    else{
+                        if((gStickState.value < gConfigPara.LF_Distance1) && (gStickState.value > gConfigPara.RB_Distance1)){
+
+                            first_time_back_to_mid = 2;
+                            return;
+                        }
+                        else{
+                            gSysInfo.targetDuty = 70;
+                        }
+                    }
+                }
+            }
+            else{
+                gSysInfo.targetDuty = 0;
+                return;
+            }
         }
 
-        gExternalForceState.value = force_Joystick - gSysInfo.zeroForce;
-        gExternalForceState.updateForceState(0);
-
+    }
+    else{
         OnlyWithSpringFront();
+    }
 
-		clearSum();
-		gKeyValue.lock = 0;
+
+	if(trim_time_count == 2){
+	    trim_time_count = 0;
+	    if(gSysInfo.board_type == PITCH){
+	        if(gButtonStatus[FWRD_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B < 56.2728){
+	                gSysInfo.DimL_B = 56.2728;
+	            }
+	            else{
+	                gSysInfo.DimL_B = gSysInfo.DimL_B - gConfigPara.Trim_Speed * 0.01;
+	            }
+	        }
+	        else if(gButtonStatus[REAR_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B > 75.2728){
+	                gSysInfo.DimL_B = 75.2728;
+	            }
+	            else{
+	                gSysInfo.DimL_B = gSysInfo.DimL_B + gConfigPara.Trim_Speed * 0.01;
+	            }
+	        }
+	        else{
+	            gSysInfo.DimL_B = gSysInfo.DimL_B;
+	        }
+	    }
+	    else{
+	        if(gButtonStatus[LEFT_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B < 46.9135){
+	                gSysInfo.DimL_B = 46.9135;
+	            }
+	            else{
+	                gSysInfo.DimL_B = gSysInfo.DimL_B - gConfigPara.Trim_Speed * 0.01;
+	            }
+	        }
+	        else if(gButtonStatus[RGHT_SWITCH] == BTN_PRESSED){
+	            if(gSysInfo.DimL_B > 68.9135){
+	                gSysInfo.DimL_B = 68.9135;
+	            }
+	            else{
+	                gSysInfo.DimL_B = gSysInfo.DimL_B + gConfigPara.Trim_Speed * 0.01;
+	            }
+	        }
+	        else{
+	            gSysInfo.DimL_B = gSysInfo.DimL_B;
+	        }
+	    }
+	}
+	else{
+	    trim_time_count ++;
+	    gSysInfo.DimL_B = gSysInfo.DimL_B;
 	}
 }
 /**************************************************************

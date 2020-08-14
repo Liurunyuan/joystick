@@ -1,3 +1,4 @@
+#include "DSP2833x_Device.h"
 #ifndef _GLOBAL_VAR_AND_FUNC_H
 #define _GLOBAL_VAR_AND_FUNC_H
 
@@ -11,15 +12,19 @@
 #define SPEED_CLOSED_LOOP 				INCLUDE_FEATURE
 #define TEN_AVERAGE 					EXCLUDE_FEATURE
 #define DUTY_GRADUAL_CHANGE 			INCLUDE_FEATURE
-#define TARGET_DUTY_GRADUAL_CHANGE 		INCLUDE_FEATURE
+#define TARGET_DUTY_GRADUAL_CHANGE 		EXCLUDE_FEATURE
 #define COPY_FLASH_CODE_TO_RAM 			EXCLUDE_FEATURE
+#define IMPLEMENT_LSM                   EXCLUDE_FEATURE
 
 
 #define KALMAN_Q  (1.1)
 #define KALMAN_R  (157.1)
-#define  DEBOUNCE (0)
+//#define  DEBOUNCE (0)
+//#define START_FORCE_OFFSET (0)
+//#define START_FORCE_DUTY (50)
+#define ROLL_OFFSET (10)
 
-#define PI (3.14149265)
+//#define PI (3.14149265)
 
 #define ROLL 0
 #define PITCH 1
@@ -164,16 +169,11 @@ typedef struct{
 	int controlFuncIndex;
 	int currentStickDisSection;
 	int16 Ki_Threshold_f;
+	double Ki_Threshold_d;
 	int16 sek_f;
+	double sek_d;
 	double Ki_Threshold_v;
 	double sek_v;
-	double TH0;
-	double TH1;
-	double TH2;
-	double TH3;
-	double TH4;
-	double TH5;
-	double TH6;
 	double zeroForce;
 	double velocity_last;
 	double Force_Init2Pos_Thr;
@@ -206,11 +206,18 @@ typedef struct{
     double friction;
 //    double ob_Friction;
     double ob_velocityOpenLoop;
+    double ob_velocityOpenLoop2;
     int soft_break_flag;
     double springForceK;
     double springForceB;
     double openLoop_Force_front_B;
     double openLoop_Force_rear_B;
+    int isEcapRefresh;
+    double JoyStickSpeed;
+    int rotateDirection;
+    int sixButtons;
+    int RS422_Rx_Data;
+    int software_version;
 
 }SYSINFO;
 
@@ -376,8 +383,10 @@ typedef struct{
 	int RB_FrontFriction;
 	int RB_RearFriction;
 
-	int LF_EmptyDistance;
-	int RB_EmptyDistance;
+	double LF_EmptyDistance;
+	double RB_EmptyDistance;
+
+	double Force_Displace_K;
 
 	double dampingFactor;
 	double naturalVibrationFreq;
@@ -510,6 +519,7 @@ extern ROTATEDIRECTION gRotateDirection;
 extern ACCELDIRECTION gAccelDirection;
 
 extern Uint32 gECapCount;
+//extern int16 gMotorSpeedEcap;
 extern RS422STATUS gRS422Status;
 extern KeyValue gKeyValue;
 extern SYSINFO gSysInfo;
@@ -534,6 +544,7 @@ extern int gCheckStartForceBackwardMargin;
 void checkPitchOrRoll(void);
 void InitSysState(void);
 void InitConfigParameter(void);
+double KalmanFilterRodSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilter(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterSpeed(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
 double KalmanFilterForce(const double ResrcData, double ProcessNiose_Q, double MeasureNoise_R);
